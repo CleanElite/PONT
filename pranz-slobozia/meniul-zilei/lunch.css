@@ -9,3 +9,10 @@ body.lunch{color:#f5ead9;background:#100f12}
 .restaurant-logo svg{width:61%;height:auto;max-width:215px}.restaurant-content{padding:clamp(9px,2vw,21px)}.restaurant-content h3{font-size:clamp(16px,3.7vw,29px);margin:9px 0 5px}.restaurant-content p{color:#ddd0c0;font-size:clamp(.77rem,1.8vw,.95rem);margin:0 0 15px;min-height:3.5em}.restaurant-content .tag{font-size:clamp(.59rem,1.35vw,.75rem);padding:4px 7px}.restaurant-content .bottom{align-items:stretch;flex-direction:column;font-size:clamp(.78rem,1.7vw,1rem)}.restaurant-content button{min-height:44px;padding:8px 5px;color:#201b15;background:var(--accent);font-size:clamp(.75rem,1.6vw,.95rem)}.lunch .history{color:#252720}.lunch dialog{color:#252720}
 @media(prefers-reduced-motion:no-preference){.lunch::before{animation:ambient 15s ease-in-out infinite alternate}.restaurant::after{animation:halo 5s ease-in-out infinite alternate;animation-delay:var(--delay)}#list .restaurant{animation:reveal .65s cubic-bezier(.2,.7,.3,1) var(--delay) both}}
 @keyframes reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes halo{to{opacity:.9}}@keyframes ambient{to{opacity:.55}}
+.lunch #order{padding:20px;overscroll-behavior:contain}
+.lunch #order h2{font-size:clamp(1.55rem,5vw,2.1rem);margin:14px 0 8px}
+.lunch #checkout{padding:0;border:0;background:transparent}
+#combo-price{margin:0 0 12px;font-weight:700}
+.order-footer{position:sticky;bottom:-20px;background:#fffdf7;border-top:1px solid #e6e0d3;padding:12px 0;display:grid;gap:8px}
+#breakdown{color:#56594c;font-size:.85rem}
+#orderMsg:empty{display:none}
