@@ -39,17 +39,17 @@ installButton.addEventListener('click', async () => {
   guide.replaceChildren();
   guide.style.lineHeight = '1.8';
   if (appleMobile) {
-    const steps = [
-      '1. Apasă Partajează ⬆︎ în Safari.',
-      '2. Alege „Adaugă pe ecranul principal”.',
-      '3. Lasă „Deschide ca aplicație web” activat și apasă „Adaugă”.'
-    ];
-    for (const step of steps) {
-      const line = document.createElement('span');
+    const steps = ['••• Cele trei puncte din Safari', 'Partajează ↑', 'Adaugă pe ecranul principal'];
+    steps.forEach((step, index) => {
+      const line = document.createElement('strong');
       line.style.display = 'block';
-      line.textContent = step;
+      line.style.padding = '8px 0';
+      line.textContent = (index + 1) + '. ' + step;
       guide.append(line);
-    }
+    });
+    const confirmation = document.createElement('small');
+    confirmation.textContent = 'În fereastra care apare, confirmă cu „Adaugă”.';
+    guide.append(confirmation);
   } else {
     guide.textContent = 'În Chrome, apasă ⋮ → Instalează aplicația.';
   }
