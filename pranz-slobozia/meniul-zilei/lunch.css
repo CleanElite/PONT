@@ -37,3 +37,27 @@ body.lunch{color:#f5fbff;background:radial-gradient(ellipse at 85% 6%,#17687465 
 .lunch #list .featured{background:linear-gradient(145deg,#2b3b68,#182950 65%)}
 .lunch .featured .restaurant-arrow{color:#ffc2b4}
 .lunch #send{background:#244bb2;color:#fff}
+body.lunch{background:#0b142b;color:#f5f7ff}
+.lunch header,.lunch main,.lunch footer{max-width:900px}
+.lunch .hero{position:relative;isolation:isolate;overflow:hidden;padding:clamp(26px,6vw,58px) clamp(18px,5vw,48px);border:1px solid #6785d8;border-radius:24px;background:radial-gradient(ellipse at 90% 5%,#1ba297a0,transparent 48%),linear-gradient(120deg,#152b67,#233fa2 65%,#173b5f);margin-bottom:25px}
+.lunch .hero::after{display:block;content:"";width:260px;height:260px;right:-105px;top:-85px;border-radius:50%;border:1px solid #a2f6e757;box-shadow:0 0 0 30px #a2f6e71a,0 0 0 62px #a2f6e712;z-index:-1}
+.lunch .hero h1{font-size:clamp(42px,8vw,83px);letter-spacing:-.06em;max-width:11ch}
+.lunch .hero h1 em{font-weight:400;color:#a5f4dd}
+.lunch .hero p{margin:12px 0 0;color:#e2edff;font-size:.91rem}
+.hero-index{position:absolute;top:17px;right:17px;color:#d7eaff;font:600 .61rem system-ui;letter-spacing:.13em}
+.lunch #customer h2{font-size:clamp(23px,5vw,36px)}
+#list .restaurant{background:#172343;border-color:#435a8a;border-radius:16px}
+#list .featured{border-color:#ffb6a4}
+.lunch .restaurant-open{padding:12px;gap:9px}
+.restaurant-logo{background:#253965;border-color:#5a75a8;color:#a5f4dd}
+.restaurant-name{font-family:Georgia,serif}
+.restaurant-price{font-size:.84rem;font-weight:700}
+.restaurant-arrow{display:grid;place-items:center;width:26px;height:26px;border:1px solid #7896ca;border-radius:50%;font-size:.88rem}
+.lunch #order{width:min(520px,calc(100% - 24px));border-radius:24px;box-shadow:0 18px 80px #0009}
+.lunch #close{background:#e4ecff;color:#18356e}
+.lunch .quantity{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lunch .stepper{grid-template-columns:40px 42px 40px;gap:3px;flex-shrink:0}
+.lunch .stepper input{padding-inline:2px}
+.lunch #checkout input,.lunch #checkout select,.lunch #checkout textarea{border-color:#aabbd7}
+.lunch .order-footer{z-index:1}
+@media(max-width:375px){.lunch .quantity{display:block}.lunch .hero{padding-inline:15px}}
