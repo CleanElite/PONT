@@ -18,12 +18,12 @@
   min-height:44px;padding:10px 16px;border:0;border-radius:999px;
   color:#d1d1d1;background:#080808b0;
   font:500 .65rem/1 system-ui,sans-serif;letter-spacing:.12em;
-  text-transform:uppercase;cursor:pointer;transition:opacity .28s ease;
+  text-transform:uppercase;cursor:pointer;transition:opacity .25s ease;
 }
 .pont-intro__skip:focus-visible{outline:1px solid #fff;outline-offset:3px}
 .pont-intro.is-revealing .pont-intro__skip:not(:focus-visible){opacity:0}
 html.pont-intro-active{overflow:hidden}
-html.pont-intro-active .entry :is(header,.choice,footer,.spark){animation-play-state:paused}
+.entry.intro-matched :is(header,.choice,footer,.spark){animation:none}
 @media(prefers-reduced-motion:reduce){.pont-intro{display:none}}
 </style></head>
 <body class="entry-page"><main class="entry"><header><h1><img src="./pont.svg" width="320" height="92" alt="PONT Slobozia" style="display:block;width:min(320px,80vw);height:auto"></h1><div class="subtitle">Ce mâncăm azi? Unde ieșim diseară?</div></header>
@@ -38,7 +38,7 @@ html.pont-intro-active .entry :is(header,.choice,footer,.spark){animation-play-s
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   if (motion.matches) return;
 
-  const sessionKey = 'pont-intro-cinematic-v2';
+  const sessionKey = 'pont-intro-ribbon-v3';
   const replay = new URLSearchParams(location.search).get('intro') === 'replay';
   try {
     if (!replay && sessionStorage.getItem(sessionKey)) return;
@@ -46,24 +46,33 @@ html.pont-intro-active .entry :is(header,.choice,footer,.spark){animation-play-s
 
   const intro = document.querySelector('#pont-intro');
   const page = document.querySelector('.entry');
+  if (!intro || !page) return;
+  const logo = page.querySelector('header img');
+  const chooser = page.querySelector('.choice');
   const canvas = intro.querySelector('canvas');
   const context = canvas.getContext('2d');
-  if (!page || !context) return;
+  if (!context || !logo || !chooser) return;
 
   const skip = intro.querySelector('button');
   const root = document.documentElement;
-  const fullTurn = Math.PI * 2;
-  const hold = 1.15;
-  const revealAt = 2.35;
-  const duration = 3.1;
+  const turn = Math.PI * 2;
+  const liftAt = .94;
+  const liftEnd = 1.88;
+  const revealAt = 1.43;
+  const duration = 2.76;
+  const rowCount = 72;
+  const starSteps = 2048;
+  const shadeCount = 10;
+  const glyphs = [...'PONT'];
   let frame = 0;
   let deadline = 0;
   let finished = false;
   let revealing = false;
-  let width, height, extent, reach, stars, word, spark;
+  let width, height, stars, rim, word, spark, curtain;
+  const clamp = value => Math.max(0, Math.min(1, value));
   const along = (start, end, t) => start + (end - start) * t;
   const ease = (start, end, value) => {
-    const t = Math.max(0, Math.min(1, (value - start) / (end - start)));
+    const t = clamp((value - start) / (end - start));
     return t * t * (3 - 2 * t);
   };
 
@@ -74,311 +83,257 @@ html.pont-intro-active .entry :is(header,.choice,footer,.spark){animation-play-s
     };
   }
 
-  function makeStars() {
-    const random = randomGenerator(73109);
-    const rim = [];
+  function makeRim() {
+    const outline = [];
     let length = 0;
-    // An arc-length table keeps the long sides of a phone evenly populated.
-    for (let i = 0; i <= 640; i++) {
-      const angle = fullTurn * i / 640;
-      const cosine = Math.cos(angle), sine = Math.sin(angle);
-      const x = Math.sign(cosine) * Math.pow(Math.abs(cosine), .56) * width * .497;
-      const y = Math.sign(sine) * Math.pow(Math.abs(sine), .56) * height * .497;
-      if (i) length += Math.hypot(x - rim[i - 1].x, y - rim[i - 1].y);
-      rim.push({ x, y, length });
+    // Sample by distance, so the stars flow at the same speed around the corners.
+    for (let i = 0; i <= 768; i++) {
+      const angle = turn * i / 768;
+      const c = Math.cos(angle), s = Math.sin(angle);
+      const x = Math.sign(c) * Math.pow(Math.abs(c), .47) * width * .498;
+      const y = Math.sign(s) * Math.pow(Math.abs(s), .47) * height * .498;
+      if (i) length += Math.hypot(x - outline[i - 1].x, y - outline[i - 1].y);
+      outline.push({ x, y, length });
     }
 
-    const count = Math.min(970, Math.max(520, Math.round(length * .32)));
-    let edge = 1;
-    return Array.from({ length: count }, (_, index) => {
-      const distance = length * (index + random()) / count;
-      while (rim[edge].length < distance) edge++;
-      const a = rim[edge - 1], b = rim[edge];
+    let segment = 1;
+    const points = Array.from({ length: starSteps + 1 }, (_, i) => {
+      const distance = length * i / starSteps;
+      while (outline[segment].length < distance && segment < outline.length - 1) segment++;
+      const a = outline[segment - 1], b = outline[segment];
       const portion = (distance - a.length) / (b.length - a.length);
-      const band = .78 + random() * .22;
-      const x = along(a.x, b.x, portion) * band;
-      const y = along(a.y, b.y, portion) * band;
-      const softEdge = 1 - .90 * ease(.90, 1, band);
-      const innerFade = along(.48, 1, ease(.78, .87, band));
-      const phase = random() * fullTurn;
-      const size = .34 + Math.pow(random(), 3.5) * .94;
-      const light = (.19 + Math.pow(random(), 1.65) * .81) * softEdge * innerFade;
+      return { x: along(a.x, b.x, portion), y: along(a.y, b.y, portion) };
+    });
+    return { points, length };
+  }
+
+  function makeStars() {
+    const random = randomGenerator(73109);
+    const count = Math.min(3500, Math.max(1750, Math.round(rim.length * 1.07)));
+    const tempo = Math.min(width, height) * .059;
+    return Array.from({ length: count }, (_, index) => {
+      const band = .81 + random() * .19;
+      const distance = (index + random()) / count * starSteps;
+      const clarity = 1 - ease(.925, 1, band);
+      const fade = along(.26, 1, ease(.81, .88, band)) * along(.20, 1, clarity);
+      const size = .26 + Math.pow(random(), 3.6) * .88;
       return {
-        x, y, size, light, phase,
-        angle: Math.atan2(y, x), radius: Math.hypot(x, y),
-        delay: .035 + random() * .16,
-        turn: .96 + random() * .31,
+        band, distance, clarity, size,
+        light: (.20 + Math.pow(random(), 2) * .76) * fade,
+        phase: random() * turn,
+        speed: (tempo + random() * tempo * .72) * starSteps / rim.length,
       };
     });
   }
 
-  function makeWord() {
-    const fontSize = Math.min(98, extent * .106, width * .108);
-    const tracking = fontSize * .19;
-    const font = fontSize + 'px Georgia, "Times New Roman", serif';
-    const glyphs = [...'PONT'];
-    context.font = font;
-    const metrics = glyphs.map(glyph => context.measureText(glyph));
-    const glyphWidth = metrics.reduce((sum, metric) => sum + metric.width, 0);
-    const padding = 26;
-    const spriteWidth = Math.ceil(glyphWidth + tracking * 3 + padding * 2);
-    const spriteHeight = Math.ceil(fontSize + padding * 2);
-    const sprite = document.createElement('canvas');
-    const scale = 2;
-    sprite.width = spriteWidth * scale;
-    sprite.height = spriteHeight * scale;
-    const ink = sprite.getContext('2d', { willReadFrequently: true });
-    ink.scale(scale, scale);
-    ink.font = font;
-    const ascent = Math.max(...metrics.map(metric => metric.actualBoundingBoxAscent || fontSize * .67));
-    const descent = Math.max(...metrics.map(metric => metric.actualBoundingBoxDescent || 0));
-    const baseline = (spriteHeight + ascent - descent) / 2;
-    const metal = ink.createLinearGradient(0, baseline - ascent, 0, baseline + descent);
-    metal.addColorStop(0, '#ffffff');
-    metal.addColorStop(.47, '#e7e7e7');
-    metal.addColorStop(.67, '#b8b8b8');
-    metal.addColorStop(1, '#f4f4f4');
-    ink.fillStyle = metal;
-    ink.strokeStyle = '#ffffff';
-    ink.lineWidth = .55;
-    let x = padding;
-    for (const [index, glyph] of glyphs.entries()) {
-      ink.fillText(glyph, x, baseline);
-      ink.strokeText(glyph, x, baseline);
-      x += metrics[index].width + tracking;
-    }
-
-    const halo = document.createElement('canvas');
-    halo.width = sprite.width;
-    halo.height = sprite.height;
-    const glow = halo.getContext('2d');
-    glow.shadowColor = '#ffffff';
-    glow.shadowBlur = 16;
-    glow.drawImage(sprite, 0, 0);
-    glow.shadowBlur = 0;
-    glow.globalCompositeOperation = 'destination-out';
-    glow.drawImage(sprite, 0, 0);
-
-    const fragments = [];
-    try {
-      const pixels = ink.getImageData(0, 0, sprite.width, sprite.height).data;
-      const step = Math.max(3, Math.round(fontSize * .064));
-      const random = randomGenerator(3067);
-      for (let y = 0; y < sprite.height; y += step) {
-        for (let x = 0; x < sprite.width; x += step) {
-          if (pixels[(y * sprite.width + x) * 4 + 3] < 130) continue;
-          const dx = x / scale - spriteWidth / 2;
-          const dy = y / scale - spriteHeight / 2;
-          fragments.push({
-            angle: Math.atan2(dy, dx), radius: Math.hypot(dx, dy),
-            delay: .18 * random(), size: .45 + random() * .5,
-          });
-        }
-      }
-    } catch {
-      // Safari can restrict canvas readback. The wordmark still dissolves.
-    }
-    return { sprite, halo, width: spriteWidth, height: spriteHeight, fragments };
-  }
-
   function makeSpark() {
     const sprite = document.createElement('canvas');
-    sprite.width = sprite.height = 16;
+    sprite.width = sprite.height = 18;
     const glow = sprite.getContext('2d');
-    const falloff = glow.createRadialGradient(8, 8, 0, 8, 8, 8);
-    falloff.addColorStop(0, '#fff8');
-    falloff.addColorStop(.25, '#fff4');
+    const falloff = glow.createRadialGradient(9, 9, 0, 9, 9, 9);
+    falloff.addColorStop(0, '#fffd');
+    falloff.addColorStop(.27, '#fff6');
     falloff.addColorStop(1, '#fff0');
     glow.fillStyle = falloff;
-    glow.fillRect(0, 0, 16, 16);
+    glow.fillRect(0, 0, 18, 18);
     return sprite;
+  }
+
+  function makeWord(bounds) {
+    const size = Math.min(100, Math.min(width, height) * .11);
+    const tracking = size * .185;
+    const face = 'px Georgia,serif';
+    context.font = size + face;
+    const metrics = glyphs.map(glyph => context.measureText(glyph));
+    const widths = metrics.map(metric => metric.width);
+    const span = widths.reduce((sum, advance) => sum + advance, 0) + tracking * 3;
+    const ascent = Math.max(...metrics.map(metric => metric.actualBoundingBoxAscent || size * .67));
+    const descent = Math.max(...metrics.map(metric => metric.actualBoundingBoxDescent || 0));
+    const padding = 25;
+    const glowWidth = Math.ceil(span + padding * 2);
+    const glowHeight = Math.ceil(size + padding * 2);
+    const glowBaseline = padding + ascent;
+    const halo = document.createElement('canvas');
+    halo.width = glowWidth * 2;
+    halo.height = glowHeight * 2;
+    const ink = halo.getContext('2d');
+    ink.scale(2, 2);
+    ink.font = size + face;
+    ink.shadowColor = '#fff';
+    ink.shadowBlur = 17;
+    ink.fillStyle = '#fff';
+    let x = padding;
+    for (const [i, glyph] of glyphs.entries()) {
+      ink.fillText(glyph, x, glowBaseline);
+      x += widths[i] + tracking;
+    }
+
+    // Map to the typography already inside pont.svg (320 × 92).
+    const logoScale = bounds.width / 320;
+    return {
+      size, tracking, face, widths, ascent, descent, halo, glowWidth, glowHeight, glowBaseline, padding,
+      fromX: (width - span) / 2, fromY: (height + ascent - descent) / 2,
+      toX: bounds.left + 91 * logoScale, toY: bounds.top + 55 * logoScale,
+      toSize: 47 * logoScale, toTracking: 5 * logoScale,
+    };
+  }
+
+  function makeCurtain(bounds, brand) {
+    const center = bounds.left + bounds.width / 2;
+    const maxOpening = Math.max(center, width - center) + bounds.width * .045 + 22;
+    return Array.from({ length: rowCount + 1 }, (_, index) => {
+      const y = height * index / rowCount;
+      const t = clamp((y - bounds.top) / bounds.height);
+      // This cubic follows the S-shaped seam drawn between the two choices.
+      const x = center + bounds.width * .39 * t * (1 - t) * (1 - 2 * t);
+      const aboveLogo = 1 - ease(brand.bottom + 12, brand.bottom + height * .16 + 12, y);
+      return { x, y, delay: .42 * (1 - index / rowCount) + .25 * aboveLogo, maxOpening };
+    });
   }
 
   function resize() {
     width = intro.clientWidth;
     height = intro.clientHeight;
-    extent = Math.min(width, height);
-    reach = Math.hypot(width, height) / 2;
     const ratio = Math.min(devicePixelRatio || 1, 2, Math.sqrt(2200000 / (width * height)));
     canvas.width = Math.round(width * ratio);
     canvas.height = Math.round(height * ratio);
     context.setTransform(canvas.width / width, 0, 0, canvas.height / height, 0, 0);
+    rim = makeRim();
     stars = makeStars();
-    word = makeWord();
-  }
-
-  // The stream winds faster as the radius shrinks, then tilts into a disk.
-  function starPosition(star, t) {
-    const progress = Math.max(0, Math.min(1, (t - hold - star.delay) / 1.27));
-    if (progress === 0) return { x: star.x, y: star.y, progress };
-    const fall = Math.pow(progress, 1.78);
-    const lens = ease(.06, .82, progress);
-    const angle = star.angle + 6.2 * fall * star.turn + .37 * Math.sin(star.angle * 2) * lens;
-    const radius = star.radius * Math.exp(-3.7 * fall);
-    const u = Math.cos(angle) * radius;
-    const v = Math.sin(angle) * radius * along(1, .49, lens);
-    const tilt = -.29 * lens;
-    return {
-      x: u * Math.cos(tilt) - v * Math.sin(tilt),
-      y: u * Math.sin(tilt) + v * Math.cos(tilt),
-      progress,
-    };
+    const brand = logo.getBoundingClientRect();
+    word = makeWord(brand);
+    curtain = makeCurtain(chooser.getBoundingClientRect(), brand);
   }
 
   function drawStars(time) {
-    // Batch trails into a few draw calls so the dense part of the vortex stays fluid.
-    const trails = time > hold ? Array.from({ length: 6 }, () => new Path2D()) : [];
+    const shadePaths = Array.from({ length: shadeCount }, () => new Path2D());
+    const slide = ease(revealAt, duration - .1, time);
+    const offset = width * .30 * slide;
+    const lightFalloff = 1 - .64 * slide;
     for (const star of stars) {
-      const p = starPosition(star, time);
-      const twinkle = .83 + .17 * Math.sin(time * 2.5 + star.phase);
-      const light = star.light * twinkle * (1 - ease(.78, 1, p.progress));
-      const x = p.x + Math.sin(time * 1.2 + star.phase) * (1 - p.progress) * .65;
-      const y = p.y + Math.cos(time + star.phase) * (1 - p.progress) * .65;
-      if (star.size > .8 && light > .27) {
-        const glowRadius = star.size * 3.4;
-        context.globalAlpha = light * .63;
-        context.drawImage(spark, x - glowRadius, y - glowRadius, glowRadius * 2, glowRadius * 2);
+      const distance = (star.distance + time * star.speed) % starSteps;
+      const slot = Math.floor(distance);
+      const a = rim.points[slot], b = rim.points[slot + 1];
+      const fraction = distance - slot;
+      const x = along(a.x, b.x, fraction) * star.band;
+      const y = along(a.y, b.y, fraction) * star.band;
+      const screenX = width / 2 + x + Math.tanh(x / (width * .12)) * offset;
+      const screenY = height / 2 + y;
+      if (screenX < -7 || screenX > width + 7) continue;
+      const shimmer = .83 + .17 * Math.sin(time * 2.2 + star.phase);
+      const light = star.light * shimmer * lightFalloff;
+      const size = star.size * along(.83, 1, star.clarity);
+
+      // A small soft halo carries the outer points; sharper points sit inside it.
+      if (star.size > .66 && (star.clarity < .78 || light > .33)) {
+        const radius = size * along(4.1, 2.9, star.clarity);
+        context.globalAlpha = light * along(.90, .44, star.clarity);
+        context.drawImage(spark, screenX - radius, screenY - radius, radius * 2, radius * 2);
       }
-      context.globalAlpha = light;
-      const diameter = star.size * 2;
-      context.fillRect(x - star.size, y - star.size, diameter, diameter);
-      if (p.progress > .06 && p.progress < .98) {
-        const trail = starPosition(star, time - .044);
-        const middle = starPosition(star, time - .024);
-        const trace = trails[Math.min(5, Math.floor(light * 6))];
-        trace.moveTo(trail.x, trail.y);
-        trace.quadraticCurveTo(middle.x, middle.y, x, y);
-      }
+      const crisp = light * along(.31, 1, star.clarity);
+      const shade = Math.min(shadeCount - 1, Math.floor(crisp * shadeCount));
+      if (crisp > .045) shadePaths[shade].rect(screenX - size, screenY - size, size * 2, size * 2);
     }
-    context.lineWidth = .62;
-    for (const [index, trace] of trails.entries()) {
-      context.globalAlpha = .036 + index * .071;
-      context.stroke(trace);
+    context.fillStyle = '#fff';
+    for (const [index, path] of shadePaths.entries()) {
+      context.globalAlpha = (index + .5) / shadeCount;
+      context.fill(path);
     }
     context.globalAlpha = 1;
-  }
-
-  function drawDisk(time) {
-    const opacity = ease(1.34, 1.94, time) * (1 - ease(2.32, 2.75, time));
-    if (opacity <= 0) return;
-    const radius = extent * along(.47, .105, ease(1.60, 2.73, time));
-    const rotation = .4 + ease(1.36, 2.76, time) * 2.3;
-    context.save();
-    context.rotate(-.29);
-    context.scale(1, .49);
-
-    const dust = context.createRadialGradient(0, 0, radius * .06, 0, 0, radius * .85);
-    dust.addColorStop(0, '#0000');
-    dust.addColorStop(.2, 'rgba(255,255,255,.13)');
-    dust.addColorStop(.52, 'rgba(255,255,255,.027)');
-    dust.addColorStop(1, '#0000');
-    context.globalAlpha = opacity;
-    context.fillStyle = dust;
-    context.fillRect(-radius, -radius, radius * 2, radius * 2);
-
-    const light = context.createLinearGradient(-radius, -radius * .3, radius, radius * .45);
-    light.addColorStop(0, 'rgba(255,255,255,.04)');
-    light.addColorStop(.36, 'rgba(255,255,255,.46)');
-    light.addColorStop(.64, 'rgba(255,255,255,.13)');
-    light.addColorStop(1, 'rgba(255,255,255,.02)');
-    context.strokeStyle = light;
-    for (let arm = 0; arm < 2; arm++) {
-      for (let thread = 0; thread < 9; thread++) {
-        context.beginPath();
-        for (let point = 0; point <= 46; point++) {
-          const u = point / 46;
-          const distance = radius * Math.exp(-2.15 * u) * (1 - thread * .021);
-          const angle = rotation + arm * Math.PI + thread * .073 + u * 5.9;
-          const x = Math.cos(angle) * distance;
-          const y = Math.sin(angle) * distance;
-          if (point) context.lineTo(x, y);
-          else context.moveTo(x, y);
-        }
-        context.globalAlpha = opacity * (thread % 3 === 0 ? .39 : .19);
-        context.lineWidth = thread % 3 === 0 ? 1.08 : .5;
-        context.stroke();
-      }
-    }
-    context.restore();
   }
 
   function drawWord(time) {
-    const dissolve = ease(1.63, 2.13, time);
-    const brightness = .74 + .26 * Math.sin(Math.PI * ease(0, hold, time));
-    if (dissolve < 1) {
-      context.globalAlpha = (.25 + .58 * brightness) * (1 - dissolve);
-      context.drawImage(word.halo, -word.width / 2, -word.height / 2, word.width, word.height);
-      context.globalAlpha = (.85 + .15 * brightness) * (1 - dissolve);
-      context.drawImage(word.sprite, -word.width / 2, -word.height / 2, word.width, word.height);
+    const lift = ease(liftAt, liftEnd, time);
+    const size = along(word.size, word.toSize, lift);
+    const tracking = along(word.tracking, word.toTracking, lift);
+    const scale = size / word.size;
+    const x = along(word.fromX, word.toX, lift);
+    const y = along(word.fromY, word.toY, lift);
+
+    if (lift < 1) {
+      const breath = .69 + .21 * Math.sin(time * 3.2);
+      context.globalAlpha = breath * (1 - lift) * .84;
+      context.drawImage(word.halo, x - word.padding * scale, y - word.glowBaseline * scale,
+        word.glowWidth * scale, word.glowHeight * scale);
+      context.globalAlpha = 1;
     }
-    for (const dot of word.fragments) {
-      const pulled = ease(1.62 + dot.delay, 2.46 + dot.delay, time);
-      const alpha = ease(1.61, 1.91, time) * (1 - ease(.54, 1, pulled));
-      if (alpha <= 0) continue;
-      const radius = dot.radius * Math.exp(-3.3 * pulled);
-      const angle = dot.angle + 6 * pulled;
-      context.globalAlpha = alpha;
-      context.fillRect(
-        Math.cos(angle) * radius,
-        Math.sin(angle) * radius * along(1, .48, pulled),
-        dot.size, dot.size
-      );
+
+    const sheen = context.createLinearGradient(0, y - word.ascent * scale, 0, y + word.descent * scale);
+    const warm = (tone, green, blue) =>
+      'rgb(' + [along(tone, 255, lift), along(tone, green, lift), along(tone, blue, lift)].map(Math.round).join(',') + ')';
+    sheen.addColorStop(0, warm(255, 241, 218));
+    sheen.addColorStop(.62, warm(196, 241, 218));
+    sheen.addColorStop(1, warm(242, 241, 218));
+    context.font = size + word.face;
+    context.fillStyle = sheen;
+    context.strokeStyle = '#fff';
+    context.lineWidth = .5 * scale;
+    let advance = x;
+    for (const [index, glyph] of glyphs.entries()) {
+      context.fillText(glyph, advance, y);
+      if (lift < 1) {
+        context.globalAlpha = .74 * (1 - lift);
+        context.strokeText(glyph, advance, y);
+        context.globalAlpha = 1;
+      }
+      advance += word.widths[index] * scale + tracking;
     }
-    context.globalAlpha = 1;
   }
 
-  function drawCore(time) {
-    const visibility = ease(1.88, 2.23, time) * (1 - ease(2.34, 2.58, time));
-    if (!visibility) return;
-    const radius = extent * .034;
-    context.save();
-    context.rotate(-.29);
-    context.scale(1, .58);
-    const shade = context.createRadialGradient(0, 0, 0, 0, 0, radius * 1.9);
-    shade.addColorStop(0, '#030303');
-    shade.addColorStop(.47, '#030303');
-    shade.addColorStop(.57, '#ffffff32');
-    shade.addColorStop(.66, '#ffffff0e');
-    shade.addColorStop(1, '#ffffff00');
-    context.globalAlpha = visibility;
-    context.fillStyle = shade;
-    context.fillRect(-radius * 2, -radius * 2, radius * 4, radius * 4);
-    context.restore();
-  }
-
-  function revealChooser(time) {
+  function reveal(time) {
     if (time < revealAt) return;
     if (!revealing) {
       revealing = true;
       intro.classList.add('is-revealing');
-      root.classList.remove('pont-intro-active');
     }
-    const progress = ease(revealAt, duration, time);
-    const radius = reach * 1.29 * progress;
-    if (radius <= .1) return;
-    const opening = context.createRadialGradient(0, 0, radius * .81, 0, 0, radius);
-    opening.addColorStop(0, '#fff');
-    opening.addColorStop(1, '#fff0');
+    const rows = curtain.map(row => ({
+      ...row,
+      opening: row.maxOpening * ease(revealAt + row.delay, duration - .02, time),
+    }));
+    const makeEdge = (side, feather) => rows.map(row => {
+      const opening = Math.max(0, row.opening + feather * clamp(row.opening / 16));
+      return { x: row.x + side * opening, y: row.y };
+    });
+    const line = (points, move) => {
+      const [first, ...rest] = points;
+      if (move) context.moveTo(first.x, first.y);
+      else context.lineTo(first.x, first.y);
+      for (const point of rest) context.lineTo(point.x, point.y);
+    };
+
     context.globalCompositeOperation = 'destination-out';
-    context.fillStyle = opening;
-    context.fillRect(-width / 2, -height / 2, width, height);
+    context.fillStyle = '#fff';
+    for (const [feather, alpha] of [[9, .15], [5, .24], [1, .39], [-4, 1]]) {
+      context.globalAlpha = alpha;
+      context.beginPath();
+      line(makeEdge(-1, feather), true);
+      line(makeEdge(1, feather).reverse(), false);
+      context.closePath();
+      context.fill();
+    }
     context.globalCompositeOperation = 'source-over';
+
+    const trace = context.createLinearGradient(0, 0, 0, height);
+    trace.addColorStop(0, '#fff0');
+    trace.addColorStop(.33, '#fff5');
+    trace.addColorStop(.63, '#fff7');
+    trace.addColorStop(1, '#fff0');
+    context.globalAlpha = .71 * ease(revealAt, revealAt + .29, time) * (1 - ease(2.05, 2.65, time));
+    context.strokeStyle = trace;
+    context.lineWidth = .7;
+    context.beginPath();
+    line(makeEdge(-1, -2), true);
+    line(makeEdge(1, -2), true);
+    context.stroke();
+    context.globalAlpha = 1;
   }
 
   function paint(time) {
     context.fillStyle = '#030303';
     context.fillRect(0, 0, width, height);
-    context.save();
-    context.translate(width / 2, height / 2);
-    drawDisk(time);
-    context.fillStyle = '#fff';
-    context.strokeStyle = '#fff';
-    context.lineCap = 'round';
     drawStars(time);
     drawWord(time);
-    drawCore(time);
-    revealChooser(time);
-    context.restore();
+    reveal(time);
   }
 
   function finish() {
@@ -395,8 +350,8 @@ html.pont-intro-active .entry :is(header,.choice,footer,.spark){animation-play-s
     root.classList.remove('pont-intro-active');
     page.inert = false;
     canvas.width = canvas.height = 0;
-    word = stars = spark = undefined;
-    if (returnFocus) page.querySelector('.choice a')?.focus();
+    word = stars = rim = spark = curtain = undefined;
+    if (returnFocus) chooser.querySelector('a')?.focus();
   }
 
   function onKey(event) {
@@ -417,6 +372,7 @@ html.pont-intro-active .entry :is(header,.choice,footer,.spark){animation-play-s
 
   intro.hidden = false;
   page.inert = true;
+  page.classList.add('intro-matched');
   root.classList.add('pont-intro-active');
   try {
     resize();
@@ -452,4 +408,5 @@ html.pont-intro-active .entry :is(header,.choice,footer,.spark){animation-play-s
   frame = requestAnimationFrame(tick);
 })();
 </script></body></html>
+
 
