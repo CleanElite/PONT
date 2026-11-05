@@ -1,0 +1,31 @@
+:root{--paper:#f8f5ed;--ink:#192d26;--muted:#506459;--line:#c8d2c7;--green:#173b30;--mint:#c9ecb6;--serif:Georgia,'Times New Roman',serif}
+body.entry-page,body.lunch,body.evening-page{background:var(--paper);color:var(--ink)}
+.entry-page .entry{background:radial-gradient(ellipse at 50% 3%,#e0ebda,transparent 60%),var(--paper);padding-block:28px}
+.entry-page header{margin:0;padding:0}.entry-page .subtitle{color:var(--muted);margin-top:12px}
+.entry-page .choice{border:0;border-radius:18px;box-shadow:0 14px 40px #173b301b;min-height:clamp(245px,45vw,370px);margin-top:24px}
+.entry-page .choice .day{color:var(--ink)}.entry-page .choice .night{color:#fff7ec}
+.entry-page .install-button{background:var(--green);border:0;color:white}
+.entry-page footer{color:var(--muted);text-align:center}
+.lunch header,.lunch main,.lunch footer,.evening-page header,.evening-page main,.evening-page footer{max-width:850px}
+.lunch header,.evening-page header{padding-block:13px;border-bottom:1px solid var(--line)}
+.lunch header .search-link,.evening-page header .search-link,.lunch #close{background:transparent;border:1px solid var(--line);color:var(--green);font-size:.82rem}
+.lunch .hero{padding:17px 0 14px;border-radius:0;border-bottom:1px solid var(--line);margin:0 0 15px;background:none;color:var(--ink);animation:none}
+.lunch .hero .tag{color:#415c4d}.lunch .hero h1{font-size:clamp(36px,6vw,63px);font-weight:400}.lunch .hero h1 em{color:#39704f}
+.lunch .hero p{color:var(--muted);margin-top:9px}.hero-index{display:none}
+.lunch #customer>.muted,.lunch .row #date,.lunch footer{color:var(--muted)}
+#list .restaurant{border-color:var(--line);background:#fffdf6;box-shadow:none;border-radius:12px}
+#list .featured{grid-column:1/-1;background:#193d31;border-color:#193d31}
+.lunch .restaurant-open{min-height:112px;padding:11px;gap:6px;color:var(--ink)}
+.lunch .featured .restaurant-open{min-height:82px;grid-template-columns:48px 1fr;column-gap:12px;align-items:center;color:#fff9ea}
+.featured .featured-label{grid-column:2;color:var(--mint);letter-spacing:.1em;text-transform:uppercase}
+.featured .restaurant-logo{grid-column:1;grid-row:1/3;background:#254e40;color:var(--mint)}
+.featured .restaurant-content{grid-column:2}
+.restaurant-logo{background:#e7efe1;color:#2d6249;width:42px}
+.restaurant-price,.restaurant-arrow{color:#315c46}.restaurant-price small{color:var(--muted)}
+.featured .restaurant-price,.featured .restaurant-arrow,.featured .restaurant-price small{color:var(--mint)}
+.lunch #order,.order-footer{background:#fffdf6;color:var(--ink)}.lunch #send{background:var(--green);color:#fff}
+.evening-page .evening{background:linear-gradient(155deg,#24342d,#172621);color:#f9f2e5;margin-top:8px;padding:clamp(21px,4vw,42px);border-radius:19px}
+.evening-page .evening h2{font-weight:400}.evening-page .evening .grid{grid-template-columns:1fr;gap:0}
+.evening-page .evening .card{background:none;border:0;border-top:1px solid #94a79570;border-radius:0;padding:17px 0;color:#f9f2e5}
+.evening-page .evening .card h3{margin:7px 0 0}.evening-page .evening .card p{margin:6px 0 11px}
+.evening-page .evening .tag,.evening-page .evening .search-link{background:#d7e8c8;color:#18372d}
