@@ -1,18 +1,35 @@
-body.lunch{color:#f5ead9;background:#100f12}
-.lunch::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse at 20% 5%,#31483b80,transparent 52%),radial-gradient(ellipse at 88% 40%,#66452765,transparent 60%);z-index:-1}
-.lunch header,.lunch main,.lunch footer{max-width:880px}.lunch header{gap:6px}.lunch header img{display:block;max-width:100%;height:auto}.lunch header .search-link{background:transparent;color:#f3ddba;border:1px solid #b98c565a;font-size:.8rem}.lunch .hero{border:1px solid #b98c5655;background:radial-gradient(ellipse at top right,#415343,#1b2621 70%);box-shadow:0 20px 54px #0005}.lunch .hero:after{color:#fbdfa916}.lunch #customer>.muted,.lunch .row #date,.lunch footer{color:#ded0bd}.lunch footer{border-color:#8b6c46}
-#list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(9px,2.5vw,22px)}
-#list .restaurant{position:relative;min-width:0;padding:0;border:0;border-radius:clamp(13px,3vw,24px);background:#1a191c;overflow:hidden}
-.restaurant::after{content:"";position:absolute;inset:0;border:1px solid var(--accent);border-radius:inherit;box-shadow:inset 0 0 16px color-mix(in srgb,var(--accent),transparent 65%);opacity:.52;pointer-events:none}
-.restaurant[data-tone="0"]{--accent:#edbe75}.restaurant[data-tone="1"]{--accent:#a8ddba}.restaurant[data-tone="2"]{--accent:#eeb0a5}.restaurant[data-tone="3"]{--accent:#c6baff}.restaurant[data-tone="4"]{--accent:#a6d9e9}.restaurant[data-tone="5"]{--accent:#edce9d}
-.restaurant-logo{display:grid;place-items:center;aspect-ratio:1;background:radial-gradient(ellipse at 50% 45%,color-mix(in srgb,var(--accent),transparent 81%),transparent 66%),#18171a;color:var(--accent);border-bottom:1px solid #ffffff1c}
-.restaurant-logo svg{width:61%;height:auto;max-width:215px}.restaurant-content{padding:clamp(9px,2vw,21px)}.restaurant-content h3{font-size:clamp(16px,3.7vw,29px);margin:9px 0 5px}.restaurant-content p{color:#ddd0c0;font-size:clamp(.77rem,1.8vw,.95rem);margin:0 0 15px;min-height:3.5em}.restaurant-content .tag{font-size:clamp(.59rem,1.35vw,.75rem);padding:4px 7px}.restaurant-content .bottom{align-items:stretch;flex-direction:column;font-size:clamp(.78rem,1.7vw,1rem)}.restaurant-content button{min-height:44px;padding:8px 5px;color:#201b15;background:var(--accent);font-size:clamp(.75rem,1.6vw,.95rem)}.lunch .history{color:#252720}.lunch dialog{color:#252720}
-@media(prefers-reduced-motion:no-preference){.lunch::before{animation:ambient 15s ease-in-out infinite alternate}.restaurant::after{animation:halo 5s ease-in-out infinite alternate;animation-delay:var(--delay)}#list .restaurant{animation:reveal .65s cubic-bezier(.2,.7,.3,1) var(--delay) both}}
-@keyframes reveal{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}@keyframes halo{to{opacity:.9}}@keyframes ambient{to{opacity:.55}}
-.lunch #order{padding:20px;overscroll-behavior:contain}
+body.lunch{color:#f6f1e8;background:radial-gradient(ellipse at 50% 0,#373238 0,transparent 33rem),#171619}
+.lunch header,.lunch main,.lunch footer{max-width:740px}
+.lunch header{gap:8px}.lunch header img{display:block;width:132px;height:auto;max-width:100%}
+.lunch header .search-link{background:transparent;color:#eee2d2;border:1px solid #74685c;font-size:.76rem}
+.lunch .hero{padding:20px 0 16px;margin-bottom:13px;border-radius:0;border-bottom:1px solid #65584e;background:none;color:#f6f1e8}
+.lunch .hero::after{display:none}.lunch .hero h1{font-size:clamp(35px,7vw,62px);margin:9px 0 0}
+.lunch .hero .tag{padding:0;background:none;color:#e5c9a4;letter-spacing:.14em;font-size:.66rem}
+.lunch #customer>.muted,.lunch .row #date,.lunch footer{color:#cdbfb4}
+.lunch #customer h2{margin:8px 0}.lunch #customer>.muted{margin:4px 0 12px;font-size:.82rem}
+.lunch #customer>#list+h2{margin-top:29px}.lunch footer{border-color:#65584e}
+#list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(8px,2vw,14px)}
+#list .restaurant{min-width:0;position:relative;border:1px solid #6b5c50;border-radius:15px;background:#262429}
+#list .featured{border-color:#c9a878}
+.lunch .restaurant-open{position:relative;width:100%;height:100%;display:grid;align-content:start;justify-items:start;gap:7px;text-align:left;border-radius:inherit;padding:12px;background:none;color:#f6f1e8}
+.lunch .restaurant-open:hover{background:#ffffff08;box-shadow:none}
+.restaurant-logo{display:grid;place-items:center;width:clamp(40px,9vw,57px);aspect-ratio:1;border:1px solid #796956;border-radius:10px;background:#211e22;color:#e3c29b}
+.restaurant-logo svg{width:88%;height:auto}.restaurant-content{display:grid;gap:4px;min-width:0}
+.restaurant-name{font:normal clamp(1rem,3.4vw,1.35rem)/1.13 Georgia,serif;overflow-wrap:anywhere}
+.restaurant-price{color:#eed1aa;font-size:.83rem}.restaurant-price small{color:#cdbfb4}
+.restaurant-arrow{position:absolute;top:12px;right:12px;color:#e3c29b}
+.featured-label{max-width:calc(100% - 20px);color:#f2d8b4;font-size:.62rem;font-weight:700;line-height:1.25}
+.featured-label small{color:inherit}.lunch .history,.lunch dialog{color:#252720}
+.lunch #order{padding:20px;overscroll-behavior:contain;background:#fffaf2}
 .lunch #order h2{font-size:clamp(1.55rem,5vw,2.1rem);margin:14px 0 8px}
 .lunch #checkout{padding:0;border:0;background:transparent}
 #combo-price{margin:0 0 12px;font-weight:700}
-.order-footer{position:sticky;bottom:-20px;background:#fffdf7;border-top:1px solid #e6e0d3;padding:12px 0;display:grid;gap:8px}
+.order-footer{position:sticky;bottom:-20px;background:#fffaf2;border-top:1px solid #e6e0d3;padding:12px 0;display:grid;gap:8px}
 #breakdown{color:#56594c;font-size:.85rem}
 #orderMsg:empty{display:none}
+@media(prefers-reduced-motion:no-preference){
+#list .restaurant{animation:reveal .42s ease-out var(--delay) both}
+#list .featured::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 15px #eac08b70;pointer-events:none;animation:glow 4s ease-in-out infinite alternate}
+}
+@keyframes reveal{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
+@keyframes glow{from{opacity:.12}to{opacity:.66}}
