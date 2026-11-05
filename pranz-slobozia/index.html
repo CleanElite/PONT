@@ -7,14 +7,23 @@
 @media(prefers-reduced-motion:no-preference){header,.choice,footer{animation:arrive .85s cubic-bezier(.2,.7,.3,1) both}.choice{animation-delay:.1s}.spark{animation:glint 1.55s .23s ease-out both}.arrow{transition:transform .25s}.choice a:hover .arrow{transform:translateX(5px)}}@keyframes arrive{from{opacity:.35;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes glint{0%{opacity:0;stroke-dashoffset:17}20%{opacity:1}80%{opacity:.8}100%{opacity:0;stroke-dashoffset:-115}}
 @media(max-width:420px){.choice a{padding-inline:8px}.symbol{width:45px;height:45px;font-size:24px}.eyebrow{font-size:.61rem}}
 .install-button{margin:0 0 18px;padding:11px 18px;border:1px solid #ba9666;border-radius:999px;background:#172b23;color:#fff1da;font:600 .9rem system-ui;cursor:pointer}.install-button:focus-visible{outline:2px solid #f7d5a1;outline-offset:4px}#install-help{width:min(420px,calc(100% - 32px));border:1px solid #ba9666;border-radius:20px;padding:22px;background:#fff4df;color:#172b23}#install-help h2{margin-top:0}#install-help::backdrop{background:#101814bb}</style><link rel="stylesheet" href="./pont-editorial.css?v=1"><style>
-.pont-intro{position:fixed;inset:0;z-index:20;display:grid;place-items:center;overflow:hidden;background:#020203;color:white}
+.pont-intro{
+  position:fixed;inset:0;z-index:20;overflow:hidden;overscroll-behavior:none;
+  display:grid;place-items:center;color:#fff;touch-action:none;
+}
 .pont-intro[hidden]{display:none}
-.pont-intro canvas{position:absolute;inset:0;width:100%;height:100%}
-.pont-intro__word{position:relative;font:400 clamp(48px,13vmin,112px)/1 Georgia,serif;letter-spacing:.19em;text-indent:.19em;color:#fff;-webkit-text-stroke:.45px #fff;animation:pont-outline 1.8s ease-in-out infinite alternate}
-.pont-intro__skip{position:absolute;bottom:max(14px,env(safe-area-inset-bottom));color:#c3c3c7;background:#020203;border:1px solid #ffffff30;border-radius:100px;padding:8px 13px;font:inherit;font-size:.75rem;cursor:pointer}
-.pont-intro__skip:focus-visible{outline:2px solid white;outline-offset:4px}
-.pont-intro.is-vortex .pont-intro__word{visibility:hidden}
-@keyframes pont-outline{from{text-shadow:0 0 3px #fff9,0 0 12px #fff3}to{text-shadow:0 0 7px #fffe,0 0 24px #fff7}}
+.pont-intro canvas{position:absolute;inset:0;display:block;width:100%;height:100%}
+.pont-intro__skip{
+  position:absolute;bottom:calc(25px + env(safe-area-inset-bottom, 0px));
+  min-height:44px;padding:10px 16px;border:0;border-radius:999px;
+  color:#d1d1d1;background:#080808b0;
+  font:500 .65rem/1 system-ui,sans-serif;letter-spacing:.12em;
+  text-transform:uppercase;cursor:pointer;transition:opacity .28s ease;
+}
+.pont-intro__skip:focus-visible{outline:1px solid #fff;outline-offset:3px}
+.pont-intro.is-revealing .pont-intro__skip:not(:focus-visible){opacity:0}
+html.pont-intro-active{overflow:hidden}
+html.pont-intro-active .entry :is(header,.choice,footer,.spark){animation-play-state:paused}
 @media(prefers-reduced-motion:reduce){.pont-intro{display:none}}
 </style></head>
 <body class="entry-page"><main class="entry"><header><h1><img src="./pont.svg" width="320" height="92" alt="PONT Slobozia" style="display:block;width:min(320px,80vw);height:auto"></h1><div class="subtitle">Ce mâncăm azi? Unde ieșim diseară?</div></header>
@@ -23,116 +32,424 @@
 <a class="day" href="./meniul-zilei/"><span class="symbol" aria-hidden="true">☀</span><span class="eyebrow">La prânz</span><span class="title">Meniul zilei</span><span class="caption">Vezi ce gătesc azi restaurantele din oraș.</span><span class="arrow" aria-hidden="true">→</span></a>
 <a class="night" href="./iesire-in-oras/"><span class="symbol" aria-hidden="true">☾</span><span class="eyebrow">Diseară</span><span class="title">Ieșire în oraș</span><span class="caption">Alege restaurantul după atmosfera serii.</span><span class="arrow" aria-hidden="true">→</span></a>
 <svg class="seam" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0C63 31 37 69 50 100" fill="none" stroke="#bd925a" stroke-width="1.2" vector-effect="non-scaling-stroke"/><path class="spark" d="M50 0C63 31 37 69 50 100" pathLength="132" fill="none" stroke="#fff3b9" stroke-width="2.6" vector-effect="non-scaling-stroke"/></svg>
-</div><button type="button" class="install-button" id="install-pont">Descarcă aplicația PONT</button><dialog id="install-help" aria-labelledby="install-title"><h2 id="install-title">Instalează PONT</h2><p></p><form method="dialog"><button class="install-button">Am înțeles</button></form></dialog><footer>Două feluri de a te bucura de oraș</footer></main><div class="pont-intro" id="pont-intro" hidden><canvas aria-hidden="true"></canvas><strong class="pont-intro__word" aria-hidden="true">PONT</strong><button class="pont-intro__skip" type="button">Sari peste intro</button></div>
+</div><button type="button" class="install-button" id="install-pont">Descarcă aplicația PONT</button><dialog id="install-help" aria-labelledby="install-title"><h2 id="install-title">Instalează PONT</h2><p></p><form method="dialog"><button class="install-button">Am înțeles</button></form></dialog><footer>Două feluri de a te bucura de oraș</footer></main><div class="pont-intro" id="pont-intro" hidden><canvas aria-hidden="true"></canvas><button class="pont-intro__skip" type="button">Sari peste intro</button></div>
 <script>
 (() => {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  if (motion.matches) return;
+
+  const sessionKey = 'pont-intro-cinematic-v2';
+  const replay = new URLSearchParams(location.search).get('intro') === 'replay';
+  try {
+    if (!replay && sessionStorage.getItem(sessionKey)) return;
+  } catch {}
+
   const intro = document.querySelector('#pont-intro');
   const page = document.querySelector('.entry');
   const canvas = intro.querySelector('canvas');
-  const ctx = canvas.getContext('2d');
-  if (!page || !ctx) return;
-  try {
-    if (sessionStorage.getItem('pont-intro-stars-v1')) return;
-    sessionStorage.setItem('pont-intro-stars-v1', '1');
-  } catch {}
-  const word = intro.querySelector('strong');
+  const context = canvas.getContext('2d');
+  if (!page || !context) return;
+
   const skip = intro.querySelector('button');
-  const stars = Array.from({length: 700}, () => ({
-    angle: Math.random()*Math.PI*2,
-    band: .79+Math.random()*.23,
-    size: .25+Math.pow(Math.random(),3)*1.1,
-    light: .13+Math.random()*.65,
-    phase: Math.random()*Math.PI*2
-  }));
-  let width,height,dpr,frame,letters;
-  function resize(){
-    width=intro.clientWidth;
-    height=intro.clientHeight;
-    dpr=Math.min(devicePixelRatio||1,2);
-    canvas.width=Math.round(width*dpr);
-    canvas.height=Math.round(height*dpr);
-    ctx.setTransform(dpr,0,0,dpr,0,0);
+  const root = document.documentElement;
+  const fullTurn = Math.PI * 2;
+  const hold = 1.15;
+  const revealAt = 2.35;
+  const duration = 3.1;
+  let frame = 0;
+  let deadline = 0;
+  let finished = false;
+  let revealing = false;
+  let width, height, extent, reach, stars, word, spark;
+  const along = (start, end, t) => start + (end - start) * t;
+  const ease = (start, end, value) => {
+    const t = Math.max(0, Math.min(1, (value - start) / (end - start)));
+    return t * t * (3 - 2 * t);
+  };
+
+  function randomGenerator(seed) {
+    return () => {
+      seed = (Math.imul(1664525, seed) + 1013904223) >>> 0;
+      return seed / 4294967296;
+    };
   }
-  function sampleWord(){
-    const mask=document.createElement('canvas');
-    const style=getComputedStyle(word);
-    const size=parseFloat(style.fontSize);
-    mask.width=Math.ceil(word.offsetWidth+12);
-    mask.height=Math.ceil(size*1.4);
-    const ink=mask.getContext('2d');
-    ink.font=size+'px Georgia';
-    ink.textBaseline='middle';
-    const gap=parseFloat(style.letterSpacing);
-    let x=6;
-    for(const letter of 'PONT'){
-      ink.fillText(letter,x,mask.height/2);
-      x+=ink.measureText(letter).width+gap;
+
+  function makeStars() {
+    const random = randomGenerator(73109);
+    const rim = [];
+    let length = 0;
+    // An arc-length table keeps the long sides of a phone evenly populated.
+    for (let i = 0; i <= 640; i++) {
+      const angle = fullTurn * i / 640;
+      const cosine = Math.cos(angle), sine = Math.sin(angle);
+      const x = Math.sign(cosine) * Math.pow(Math.abs(cosine), .56) * width * .497;
+      const y = Math.sign(sine) * Math.pow(Math.abs(sine), .56) * height * .497;
+      if (i) length += Math.hypot(x - rim[i - 1].x, y - rim[i - 1].y);
+      rim.push({ x, y, length });
     }
-    const pixels=ink.getImageData(0,0,mask.width,mask.height).data;
-    const points=[];
-    for(let y=0;y<mask.height;y+=2)for(let x=0;x<mask.width;x+=2){
-      if(pixels[(y*mask.width+x)*4+3]>120)points.push({x:x-mask.width/2,y:y-mask.height/2});
-    }
-    return points;
+
+    const count = Math.min(970, Math.max(520, Math.round(length * .32)));
+    let edge = 1;
+    return Array.from({ length: count }, (_, index) => {
+      const distance = length * (index + random()) / count;
+      while (rim[edge].length < distance) edge++;
+      const a = rim[edge - 1], b = rim[edge];
+      const portion = (distance - a.length) / (b.length - a.length);
+      const band = .78 + random() * .22;
+      const x = along(a.x, b.x, portion) * band;
+      const y = along(a.y, b.y, portion) * band;
+      const softEdge = 1 - .90 * ease(.90, 1, band);
+      const innerFade = along(.48, 1, ease(.78, .87, band));
+      const phase = random() * fullTurn;
+      const size = .34 + Math.pow(random(), 3.5) * .94;
+      const light = (.19 + Math.pow(random(), 1.65) * .81) * softEdge * innerFade;
+      return {
+        x, y, size, light, phase,
+        angle: Math.atan2(y, x), radius: Math.hypot(x, y),
+        delay: .035 + random() * .16,
+        turn: .96 + random() * .31,
+      };
+    });
   }
-  function finish(){
-    const focused=document.activeElement===skip;
+
+  function makeWord() {
+    const fontSize = Math.min(98, extent * .106, width * .108);
+    const tracking = fontSize * .19;
+    const font = fontSize + 'px Georgia, "Times New Roman", serif';
+    const glyphs = [...'PONT'];
+    context.font = font;
+    const metrics = glyphs.map(glyph => context.measureText(glyph));
+    const glyphWidth = metrics.reduce((sum, metric) => sum + metric.width, 0);
+    const padding = 26;
+    const spriteWidth = Math.ceil(glyphWidth + tracking * 3 + padding * 2);
+    const spriteHeight = Math.ceil(fontSize + padding * 2);
+    const sprite = document.createElement('canvas');
+    const scale = 2;
+    sprite.width = spriteWidth * scale;
+    sprite.height = spriteHeight * scale;
+    const ink = sprite.getContext('2d', { willReadFrequently: true });
+    ink.scale(scale, scale);
+    ink.font = font;
+    const ascent = Math.max(...metrics.map(metric => metric.actualBoundingBoxAscent || fontSize * .67));
+    const descent = Math.max(...metrics.map(metric => metric.actualBoundingBoxDescent || 0));
+    const baseline = (spriteHeight + ascent - descent) / 2;
+    const metal = ink.createLinearGradient(0, baseline - ascent, 0, baseline + descent);
+    metal.addColorStop(0, '#ffffff');
+    metal.addColorStop(.47, '#e7e7e7');
+    metal.addColorStop(.67, '#b8b8b8');
+    metal.addColorStop(1, '#f4f4f4');
+    ink.fillStyle = metal;
+    ink.strokeStyle = '#ffffff';
+    ink.lineWidth = .55;
+    let x = padding;
+    for (const [index, glyph] of glyphs.entries()) {
+      ink.fillText(glyph, x, baseline);
+      ink.strokeText(glyph, x, baseline);
+      x += metrics[index].width + tracking;
+    }
+
+    const halo = document.createElement('canvas');
+    halo.width = sprite.width;
+    halo.height = sprite.height;
+    const glow = halo.getContext('2d');
+    glow.shadowColor = '#ffffff';
+    glow.shadowBlur = 16;
+    glow.drawImage(sprite, 0, 0);
+    glow.shadowBlur = 0;
+    glow.globalCompositeOperation = 'destination-out';
+    glow.drawImage(sprite, 0, 0);
+
+    const fragments = [];
+    try {
+      const pixels = ink.getImageData(0, 0, sprite.width, sprite.height).data;
+      const step = Math.max(3, Math.round(fontSize * .064));
+      const random = randomGenerator(3067);
+      for (let y = 0; y < sprite.height; y += step) {
+        for (let x = 0; x < sprite.width; x += step) {
+          if (pixels[(y * sprite.width + x) * 4 + 3] < 130) continue;
+          const dx = x / scale - spriteWidth / 2;
+          const dy = y / scale - spriteHeight / 2;
+          fragments.push({
+            angle: Math.atan2(dy, dx), radius: Math.hypot(dx, dy),
+            delay: .18 * random(), size: .45 + random() * .5,
+          });
+        }
+      }
+    } catch {
+      // Safari can restrict canvas readback. The wordmark still dissolves.
+    }
+    return { sprite, halo, width: spriteWidth, height: spriteHeight, fragments };
+  }
+
+  function makeSpark() {
+    const sprite = document.createElement('canvas');
+    sprite.width = sprite.height = 16;
+    const glow = sprite.getContext('2d');
+    const falloff = glow.createRadialGradient(8, 8, 0, 8, 8, 8);
+    falloff.addColorStop(0, '#fff8');
+    falloff.addColorStop(.25, '#fff4');
+    falloff.addColorStop(1, '#fff0');
+    glow.fillStyle = falloff;
+    glow.fillRect(0, 0, 16, 16);
+    return sprite;
+  }
+
+  function resize() {
+    width = intro.clientWidth;
+    height = intro.clientHeight;
+    extent = Math.min(width, height);
+    reach = Math.hypot(width, height) / 2;
+    const ratio = Math.min(devicePixelRatio || 1, 2, Math.sqrt(2200000 / (width * height)));
+    canvas.width = Math.round(width * ratio);
+    canvas.height = Math.round(height * ratio);
+    context.setTransform(canvas.width / width, 0, 0, canvas.height / height, 0, 0);
+    stars = makeStars();
+    word = makeWord();
+  }
+
+  // The stream winds faster as the radius shrinks, then tilts into a disk.
+  function starPosition(star, t) {
+    const progress = Math.max(0, Math.min(1, (t - hold - star.delay) / 1.27));
+    if (progress === 0) return { x: star.x, y: star.y, progress };
+    const fall = Math.pow(progress, 1.78);
+    const lens = ease(.06, .82, progress);
+    const angle = star.angle + 6.2 * fall * star.turn + .37 * Math.sin(star.angle * 2) * lens;
+    const radius = star.radius * Math.exp(-3.7 * fall);
+    const u = Math.cos(angle) * radius;
+    const v = Math.sin(angle) * radius * along(1, .49, lens);
+    const tilt = -.29 * lens;
+    return {
+      x: u * Math.cos(tilt) - v * Math.sin(tilt),
+      y: u * Math.sin(tilt) + v * Math.cos(tilt),
+      progress,
+    };
+  }
+
+  function drawStars(time) {
+    // Batch trails into a few draw calls so the dense part of the vortex stays fluid.
+    const trails = time > hold ? Array.from({ length: 6 }, () => new Path2D()) : [];
+    for (const star of stars) {
+      const p = starPosition(star, time);
+      const twinkle = .83 + .17 * Math.sin(time * 2.5 + star.phase);
+      const light = star.light * twinkle * (1 - ease(.78, 1, p.progress));
+      const x = p.x + Math.sin(time * 1.2 + star.phase) * (1 - p.progress) * .65;
+      const y = p.y + Math.cos(time + star.phase) * (1 - p.progress) * .65;
+      if (star.size > .8 && light > .27) {
+        const glowRadius = star.size * 3.4;
+        context.globalAlpha = light * .63;
+        context.drawImage(spark, x - glowRadius, y - glowRadius, glowRadius * 2, glowRadius * 2);
+      }
+      context.globalAlpha = light;
+      const diameter = star.size * 2;
+      context.fillRect(x - star.size, y - star.size, diameter, diameter);
+      if (p.progress > .06 && p.progress < .98) {
+        const trail = starPosition(star, time - .044);
+        const middle = starPosition(star, time - .024);
+        const trace = trails[Math.min(5, Math.floor(light * 6))];
+        trace.moveTo(trail.x, trail.y);
+        trace.quadraticCurveTo(middle.x, middle.y, x, y);
+      }
+    }
+    context.lineWidth = .62;
+    for (const [index, trace] of trails.entries()) {
+      context.globalAlpha = .036 + index * .071;
+      context.stroke(trace);
+    }
+    context.globalAlpha = 1;
+  }
+
+  function drawDisk(time) {
+    const opacity = ease(1.34, 1.94, time) * (1 - ease(2.32, 2.75, time));
+    if (opacity <= 0) return;
+    const radius = extent * along(.47, .105, ease(1.60, 2.73, time));
+    const rotation = .4 + ease(1.36, 2.76, time) * 2.3;
+    context.save();
+    context.rotate(-.29);
+    context.scale(1, .49);
+
+    const dust = context.createRadialGradient(0, 0, radius * .06, 0, 0, radius * .85);
+    dust.addColorStop(0, '#0000');
+    dust.addColorStop(.2, 'rgba(255,255,255,.13)');
+    dust.addColorStop(.52, 'rgba(255,255,255,.027)');
+    dust.addColorStop(1, '#0000');
+    context.globalAlpha = opacity;
+    context.fillStyle = dust;
+    context.fillRect(-radius, -radius, radius * 2, radius * 2);
+
+    const light = context.createLinearGradient(-radius, -radius * .3, radius, radius * .45);
+    light.addColorStop(0, 'rgba(255,255,255,.04)');
+    light.addColorStop(.36, 'rgba(255,255,255,.46)');
+    light.addColorStop(.64, 'rgba(255,255,255,.13)');
+    light.addColorStop(1, 'rgba(255,255,255,.02)');
+    context.strokeStyle = light;
+    for (let arm = 0; arm < 2; arm++) {
+      for (let thread = 0; thread < 9; thread++) {
+        context.beginPath();
+        for (let point = 0; point <= 46; point++) {
+          const u = point / 46;
+          const distance = radius * Math.exp(-2.15 * u) * (1 - thread * .021);
+          const angle = rotation + arm * Math.PI + thread * .073 + u * 5.9;
+          const x = Math.cos(angle) * distance;
+          const y = Math.sin(angle) * distance;
+          if (point) context.lineTo(x, y);
+          else context.moveTo(x, y);
+        }
+        context.globalAlpha = opacity * (thread % 3 === 0 ? .39 : .19);
+        context.lineWidth = thread % 3 === 0 ? 1.08 : .5;
+        context.stroke();
+      }
+    }
+    context.restore();
+  }
+
+  function drawWord(time) {
+    const dissolve = ease(1.63, 2.13, time);
+    const brightness = .74 + .26 * Math.sin(Math.PI * ease(0, hold, time));
+    if (dissolve < 1) {
+      context.globalAlpha = (.25 + .58 * brightness) * (1 - dissolve);
+      context.drawImage(word.halo, -word.width / 2, -word.height / 2, word.width, word.height);
+      context.globalAlpha = (.85 + .15 * brightness) * (1 - dissolve);
+      context.drawImage(word.sprite, -word.width / 2, -word.height / 2, word.width, word.height);
+    }
+    for (const dot of word.fragments) {
+      const pulled = ease(1.62 + dot.delay, 2.46 + dot.delay, time);
+      const alpha = ease(1.61, 1.91, time) * (1 - ease(.54, 1, pulled));
+      if (alpha <= 0) continue;
+      const radius = dot.radius * Math.exp(-3.3 * pulled);
+      const angle = dot.angle + 6 * pulled;
+      context.globalAlpha = alpha;
+      context.fillRect(
+        Math.cos(angle) * radius,
+        Math.sin(angle) * radius * along(1, .48, pulled),
+        dot.size, dot.size
+      );
+    }
+    context.globalAlpha = 1;
+  }
+
+  function drawCore(time) {
+    const visibility = ease(1.88, 2.23, time) * (1 - ease(2.34, 2.58, time));
+    if (!visibility) return;
+    const radius = extent * .034;
+    context.save();
+    context.rotate(-.29);
+    context.scale(1, .58);
+    const shade = context.createRadialGradient(0, 0, 0, 0, 0, radius * 1.9);
+    shade.addColorStop(0, '#030303');
+    shade.addColorStop(.47, '#030303');
+    shade.addColorStop(.57, '#ffffff32');
+    shade.addColorStop(.66, '#ffffff0e');
+    shade.addColorStop(1, '#ffffff00');
+    context.globalAlpha = visibility;
+    context.fillStyle = shade;
+    context.fillRect(-radius * 2, -radius * 2, radius * 4, radius * 4);
+    context.restore();
+  }
+
+  function revealChooser(time) {
+    if (time < revealAt) return;
+    if (!revealing) {
+      revealing = true;
+      intro.classList.add('is-revealing');
+      root.classList.remove('pont-intro-active');
+    }
+    const progress = ease(revealAt, duration, time);
+    const radius = reach * 1.29 * progress;
+    if (radius <= .1) return;
+    const opening = context.createRadialGradient(0, 0, radius * .81, 0, 0, radius);
+    opening.addColorStop(0, '#fff');
+    opening.addColorStop(1, '#fff0');
+    context.globalCompositeOperation = 'destination-out';
+    context.fillStyle = opening;
+    context.fillRect(-width / 2, -height / 2, width, height);
+    context.globalCompositeOperation = 'source-over';
+  }
+
+  function paint(time) {
+    context.fillStyle = '#030303';
+    context.fillRect(0, 0, width, height);
+    context.save();
+    context.translate(width / 2, height / 2);
+    drawDisk(time);
+    context.fillStyle = '#fff';
+    context.strokeStyle = '#fff';
+    context.lineCap = 'round';
+    drawStars(time);
+    drawWord(time);
+    drawCore(time);
+    revealChooser(time);
+    context.restore();
+  }
+
+  function finish() {
+    if (finished) return;
+    finished = true;
+    const returnFocus = document.activeElement === skip;
     cancelAnimationFrame(frame);
-    window.removeEventListener('resize',resize);
-    intro.hidden=true;
-    page.inert=false;
-    if(focused)page.querySelector('.choice a')?.focus();
+    clearTimeout(deadline);
+    window.removeEventListener('resize', onResize);
+    window.removeEventListener('pagehide', finish);
+    document.removeEventListener('keydown', onKey);
+    motion.removeEventListener?.('change', onMotion);
+    intro.hidden = true;
+    root.classList.remove('pont-intro-active');
+    page.inert = false;
+    canvas.width = canvas.height = 0;
+    word = stars = spark = undefined;
+    if (returnFocus) page.querySelector('.choice a')?.focus();
   }
-  intro.hidden=false;
-  page.inert=true;
-  resize();
-  window.addEventListener('resize',resize);
-  skip.onclick=finish;
-  const started=performance.now();
-  function draw(now){
-    const seconds=(now-started)/1000;
-    const p=Math.max(0,Math.min(1,(seconds-1.65)/1.12));
-    if(p===1){finish();return}
-    if(p>0&&!letters){letters=sampleWord();intro.classList.add('is-vortex')}
-    const cx=width/2,cy=height/2;
-    ctx.clearRect(0,0,width,height);
-    const collapse=Math.pow(1-p,1.25);
-    const spin=p*p*7;
-    function position(s,angle,radius){
-      const c=Math.cos(angle), n=Math.sin(angle);
-      const edge=1/Math.pow(Math.pow(Math.abs(c),4)+Math.pow(Math.abs(n),4),.25);
-      const x=c*edge*width*.49,y=n*edge*height*.49;
-      const shape=1-p;
-      const orbit=Math.min(width,height)*.50;
-      return [cx+(x*shape+c*orbit*p)*radius*s.band,cy+(y*shape+n*orbit*p)*radius*s.band];
-    }
-    for(const star of stars){
-      const a=star.angle+spin*(1.65-star.band);
-      const [x,y]=position(star,a,collapse);
-      const rim=1-Math.max(0,(star.band-.88)/.14)*.85;
-      const alpha=star.light*rim*(.62+.36*Math.sin(seconds*2.5+star.phase));
-      ctx.fillStyle='rgba(255,255,255,'+Math.max(0,alpha)+')';
-      ctx.beginPath();ctx.arc(x,y,star.size,0,Math.PI*2);ctx.fill();
-      if(p>.06){
-        const [tx,ty]=position(star,a-.16*p,collapse+.045*p);
-        ctx.strokeStyle='rgba(255,255,255,'+alpha*.55+')';
-        ctx.lineWidth=star.size*.75;
-        ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(x,y);ctx.stroke();
-      }
-    }
-    if(letters){
-      const turn=p*2.8,c=Math.cos(turn),s=Math.sin(turn);
-      ctx.fillStyle='rgba(255,255,255,'+(1-p)+')';
-      for(const dot of letters){
-        const x=c*dot.x-s*dot.y,y=s*dot.x+c*dot.y;
-        ctx.fillRect(cx+x*collapse,cy+y*collapse,1.35,1.35);
-      }
-      intro.style.backgroundColor='rgba(2,2,3,'+(1-Math.pow(p,3))+')';
-      intro.style.opacity=String(1-Math.pow(p,4));
-    }
-    frame=requestAnimationFrame(draw);
+
+  function onKey(event) {
+    if (event.key === 'Escape') finish();
   }
-  frame=requestAnimationFrame(draw);
+
+  function onMotion(event) {
+    if (event.matches) finish();
+  }
+
+  function onResize() {
+    try {
+      resize();
+    } catch {
+      finish();
+    }
+  }
+
+  intro.hidden = false;
+  page.inert = true;
+  root.classList.add('pont-intro-active');
+  try {
+    resize();
+    spark = makeSpark();
+    paint(0);
+  } catch {
+    finish();
+    return;
+  }
+
+  try { sessionStorage.setItem(sessionKey, '1'); } catch {}
+  skip.addEventListener('click', finish, { once: true });
+  window.addEventListener('resize', onResize);
+  window.addEventListener('pagehide', finish);
+  document.addEventListener('keydown', onKey);
+  motion.addEventListener?.('change', onMotion);
+  deadline = setTimeout(finish, duration * 1000 + 200);
+
+  const started = performance.now();
+  function tick(now) {
+    const time = Math.max(0, (now - started) / 1000);
+    if (time >= duration) {
+      finish();
+      return;
+    }
+    try {
+      paint(time);
+      frame = requestAnimationFrame(tick);
+    } catch {
+      finish();
+    }
+  }
+  frame = requestAnimationFrame(tick);
 })();
 </script></body></html>
+
