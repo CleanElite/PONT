@@ -7,22 +7,14 @@
 @media(prefers-reduced-motion:no-preference){header,.choice,footer{animation:arrive .85s cubic-bezier(.2,.7,.3,1) both}.choice{animation-delay:.1s}.spark{animation:glint 1.55s .23s ease-out both}.arrow{transition:transform .25s}.choice a:hover .arrow{transform:translateX(5px)}}@keyframes arrive{from{opacity:.35;transform:translateY(10px)}to{opacity:1;transform:none}}@keyframes glint{0%{opacity:0;stroke-dashoffset:17}20%{opacity:1}80%{opacity:.8}100%{opacity:0;stroke-dashoffset:-115}}
 @media(max-width:420px){.choice a{padding-inline:8px}.symbol{width:45px;height:45px;font-size:24px}.eyebrow{font-size:.61rem}}
 .install-button{margin:0 0 18px;padding:11px 18px;border:1px solid #ba9666;border-radius:999px;background:#172b23;color:#fff1da;font:600 .9rem system-ui;cursor:pointer}.install-button:focus-visible{outline:2px solid #f7d5a1;outline-offset:4px}#install-help{width:min(420px,calc(100% - 32px));border:1px solid #ba9666;border-radius:20px;padding:22px;background:#fff4df;color:#172b23}#install-help h2{margin-top:0}#install-help::backdrop{background:#101814bb}</style><link rel="stylesheet" href="./pont-editorial.css?v=1"><style>
-.pont-intro{position:fixed;inset:0;z-index:20;display:grid;place-items:center;overflow:hidden;background:#020203;color:#fff}
+.pont-intro{position:fixed;inset:0;z-index:20;display:grid;place-items:center;overflow:hidden;background:#020203;color:white}
 .pont-intro[hidden]{display:none}
-.pont-intro__ring{position:absolute;width:min(85vmin,620px);aspect-ratio:1;border-radius:50%;border:1px solid #fff9;box-shadow:0 0 24px #fff5,inset 0 0 22px #fff3;animation:pont-breathe 1.2s ease-in-out infinite alternate}
-.pont-intro__ring::before,.pont-intro__ring::after{content:"";position:absolute;inset:5%;border-radius:50%;border:1px solid #fff2}
-.pont-intro__ring::after{inset:12%;border:0;background:conic-gradient(from 40deg,transparent 12%,#ffffff20 28%,transparent 52%,#ffffff38 79%,transparent 90%);opacity:0}
-.pont-intro__word{position:relative;font:400 clamp(46px,15vmin,120px)/1 Georgia,serif;letter-spacing:.16em;text-indent:.16em;text-shadow:0 0 9px #fff,0 0 30px #d5e9ff9c;animation:pont-breathe 1.05s ease-in-out infinite alternate}
-.pont-intro__skip{position:absolute;bottom:max(22px,env(safe-area-inset-bottom));color:#dedee4;background:#101013;border:1px solid #fff4;border-radius:100px;padding:10px 16px;font:inherit;cursor:pointer}
+.pont-intro canvas{position:absolute;inset:0;width:100%;height:100%}
+.pont-intro__word{position:relative;font:400 clamp(48px,13vmin,112px)/1 Georgia,serif;letter-spacing:.19em;text-indent:.19em;color:#fff;-webkit-text-stroke:.45px #fff;animation:pont-outline 1.8s ease-in-out infinite alternate}
+.pont-intro__skip{position:absolute;bottom:max(14px,env(safe-area-inset-bottom));color:#c3c3c7;background:#020203;border:1px solid #ffffff30;border-radius:100px;padding:8px 13px;font:inherit;font-size:.75rem;cursor:pointer}
 .pont-intro__skip:focus-visible{outline:2px solid white;outline-offset:4px}
-.pont-intro.is-leaving{pointer-events:none;animation:pont-reveal .75s cubic-bezier(.65,0,.35,1) both}
-.pont-intro.is-leaving .pont-intro__ring{animation:pont-vortex .75s cubic-bezier(.55,.05,.65,1) both}
-.pont-intro.is-leaving .pont-intro__ring::after{opacity:1}
-.pont-intro.is-leaving .pont-intro__word{animation:pont-word .64s ease-in both}
-@keyframes pont-breathe{from{opacity:.62}to{opacity:1}}
-@keyframes pont-vortex{from{transform:rotate(0) scale(1)}to{transform:rotate(280deg) scale(.07);opacity:0}}
-@keyframes pont-word{to{transform:rotate(-22deg) scale(.06);opacity:0}}
-@keyframes pont-reveal{0%,55%{opacity:1}100%{opacity:0}}
+.pont-intro.is-vortex .pont-intro__word{visibility:hidden}
+@keyframes pont-outline{from{text-shadow:0 0 3px #fff9,0 0 12px #fff3}to{text-shadow:0 0 7px #fffe,0 0 24px #fff7}}
 @media(prefers-reduced-motion:reduce){.pont-intro{display:none}}
 </style></head>
 <body class="entry-page"><main class="entry"><header><h1><img src="./pont.svg" width="320" height="92" alt="PONT Slobozia" style="display:block;width:min(320px,80vw);height:auto"></h1><div class="subtitle">Ce mâncăm azi? Unde ieșim diseară?</div></header>
@@ -31,33 +23,116 @@
 <a class="day" href="./meniul-zilei/"><span class="symbol" aria-hidden="true">☀</span><span class="eyebrow">La prânz</span><span class="title">Meniul zilei</span><span class="caption">Vezi ce gătesc azi restaurantele din oraș.</span><span class="arrow" aria-hidden="true">→</span></a>
 <a class="night" href="./iesire-in-oras/"><span class="symbol" aria-hidden="true">☾</span><span class="eyebrow">Diseară</span><span class="title">Ieșire în oraș</span><span class="caption">Alege restaurantul după atmosfera serii.</span><span class="arrow" aria-hidden="true">→</span></a>
 <svg class="seam" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M50 0C63 31 37 69 50 100" fill="none" stroke="#bd925a" stroke-width="1.2" vector-effect="non-scaling-stroke"/><path class="spark" d="M50 0C63 31 37 69 50 100" pathLength="132" fill="none" stroke="#fff3b9" stroke-width="2.6" vector-effect="non-scaling-stroke"/></svg>
-</div><button type="button" class="install-button" id="install-pont">Descarcă aplicația PONT</button><dialog id="install-help" aria-labelledby="install-title"><h2 id="install-title">Instalează PONT</h2><p></p><form method="dialog"><button class="install-button">Am înțeles</button></form></dialog><footer>Două feluri de a te bucura de oraș</footer></main><div class="pont-intro" id="pont-intro" hidden><div class="pont-intro__ring" aria-hidden="true"></div><strong class="pont-intro__word" aria-hidden="true">PONT</strong><button class="pont-intro__skip" type="button">Sari peste intro</button></div>
+</div><button type="button" class="install-button" id="install-pont">Descarcă aplicația PONT</button><dialog id="install-help" aria-labelledby="install-title"><h2 id="install-title">Instalează PONT</h2><p></p><form method="dialog"><button class="install-button">Am înțeles</button></form></dialog><footer>Două feluri de a te bucura de oraș</footer></main><div class="pont-intro" id="pont-intro" hidden><canvas aria-hidden="true"></canvas><strong class="pont-intro__word" aria-hidden="true">PONT</strong><button class="pont-intro__skip" type="button">Sari peste intro</button></div>
 <script>
 (() => {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  try {
-    if (sessionStorage.getItem('pont-intro-seen')) return;
-    sessionStorage.setItem('pont-intro-seen', '1');
-  } catch {}
   const intro = document.querySelector('#pont-intro');
   const page = document.querySelector('.entry');
+  const canvas = intro.querySelector('canvas');
+  const ctx = canvas.getContext('2d');
+  if (!page || !ctx) return;
+  try {
+    if (sessionStorage.getItem('pont-intro-stars-v1')) return;
+    sessionStorage.setItem('pont-intro-stars-v1', '1');
+  } catch {}
+  const word = intro.querySelector('strong');
   const skip = intro.querySelector('button');
-  if (!page) return;
-  intro.hidden = false;
-  page.inert = true;
-  function finish(focusEntry) {
-    intro.hidden = true;
-    page.inert = false;
-    if (focusEntry) page.querySelector('.choice a')?.focus();
+  const stars = Array.from({length: 700}, () => ({
+    angle: Math.random()*Math.PI*2,
+    band: .79+Math.random()*.23,
+    size: .25+Math.pow(Math.random(),3)*1.1,
+    light: .13+Math.random()*.65,
+    phase: Math.random()*Math.PI*2
+  }));
+  let width,height,dpr,frame,letters;
+  function resize(){
+    width=intro.clientWidth;
+    height=intro.clientHeight;
+    dpr=Math.min(devicePixelRatio||1,2);
+    canvas.width=Math.round(width*dpr);
+    canvas.height=Math.round(height*dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0);
   }
-  const timer = setTimeout(() => {
-    const keyboardFocus = document.activeElement === skip;
-    intro.classList.add('is-leaving');
-    setTimeout(() => finish(keyboardFocus), 750);
-  }, 1450);
-  skip.onclick = () => {
-    clearTimeout(timer);
-    finish(true);
-  };
+  function sampleWord(){
+    const mask=document.createElement('canvas');
+    const style=getComputedStyle(word);
+    const size=parseFloat(style.fontSize);
+    mask.width=Math.ceil(word.offsetWidth+12);
+    mask.height=Math.ceil(size*1.4);
+    const ink=mask.getContext('2d');
+    ink.font=size+'px Georgia';
+    ink.textBaseline='middle';
+    const gap=parseFloat(style.letterSpacing);
+    let x=6;
+    for(const letter of 'PONT'){
+      ink.fillText(letter,x,mask.height/2);
+      x+=ink.measureText(letter).width+gap;
+    }
+    const pixels=ink.getImageData(0,0,mask.width,mask.height).data;
+    const points=[];
+    for(let y=0;y<mask.height;y+=2)for(let x=0;x<mask.width;x+=2){
+      if(pixels[(y*mask.width+x)*4+3]>120)points.push({x:x-mask.width/2,y:y-mask.height/2});
+    }
+    return points;
+  }
+  function finish(){
+    const focused=document.activeElement===skip;
+    cancelAnimationFrame(frame);
+    window.removeEventListener('resize',resize);
+    intro.hidden=true;
+    page.inert=false;
+    if(focused)page.querySelector('.choice a')?.focus();
+  }
+  intro.hidden=false;
+  page.inert=true;
+  resize();
+  window.addEventListener('resize',resize);
+  skip.onclick=finish;
+  const started=performance.now();
+  function draw(now){
+    const seconds=(now-started)/1000;
+    const p=Math.max(0,Math.min(1,(seconds-1.65)/1.12));
+    if(p===1){finish();return}
+    if(p>0&&!letters){letters=sampleWord();intro.classList.add('is-vortex')}
+    const cx=width/2,cy=height/2;
+    ctx.clearRect(0,0,width,height);
+    const collapse=Math.pow(1-p,1.25);
+    const spin=p*p*7;
+    function position(s,angle,radius){
+      const c=Math.cos(angle), n=Math.sin(angle);
+      const edge=1/Math.pow(Math.pow(Math.abs(c),4)+Math.pow(Math.abs(n),4),.25);
+      const x=c*edge*width*.49,y=n*edge*height*.49;
+      const shape=1-p;
+      const orbit=Math.min(width,height)*.50;
+      return [cx+(x*shape+c*orbit*p)*radius*s.band,cy+(y*shape+n*orbit*p)*radius*s.band];
+    }
+    for(const star of stars){
+      const a=star.angle+spin*(1.65-star.band);
+      const [x,y]=position(star,a,collapse);
+      const rim=1-Math.max(0,(star.band-.88)/.14)*.85;
+      const alpha=star.light*rim*(.62+.36*Math.sin(seconds*2.5+star.phase));
+      ctx.fillStyle='rgba(255,255,255,'+Math.max(0,alpha)+')';
+      ctx.beginPath();ctx.arc(x,y,star.size,0,Math.PI*2);ctx.fill();
+      if(p>.06){
+        const [tx,ty]=position(star,a-.16*p,collapse+.045*p);
+        ctx.strokeStyle='rgba(255,255,255,'+alpha*.55+')';
+        ctx.lineWidth=star.size*.75;
+        ctx.beginPath();ctx.moveTo(tx,ty);ctx.lineTo(x,y);ctx.stroke();
+      }
+    }
+    if(letters){
+      const turn=p*2.8,c=Math.cos(turn),s=Math.sin(turn);
+      ctx.fillStyle='rgba(255,255,255,'+(1-p)+')';
+      for(const dot of letters){
+        const x=c*dot.x-s*dot.y,y=s*dot.x+c*dot.y;
+        ctx.fillRect(cx+x*collapse,cy+y*collapse,1.35,1.35);
+      }
+      intro.style.backgroundColor='rgba(2,2,3,'+(1-Math.pow(p,3))+')';
+      intro.style.opacity=String(1-Math.pow(p,4));
+    }
+    frame=requestAnimationFrame(draw);
+  }
+  frame=requestAnimationFrame(draw);
 })();
 </script></body></html>
