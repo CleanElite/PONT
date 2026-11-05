@@ -61,3 +61,18 @@ body.lunch{background:#0b142b;color:#f5f7ff}
 .lunch #checkout input,.lunch #checkout select,.lunch #checkout textarea{border-color:#aabbd7}
 .lunch .order-footer{z-index:1}
 @media(max-width:375px){.lunch .quantity{display:block}.lunch .hero{padding-inline:15px}}
+body.lunch{isolation:isolate}
+.ambient-current{position:fixed;z-index:-1;inset:0;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 75% 45%,#24418088,transparent 65%)}
+.ambient-current svg{width:100%;height:100%;display:block;fill:none}
+.current-glow,.current-line{stroke:url(#current-color)}
+.current-glow{stroke-width:64;filter:blur(22px);opacity:.46}
+.current-line{stroke-width:1.1;opacity:.55}
+.current-reflection{stroke:#abfff1;stroke-width:1.8;stroke-linecap:round;stroke-dasharray:9 91;opacity:0;filter:drop-shadow(0 0 7px #6be6de)}
+@media(prefers-reduced-motion:no-preference){
+.current-reflection{animation:current-flow 4.8s linear 1}
+}
+@keyframes current-flow{
+0%{stroke-dashoffset:12;opacity:0}
+20%,75%{opacity:.66}
+100%{stroke-dashoffset:-91;opacity:0}
+}
