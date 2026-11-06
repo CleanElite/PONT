@@ -1,0 +1,10 @@
+name = "pont-api"
+main = "worker.js"
+compatibility_date = "2026-11-06"
+
+# Configure ALLOWED_ORIGINS in Cloudflare Worker settings, e.g. exact published PONT origin.
+# Bind an existing D1 database to variable DB after creating it.
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "pont-db"
+# database_id = "REPLACE_WITH_REAL_DATABASE_ID"
