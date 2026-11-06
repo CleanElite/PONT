@@ -27,10 +27,43 @@ body.lunch{background:radial-gradient(ellipse at 50% 0,#183955 0,transparent 36r
 #list .featured::after{content:"";position:absolute;inset:0;border:1px solid #b6efff;border-radius:inherit;box-shadow:0 0 18px #65d5ff8a;pointer-events:none;opacity:.5}
 @media(prefers-reduced-motion:no-preference){#list .featured::after{animation:pont-neon 3.4s ease-in-out infinite alternate}}
 @keyframes pont-neon{from{opacity:.2}to{opacity:.8}}
+</style><style id="pont-turquoise-refresh">
+:root{--pont-ink:#102c30;--pont-turquoise:#10cbbd;--pont-sea:#087e83;--pont-mist:#e9faf7}
+body.lunch{background:radial-gradient(ellipse at 95% 8%,#c5fff1 0,transparent 34%),linear-gradient(165deg,#f5fffc,#f2f9f8 55%,#fffdf8);color:var(--pont-ink)}
+body.lunch header{padding-top:22px;padding-bottom:22px}
+body.lunch .hero{background:linear-gradient(118deg,#063d45 0%,#087f85 57%,#11bda9 100%);border:1px solid #b7fff3;box-shadow:0 24px 64px #077c7830;min-height:250px}
+body.lunch .hero:before{content:"";position:absolute;inset:-40%;pointer-events:none;background:repeating-radial-gradient(ellipse at 85% 50%,transparent 0 42px,#c5fff622 43px 44px,transparent 45px 88px);transform:rotate(-12deg);animation:pontWave 16s ease-in-out infinite alternate}
+body.lunch .hero:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(110deg,transparent 18%,#e3fff41e 49%,transparent 73%);background-size:230% 100%;animation:pontShine 9s ease-in-out infinite}
+body.lunch .hero>*{position:relative;z-index:1}
+body.lunch .hero h1{font-size:clamp(42px,7vw,76px);letter-spacing:-.05em;line-height:1.03;max-width:700px}
+body.lunch .hero p{font-size:clamp(15px,2vw,19px);max-width:420px;color:#edfffc}
+body.lunch .hero .tag{background:#e4fff9;color:#07545a}
+body.lunch #customer{margin-top:26px}
+body.lunch #customer>.row{align-items:baseline}
+body.lunch #customer>.row h2{font:500 clamp(27px,4vw,39px) Georgia;margin:12px 0}
+body.lunch #list{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:18px}
+body.lunch #list .restaurant{background:#fff;border:1px solid #b7e7df;border-radius:23px;overflow:hidden;box-shadow:0 8px 26px #0c5e5d10;transition:transform .22s ease,box-shadow .22s ease,border-color .22s}
+body.lunch #list .restaurant:hover{transform:translateY(-3px);border-color:#0db5a8;box-shadow:0 18px 38px #0c5e5d20}
+body.lunch #list .restaurant-open{width:100%;min-height:220px;padding:22px;background:transparent;color:var(--pont-ink);display:flex;flex-direction:column;align-items:stretch;text-align:left;gap:11px;position:relative}
+body.lunch #list .restaurant-logo{width:54px;height:46px;opacity:.78}
+body.lunch #list .restaurant-content{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+body.lunch #list .restaurant-name{font:500 25px/1.12 Georgia}
+body.lunch #list .restaurant-price{color:#087c79;font-weight:750;font-size:20px}
+body.lunch #list .restaurant-arrow{position:absolute;right:20px;top:18px;color:#078b84}
+body.lunch .pont-dishes{font-size:14px;line-height:1.55;color:#425f5c;margin:0;min-height:45px}
+body.lunch .pont-cta{margin-top:auto;padding:11px 14px;background:linear-gradient(100deg,#075e64,#0ca99e);color:white;border-radius:12px;text-align:center;font-weight:700;font-size:14px}
+body.lunch .featured{outline:2px solid #0bb8ac}
+body.lunch .featured-label{font-size:12px}
+body.lunch dialog{border:1px solid #a2ddd5;border-radius:22px;box-shadow:0 25px 80px #073f4650;max-width:min(94vw,650px)}
+body.lunch button:not(.restaurant-open):focus-visible,body.lunch a:focus-visible{outline:3px solid #ffcf70;outline-offset:3px}
+@keyframes pontWave{to{transform:rotate(-7deg) translate(4%,3%)}}
+@keyframes pontShine{0%,35%{background-position:150% 0}65%,100%{background-position:-120% 0}}
+@media(prefers-reduced-motion:reduce){body.lunch .hero:before,body.lunch .hero:after{animation:none}body.lunch #list .restaurant{transition:none}}
+@media(max-width:620px){body.lunch .hero{min-height:225px;padding:29px 23px;border-radius:23px}body.lunch #list .restaurant-open{min-height:205px}body.lunch #customer{margin-top:12px}}
 </style>
 <body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
-<main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege un restaurant și compune meniul.</p></section>
-<section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Meniuri și sigle demonstrative.</p><div id="list" class="grid"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
+<main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section>
+<section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Previzualizare cu meniuri demonstrative. Ofertele reale vor apărea după conectarea restaurantelor.</p><div id="list" class="grid"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
 </main>
 <footer>✳ PONT Slobozia · Comenzile se confirmă pe WhatsApp. Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.<section class="pont-legal-footer" aria-label="Informații juridice" style="max-width:1120px;margin:32px auto 0;padding:22px;border-top:1px solid #9b9b8b55;font:13px/1.7 system-ui"><strong>Operator PONT</strong><p>NEGRĂU GEORGIANA-NICOLETA PERSOANĂ FIZICĂ AUTORIZATĂ · CUI 54519245 · Registrul Comerțului F2026020830003 · EUID ROONRC.F2026020830003<br>Sediu: Aleea Bujorului nr. 5, bl. B2, sc. C, et. 3, ap. 55, Slobozia, Ialomița · <a href="mailto:clean.slobozia@gmail.com">clean.slobozia@gmail.com</a></p><p>Versiune de test. PONT facilitează contactul; restaurantul confirmă comenzile și încasează direct.</p><nav style="display:flex;gap:14px;flex-wrap:wrap"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate</a><a href="../cookies.html">Cookies</a><a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer">SAL – ANPC</a></nav></section></footer>
 <dialog id="order" aria-labelledby="orderTitle">
