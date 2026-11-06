@@ -23,7 +23,7 @@ export default {
      return json({auctions,bids,minimum_bid_bani:5000,bidding_enabled:false},200,cors);
    }
    if(url.pathname==="/api/admin/menus"&&request.method==="GET"){
-     const {results}=await env.DB.prepare("SELECT menu_date,first_course,second_course,first_price_bani,second_price_bani,full_price_bani,state,accepts_card,offers_delivery,allergens FROM daily_menus WHERE restaurant_id=? AND menu_date>=date('now','-7 days') ORDER BY menu_date LIMIT 60").bind(admin.id).all();
+     const {results}=await env.DB.prepare("SELECT menu_date,first_course,second_course,dessert,first_price_bani,second_price_bani,full_price_bani,state,accepts_card,offers_delivery,allergens FROM daily_menus WHERE restaurant_id=? AND menu_date>=date('now','-7 days') ORDER BY menu_date LIMIT 60").bind(admin.id).all();
      return json({menus:results},200,cors);
    }
    if(url.pathname==="/api/admin/menus"&&request.method==="PUT"){
@@ -33,14 +33,15 @@ export default {
      if(!data||Array.isArray(data)||typeof data!=="object")return json({error:"Invalid menu"},400,cors);
      const day=String(data.menu_date||"");
      const a=String(data.first_course||"").trim(),b=String(data.second_course||"").trim();
+     const dessert=String(data.dessert||"").trim();
      const price=Number(data.full_price_bani);
      const state=String(data.state||"draft");
      const money=v=>v===null||v===undefined||v===""?null:Number.isSafeInteger(Number(v))&&Number(v)>0&&Number(v)<10000000?Number(v):NaN;
      const p1=money(data.first_price_bani),p2=money(data.second_price_bani);
      const allergens=String(data.allergens||"").trim();
      const date=new Date(day+"T12:00:00Z");
-     if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(day)||Number.isNaN(date.getTime())||date.toISOString().slice(0,10)!==day||!a||!b||a.length>300||b.length>300||!Number.isSafeInteger(price)||price<1||price>10000000||Number.isNaN(p1)||Number.isNaN(p2)||allergens.length>1000||!["draft","published","sold_out"].includes(state)||![0,1].includes(Number(data.accepts_card))||![0,1].includes(Number(data.offers_delivery)))return json({error:"Invalid fields"},400,cors);
-     await env.DB.prepare("INSERT INTO daily_menus (restaurant_id,menu_date,first_course,second_course,first_price_bani,second_price_bani,full_price_bani,state,accepts_card,offers_delivery,allergens) VALUES (?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(restaurant_id,menu_date) DO UPDATE SET first_course=excluded.first_course,second_course=excluded.second_course,first_price_bani=excluded.first_price_bani,second_price_bani=excluded.second_price_bani,full_price_bani=excluded.full_price_bani,state=excluded.state,accepts_card=excluded.accepts_card,offers_delivery=excluded.offers_delivery,allergens=excluded.allergens").bind(admin.id,day,a,b,p1,p2,price,state,Number(data.accepts_card),Number(data.offers_delivery),allergens).run();
+     if(!/^\\d{4}-\\d{2}-\\d{2}$/.test(day)||Number.isNaN(date.getTime())||date.toISOString().slice(0,10)!==day||!a||!b||a.length>300||b.length>300||dessert.length>300||!Number.isSafeInteger(price)||price<1||price>10000000||Number.isNaN(p1)||Number.isNaN(p2)||allergens.length>1000||!["draft","published","sold_out"].includes(state)||![0,1].includes(Number(data.accepts_card))||![0,1].includes(Number(data.offers_delivery)))return json({error:"Invalid fields"},400,cors);
+     await env.DB.prepare("INSERT INTO daily_menus (restaurant_id,menu_date,first_course,second_course,dessert,first_price_bani,second_price_bani,full_price_bani,state,accepts_card,offers_delivery,allergens) VALUES (?,?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(restaurant_id,menu_date) DO UPDATE SET first_course=excluded.first_course,second_course=excluded.second_course,dessert=excluded.dessert,first_price_bani=excluded.first_price_bani,second_price_bani=excluded.second_price_bani,full_price_bani=excluded.full_price_bani,state=excluded.state,accepts_card=excluded.accepts_card,offers_delivery=excluded.offers_delivery,allergens=excluded.allergens").bind(admin.id,day,a,b,dessert,p1,p2,price,state,Number(data.accepts_card),Number(data.offers_delivery),allergens).run();
      return json({saved:true,date:day},200,cors);
    }
    return json({error:"Not found"},404,cors);
@@ -51,7 +52,7 @@ export default {
   if(!env.DB)return json({error:"Database not configured"},503,cors);
   const date=todayRO();
   try {
-   const {results}=await env.DB.prepare("SELECT restaurant_id,name,whatsapp,phone,menu_date,first_course,second_course,first_price_bani,second_price_bani,full_price_bani,state,accepts_card,offers_delivery,allergens FROM public_menus WHERE menu_date=? ORDER BY name LIMIT 100").bind(date).all();
+   const {results}=await env.DB.prepare("SELECT restaurant_id,name,whatsapp,phone,menu_date,first_course,second_course,dessert,first_price_bani,second_price_bani,full_price_bani,state,accepts_card,offers_delivery,allergens FROM public_menus WHERE menu_date=? ORDER BY name LIMIT 100").bind(date).all();
    return json({date,menus:results},200,cors);
   }catch(e){return json({error:"Service temporarily unavailable"},503,cors);}
  }
