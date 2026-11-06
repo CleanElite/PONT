@@ -79,7 +79,29 @@ body.lunch .history{background:#0b3440;color:#f4fffd;border-color:#287c80}
 body.lunch footer{color:#b5d6d4;border-color:#287c80}
 @media(max-width:620px){body.lunch #list .restaurant-open{min-height:215px}}
 </style>
-<body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
+<style id="pont-reference-v2">
+body.lunch{background:radial-gradient(ellipse at 0 0,#086e6b,transparent 36%),radial-gradient(ellipse at 100% 80%,#07565a,transparent 40%),#001c21!important;color:#fff!important;font-family:Arial,sans-serif}
+body.lunch main{max-width:1150px}
+body.lunch .hero{background:transparent!important;border:0!important;box-shadow:none!important;text-align:center;min-height:0!important;padding:15px 0 32px!important}
+body.lunch .hero:before,body.lunch .hero:after,.lunch .hero-index,.lunch .hero .tag{display:none!important}
+body.lunch .hero h1{font:800 clamp(42px,7vw,76px) Arial,sans-serif!important;color:#fff!important;margin:10px 0!important}
+body.lunch .hero h1 em{color:#fff!important;font-style:normal}
+body.lunch .hero p{max-width:none!important;font-size:clamp(18px,3vw,28px)!important;color:#cce8e7!important}
+body.lunch #list{display:flex!important;flex-direction:column;gap:24px!important}
+body.lunch #list .restaurant{background:linear-gradient(115deg,#073f41,#002329 75%)!important;border:2px solid #19d9ce!important;border-radius:32px!important;box-shadow:inset 0 0 18px #00e8d52a,0 0 17px #00e8d53d!important;overflow:hidden}
+body.lunch #list .restaurant-open{display:grid!important;grid-template-columns:29% 1fr auto;grid-template-rows:1fr auto;align-items:center;gap:0 18px!important;padding:0 24px 0 0!important;min-height:230px!important}
+body.lunch #list .restaurant-open:before,.lunch #list .restaurant-open:after{display:none}
+body.lunch .pont-photo{grid-column:1;grid-row:1/3;width:100%;height:100%;min-height:230px;object-fit:cover;mask-image:linear-gradient(90deg,#000 75%,transparent);-webkit-mask-image:linear-gradient(90deg,#000 75%,transparent)}
+body.lunch #list .restaurant-content{grid-column:2;grid-row:1/3;gap:12px!important}
+body.lunch #list .restaurant-name{font:750 clamp(24px,3vw,38px) Arial,sans-serif!important;color:white!important}
+body.lunch #list .restaurant-name:before{content:"♧";color:#04f4dd;margin-right:12px;text-shadow:0 0 10px #00d9c7}
+body.lunch #list .restaurant-price{grid-column:3;grid-row:1;background:linear-gradient(#74561c,#35280e);border:1px solid #e4c05b;border-radius:60px;padding:10px 23px;color:#ffe38c!important;font:800 clamp(22px,3vw,35px) Arial,sans-serif!important;white-space:nowrap}
+body.lunch #list .restaurant-price small{display:none}
+body.lunch .pont-cta{grid-column:3;grid-row:2;margin:0 0 24px!important;border-radius:60px!important;background:linear-gradient(#00dfc8,#007c7d)!important;border:1px solid #35fff0;padding:14px 22px!important;color:#fff!important;font:700 19px Arial,sans-serif!important;white-space:nowrap;box-shadow:0 0 15px #00dfce70}
+body.lunch #list .restaurant-logo,body.lunch #list .restaurant-arrow,body.lunch #list .featured-label{display:none!important}
+body.lunch #list .featured{outline:0!important}
+@media(max-width:700px){body.lunch #list{gap:14px!important}body.lunch #list .restaurant{border-radius:22px!important}body.lunch #list .restaurant-open{grid-template-columns:34% 1fr;grid-template-rows:1fr auto;min-height:170px!important;padding:0 12px 0 0!important;column-gap:8px!important}.lunch .pont-photo{min-height:170px}.lunch #list .restaurant-content{grid-column:2;grid-row:1;align-self:end}.lunch #list .restaurant-name{font-size:clamp(17px,4.6vw,25px)!important}.lunch #list .restaurant-price{grid-column:2;grid-row:2;justify-self:start;align-self:start;font-size:18px!important;padding:6px 12px}.lunch .pont-cta{grid-column:2;grid-row:2;justify-self:end;align-self:end;font-size:12px!important;padding:8px!important;margin:0 0 12px!important}.lunch .hero h1{font-size:42px!important}.lunch .hero p{font-size:16px!important}}
+</style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
 <main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section>
 <section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Previzualizare cu meniuri demonstrative. Ofertele reale vor apărea după conectarea restaurantelor.</p><div id="list" class="grid" aria-live="polite"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
 </main>
@@ -101,6 +123,7 @@ body.lunch footer{color:#b5d6d4;border-color:#287c80}
 const $=s=>document.querySelector(s), day=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest'}).format(new Date()), lei=n=>new Intl.NumberFormat('ro-RO',{style:'currency',currency:'RON'}).format(n);
 const read=(k,f)=>JSON.parse(localStorage.getItem(k)??JSON.stringify(f)), write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pontPhotos=['https://images.unsplash.com/photo-1547592180-85f173990554?w=700&q=85','https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=700&q=85','https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=700&q=85','https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=700&q=85','https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=700&q=85','https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=700&q=85'];
 const samples=[
 {id:'a',mark:'BA',name:'Bucătăria de Acasă',first:'Ciorbă de perișoare',second:'Șnițel de pui cu piure',p1:14,p2:24,full:32,card:true,top:true,delivery:true},
 {id:'b',mark:'BC',name:'Bistro Central',first:'Supă cremă de legume',second:'Pui la grătar cu orez',p1:13,p2:25,full:34,card:true,delivery:true},
@@ -125,7 +148,7 @@ const visible=menus();
 $('#list').innerHTML=visible.length?visible.map((m,index)=>{
   const logo='<div class="restaurant-logo" aria-hidden="true"><svg viewBox="0 0 120 100"><path d="'+ornaments[index]+'" fill="none" stroke="currentColor" opacity=".65"/><text x="60" y="58" text-anchor="middle" fill="currentColor" font-family="Georgia,serif" font-size="24" letter-spacing="1">'+esc(m.mark)+'</text></svg></div>';
   const badge=m.top?'<span class="featured-label">Recomandarea zilei <small>· sponsorizat demo</small></span>':'';
-  return '<article class="restaurant'+(m.top?' featured':'')+'" style="--delay:'+index*60+'ms"><button class="restaurant-open" data-menu="'+esc(m.id)+'" aria-label="Vezi meniul '+esc(m.name)+'">'+badge+logo+'<span class="restaurant-content"><span class="restaurant-name">'+esc(m.name)+'</span><span class="restaurant-price">'+lei(m.full)+' <small>/ meniu</small></span></span><p class="pont-dishes">'+esc(m.first)+'<br>'+esc(m.second)+(m.dessert?'<br><strong>Desert:</strong> '+esc(m.dessert):'')+'</p><span class="pont-cta">Vezi meniul și detaliile ↗</span><span class="restaurant-arrow" aria-hidden="true">↗</span></button></article>';
+  return '<article class="restaurant'+(m.top?' featured':'')+'" style="--delay:'+index*60+'ms"><button class="restaurant-open" data-menu="'+esc(m.id)+'" aria-label="Vezi meniul '+esc(m.name)+'">'+badge+'<img class="pont-photo" src="'+pontPhotos[index%pontPhotos.length]+'" alt="Fotografie ilustrativă" loading="lazy"><span class="restaurant-content"><span class="restaurant-name">'+esc(m.name)+'</span></span><span class="restaurant-price">'+lei(m.full)+'</span><p class="pont-dishes">'+esc(m.first)+'<br>'+esc(m.second)+(m.dessert?'<br><strong>Desert:</strong> '+esc(m.dessert):'')+'</p><span class="pont-cta">Vezi detalii →</span><span class="restaurant-arrow" aria-hidden="true">↗</span></button></article>';
 }).join(''):'<p class="pont-empty">Nu există meniuri disponibile momentan.</p>';
 $('#history').innerHTML=orders().length?orders().map(o=> '<div class="row"><p><strong>Comanda #'+esc(o.id)+' · '+esc(o.menu.name)+'</strong><br><small>'+(o.menu.phone?'Confirmarea vine de la restaurant pe WhatsApp':'Comandă demo · număr de telefon indisponibil')+'</small></p>'+(o.menu.phone?'<a class="search-link" href="tel:+'+esc(o.menu.phone)+'">Sună restaurantul</a>':'')+'</div>').join(''):'Aici găsești numărul comenzii și telefonul restaurantului după ce deschizi comanda în WhatsApp.';
 }
