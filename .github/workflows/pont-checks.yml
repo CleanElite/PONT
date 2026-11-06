@@ -1,0 +1,37 @@
+name: PONT code checks
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'pranz-slobozia/**'
+      - '.github/workflows/pont-checks.yml'
+  pull_request:
+    paths:
+      - 'backend/**'
+      - 'pranz-slobozia/**'
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate browser scripts syntax
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import vm from 'node:vm';
+          for (const file of ['pranz-slobozia/meniul-zilei/index.html','pranz-slobozia/admin/index.html']) {
+            const html=fs.readFileSync(file,'utf8');
+            const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)];
+            if (!scripts.length) throw Error('No scripts found: '+file);
+            for (const [,code] of scripts) new vm.Script(code,{filename:file});
+            console.log('Valid JS:',file);
+          }
+          NODE
+      - name: Run backend smoke tests
+        run: node --test backend/worker.test.mjs
