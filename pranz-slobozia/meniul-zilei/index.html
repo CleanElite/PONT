@@ -338,6 +338,9 @@ body.lunch #list .restaurant-arrow{display:none!important}
  body.lunch #list .restaurant-price{top:9px!important;right:9px!important;font-size:15px!important;padding:4px 10px!important}
  body.lunch #list .pont-cta{font-size:12px!important;padding:7px 12px!important}
 }
+</style><style id="pont-no-projectors">
+/* Remove animated projector / sweeping spotlight effects; preserve static turquoise gradient */
+body.lunch::before,body.lunch::after,body.lunch main::before,body.lunch main:before{content:none!important;display:none!important;animation:none!important}
 </style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
 <main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section>
 <section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Previzualizare cu meniuri demonstrative. Ofertele reale vor apărea după conectarea restaurantelor.</p><div id="list" class="grid" aria-live="polite"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
