@@ -86,10 +86,10 @@ const $=s=>document.querySelector(s), day=()=>new Intl.DateTimeFormat('sv-SE',{t
 const read=(k,f)=>JSON.parse(localStorage.getItem(k)??JSON.stringify(f)), write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const samples=[
-{id:'a',mark:'BA',name:'Bucătăria de Acasă',first:'Ciorbă de perișoare',second:'Șnițel de pui cu piure',p1:14,p2:24,full:32,card:true,top:true},
-{id:'b',mark:'BC',name:'Bistro Central',first:'Supă cremă de legume',second:'Pui la grătar cu orez',p1:13,p2:25,full:34,card:true},
+{id:'a',mark:'BA',name:'Bucătăria de Acasă',first:'Ciorbă de perișoare',second:'Șnițel de pui cu piure',p1:14,p2:24,full:32,card:true,top:true,delivery:true},
+{id:'b',mark:'BC',name:'Bistro Central',first:'Supă cremă de legume',second:'Pui la grătar cu orez',p1:13,p2:25,full:34,card:true,delivery:true},
 {id:'c',mark:'PB',name:'Prânzul Bun',first:'Ciorbă de fasole',second:'Tocăniță cu mămăligă',p1:14,p2:23,full:31},
-{id:'d',mark:'MV',name:'Masa Verde',first:'Supă cremă de linte',second:'Orez cu ciuperci și legume',p1:15,p2:24,full:33,card:true},
+{id:'d',mark:'MV',name:'Masa Verde',first:'Supă cremă de linte',second:'Orez cu ciuperci și legume',p1:15,p2:24,full:33,card:true,delivery:true},
 {id:'e',mark:'CV',name:'Cuptorul Vechi',first:'Ciorbă de pui',second:'Friptură de porc cu cartofi copți',p1:15,p2:29,full:38,card:true},
 {id:'f',mark:'AS',name:'Atelierul de Sare',first:'Supă de roșii coapte',second:'Paste cu pui și parmezan',p1:15,p2:27,full:36,card:true}];
 const ornaments=[
