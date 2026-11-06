@@ -50,7 +50,7 @@ body.lunch #list .restaurant-content{display:flex;flex-direction:column;align-it
 body.lunch #list .restaurant-name{font:500 25px/1.12 Georgia}
 body.lunch #list .restaurant-price{color:#087c79;font-weight:750;font-size:20px}
 body.lunch #list .restaurant-arrow{position:absolute;right:20px;top:18px;color:#078b84}
-body.lunch .pont-dishes{font-size:14px;line-height:1.55;color:#425f5c;margin:0;min-height:45px}
+body.lunch .pont-dishes{display:none}
 body.lunch .pont-cta{margin-top:auto;padding:11px 14px;background:linear-gradient(100deg,#075e64,#0ca99e);color:white;border-radius:12px;text-align:center;font-weight:700;font-size:14px}
 body.lunch .featured{outline:2px solid #0bb8ac}
 body.lunch .featured-label{font-size:12px}
@@ -60,6 +60,24 @@ body.lunch button:not(.restaurant-open):focus-visible,body.lunch a:focus-visible
 @keyframes pontShine{0%,35%{background-position:150% 0}65%,100%{background-position:-120% 0}}
 @media(prefers-reduced-motion:reduce){body.lunch .hero:before,body.lunch .hero:after{animation:none}body.lunch #list .restaurant{transition:none}}
 @media(max-width:620px){body.lunch .hero{min-height:225px;padding:29px 23px;border-radius:23px}body.lunch #list .restaurant-open{min-height:205px}body.lunch #customer{margin-top:12px}}
+/* PONT premium restaurant gallery: restaurant and price only */
+body.lunch{background:radial-gradient(ellipse at 85% 0%,#125b60 0%,transparent 46%),linear-gradient(165deg,#061d29,#08363e 65%,#05222d);color:#f1fffc}
+body.lunch #customer>.row h2{color:#f5fffc}
+body.lunch #customer>.muted,body.lunch #date{color:#b3d7d5}
+body.lunch #list .restaurant{background:linear-gradient(145deg,#0c454d,#092b38);border:1px solid #287c80;box-shadow:0 12px 34px #001b2445,inset 0 1px #b3fff022}
+body.lunch #list .restaurant:hover{border-color:#6df5df;box-shadow:0 18px 42px #001b2477,0 0 22px #29d9c42b}
+body.lunch #list .restaurant-open{min-height:230px;color:#f6fffc;gap:14px}
+body.lunch #list .restaurant-name{color:#f7fffd;font-size:clamp(23px,2.5vw,29px)}
+body.lunch #list .restaurant-price{color:#70f5db;font-size:23px}
+body.lunch #list .restaurant-price small{color:#c4e5e1}
+body.lunch #list .restaurant-logo{background:#104f59;color:#b0fff2;border:1px solid #4aa5a6;opacity:1}
+body.lunch #list .restaurant-arrow{color:#79f6df}
+body.lunch .pont-cta{background:linear-gradient(100deg,#10a99f,#27d4b8);color:#062d34}
+body.lunch #list .featured{outline:1px solid #63e7d3}
+body.lunch #list .featured-label{color:#a5f9e9}
+body.lunch .history{background:#0b3440;color:#f4fffd;border-color:#287c80}
+body.lunch footer{color:#b5d6d4;border-color:#287c80}
+@media(max-width:620px){body.lunch #list .restaurant-open{min-height:215px}}
 </style>
 <body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
 <main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section>
@@ -99,7 +117,7 @@ const ornaments=[
 'M18 50Q60 3 102 50Q60 97 18 50Z'
 ];
 const menus=()=>samples, orders=()=>read('orders',[]);
-$('#deliveryFilter').addEventListener('change',render);
+// Cardurile sunt afisate direct, fara filtre.
 let current, draft;
 function render(){
 $('#date').textContent=new Intl.DateTimeFormat('ro-RO',{dateStyle:'full',timeZone:'Europe/Bucharest'}).format(new Date());
@@ -108,7 +126,7 @@ $('#list').innerHTML=visible.length?visible.map((m,index)=>{
   const logo='<div class="restaurant-logo" aria-hidden="true"><svg viewBox="0 0 120 100"><path d="'+ornaments[index]+'" fill="none" stroke="currentColor" opacity=".65"/><text x="60" y="58" text-anchor="middle" fill="currentColor" font-family="Georgia,serif" font-size="24" letter-spacing="1">'+esc(m.mark)+'</text></svg></div>';
   const badge=m.top?'<span class="featured-label">Recomandarea zilei <small>· sponsorizat demo</small></span>':'';
   return '<article class="restaurant'+(m.top?' featured':'')+'" style="--delay:'+index*60+'ms"><button class="restaurant-open" data-menu="'+esc(m.id)+'" aria-label="Vezi meniul '+esc(m.name)+'">'+badge+logo+'<span class="restaurant-content"><span class="restaurant-name">'+esc(m.name)+'</span><span class="restaurant-price">'+lei(m.full)+' <small>/ meniu</small></span></span><p class="pont-dishes">'+esc(m.first)+'<br>'+esc(m.second)+(m.dessert?'<br><strong>Desert:</strong> '+esc(m.dessert):'')+'</p><span class="pont-cta">Vezi meniul și detaliile ↗</span><span class="restaurant-arrow" aria-hidden="true">↗</span></button></article>';
-}).join(''):'<p class="pont-empty">Nu există meniuri care corespund filtrelor. Încearcă alt preț sau elimină filtrul de livrare.</p>';
+}).join(''):'<p class="pont-empty">Nu există meniuri disponibile momentan.</p>';
 $('#history').innerHTML=orders().length?orders().map(o=> '<div class="row"><p><strong>Comanda #'+esc(o.id)+' · '+esc(o.menu.name)+'</strong><br><small>'+(o.menu.phone?'Confirmarea vine de la restaurant pe WhatsApp':'Comandă demo · număr de telefon indisponibil')+'</small></p>'+(o.menu.phone?'<a class="search-link" href="tel:+'+esc(o.menu.phone)+'">Sună restaurantul</a>':'')+'</div>').join(''):'Aici găsești numărul comenzii și telefonul restaurantului după ce deschizi comanda în WhatsApp.';
 }
 const form=$('#checkout'), qty=()=>[...form.querySelectorAll('[data-qty]')].map(x=>Number(x.value));
