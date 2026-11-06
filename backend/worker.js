@@ -17,6 +17,11 @@ export default {
    const admin=await env.DB.prepare("SELECT r.id,r.name FROM restaurant_admins a JOIN restaurants r ON r.id=a.restaurant_id WHERE a.email=? AND a.active=1 AND r.active=1").bind(email).first();
    if(!admin)return json({error:"No restaurant assigned"},403,cors);
    if(url.pathname==="/api/admin/me"&&request.method==="GET")return json({restaurant:admin,role:"restaurant_admin"},200,cors);
+   if(url.pathname==="/api/admin/auctions"&&request.method==="GET"){
+     const {results:auctions}=await env.DB.prepare("SELECT id,title,starts_at,ends_at,placement_date,status,minimum_bid_bani FROM promotion_auctions WHERE status IN ('open','closed') ORDER BY placement_date DESC LIMIT 20").all();
+     const {results:bids}=await env.DB.prepare("SELECT b.auction_id,b.amount_bani,b.created_at,b.status FROM promotion_bids b WHERE b.restaurant_id=? ORDER BY b.created_at DESC LIMIT 50").bind(admin.id).all();
+     return json({auctions,bids,minimum_bid_bani:5000,bidding_enabled:false},200,cors);
+   }
    if(url.pathname==="/api/admin/menus"&&request.method==="GET"){
      const {results}=await env.DB.prepare("SELECT menu_date,first_course,second_course,first_price_bani,second_price_bani,full_price_bani,state,accepts_card,offers_delivery,allergens FROM daily_menus WHERE restaurant_id=? AND menu_date>=date('now','-7 days') ORDER BY menu_date LIMIT 60").bind(admin.id).all();
      return json({menus:results},200,cors);
