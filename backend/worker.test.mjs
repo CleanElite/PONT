@@ -9,3 +9,7 @@ test("writes are rejected",async()=>{assert.equal((await worker.fetch(req("/api/
 test("missing database fails closed",async()=>{assert.equal((await worker.fetch(req("/api/menus"),{})).status,503)});
 test("unapproved origin does not get CORS header",async()=>{const r=await worker.fetch(req("/api/health","GET","https://untrusted.example"),{ALLOWED_ORIGINS:"https://pont.example"});assert.equal(r.headers.get("access-control-allow-origin"),null)});
 test("approved origin gets CORS header",async()=>{const r=await worker.fetch(req("/api/health","GET","https://pont.example"),{ALLOWED_ORIGINS:"https://pont.example"});assert.equal(r.headers.get("access-control-allow-origin"),"https://pont.example")});
+
+test("administrator routes reject anonymous access",async()=>{const fakeDB={prepare(){throw Error("Database must not be queried before authentication")}};const r=await worker.fetch(req("/api/admin/me"),{DB:fakeDB});assert.equal(r.status,401)});
+test("administrator write routes reject anonymous access",async()=>{const fakeDB={prepare(){throw Error("Database must not be queried before authentication")}};const r=await worker.fetch(req("/api/admin/menus","PUT"),{DB:fakeDB});assert.equal(r.status,401)});
+test("administrator routes fail closed without database",async()=>{const r=await worker.fetch(req("/api/admin/me"),{});assert.equal(r.status,503)});
