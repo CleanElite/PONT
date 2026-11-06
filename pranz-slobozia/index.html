@@ -38,11 +38,7 @@ html.pont-intro-active{overflow:hidden}
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   if (motion.matches) return;
 
-  const sessionKey = 'pont-intro-ribbon-v3';
-  const replay = new URLSearchParams(location.search).get('intro') === 'replay';
-  try {
-    if (!replay && sessionStorage.getItem(sessionKey)) return;
-  } catch {}
+  // Intro replays whenever the main entry page is opened.
 
   const intro = document.querySelector('#pont-intro');
   const page = document.querySelector('.entry');
@@ -383,7 +379,7 @@ html.pont-intro-active{overflow:hidden}
     return;
   }
 
-  try { sessionStorage.setItem(sessionKey, '1'); } catch {}
+  try { void 0; } catch {}
   skip.addEventListener('click', finish, { once: true });
   window.addEventListener('resize', onResize);
   window.addEventListener('pagehide', finish);
