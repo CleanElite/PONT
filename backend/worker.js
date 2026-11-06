@@ -16,7 +16,7 @@ export default {
    if(!email)return json({error:"Authentication required"},401,cors);
    const admin=await env.DB.prepare("SELECT r.id,r.name FROM restaurant_admins a JOIN restaurants r ON r.id=a.restaurant_id WHERE a.email=? AND a.active=1 AND r.active=1").bind(email).first();
    if(!admin)return json({error:"No restaurant assigned"},403,cors);
-   if(url.pathname==="/api/admin/me"&&request.method==="GET")return json({restaurant:admin},200,cors);
+   if(url.pathname==="/api/admin/me"&&request.method==="GET")return json({restaurant:admin,role:"restaurant_admin"},200,cors);
    if(url.pathname==="/api/admin/menus"&&request.method==="GET"){
      const {results}=await env.DB.prepare("SELECT menu_date,first_course,second_course,first_price_bani,second_price_bani,full_price_bani,state,accepts_card,offers_delivery,allergens FROM daily_menus WHERE restaurant_id=? AND menu_date>=date('now','-7 days') ORDER BY menu_date LIMIT 60").bind(admin.id).all();
      return json({menus:results},200,cors);
