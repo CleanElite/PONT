@@ -184,6 +184,36 @@ body.lunch #list .pont-photo{filter:saturate(.9) contrast(1.04);mask-image:linea
 }
 @media(max-width:360px){body.lunch #list .restaurant-name{font-size:14px!important}body.lunch #list .pont-cta{font-size:11px!important;padding:7px 9px!important}}
 @media(prefers-reduced-motion:reduce){body.lunch #list .restaurant{transition:none!important}}
+</style><style id="pont-animated-layout-v4">
+/* PONT motion and card composition v4 */
+html{background:#00171d}
+body.lunch{position:relative;isolation:isolate;background:linear-gradient(155deg,#00171e 0%,#00383b 45%,#001c26 100%)!important;background-attachment:fixed!important;min-height:100vh}
+body.lunch::before,body.lunch::after{content:"";position:fixed;inset:-35%;pointer-events:none;z-index:0}
+body.lunch::before{background:radial-gradient(ellipse 27% 21% at 21% 23%,#09e4c74a,transparent 75%),radial-gradient(ellipse 33% 23% at 84% 42%,#14b6d34b,transparent 76%),radial-gradient(ellipse 36% 28% at 46% 90%,#04a58f35,transparent 78%);filter:blur(28px);animation:pontAurora 17s ease-in-out infinite alternate}
+body.lunch::after{inset:0;background-image:radial-gradient(circle,#b9fff9d9 0 1px,transparent 2px),radial-gradient(circle,#67ffe5aa 0 1px,transparent 2px),radial-gradient(circle,#ffffff72 0 1px,transparent 2px);background-size:143px 179px,227px 263px,319px 331px;background-position:20px 38px,92px 113px,12px 165px;opacity:.42;animation:pontStarlight 9s ease-in-out infinite alternate}
+body.lunch>header,body.lunch>main,body.lunch>footer{position:relative;z-index:1}
+body.lunch main::before{content:"";position:absolute;z-index:0;pointer-events:none;top:0;left:-5%;width:75%;height:150px;border-top:1px solid #56ffe7b8;border-radius:50%;transform:rotate(-11deg);filter:drop-shadow(0 0 11px #10f8d3);animation:pontArc 9s ease-in-out infinite alternate}
+body.lunch .hero{position:relative;z-index:1}
+body.lunch #list .restaurant{position:relative;box-shadow:inset 0 1px #bafff625,0 10px 32px #0008,0 0 18px #00e7d224!important;transition:transform .25s,box-shadow .25s!important}
+body.lunch #list .restaurant:hover{transform:translateY(-2px)!important;box-shadow:inset 0 1px #bafff640,0 15px 35px #0009,0 0 24px #00e7d25a!important}
+body.lunch #list .restaurant-open{display:grid!important;grid-template-columns:42% minmax(0,1fr)!important;grid-template-rows:auto auto auto!important;column-gap:clamp(18px,3vw,38px)!important;row-gap:10px!important;min-height:186px!important;padding:16px 22px 16px 0!important;align-content:center!important}
+body.lunch #list .pont-photo{grid-column:1!important;grid-row:1/4!important;position:absolute;inset:0;width:100%;height:100%!important;min-height:0!important;aspect-ratio:auto!important;object-fit:cover!important;object-position:center!important}
+body.lunch #list .restaurant-content{grid-column:2!important;grid-row:1!important;align-self:end!important;justify-self:start!important;max-width:100%!important;min-width:0!important;padding:0!important}
+body.lunch #list .restaurant-name{font-size:clamp(20px,2.3vw,27px)!important;line-height:1.2!important;max-width:100%!important;text-align:left!important}
+body.lunch #list .restaurant-price{grid-column:2!important;grid-row:2!important;justify-self:start!important;align-self:center!important;font-size:clamp(18px,2vw,23px)!important}
+body.lunch #list .pont-cta{grid-column:2!important;grid-row:3!important;justify-self:start!important;align-self:start!important;margin:0!important;white-space:nowrap!important}
+body.lunch #list .restaurant-open>.pont-dishes{display:none!important}
+@keyframes pontAurora{0%{transform:translate(-5%,-3%) rotate(-5deg) scale(1)}50%{transform:translate(4%,3%) rotate(5deg) scale(1.08)}100%{transform:translate(-1%,7%) rotate(-2deg) scale(1.02)}}
+@keyframes pontStarlight{0%{opacity:.2;transform:translateY(0)}100%{opacity:.58;transform:translateY(-18px)}}
+@keyframes pontArc{0%{opacity:.3;transform:rotate(-11deg) translateX(-3%)}100%{opacity:.9;transform:rotate(-9deg) translateX(5%)}}
+@media(max-width:700px){
+ body.lunch #list .restaurant-open{grid-template-columns:43% minmax(0,1fr)!important;min-height:164px!important;row-gap:7px!important;column-gap:12px!important;padding:11px 10px 11px 0!important}
+ body.lunch #list .restaurant-name{font-size:clamp(15px,4.15vw,19px)!important;line-height:1.18!important}
+ body.lunch #list .restaurant-price{font-size:clamp(15px,4vw,18px)!important;padding:5px 11px!important}
+ body.lunch #list .pont-cta{font-size:12px!important;padding:8px 12px!important;white-space:normal!important}
+}
+@media(max-width:360px){body.lunch #list .restaurant-open{grid-template-columns:40% minmax(0,1fr)!important;column-gap:8px!important}body.lunch #list .restaurant-name{font-size:14px!important}}
+@media(prefers-reduced-motion:reduce){body.lunch::before,body.lunch::after,body.lunch main::before{animation:none!important}}
 </style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
 <main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section>
 <section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Previzualizare cu meniuri demonstrative. Ofertele reale vor apărea după conectarea restaurantelor.</p><div id="list" class="grid" aria-live="polite"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
