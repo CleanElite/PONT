@@ -341,6 +341,37 @@ body.lunch #list .restaurant-arrow{display:none!important}
 </style><style id="pont-no-projectors">
 /* Remove animated projector / sweeping spotlight effects; preserve static turquoise gradient */
 body.lunch::before,body.lunch::after,body.lunch main::before,body.lunch main:before{content:none!important;display:none!important;animation:none!important}
+</style><style id="pont-compact-final-cards">
+/* Final compact landscape menu card: full-width upper photo, progressive vertical fade, bottom copy */
+body.lunch #list .restaurant-open{
+ position:relative!important;isolation:isolate!important;display:flex!important;
+ flex-direction:column!important;align-items:flex-start!important;justify-content:flex-end!important;
+ height:142px!important;min-height:142px!important;max-height:142px!important;
+ padding:0 15px 11px!important;gap:5px!important;overflow:hidden!important;
+}
+body.lunch #list .pont-photo{
+ position:absolute!important;top:0!important;left:0!important;right:0!important;bottom:0!important;
+ width:100%!important;height:100%!important;max-height:none!important;min-height:0!important;
+ object-fit:cover!important;object-position:center 40%!important;z-index:-2!important;
+ -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 43%,#000b 57%,#0005 73%,transparent 91%)!important;
+ mask-image:linear-gradient(to bottom,#000 0%,#000 43%,#000b 57%,#0005 73%,transparent 91%)!important;
+}
+body.lunch #list .restaurant-open::before{
+ content:""!important;display:block!important;position:absolute!important;inset:0!important;
+ z-index:-1!important;pointer-events:none!important;
+ background:linear-gradient(to bottom,transparent 0%,#00242b05 42%,#00252b88 67%,#00252be8 87%,#00252b 100%)!important;
+}
+body.lunch #list .restaurant-content{align-self:stretch!important;margin:0!important;padding:0!important;max-width:calc(100% - 75px)!important;z-index:2!important}
+body.lunch #list .restaurant-name{font-size:clamp(16px,2vw,21px)!important;line-height:1.12!important;margin:0!important;text-align:left!important}
+body.lunch #list .pont-cta{align-self:flex-start!important;min-width:0!important;margin:0!important;padding:6px 12px!important;font-size:12px!important;line-height:1.15!important}
+body.lunch #list .restaurant-price{position:absolute!important;top:9px!important;right:10px!important;z-index:3!important;font-size:15px!important;padding:4px 10px!important}
+@media(max-width:600px){
+ body.lunch #list .restaurant-open{height:132px!important;min-height:132px!important;max-height:132px!important;padding:0 12px 10px!important;gap:5px!important}
+ body.lunch #list .restaurant-name{font-size:16px!important}
+ body.lunch #list .restaurant-content{max-width:calc(100% - 62px)!important}
+ body.lunch #list .pont-cta{font-size:11px!important;padding:6px 11px!important}
+ body.lunch #list .restaurant-price{font-size:14px!important}
+}
 </style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
 <main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section>
 <section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Previzualizare cu meniuri demonstrative. Ofertele reale vor apărea după conectarea restaurantelor.</p><div id="list" class="grid" aria-live="polite"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
