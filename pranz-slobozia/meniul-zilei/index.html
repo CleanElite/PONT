@@ -61,11 +61,9 @@ body.lunch button:not(.restaurant-open):focus-visible,body.lunch a:focus-visible
 @media(prefers-reduced-motion:reduce){body.lunch .hero:before,body.lunch .hero:after{animation:none}body.lunch #list .restaurant{transition:none}}
 @media(max-width:620px){body.lunch .hero{min-height:225px;padding:29px 23px;border-radius:23px}body.lunch #list .restaurant-open{min-height:205px}body.lunch #customer{margin-top:12px}}
 </style>
-<style id="pont-filters">
-.pont-tools{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:18px 0 20px}.pont-tools label{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:600}.pont-tools select{width:auto;min-width:140px;padding:10px 12px;border-radius:12px;border:1px solid #a5d8d2;background:#fff;color:#173e40}.pont-empty{padding:24px;border:1px dashed #9acfc8;border-radius:16px;background:#f5fffc}.pont-tools select:focus-visible{outline:3px solid #0aa99d;outline-offset:2px}
-</style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
+<body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
 <main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section>
-<section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Previzualizare cu meniuri demonstrative. Ofertele reale vor apărea după conectarea restaurantelor.</p><div class="pont-tools" aria-label="Filtre restaurante"><label for="maxPrice">Preț <select id="maxPrice"><option value="all">Orice preț</option><option value="30">Sub 30 lei</option><option value="35">Sub 35 lei</option><option value="40">Sub 40 lei</option></select></label><label for="deliveryFilter">Livrare <select id="deliveryFilter"><option value="all">Toate</option><option value="yes">Cu livrare</option></select></label></div><div id="list" class="grid" aria-live="polite"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
+<section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Previzualizare cu meniuri demonstrative. Ofertele reale vor apărea după conectarea restaurantelor.</p><div id="list" class="grid" aria-live="polite"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
 </main>
 <footer>✳ PONT Slobozia · Comenzile se confirmă pe WhatsApp. Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.<section class="pont-legal-footer" aria-label="Informații juridice" style="max-width:1120px;margin:32px auto 0;padding:22px;border-top:1px solid #9b9b8b55;font:13px/1.7 system-ui"><strong>Operator PONT</strong><p>NEGRĂU GEORGIANA-NICOLETA PERSOANĂ FIZICĂ AUTORIZATĂ · CUI 54519245 · Registrul Comerțului F2026020830003 · EUID ROONRC.F2026020830003<br>Sediu: Aleea Bujorului nr. 5, bl. B2, sc. C, et. 3, ap. 55, Slobozia, Ialomița · <a href="mailto:clean.slobozia@gmail.com">clean.slobozia@gmail.com</a></p><p>Versiune de test. PONT facilitează contactul; restaurantul confirmă comenzile și încasează direct.</p><nav style="display:flex;gap:14px;flex-wrap:wrap"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate</a><a href="../cookies.html">Cookies</a><a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer">SAL – ANPC</a></nav></section></footer>
 <dialog id="order" aria-labelledby="orderTitle">
@@ -101,12 +99,11 @@ const ornaments=[
 'M18 50Q60 3 102 50Q60 97 18 50Z'
 ];
 const menus=()=>samples, orders=()=>read('orders',[]);
-const filteredMenus=()=>menus().filter(m=>($('#maxPrice').value==='all'||m.full<=Number($('#maxPrice').value))&&($('#deliveryFilter').value==='all'||m.delivery===true));
-$('#maxPrice').addEventListener('change',render);$('#deliveryFilter').addEventListener('change',render);
+$('#deliveryFilter').addEventListener('change',render);
 let current, draft;
 function render(){
 $('#date').textContent=new Intl.DateTimeFormat('ro-RO',{dateStyle:'full',timeZone:'Europe/Bucharest'}).format(new Date());
-const visible=filteredMenus();
+const visible=menus();
 $('#list').innerHTML=visible.length?visible.map((m,index)=>{
   const logo='<div class="restaurant-logo" aria-hidden="true"><svg viewBox="0 0 120 100"><path d="'+ornaments[index]+'" fill="none" stroke="currentColor" opacity=".65"/><text x="60" y="58" text-anchor="middle" fill="currentColor" font-family="Georgia,serif" font-size="24" letter-spacing="1">'+esc(m.mark)+'</text></svg></div>';
   const badge=m.top?'<span class="featured-label">Recomandarea zilei <small>· sponsorizat demo</small></span>':'';
