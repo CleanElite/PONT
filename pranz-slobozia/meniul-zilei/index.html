@@ -382,7 +382,7 @@ body.lunch #list .restaurant-price{position:absolute!important;top:9px!important
 #order .order-footer,#order .order-total,#order #send,#order #breakdown{position:static!important;inset:auto!important;bottom:auto!important;top:auto!important;transform:none!important;z-index:auto!important}
 #order .order-contact .call-now:not([hidden]){display:inline-flex!important;visibility:visible!important;opacity:1!important}
 #order .order-contact .call-now[hidden]{display:none!important}
-</style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
+.phone-error{display:block;color:#b3261e!important;font-size:12px!important;line-height:1.4;margin-top:6px}.phone-error[hidden]{display:none!important}#order input[aria-invalid="true"]{border-color:#b3261e!important;box-shadow:0 0 0 1px #b3261e44!important}.address-hint{display:block;font-size:12px;line-height:1.4;margin-top:5px;color:#666e66}</style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
 <main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section>
 <section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Meniurile publicate de restaurante pentru astăzi.</p><div id="list" class="grid" aria-live="polite"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
 </main>
@@ -393,8 +393,8 @@ body.lunch #list .restaurant-price{position:absolute!important;top:9px!important
 <form id="checkout">
 <section class="order-menu-preview" aria-label="Meniul restaurantului"><span class="pont-menu-icon" aria-hidden="true">♨</span><div id="menuPreview"></div><p id="combo-price"></p></section><div class="order-contact"><a id="callNow" class="call-now" hidden>☎ Sună acum pentru comandă</a><p>Sau trimite-ne comanda ta pe WhatsApp</p></div><section class="order-selection"><h3>Alege ce dorești să comanzi</h3><p class="order-help">Poți selecta felurile separat sau împreună, ca meniu complet.</p><div id="choices"></div></section>
 <div class="fulfillment"><span class="field-heading">Cum primești comanda?</span><div class="fulfillment-options"><button type="button" data-method="Livrare, dacă restaurantul confirmă" class="selected" aria-pressed="true">♧ Livrare</button><button type="button" data-method="Ridicare" aria-pressed="false">▢ Ridicare</button></div><select name="method" aria-label="Modalitate de primire" class="visually-hidden-select"><option>Livrare, dacă restaurantul confirmă</option><option>Ridicare</option></select></div>
-<label>Nume și prenume<input name="full_name" type="text" autocomplete="name" required minlength="3" maxlength="140" placeholder="Nume și prenume"></label><label>Telefon<input name="phone" type="tel" autocomplete="tel" required maxlength="24" pattern="[+]?[0-9 \(\)\-]{8,24}"></label>
-<label id="address" hidden>Adresă de livrare<input name="address" autocomplete="street-address" maxlength="150"></label>
+<label>Nume și prenume<input name="full_name" type="text" autocomplete="name" required minlength="3" maxlength="140" placeholder="Nume și prenume"></label><label>Număr de telefon<input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="24" placeholder="07XXXXXXXX sau +407XXXXXXXX" aria-describedby="phoneError"><small id="phoneError" class="phone-error" role="alert" hidden>Numărul de telefon nu este corect. Introdu un număr mobil românesc: 07XXXXXXXX sau +407XXXXXXXX.</small></label>
+<label id="address" hidden>Adresă de livrare<input name="address" autocomplete="street-address" maxlength="150" placeholder="Stradă, număr, bloc, etaj, apartament"><small class="address-hint">Completează strada și numărul, iar dacă este cazul: bloc, etaj și apartament.</small></label>
 <label>Plată<select name="payment"></select></label>
 <label>Observații <small>(opțional)</small><textarea name="notes" rows="2" maxlength="250"></textarea></label>
 <p id="orderMsg" role="status"></p>
@@ -446,18 +446,25 @@ function basket(first,second,menu){
 }
 const subtotal=items=>items.reduce((total,item)=>total+item.qty*item.price,0);
 const selection=()=>basket(...qty(),current);
+const validCustomerPhone=value=>{const digits=String(value||'').replace(/[\s().-]/g,'');return /^07[0-9]{8}$/.test(digits)||/^\+407[0-9]{8}$/.test(digits)||/^00407[0-9]{8}$/.test(digits)};
+let phoneTouched=false;
 function update(){
+  const phoneValue=form.elements.phone.value.trim();
+  const phoneValid=validCustomerPhone(phoneValue);
+  const showPhoneError=(phoneTouched||phoneValue.length>0)&&!phoneValid;
+  $('#phoneError').hidden=!showPhoneError;
+  form.elements.phone.setAttribute('aria-invalid',String(showPhoneError));
   const delivery=form.elements.method.value!=='Ridicare';
   $('#address').hidden=!delivery;
   form.elements.address.required=delivery;
   const items=selection();
   $('#total').textContent=lei(subtotal(items));
   $('#breakdown').textContent=items.map(item=>item.qty+' × '+item.short).join(' · ')+(delivery?' · Livrarea se confirmă separat':'');
-  $('#send').disabled=items.length===0||!current?.phone||form.elements.full_name.value.trim().length<3||!form.elements.phone.value.trim()||!form.elements.phone.checkValidity()||(delivery&&!form.elements.address.value.trim());form.querySelectorAll('[data-method]').forEach(b=>{const active=b.dataset.method===form.elements.method.value;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active))});
+  $('#send').disabled=items.length===0||!current?.phone||form.elements.full_name.value.trim().length<3||!phoneValid||(delivery&&!form.elements.address.value.trim());form.querySelectorAll('[data-method]').forEach(b=>{const active=b.dataset.method===form.elements.method.value;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active))});
 }
 let returnFocus;
 function openOrder(m,trigger){
-  current=m;draft=null;returnFocus=trigger;form.reset();
+  current=m;draft=null;returnFocus=trigger;form.reset();phoneTouched=false;
   $('#orderTitle').textContent=m.name;
   $('#menuPreview').innerHTML='<div class="preview-course"><span>F1</span><strong>'+esc(m.first)+'</strong></div><div class="preview-course"><span>F2</span><strong>'+esc(m.second)+'</strong></div>'+(m.dessert?'<div class="preview-course"><span>D</span><strong>'+esc(m.dessert)+'</strong></div>':'');$('#combo-price').innerHTML='<small>Meniu complet</small><strong>'+lei(m.full)+'</strong>';
   $('#choices').innerHTML=titles().map((x,i)=>'<div class="quantity"><label for="qty-'+i+'"><strong>Felul '+(i===0?'întâi':'doi')+'</strong><small>'+lei(prices()[i])+' separat</small></label><div class="stepper"><button type="button" class="secondary" data-step="-1" aria-label="Scade '+esc(x)+'">−</button><input id="qty-'+i+'" data-qty type="number" inputmode="numeric" min="0" max="99" value="0" required><button type="button" class="secondary" data-step="1" aria-label="Adaugă '+esc(x)+'">+</button></div></div>').join('');
@@ -469,7 +476,7 @@ function openOrder(m,trigger){
 $('#list').onclick=e=>{const trigger=e.target.closest('[data-menu]');if(trigger){const m=menus().find(m=>m.id===trigger.dataset.menu);if(m)openOrder(m,trigger)}};
 $('#close').onclick=()=>$('#order').close();
 $('#order').addEventListener('close',()=>returnFocus?.focus());
-form.oninput=update;form.querySelectorAll('[data-method]').forEach(b=>b.addEventListener('click',()=>{form.elements.method.value=b.dataset.method;update()}));
+form.oninput=update;form.elements.phone.addEventListener('blur',()=>{phoneTouched=true;update()});form.querySelectorAll('[data-method]').forEach(b=>b.addEventListener('click',()=>{form.elements.method.value=b.dataset.method;update()}));
 $('#choices').onclick=e=>{
 const step=Number(e.target.dataset.step);
 if(!step)return;
@@ -481,7 +488,7 @@ const normalizeCallPhone=raw=>{const text=String(raw||'').trim();let digits=text
 const cleanWhatsAppPhone=raw=>{let digits=String(raw||'').replace(/[^0-9]/g,'');if(digits.startsWith('00'))digits=digits.slice(2);if(digits.startsWith('0')&&digits.length===10)digits='40'+digits.slice(1);return digits};
 let submittingOrder=false;
 async function reserveOrderNumber(){const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Numerotarea comenzilor nu este configurată.');const response=await fetch(cfg.url+'/rest/v1/rpc/next_pont_order_number',{method:'POST',headers:{'Content-Type':'application/json',apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},body:'{}'});if(!response.ok)throw Error('Nu s-a putut aloca numărul comenzii. Reîncearcă.');const n=await response.json();if(!Number.isSafeInteger(Number(n))||Number(n)<1)throw Error('Număr de comandă invalid.');return 'PONT '+String(n).padStart(2,'0')}
-form.onsubmit=async e=>{e.preventDefault();if(submittingOrder)return;if(!form.reportValidity())return;if(!current?.phone){$('#orderMsg').textContent='Acest restaurant nu a activat comenzile online.';return}if(!qty().some(Boolean)){$('#orderMsg').textContent='Alege cel puțin un preparat.';return}const details=Object.fromEntries(new FormData(form));details.payment=current?.card?(details.payment||'Cash'):'Cash';details.full_name=String(details.full_name||'').trim();details.phone=String(details.phone||'').trim();details.address=String(details.address||'').trim();if(details.full_name.length<3||!details.phone||!form.elements.phone.checkValidity()||(details.method!=='Ridicare'&&!details.address)){$('#orderMsg').textContent='Completează numele, telefonul și adresa pentru livrare.';return}if(details.method==='Ridicare')details.address='';
+form.onsubmit=async e=>{e.preventDefault();if(submittingOrder)return;if(!form.reportValidity())return;if(!current?.phone){$('#orderMsg').textContent='Acest restaurant nu a activat comenzile online.';return}if(!qty().some(Boolean)){$('#orderMsg').textContent='Alege cel puțin un preparat.';return}const details=Object.fromEntries(new FormData(form));details.payment=current?.card?(details.payment||'Cash'):'Cash';details.full_name=String(details.full_name||'').trim();details.phone=String(details.phone||'').trim();details.address=String(details.address||'').trim();if(details.full_name.length<3||!validCustomerPhone(details.phone)||(details.method!=='Ridicare'&&!details.address)){$('#orderMsg').textContent='Completează numele, telefonul și adresa pentru livrare.';return}if(details.method==='Ridicare')details.address='';
 const key=JSON.stringify([qty(),details]);
 submittingOrder=true;$('#send').disabled=true;let id;try{id=draft?.key===key?draft.id:await reserveOrderNumber()}catch(err){$('#orderMsg').textContent=err.message;submittingOrder=false;update();return}
 draft={key,id};
