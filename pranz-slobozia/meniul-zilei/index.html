@@ -448,7 +448,7 @@ function update(){
   const items=selection();
   $('#total').textContent=lei(subtotal(items));
   $('#breakdown').textContent=items.map(item=>item.qty+' × '+item.short).join(' · ')+(delivery?' · Livrarea se confirmă separat':'');
-  $('#send').disabled=items.length===0||!current?.phone;form.querySelectorAll('[data-method]').forEach(b=>{const active=b.dataset.method===form.elements.method.value;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active))});
+  $('#send').disabled=items.length===0||!current?.phone||form.elements.full_name.value.trim().length<3||!form.elements.phone.value.trim()||!form.elements.phone.checkValidity()||(delivery&&!form.elements.address.value.trim());form.querySelectorAll('[data-method]').forEach(b=>{const active=b.dataset.method===form.elements.method.value;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active))});
 }
 let returnFocus;
 function openOrder(m,trigger){
