@@ -377,6 +377,11 @@ body.lunch #list .restaurant-price{position:absolute!important;top:9px!important
  body.lunch #list .pont-cta{font-size:11px!important;padding:6px 11px!important}
  body.lunch #list .restaurant-price{font-size:14px!important}
 }
+
+/* Comanda: actiunile sunt la final, nu raman ancorate la scroll. */
+#order .order-footer,#order .order-total,#order #send,#order #breakdown{position:static!important;inset:auto!important;bottom:auto!important;top:auto!important;transform:none!important;z-index:auto!important}
+#order .order-contact .call-now:not([hidden]){display:inline-flex!important;visibility:visible!important;opacity:1!important}
+#order .order-contact .call-now[hidden]{display:none!important}
 </style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
 <main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section>
 <section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Meniurile publicate de restaurante pentru astăzi.</p><div id="list" class="grid" aria-live="polite"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
@@ -457,7 +462,7 @@ function openOrder(m,trigger){
   $('#menuPreview').innerHTML='<div class="preview-course"><span>F1</span><strong>'+esc(m.first)+'</strong></div><div class="preview-course"><span>F2</span><strong>'+esc(m.second)+'</strong></div>'+(m.dessert?'<div class="preview-course"><span>D</span><strong>'+esc(m.dessert)+'</strong></div>':'');$('#combo-price').innerHTML='<small>Meniu complet</small><strong>'+lei(m.full)+'</strong>';
   $('#choices').innerHTML=titles().map((x,i)=>'<div class="quantity"><label for="qty-'+i+'"><strong>Felul '+(i===0?'întâi':'doi')+'</strong><small>'+lei(prices()[i])+' separat</small></label><div class="stepper"><button type="button" class="secondary" data-step="-1" aria-label="Scade '+esc(x)+'">−</button><input id="qty-'+i+'" data-qty type="number" inputmode="numeric" min="0" max="99" value="0" required><button type="button" class="secondary" data-step="1" aria-label="Adaugă '+esc(x)+'">+</button></div></div>').join('');
   form.elements.payment.innerHTML='<option value="Cash">Cash</option>'+(m.card?'<option value="Card">Card</option>':'');let note=document.querySelector('#cardPaymentNote');if(!note){note=document.createElement('small');note.id='cardPaymentNote';form.elements.payment.closest('label').after(note)}note.textContent=m.card?'Restaurantul acceptă plata cu cardul.':'Restaurantul nu percepe plata cu cardul. Doar cash.';
-  $('#send').textContent=m.phone?'Trimite comanda pe WhatsApp':'WhatsApp indisponibil — lipsește numărul';$('#send').disabled=!m.phone;$('#callNow').hidden=!m.phone;if(m.phone)$('#callNow').href='tel:+'+m.phone.replace(/\D/g,'');
+  $('#send').textContent=m.phone?'Trimite comanda pe WhatsApp':'WhatsApp indisponibil — lipsește numărul';$('#send').disabled=!m.phone;const callPhone=normalizeCallPhone(m.phone);$('#callNow').hidden=!callPhone;if(callPhone){$('#callNow').href='tel:'+callPhone;$('#callNow').textContent='☎ Sună acum pentru comandă';}else{$('#callNow').removeAttribute('href');}
   $('#orderMsg').textContent='';
   $('#order').showModal();update();
 }
@@ -472,6 +477,7 @@ const input=e.target.parentElement.querySelector('[data-qty]');
 input.value=Math.max(0,Math.min(99,Number(input.value)+step));
 update();
 };
+const normalizeCallPhone=raw=>{const text=String(raw||'').trim();let digits=text.replace(/[^0-9]/g,'');if(!digits)return '';if(digits.startsWith('00'))return '+'+digits.slice(2);if(text.startsWith('+'))return '+'+digits;if(digits.startsWith('40')&&digits.length===11)return '+'+digits;if(digits.startsWith('0'))return digits;return digits};
 const cleanWhatsAppPhone=raw=>{let digits=String(raw||'').replace(/[^0-9]/g,'');if(digits.startsWith('00'))digits=digits.slice(2);if(digits.startsWith('0')&&digits.length===10)digits='40'+digits.slice(1);return digits};
 let submittingOrder=false;
 async function reserveOrderNumber(){const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Numerotarea comenzilor nu este configurată.');const response=await fetch(cfg.url+'/rest/v1/rpc/next_pont_order_number',{method:'POST',headers:{'Content-Type':'application/json',apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},body:'{}'});if(!response.ok)throw Error('Nu s-a putut aloca numărul comenzii. Reîncearcă.');const n=await response.json();if(!Number.isSafeInteger(Number(n))||Number(n)<1)throw Error('Număr de comandă invalid.');return 'PONT '+n}
