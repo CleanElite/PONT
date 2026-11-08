@@ -1,2 +1,1 @@
-// Configure only the public Supabase URL and publishable anon key. Never put service_role secrets here.
-window.PONT_CONFIG = { url: '', anonKey: '' };
+window.PONT_CONFIG = { url: 'https://lzmtwjfsrmhrqceqpsuc.supabase.co', anonKey: 'sb_publishable_Xs6LhIjAHlqDLuA9KtK0Xw_e_v6xb7W' };
