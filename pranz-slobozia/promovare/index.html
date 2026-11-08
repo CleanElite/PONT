@@ -387,17 +387,119 @@ body.lunch #list .restaurant-price{position:absolute!important;top:9px!important
  body.lunch #list .pont-cta{font-size:11px!important;padding:6px 11px!important}
  body.lunch #list .restaurant-price{font-size:14px!important}
 }
-</style><style>body.lunch #list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}body.lunch #list .restaurant:nth-child(-n+2){grid-column:1/-1}body.lunch #list .restaurant:nth-child(-n+2) .restaurant-open{min-height:240px}body.lunch #list .restaurant:nth-child(n+3){aspect-ratio:1/1;min-width:0}body.lunch #list .restaurant:nth-child(n+3) .restaurant-open{height:100%;min-height:0!important;padding:16px;gap:7px}body.lunch #list .restaurant:nth-child(n+3) .restaurant-name{font-size:clamp(17px,3.6vw,24px)}body.lunch #list .restaurant:nth-child(n+3) .restaurant-price{font-size:clamp(17px,3.6vw,23px)}body.lunch #list .restaurant:nth-child(n+3) .pont-dishes{font-size:clamp(11px,2.5vw,14px);line-height:1.35}body.lunch #list .restaurant:nth-child(n+3) .pont-cta{font-size:11px}body.lunch #list .auction-open{cursor:default}body.lunch #list .auction-open:hover{transform:none}.auction-note{padding:13px 16px;border:1px solid #d8caa7;background:#fff7e5;border-radius:14px;font-size:13px;color:#725e39;margin:14px 0 23px}@media(max-width:440px){body.lunch #list{gap:10px!important}body.lunch #list .restaurant:nth-child(n+3) .restaurant-open{padding:11px;gap:4px}body.lunch #list .restaurant:nth-child(n+3) .pont-dishes{font-size:10px}body.lunch #list .restaurant:nth-child(n+3) .pont-cta{font-size:10px}body.lunch #list .restaurant:nth-child(n+3) .restaurant-arrow{display:none}}.auction-controls{margin:24px 0;padding:22px;background:#fffdf7;border:1px solid #e6e0d3;border-radius:22px}.bid-row{display:flex;gap:10px;margin-top:10px}.bid-row input{flex:1;min-width:0;padding:13px;border:1px solid #bbb;border-radius:12px}.bid-row button{border:0;border-radius:12px;background:#075e57;color:white;padding:12px 17px;font-weight:700}.auction-controls h2{font-family:Georgia,serif}.auction-controls label{display:block;font-weight:650}.auction-controls p{font-size:13px}.auction-controls button:disabled{opacity:.5}@media(max-width:440px){.bid-row{flex-direction:column}}</style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" id="back" href="../admin-v2/">← Înapoi la panou</a></header><main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section><section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Meniurile publicate de restaurante pentru astăzi.</p><div id="list" class="grid" aria-label="Poziții de promovare"><p>Se încarcă ofertele…</p></div><div class="auction-controls" id="auctionControls" hidden><h2>Oferta restaurantului tău</h2><p id="bidInfo"></p><form id="bidForm"><label for="bidAmount">Oferta totală pentru luna următoare (lei)</label><div class="bid-row"><input id="bidAmount" type="number" min="50" step="1" required placeholder="Minimum 50 lei"><button type="submit" id="bidSubmit">Trimite oferta</button></div></form><p id="bidMessage" role="status"></p><p class="muted">Ofertele se actualizează automat. Suma ofertată reprezintă angajamentul de plată pentru promovare; plata se confirmă separat.</p></div></section></main><footer>✳ PONT Slobozia · Promovare &amp; vizibilitate pentru restaurante partenere.</footer><script src="../super-admin/config.js"></script><script type="module">
+</style><style>body.lunch #list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}body.lunch #list .restaurant:nth-child(-n+2){grid-column:1/-1}body.lunch #list .restaurant:nth-child(-n+2) .restaurant-open{min-height:240px}body.lunch #list .restaurant:nth-child(n+3){aspect-ratio:1/1;min-width:0}body.lunch #list .restaurant:nth-child(n+3) .restaurant-open{height:100%;min-height:0!important;padding:16px;gap:7px}body.lunch #list .restaurant:nth-child(n+3) .restaurant-name{font-size:clamp(17px,3.6vw,24px)}body.lunch #list .restaurant:nth-child(n+3) .restaurant-price{font-size:clamp(17px,3.6vw,23px)}body.lunch #list .restaurant:nth-child(n+3) .pont-dishes{font-size:clamp(11px,2.5vw,14px);line-height:1.35}body.lunch #list .restaurant:nth-child(n+3) .pont-cta{font-size:11px}body.lunch #list .auction-open{cursor:default}body.lunch #list .auction-open:hover{transform:none}.auction-note{padding:13px 16px;border:1px solid #d8caa7;background:#fff7e5;border-radius:14px;font-size:13px;color:#725e39;margin:14px 0 23px}@media(max-width:440px){body.lunch #list{gap:10px!important}body.lunch #list .restaurant:nth-child(n+3) .restaurant-open{padding:11px;gap:4px}body.lunch #list .restaurant:nth-child(n+3) .pont-dishes{font-size:10px}body.lunch #list .restaurant:nth-child(n+3) .pont-cta{font-size:10px}body.lunch #list .restaurant:nth-child(n+3) .restaurant-arrow{display:none}}.auction-controls{margin:24px 0;padding:22px;background:#fffdf7;border:1px solid #e6e0d3;border-radius:22px}.bid-row{display:flex;gap:10px;margin-top:10px}.bid-row input{flex:1;min-width:0;padding:13px;border:1px solid #bbb;border-radius:12px}.bid-row button{border:0;border-radius:12px;background:#075e57;color:white;padding:12px 17px;font-weight:700}.auction-controls h2{font-family:Georgia,serif}.auction-controls label{display:block;font-weight:650}.auction-controls p{font-size:13px}.auction-controls button:disabled{opacity:.5}@media(max-width:440px){.bid-row{flex-direction:column}}</style><style>
+/* PONT | Licitații fără fotografii */
+body.lunch #list{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important}
+body.lunch #list .restaurant{margin:0!important;min-width:0!important;background:transparent!important;border:0!important;box-shadow:none!important;animation:none!important}
+body.lunch #list .restaurant:nth-child(-n+2){grid-column:1/-1!important;aspect-ratio:auto!important}
+body.lunch #list .restaurant:nth-child(n+3){aspect-ratio:1/1!important}
+body.lunch #list .restaurant .auction-open{
+  position:relative!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+  gap:13px!important;width:100%!important;height:100%!important;max-height:none!important;min-height:0!important;
+  padding:clamp(16px,3vw,32px)!important;border:1px solid #d4c8ad!important;border-radius:24px!important;
+  background:linear-gradient(145deg,#153f37,#0b2928)!important;color:#fff9ee!important;
+  box-shadow:0 12px 30px #112a2530!important;text-align:center!important;overflow:hidden!important;cursor:pointer!important;
+  transform:none!important;transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease!important;
+}
+body.lunch #list .restaurant .auction-open::before{content:''!important;inset:0!important;position:absolute!important;background:radial-gradient(circle at 50% 15%,#ebdfc617,transparent 70%)!important;z-index:0!important}
+body.lunch #list .restaurant .auction-open:hover{transform:translateY(-3px)!important;box-shadow:0 18px 38px #112a2540!important;border-color:#d9ba79!important}
+body.lunch #list .restaurant .auction-open:focus-visible{outline:3px solid #cba15e!important;outline-offset:3px}
+body.lunch #list .restaurant:nth-child(-n+2) .auction-open{height:clamp(180px,25vw,245px)!important;min-height:180px!important}
+body.lunch #list .restaurant:nth-child(n+3) .auction-open{height:100%!important;padding:14px!important}
+body.lunch #list .auction-open .auction-position{position:relative;z-index:1;font-size:10px;letter-spacing:.2em;font-weight:800;color:#d6bd82;text-transform:uppercase}
+body.lunch #list .auction-open .restaurant-content{position:relative!important;z-index:1!important;align-self:center!important;display:block!important;margin:0!important;padding:0!important;max-width:100%!important;min-width:0!important;width:100%!important;flex:none!important}
+body.lunch #list .auction-open .restaurant-name{display:block!important;font:600 clamp(20px,3.5vw,33px)/1.1 Georgia,serif!important;color:#fff9ef!important;text-align:center!important;word-break:normal!important;overflow-wrap:break-word!important;max-width:none!important;margin:0!important}
+body.lunch #list .restaurant:nth-child(n+3) .restaurant-name{font-size:clamp(16px,2.5vw,24px)!important}
+body.lunch #list .auction-open .auction-price{position:relative!important;z-index:1!important;display:block!important;font-size:clamp(14px,2.2vw,20px)!important;font-weight:700!important;color:#ebd49b!important}
+body.lunch #list .auction-open .auction-action{position:relative!important;z-index:1!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;border:1px solid #e1c586!important;background:#f2dca4!important;color:#20382e!important;border-radius:999px!important;padding:10px 21px!important;font:700 13px system-ui!important;white-space:nowrap!important}
+body.lunch #list .restaurant:nth-child(n+3) .auction-action{font-size:11px!important;padding:8px 13px!important}
+body.lunch #list .auction-open .pont-photo,body.lunch #list .auction-open .restaurant-arrow,body.lunch #list .auction-open .restaurant-price,body.lunch #list .auction-open .pont-dishes,body.lunch #list .auction-open .pont-cta{display:none!important}
+.auction-modal{border:1px solid #e5d9bd;border-radius:26px;background:#fffdf7;color:#18382e;width:min(480px,calc(100% - 28px));max-height:min(88dvh,760px);padding:0;box-shadow:0 25px 70px #051f1b55;overflow:auto}
+.auction-modal::backdrop{background:#071e1bbd;backdrop-filter:blur(5px)}
+.auction-modal-inner{padding:clamp(22px,5vw,36px);position:relative}
+.auction-modal-close{position:absolute;top:14px;right:14px;background:#f2eee4;color:#193a32;padding:5px;width:36px;height:36px;border-radius:50%;font-size:21px}
+.auction-modal .modal-kicker{font-size:11px;letter-spacing:.17em;text-transform:uppercase;color:#7d6a45;font-weight:800}
+.auction-modal h2{font:600 clamp(26px,6vw,39px)/1.12 Georgia,serif;margin:11px 40px 10px 0}
+.auction-modal .modal-explainer{font-size:14px;line-height:1.5;color:#5e655b}
+.auction-modal .modal-current{padding:14px 16px;background:#f4f0e5;border-radius:14px;margin:20px 0;font-size:14px}
+.auction-modal input{display:block;width:100%;font-size:22px;font-weight:700;padding:14px;border-radius:12px;border:1px solid #b9b7a8;margin:7px 0 12px}
+.auction-modal button.primary-bid{width:100%;min-height:51px;background:#174b3e;color:#fff6e4;border-radius:13px}
+.auction-modal button.primary-bid:disabled{opacity:.5}
+.auction-modal .modal-status{min-height:22px;font-size:13px;font-weight:650}
+.auction-modal .modal-note{font-size:12px;color:#67685c;line-height:1.5}
+@media(max-width:520px){body.lunch #list{gap:10px!important}body.lunch #list .restaurant:nth-child(n+3) .auction-open{border-radius:16px!important;gap:9px!important;padding:10px!important}body.lunch #list .restaurant:nth-child(n+3) .auction-position{font-size:9px}body.lunch #list .restaurant:nth-child(n+3) .restaurant-name{font-size:clamp(15px,4.2vw,21px)!important}body.lunch #list .restaurant:nth-child(n+3) .auction-price{font-size:13px!important}body.lunch #list .restaurant:nth-child(n+3) .auction-action{font-size:10px!important;padding:8px 10px!important}}
+</style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" id="back" href="../admin-v2/">← Înapoi la panou</a></header><main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section><section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Meniurile publicate de restaurante pentru astăzi.</p><div id="list" class="grid" aria-label="Poziții de promovare"><p>Se încarcă ofertele…</p></div><p class="muted" id="auctionHint">Atinge orice poziție pentru a vedea oferta și a licita.</p></section></main><dialog id="auctionDialog" class="auction-modal" aria-labelledby="auctionModalTitle"><div class="auction-modal-inner"><button type="button" class="auction-modal-close" id="auctionClose" aria-label="Închide">×</button><div class="modal-kicker" id="auctionModalPosition">LICITAȚIE PONT</div><h2 id="auctionModalTitle">Licitează pentru vizibilitate</h2><p class="modal-explainer">Ofertele se clasează automat după sumă. Licitezi pentru promovare, nu cumperi o poziție fixă.</p><div class="modal-current" id="auctionModalCurrent"></div><form id="bidForm"><label for="bidAmount">Oferta ta totală (lei)</label><input id="bidAmount" type="number" min="50" step="1" inputmode="numeric" required placeholder="Minimum 50 lei"><button class="primary-bid" type="submit" id="bidSubmit">Confirmă oferta</button></form><p class="modal-status" id="bidMessage" role="status" aria-live="polite"></p><p class="modal-note" id="auctionModalNote">Oferta minimă este 50 lei. Fiecare majorare trebuie să fie de cel puțin 10 lei. Plata este verificată separat.</p></div></dialog><footer>✳ PONT Slobozia · Promovare &amp; vizibilitate pentru restaurante partenere.</footer><script src="../super-admin/config.js"></script><script type="module">
 const $=id=>document.getElementById(id);
-const photos=['https://images.unsplash.com/photo-1547592180-85f173990554?w=700&q=85','https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=700&q=85','https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=700&q=85','https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=700&q=85','https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=700&q=85','https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=700&q=85'];
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
-const today=()=>new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Bucharest'});
-const nextMonth=()=>{const [y,m]=today().split('-').map(Number);return new Date(Date.UTC(y,m,1)).toISOString().slice(0,10)};
-const month=nextMonth();let db,me,role,offers=[],names={};
-$('date').textContent=new Intl.DateTimeFormat('ro-RO',{dateStyle:'full',timeZone:'Europe/Bucharest'}).format(new Date());
-function render(){const sorted=[...offers].sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at));const count=Math.max(6,sorted.length);$('list').innerHTML=Array.from({length:count},(_,i)=>{const o=sorted[i],name=o?(names[o.restaurant_id]||'Restaurant'):'Poziție disponibilă';return '<article class="restaurant'+(i===0?' featured':'')+'" style="--delay:'+i*60+'ms"><div class="restaurant-open auction-open"><img class="pont-photo" src="'+photos[i%photos.length]+'" alt="Fotografie ilustrativă" loading="lazy"><span class="restaurant-content"><span class="restaurant-name">'+(o?esc(name):'Poziția '+String(i+1).padStart(2,'0'))+'</span></span><span class="restaurant-price">'+(o?Number(o.amount).toLocaleString('ro-RO')+' lei':'Minimum 50 lei')+'</span><p class="pont-dishes">Poziția '+String(i+1).padStart(2,'0')+'<br>'+(o?(o.payment_status==='paid'?'Plată confirmată':o.payment_status==='unpaid'?'Plată neîncasată':'Plată în așteptare'):'Spațiu disponibil')+'</p><span class="pont-cta">Promovare &amp; vizibilitate</span><span class="restaurant-arrow" aria-hidden="true">↗</span></div></article>'}).join('');if(role==='restaurant'){const own=offers.find(o=>o.restaurant_id===me);const open=[22,23,26,27,29].includes(Number(today().slice(8)));$('auctionControls').hidden=false;$('bidInfo').textContent=own?'Oferta actuală: '+Number(own.amount).toLocaleString('ro-RO')+' lei · '+(own.payment_status==='paid'?'încasată':'neachitată'):'Nu ai depus încă o ofertă pentru '+month.slice(0,7);$('bidAmount').min=own?Number(own.amount)+10:50;$('bidAmount').placeholder='Minimum '+$('bidAmount').min+' lei';$('bidSubmit').disabled=!open||own?.payment_status==='paid';$('bidSubmit').textContent=open?'Trimite oferta':'Licitația este închisă';}}
-async function load(){const [a,b]=await Promise.all([db.from('auction_offers').select('*').eq('campaign_month',month).order('amount',{ascending:false}),db.from('restaurants').select('id,name')]);if(a.error)throw a.error;if(b.error)throw b.error;offers=a.data||[];names=Object.fromEntries((b.data||[]).map(r=>[r.id,r.name]));render()}
-async function start(){try{const c=window.PONT_CONFIG;if(!c?.url||!c?.anonKey)throw Error('Conexiune neconfigurată');const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');db=createClient(c.url,c.anonKey);const {data:{user}}=await db.auth.getUser();if(!user){location.replace('../login/');return}const {data,error}=await db.from('profiles').select('role').eq('user_id',user.id).maybeSingle();if(error)throw error;role=data?.role;if(!['restaurant','super_admin'].includes(role))throw Error('Acces neautorizat');$('back').href=role==='super_admin'?'../super-admin/':'../admin-v2/';if(role==='restaurant'){const access=await db.rpc('my_restaurant_access');if(access.error)throw access.error;me=access.data?.[0]?.restaurant_id;if(!me)throw Error('Restaurant neatribuit')}await load();setInterval(()=>load().catch(console.error),15000)}catch(e){$('list').textContent='Nu se pot încărca licitațiile: '+e.message}}
-$('bidForm').onsubmit=async e=>{e.preventDefault();const value=Number($('bidAmount').value);if(!Number.isInteger(value)||value<50){$('bidMessage').textContent='Introdu o sumă validă de minimum 50 lei';return}if(!confirm('Confirmi oferta fermă de '+value+' lei pentru promovarea din '+month.slice(0,7)+'? Plata va fi solicitată separat.'))return;const btn=$('bidSubmit');btn.disabled=true;try{const {error}=await db.rpc('place_my_auction_bid',{p_month:month,p_amount:value});if(error)throw error;$('bidMessage').textContent='Oferta a fost înregistrată. Plata este în așteptare.';await load()}catch(e){$('bidMessage').textContent=e.message}finally{render()}};
+const localDate=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+const nextMonth=()=>{const [y,m]=localDate().split('-').map(Number);return new Date(Date.UTC(y,m,1)).toISOString().slice(0,10)};
+const money=v=>Number(v).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
+const month=nextMonth();let db,me,role,offers=[],names={},selectedSlot=0,busy=false;
+const openDays=[22,23,26,27,29];
+const auctionIsOpen=()=>openDays.includes(Number(localDate().slice(8)));
+$('date').textContent=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'Europe/Bucharest'}).format(new Date(new Date().setMonth(new Date().getMonth()+1)));
+function orderedOffers(){return [...offers].sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at))}
+function ownOffer(){return offers.find(o=>o.restaurant_id===me)}
+function render(){
+ const sorted=orderedOffers(),count=Math.max(6,sorted.length);
+ $('list').innerHTML=Array.from({length:count},(_,i)=>{
+  const o=sorted[i],name=o?(names[o.restaurant_id]||'Restaurant'):'Loc disponibil';
+  return '<article class="restaurant'+(i===0?' featured':'')+'"><button type="button" class="restaurant-open auction-open" data-slot="'+i+'" aria-label="Poziția '+(i+1)+', '+esc(name)+'. Deschide licitația"><span class="auction-position">POZIȚIA '+String(i+1).padStart(2,'0')+'</span><span class="restaurant-content"><span class="restaurant-name">'+esc(name)+'</span></span><span class="auction-price">'+(o?money(o.amount):'De la 50 lei')+'</span><span class="auction-action">Licitează</span></button></article>';
+ }).join('');
+ $('auctionHint').textContent=auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':'Licitația este momentan închisă. Poți consulta ofertele și următoarele date: 22–23, 26–27 și 29.';
+ if($('auctionDialog').open)updateModal();
+}
+function updateModal(){
+ const sorted=orderedOffers(),target=sorted[selectedSlot],own=ownOffer(),isAdmin=role==='super_admin',open=auctionIsOpen();
+ $('auctionModalPosition').textContent='POZIȚIA '+String(selectedSlot+1).padStart(2,'0')+' · '+new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month));
+ $('auctionModalTitle').textContent=target?(names[target.restaurant_id]||'Restaurant'):'Loc disponibil';
+ $('auctionModalCurrent').textContent=(target?'Oferta poziției: '+money(target.amount):'Nicio ofertă pentru această poziție')+(own?' · Oferta ta: '+money(own.amount):'');
+ const minimum=Math.max(50,own?Number(own.amount)+10:50,target?Number(target.amount)+10:50);
+ $('bidAmount').min=String(minimum);
+ $('bidAmount').placeholder='Minimum '+money(minimum);
+ $('bidAmount').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
+ $('bidSubmit').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
+ $('bidSubmit').textContent=busy?'Se salvează…':isAdmin?'Mod vizualizare':own?.payment_status==='paid'?'Oferta ta este achitată':open?'Confirmă oferta':'Licitația este închisă';
+ $('auctionModalNote').textContent=isAdmin?'Contul Super Admin poate consulta licitațiile, fără să liciteze.':!open?'Licitații: 22–23, 26–27 și 29. Încasări: 24, 28 și 30.':own?.payment_status==='paid'?'Oferta este deja confirmată ca plătită.':'Oferta minimă din acest formular este '+money(minimum)+'. Dacă altcineva licitează mai mult, poziția ta se modifică. Plata se confirmă separat.';
+}
+$('list').addEventListener('click',e=>{const button=e.target.closest('[data-slot]');if(!button)return;selectedSlot=Number(button.dataset.slot);$('bidMessage').textContent='';$('bidAmount').value='';updateModal();$('auctionDialog').showModal()});
+$('auctionClose').onclick=()=>$('auctionDialog').close();
+$('auctionDialog').addEventListener('click',e=>{if(e.target===$('auctionDialog'))$('auctionDialog').close()});
+async function load(){
+ const [a,b]=await Promise.all([db.from('auction_offers').select('*').eq('campaign_month',month).order('amount',{ascending:false}),db.from('restaurants').select('id,name')]);
+ if(a.error)throw a.error;if(b.error)throw b.error;
+ offers=a.data||[];names=Object.fromEntries((b.data||[]).map(r=>[r.id,r.name]));render();
+}
+async function start(){
+ try{
+  const c=window.PONT_CONFIG;if(!c?.url||!c?.anonKey)throw Error('Conexiune neconfigurată');
+  const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+  db=createClient(c.url,c.anonKey);
+  const {data:{user}}=await db.auth.getUser();
+  if(!user){location.replace('../login/');return}
+  const {data,error}=await db.from('profiles').select('role').eq('user_id',user.id).maybeSingle();
+  if(error)throw error;role=data?.role;
+  if(!['restaurant','super_admin'].includes(role))throw Error('Acces neautorizat');
+  $('back').href=role==='super_admin'?'../super-admin/':'../admin-v2/';
+  if(role==='restaurant'){const access=await db.rpc('my_restaurant_access');if(access.error)throw access.error;me=access.data?.[0]?.restaurant_id;if(!me)throw Error('Restaurant neatribuit')}
+  await load();
+  setInterval(()=>load().catch(e=>console.error('Actualizare licitații:',e)),15000);
+ }catch(e){$('list').textContent='Nu se pot încărca licitațiile: '+e.message}
+}
+$('bidForm').onsubmit=async e=>{
+ e.preventDefault();
+ if(busy||role!=='restaurant'||!auctionIsOpen())return;
+ const value=Number($('bidAmount').value),minimum=Number($('bidAmount').min);
+ if(!Number.isInteger(value)||value<minimum){$('bidMessage').textContent='Introdu o ofertă de minimum '+money(minimum)+'.';return}
+ if(!confirm('Confirmi oferta fermă de '+money(value)+' pentru '+month.slice(0,7)+'? Suma este datorată chiar dacă ulterior cobori în clasament. Plata va fi solicitată separat.'))return;
+ busy=true;updateModal();
+ try{
+  const {error}=await db.rpc('place_my_auction_bid',{p_month:month,p_amount:value});
+  if(error)throw error;
+  await load();$('bidAmount').value='';
+  $('bidMessage').textContent='Oferta a fost înregistrată și apare în clasament. Plata este în așteptare.';
+ }catch(e){$('bidMessage').textContent='Oferta nu a fost salvată: '+e.message}
+ finally{busy=false;updateModal()}
+};
 start();
 </script></body></html>
