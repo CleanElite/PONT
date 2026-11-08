@@ -374,7 +374,7 @@ body.lunch #list .restaurant-price{position:absolute!important;top:9px!important
 }
 </style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
 <main><section class="hero"><span class="hero-index" aria-hidden="true">01 / PONT</span><span class="tag gold">SLOBOZIA · LA PRÂNZ</span><h1>Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul. Vezi meniul. Simplu.</p></section>
-<section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Previzualizare cu meniuri demonstrative. Ofertele reale vor apărea după conectarea restaurantelor.</p><div id="list" class="grid" aria-live="polite"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
+<section id="customer"><div class="row"><h2>Restaurante</h2><span id="date"></span></div><p class="muted">Meniurile publicate de restaurante pentru astăzi.</p><div id="list" class="grid" aria-live="polite"></div><h2>Comenzile mele</h2><p class="muted">Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.</p><div id="history" class="history"></div></section>
 </main>
 <footer>✳ PONT Slobozia · Comenzile se confirmă pe WhatsApp. Pentru modificări sau anulări, sună restaurantul și comunică numărul comenzii.<section class="pont-legal-footer" aria-label="Informații juridice" style="max-width:1120px;margin:32px auto 0;padding:22px;border-top:1px solid #9b9b8b55;font:13px/1.7 system-ui"><strong>Operator PONT</strong><p>NEGRĂU GEORGIANA-NICOLETA PERSOANĂ FIZICĂ AUTORIZATĂ · CUI 54519245 · Registrul Comerțului F2026020830003 · EUID ROONRC.F2026020830003<br>Sediu: Aleea Bujorului nr. 5, bl. B2, sc. C, et. 3, ap. 55, Slobozia, Ialomița · <a href="mailto:clean.slobozia@gmail.com">clean.slobozia@gmail.com</a></p><p>Versiune de test. PONT facilitează contactul; restaurantul confirmă comenzile și încasează direct.</p><nav style="display:flex;gap:14px;flex-wrap:wrap"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate</a><a href="../cookies.html">Cookies</a><a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer">SAL – ANPC</a></nav></section></footer>
 <dialog id="order" aria-labelledby="orderTitle">
@@ -390,7 +390,7 @@ body.lunch #list .restaurant-price{position:absolute!important;top:9px!important
 <p id="orderMsg" role="status"></p>
 <div class="order-footer"><div aria-live="polite"><strong id="total"></strong><div id="breakdown"></div></div><button id="send">Continuă pe WhatsApp</button></div>
 </form></dialog>
-<script>
+<script src="../super-admin/config.js"></script><script>
 const $=s=>document.querySelector(s), day=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest'}).format(new Date()), lei=n=>new Intl.NumberFormat('ro-RO',{style:'currency',currency:'RON'}).format(n);
 const read=(k,f)=>JSON.parse(localStorage.getItem(k)??JSON.stringify(f)), write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -410,15 +410,15 @@ const ornaments=[
 'M27 74V31h66v43H27Zm-6 6h78',
 'M18 50Q60 3 102 50Q60 97 18 50Z'
 ];
-const menus=()=>samples, orders=()=>read('orders',[]);
+let liveMenus=[];const menus=()=>liveMenus, orders=()=>read('orders',[]);
 // Cardurile sunt afisate direct, fara filtre.
 let current, draft;
 function render(){
 $('#date').textContent=new Intl.DateTimeFormat('ro-RO',{dateStyle:'full',timeZone:'Europe/Bucharest'}).format(new Date());
 const visible=menus();
 $('#list').innerHTML=visible.length?visible.map((m,index)=>{
-  const logo='<div class="restaurant-logo" aria-hidden="true"><svg viewBox="0 0 120 100"><path d="'+ornaments[index]+'" fill="none" stroke="currentColor" opacity=".65"/><text x="60" y="58" text-anchor="middle" fill="currentColor" font-family="Georgia,serif" font-size="24" letter-spacing="1">'+esc(m.mark)+'</text></svg></div>';
-  const badge=m.top?'<span class="featured-label">Recomandarea zilei <small>· sponsorizat demo</small></span>':'';
+  
+  const badge='';
   return '<article class="restaurant'+(m.top?' featured':'')+'" style="--delay:'+index*60+'ms"><button class="restaurant-open" data-menu="'+esc(m.id)+'" aria-label="Vezi meniul '+esc(m.name)+'">'+badge+'<img class="pont-photo" src="'+pontPhotos[index%pontPhotos.length]+'" alt="Fotografie ilustrativă" loading="lazy"><span class="restaurant-content"><span class="restaurant-name">'+esc(m.name)+'</span></span><span class="restaurant-price">'+lei(m.full)+'</span><p class="pont-dishes">'+esc(m.first)+'<br>'+esc(m.second)+(m.dessert?'<br><strong>Desert:</strong> '+esc(m.dessert):'')+'</p><span class="pont-cta">Vezi meniul →</span><span class="restaurant-arrow" aria-hidden="true">↗</span></button></article>';
 }).join(''):'<p class="pont-empty">Nu există meniuri disponibile momentan.</p>';
 $('#history').innerHTML=orders().length?orders().map(o=> '<div class="row"><p><strong>Comanda #'+esc(o.id)+' · '+esc(o.menu.name)+'</strong><br><small>'+(o.menu.phone?'Confirmarea vine de la restaurant pe WhatsApp':'Comandă demo · număr de telefon indisponibil')+'</small></p>'+(o.menu.phone?'<a class="search-link" href="tel:+'+esc(o.menu.phone)+'">Sună restaurantul</a>':'')+'</div>').join(''):'Aici găsești numărul comenzii și telefonul restaurantului după ce deschizi comanda în WhatsApp.';
@@ -452,11 +452,11 @@ function openOrder(m,trigger){
   $('#combo-price').textContent='Felul 1 + felul 2'+(m.dessert?' + desert ('+m.dessert+')':'')+': '+lei(m.full)+' / meniu';
   $('#choices').innerHTML=titles().map((x,i)=>'<div class="quantity"><label for="qty-'+i+'">'+esc(x)+' · '+lei(prices()[i])+' separat</label><div class="stepper"><button type="button" class="secondary" data-step="-1" aria-label="Scade '+esc(x)+'">−</button><input id="qty-'+i+'" data-qty type="number" inputmode="numeric" min="0" max="99" value="0" required><button type="button" class="secondary" data-step="1" aria-label="Adaugă '+esc(x)+'">+</button></div></div>').join('');
   form.elements.payment.innerHTML='<option>Cash</option>'+(m.card?'<option>Card</option>':'');
-  $('#send').textContent=m.phone?'Continuă pe WhatsApp':'Vezi comanda de test';
+  $('#send').textContent=m.phone?'Continuă pe WhatsApp':'Comanda online indisponibilă';$('#send').hidden=!m.phone;
   $('#orderMsg').textContent='';
   $('#order').showModal();update();
 }
-$('#list').onclick=e=>{const trigger=e.target.closest('[data-menu]');if(trigger)openOrder(menus().find(m=>m.id===trigger.dataset.menu),trigger)};
+$('#list').onclick=e=>{const trigger=e.target.closest('[data-menu]');if(trigger){const m=menus().find(m=>m.id===trigger.dataset.menu);if(m)openOrder(m,trigger)}};
 $('#close').onclick=()=>$('#order').close();
 $('#order').addEventListener('close',()=>returnFocus?.focus());
 form.oninput=update;
@@ -467,7 +467,7 @@ const input=e.target.parentElement.querySelector('[data-qty]');
 input.value=Math.max(0,Math.min(99,Number(input.value)+step));
 update();
 };
-form.onsubmit=e=>{e.preventDefault();if(!qty().some(Boolean)){$('#orderMsg').textContent='Alege cel puțin un preparat.';return}const details=Object.fromEntries(new FormData(form));if(details.method==='Ridicare')details.address='';
+form.onsubmit=e=>{e.preventDefault();if(!current?.phone){$('#orderMsg').textContent='Acest restaurant nu a activat comenzile online.';return}if(!qty().some(Boolean)){$('#orderMsg').textContent='Alege cel puțin un preparat.';return}const details=Object.fromEntries(new FormData(form));if(details.method==='Ridicare')details.address='';
 const key=JSON.stringify([qty(),details]);
 const id=draft?.key===key?draft.id:crypto.randomUUID().slice(0,12).toUpperCase();
 draft={key,id};
@@ -478,4 +478,6 @@ write('orders',[{id,menu:current},...orders().filter(o=>o.id!==id)]);render();re
 if(current.phone){$('#orderMsg').textContent='Apasă Trimite în WhatsApp. Numărul comenzii este #'+id+'.';location.href=url}else $('#orderMsg').innerText=msg;
 };
 render();
+async function refreshLiveMenus(){try{const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Conexiune neconfigurată');const params=new URLSearchParams({select:'id,restaurant_id,title,price,description,first_course,second_course,first_price,second_price,dessert,restaurants!inner(name,enabled)',published:'eq.true',service_date:'eq.'+day(),'restaurants.enabled':'eq.true',order:'created_at.desc'});const response=await fetch(cfg.url+'/rest/v1/menus?'+params,{headers:{apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();liveMenus=data.map(m=>({id:m.id,name:m.restaurants.name,first:m.first_course||m.title,second:m.second_course||m.description||'Detalii la restaurant',p1:Number(m.first_price??m.price??0),p2:Number(m.second_price??m.price??0),full:Number(m.price??0),dessert:m.dessert||'',card:false,delivery:false,phone:''}));render()}catch(err){console.error('PONT menus',err);$('#list').innerHTML='<p class="pont-empty">Nu am putut încărca meniurile. Reîncearcă în câteva momente.</p>'}}
+refreshLiveMenus();document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshLiveMenus()});setInterval(refreshLiveMenus,60000);
 </script></html>
