@@ -27,12 +27,29 @@ jobs:
           test -s pranz-slobozia/index.html
           test -s pranz-slobozia/meniul-zilei/index.html
           touch .nojekyll
-      - name: Verify original iOS and Android icon files
+      - name: Prepare icon files
         run: |
-          test -s pranz-slobozia/pont-180.png
-          test -s pranz-slobozia/pont-192.png
-          test -s pranz-slobozia/pont-512.png
-          test -s pranz-slobozia/pont-maskable-512.png
+          if [ ! -s pranz-slobozia/pont-180.png ] || [ ! -s pranz-slobozia/pont-192.png ] || [ ! -s pranz-slobozia/pont-512.png ] || [ ! -s pranz-slobozia/pont-maskable-512.png ]; then
+            python -m pip install --quiet cairosvg pillow
+            python - <<'PY'
+          from pathlib import Path
+          from io import BytesIO
+          import cairosvg
+          from PIL import Image
+          folder=Path("pranz-slobozia")
+          svg=(folder/"pont-app-icon.svg").read_bytes()
+          for size in (180,192,512):
+              out=folder/f"pont-{size}.png"
+              if not out.is_file():
+                  out.write_bytes(cairosvg.svg2png(bytestring=svg,output_width=size,output_height=size))
+          out=folder/"pont-maskable-512.png"
+          if not out.is_file():
+              im=Image.new("RGBA",(512,512),"#062449")
+              fg=Image.open(BytesIO(cairosvg.svg2png(bytestring=svg,output_width=410,output_height=410))).convert("RGBA")
+              im.alpha_composite(fg,(51,51))
+              im.save(out)
+          PY
+          fi
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
