@@ -61,5 +61,5 @@ $('menus').onclick=async e=>{let b=e.target.closest('button');if(!b)return;let m
 const {initPontDishEditor}=await import('../dish-editor.js');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:true});
 window.pontDishUI=pontDishUI;
-await enter();if(user)await pontDishUI.refresh()}
+await enter()}
 </script></html>
