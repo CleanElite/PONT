@@ -25,7 +25,7 @@ catalog.innerHTML = `
       <div class="admin-panel-head"><h2>${icon('chef-hat')}<span id="pontDishFormTitle">Adaugă preparat</span></h2></div>
       <label>Restaurant<select id="pontDishRestaurant" required></select></label>
       <form id="pontDishForm">
-        <div class="admin-dish-editor-fields">
+        <div class="admin-dish-editor-fields pont-dish-photo-price-layout">
           <div class="admin-dish-photo-field">
             <label class="admin-dish-photo">
               <img id="pontDishPreview" alt="" hidden>
@@ -33,16 +33,16 @@ catalog.innerHTML = `
               <span class="admin-dish-photo-edit" id="pontDishPhotoEdit" hidden>${icon('camera')}</span>
               <input type="file" id="pontDishPhoto" aria-label="Fotografie preparat" aria-describedby="pontDishPhotoHelp" accept="image/jpeg,image/png,image/webp">
             </label>
-            <small id="pontDishPhotoHelp">JPG, PNG sau WebP · maximum 2 MB</small>
+            <small id="pontDishPhotoHelp">JPG, PNG sau WebP · max. 2 MB</small>
           </div>
-          <div class="admin-dish-details">
-            <label>Nume preparat<input id="pontDishName" required minlength="2" maxlength="120"></label>
-            <label>Descriere (opțional)<textarea id="pontDishDescription" maxlength="500" rows="3"></textarea></label>
+          <div class="pont-dish-grid">
+            <label id="pontDishPriceField">Preț (lei)<input id="pontDishPrice" type="number" min="0" max="10000" step=".01" required></label>
+            <label>Categorie<select id="pontDishCategory">${groups.map(([key, name]) => '<option value="' + key + '">' + name + '</option>').join('')}</select></label>
           </div>
         </div>
-        <div class="pont-dish-grid">
-          <label id="pontDishPriceField">Preț (lei)<input id="pontDishPrice" type="number" min="0" max="10000" step=".01" required></label>
-          <label>Categorie<select id="pontDishCategory">${groups.map(([key, name]) => '<option value="' + key + '">' + name + '</option>').join('')}</select></label>
+        <div class="admin-dish-details pont-dish-description">
+          <label>Nume preparat<input id="pontDishName" required minlength="2" maxlength="120"></label>
+          <label>Descriere (opțional)<textarea id="pontDishDescription" maxlength="500" rows="3"></textarea></label>
         </div>
         <div class="pont-dish-actions">
           <button id="pontDishCancel" type="button" hidden>Anulează editarea</button>
@@ -60,6 +60,70 @@ catalog.innerHTML = `
     <div id="pontDishList"></div>
   </section>
 `;
+
+const compactDishLayoutStyle=document.createElement('style');
+compactDishLayoutStyle.textContent=`
+#pontDishForm .pont-dish-photo-price-layout{
+  display:grid;
+  grid-template-columns:116px minmax(0,1fr);
+  gap:12px;
+  align-items:start;
+}
+#pontDishForm .pont-dish-photo-price-layout .admin-dish-photo-field{width:116px;min-width:0}
+#pontDishForm .pont-dish-photo-price-layout .admin-dish-photo{
+  width:116px;height:116px;max-width:100%;aspect-ratio:1;
+  border-radius:13px;
+}
+#pontDishForm .pont-dish-photo-price-layout .admin-dish-photo-empty{font-size:11px;gap:5px}
+#pontDishForm .pont-dish-photo-price-layout .admin-dish-photo-field>small{font-size:10px;line-height:1.25;margin:5px 0 0}
+#pontDishForm .pont-dish-photo-price-layout .pont-dish-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:repeat(2, 1fr);
+  gap:9px;
+  height:116px;
+  margin:0;
+  padding:0;
+  border:0;
+  min-width:0;
+}
+#pontDishForm .pont-dish-photo-price-layout .pont-dish-grid>label{
+  display:grid;grid-template-columns:90px minmax(0,1fr);
+  align-items:center;gap:8px;
+  padding:6px 10px;
+  min-width:0;
+  background:rgba(8,50,43,.65);
+  border:1px solid rgba(126,176,157,.38);
+  border-radius:12px;
+  color:#d9f1e6;
+  font-size:12px;font-weight:650;
+}
+#pontDishForm .pont-dish-photo-price-layout .pont-dish-grid :is(input,select){
+  width:100%;min-width:0;
+  min-height:38px;height:38px;
+  margin:0!important;
+  padding:7px 9px;
+  border-radius:9px;
+  font-size:14px;
+}
+#pontDishForm .pont-dish-description{margin-top:15px;display:grid;grid-template-columns:minmax(0,1fr);gap:11px}
+#pontDishForm .pont-dish-description label{margin:0}
+#pontDishForm .pont-dish-description :is(input,textarea){margin-top:6px}
+@media(max-width:520px){
+ #pontDishForm .pont-dish-photo-price-layout{grid-template-columns:100px minmax(0,1fr);gap:9px}
+ #pontDishForm .pont-dish-photo-price-layout .admin-dish-photo-field{width:100px}
+ #pontDishForm .pont-dish-photo-price-layout .admin-dish-photo{width:100px;height:100px}
+ #pontDishForm .pont-dish-photo-price-layout .pont-dish-grid{height:100px;gap:6px}
+ #pontDishForm .pont-dish-photo-price-layout .pont-dish-grid>label{
+   grid-template-columns:minmax(0,1fr);
+   gap:2px;padding:4px 8px;font-size:11px;
+ }
+ #pontDishForm .pont-dish-photo-price-layout .pont-dish-grid :is(input,select){
+   height:27px;min-height:27px;padding:2px 8px;font-size:14px;
+ }
+}
+`;
+document.head.append(compactDishLayoutStyle);
 
 const availabilityStyle = document.createElement('style');
 availabilityStyle.textContent = `
