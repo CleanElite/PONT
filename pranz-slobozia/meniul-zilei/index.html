@@ -609,7 +609,7 @@ const subtotal=items=>items.reduce((total,item)=>total+item.qty*item.price,0);
 const selection=()=>{
  if(!current?.dishes?.length)return basket(...qty(),current);
  const inputs=[...form.querySelectorAll('[data-qty]')];
- const picked=current.dishes.map((d,i)=>({...d,qty:d.available===false?0:Math.max(0,Number(inputs[i]?.value)||0)}));
+ const picked=current.dishes.map((d,i)=>({...d,qty:d.available===false?0:Math.max(0,Number(form.querySelector('#qty-'+i)?.value)||0)}));
  const first=picked.filter(d=>d.category==='first'&&d.qty>0).map(d=>({...d}));
  const second=picked.filter(d=>d.category==='second'&&d.qty>0).map(d=>({...d}));
  const dessert=picked.filter(d=>d.category==='dessert'&&d.qty>0);
@@ -636,7 +636,7 @@ function update(){
   $('#address').hidden=!delivery;
   form.elements.address.required=delivery;
   const items=selection();
-  form.querySelectorAll('[data-qty]').forEach((field,i)=>{const check=form.querySelector('[data-pick="'+i+'"]');if(check)check.checked=Number(field.value)>0;});
+  form.querySelectorAll('[data-qty]').forEach(field=>{const index=field.id.replace('qty-','');const check=form.querySelector('[data-pick="'+index+'"]');if(check)check.checked=Number(field.value)>0;});
   $('#total').textContent=lei(subtotal(items));
   const combos=items.filter(item=>item.short==='meniuri complete').reduce((n,item)=>n+item.qty,0);
   const singles=items.filter(item=>item.short!=='meniuri complete');
