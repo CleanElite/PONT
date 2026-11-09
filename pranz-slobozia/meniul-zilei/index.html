@@ -512,7 +512,14 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   </section>
 </main>
 <footer class="pont-footer-simple"><div class="pont-footer-brand"><span class="pont-footer-mark">PONT</span><span class="pont-footer-city">SLOBOZIA</span></div><p>Pentru comenzile pe WhatsApp, așteaptă confirmarea restaurantului.</p><nav class="pont-footer-links" aria-label="Informații și documente legale"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate</a><a href="../cookies.html">Cookies</a><a href="https://anpc.ro/" target="_blank" rel="noopener noreferrer">ANPC</a></nav><a class="pont-sal-pictogram" href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" aria-label="ANPC – Soluționarea Alternativă a Litigiilor"><img src="../sal-pont.svg" width="68" height="17" loading="lazy" alt="ANPC – Soluționarea Alternativă a Litigiilor"></a><small>© PONT · Platformă de prezentare a restaurantelor</small></footer>
-<style>.pont-selection-summary{margin:16px 0 4px;padding:13px 16px;border-top:1px solid rgba(177,222,231,.25);border-bottom:1px solid rgba(177,222,231,.18);background:linear-gradient(90deg,rgba(5,43,51,.55),transparent);border-radius:8px}.pont-selection-summary strong{font-size:.83rem;letter-spacing:.02em;color:#d0f4f6}.pont-selection-summary p{margin:7px 0 0;color:#c0dce2;font-size:.84rem;line-height:1.5}</style>
+<style>.pont-selection-summary{margin:16px 0 4px;padding:13px 16px;border-top:1px solid rgba(177,222,231,.25);border-bottom:1px solid rgba(177,222,231,.18);background:linear-gradient(90deg,rgba(5,43,51,.55),transparent);border-radius:8px}.pont-selection-summary strong{font-size:.83rem;letter-spacing:.02em;color:#d0f4f6}.pont-selection-summary p{margin:7px 0 0;color:#c0dce2;font-size:.84rem;line-height:1.5}
+/* iPhone/iPad: prevent automatic input-focus zoom while preserving pinch zoom. */
+@supports (-webkit-touch-callout: none) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="hidden"]):not([type="file"]):not([type="button"]):not([type="submit"]), select, textarea {
+    font-size: 16px !important;
+  }
+}
+</style>
 <dialog id="order" aria-labelledby="orderTitle">
 <div class="order-topbar"><button type="button" id="close" class="secondary" autofocus>← Restaurante</button></div>
 <div class="pont-order-brand"><span class="pont-order-logo">P<span>◠</span>NT</span><h2 id="orderTitle"></h2><p>Meniul zilei</p></div>
