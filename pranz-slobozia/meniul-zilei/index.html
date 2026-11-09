@@ -520,7 +520,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-page.css?v=20261109e">
+<link rel="stylesheet" href="./restaurant-page.css?v=20261109f">
 <dialog id="order" aria-labelledby="orderTitle">
 <div class="order-topbar"><button type="button" id="close" class="secondary" autofocus>← Restaurante</button></div>
 <div class="pont-restaurant-hero"><div class="pont-restaurant-hero__photo" id="restaurantHeroPhoto" aria-hidden="true"></div>
@@ -676,7 +676,7 @@ function openOrder(m,trigger){
   $('#choices').innerHTML=Object.entries(categoryLabels).map(([cat,[symbol,title]])=>{
     const dishes=optionDishes.filter(d=>d.category===cat);
     if(!dishes.length)return '';
-    return '<details class="pont-dish-group pont-dish-group--'+cat+'" open><summary><span class="pont-group-symbol">'+symbol+'</span><strong>'+title+'</strong><small>('+dishes.length+' preparate)</small><span class="pont-group-arrow">⌃</span></summary><div class="pont-dish-group__content">'+dishes.map(d=>{
+    return '<details class="pont-dish-group" open><summary><span class="pont-group-symbol">'+symbol+'</span><strong>'+title+'</strong><small>('+dishes.length+' preparate)</small><span class="pont-group-arrow">⌃</span></summary><div class="pont-dish-group__content">'+dishes.map(d=>{
       const index=optionDishes.indexOf(d);
       const priceText=d.available===false?'Epuizat':d.category==='dessert'&&d.price===0?'Inclus':lei(d.price);
       return '<div class="quantity pont-choice-dish'+(d.available===false?' is-soldout':'')+'">'+
