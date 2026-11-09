@@ -520,7 +520,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-page.css?v=20261109o">
+<link rel="stylesheet" href="./restaurant-page.css?v=20261109p">
 <dialog id="order" aria-labelledby="orderTitle">
 <div class="order-topbar"><button type="button" id="close" class="secondary" autofocus>← Restaurante</button></div>
 <div class="pont-restaurant-hero"><div class="pont-restaurant-hero__photo" id="restaurantHeroPhoto" aria-hidden="true"></div>
@@ -540,6 +540,7 @@ const $=s=>document.querySelector(s), day=()=>new Intl.DateTimeFormat('sv-SE',{t
 const read=(k,f)=>JSON.parse(localStorage.getItem(k)??JSON.stringify(f)), write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pontPhotos=['somon','pizza','supa','paste','burger','friptura'];
+const restaurantCover=menu=>'./showcase/'+pontPhotos[[...String(menu.restaurantId||menu.id||menu.name||'')].reduce((sum,ch)=>sum+ch.charCodeAt(0),0)%pontPhotos.length]+'.webp';
 const samples=[
 {id:'a',mark:'BA',name:'Bucătăria de Acasă',first:'Ciorbă de perișoare',second:'Șnițel de pui cu piure',p1:14,p2:24,full:32,card:true,top:true,delivery:true},
 {id:'b',mark:'BC',name:'Bistro Central',first:'Supă cremă de legume',second:'Pui la grătar cu orez',p1:13,p2:25,full:34,card:true,delivery:true},
@@ -565,16 +566,13 @@ function render(){
   const visible = menus();
   let usesIllustration = false;
   $('#list').innerHTML = visible.length ? visible.map((menu, index) => {
-    const fallback = './showcase/' + pontPhotos[index % pontPhotos.length] + '.webp';
-    const dishes = menu.dishes || [];
-    const hasPhoto = dish => typeof dish.photo_url === 'string' && /^https:\/\//i.test(dish.photo_url);
-    const photo = dishes.find(dish => dish.category === 'second' && hasPhoto(dish)) || dishes.find(hasPhoto);
-    if (!photo) usesIllustration = true;
+    const fallback = restaurantCover(menu);
+    usesIllustration = true;
     const name = esc(menu.name);
     const price = lei(menu.full);
     return `<article class="menu-tile">
       <button class="menu-card" type="button" aria-haspopup="dialog" data-menu="${esc(menu.id)}" aria-label="Vezi meniul de la ${name}, ${price}">
-        <img class="menu-card-photo" src="${photo ? esc(photo.photo_url) : fallback}" ${photo ? `data-fallback="${fallback}"` : ''} alt="" ${index >= 2 ? 'loading="lazy"' : ''} decoding="async">
+        <img class="menu-card-photo" src="${fallback}" alt="" ${index >= 2 ? 'loading="lazy"' : ''} decoding="async">
         <span class="menu-card-copy">
           <span class="menu-card-name">${name}</span>
           <span class="menu-card-location"><span class="menu-icon menu-icon--pin" aria-hidden="true"></span>Slobozia</span>
@@ -686,7 +684,7 @@ function trackPontMetric(type,menu,menusCount=0,portionsCount=0){
 function openOrder(m,trigger){
   document.body.classList.add('pont-restaurant-page');
   document.title=m.name+' · Meniul zilei · PONT';
-  const featuredPhoto=m.dishes?.find(d=>d.category==='second'&&/^https:\/\//i.test(d.photo_url||''))?.photo_url||m.dishes?.find(d=>/^https:\/\//i.test(d.photo_url||''))?.photo_url||'./showcase/somon.webp';
+  const featuredPhoto=restaurantCover(m);
   $('#restaurantHeroPhoto').style.backgroundImage='linear-gradient(90deg,#031f1ce8 0%,#03262388 48%,#041f1b18 100%),url("'+String(featuredPhoto).replace(/[\\\"\n]/g,'')+'")';
   $('#heroMenuPrice').textContent=lei(m.full);
 
@@ -703,13 +701,13 @@ function openOrder(m,trigger){
     return '<details class="pont-dish-group" open><summary><span class="pont-group-symbol">'+symbol+'</span><strong>'+title+'</strong><small>('+dishes.length+' preparate)</small><span class="pont-group-arrow">⌃</span></summary><div class="pont-dish-group__content">'+dishes.map(d=>{
       const index=optionDishes.indexOf(d);
       if(d.category==='dessert')return '<div class="quantity pont-choice-dish pont-dessert-included'+(d.available===false?' is-soldout':'')+'">'+
-        '<span class="pont-dessert-mark" aria-hidden="true">✦</span>'+
+        '<span class="pont-dessert-mark" aria-hidden="true">✦</span>'+ (d.photo_url&&/^https:\/\//i.test(d.photo_url)?'<img class="pont-choice-photo" src="'+esc(d.photo_url)+'" alt="" loading="lazy">':'')+
         '<span class="pont-dish-name"><strong>'+esc(d.name)+'</strong></span>'+
         '<span class="pont-dessert-label">'+(d.available===false?'Epuizat':'Inclus')+'</span></div>';
       const priceText=d.available===false?'Epuizat':lei(d.price);
       return '<div class="quantity pont-choice-dish'+(d.available===false?' is-soldout':'')+'">'+
         '<label class="pont-pick" for="qty-'+index+'" aria-label="Selectează '+esc(d.name)+'"><input type="checkbox" data-pick="'+index+'" '+(d.available===false?'disabled':'')+'><span aria-hidden="true"></span></label>'+
-        (d.photo_url?'<img class="pont-choice-photo" src="'+esc(d.photo_url)+'" alt="" loading="lazy">':'')+
+        (d.photo_url&&/^https:\/\//i.test(d.photo_url)?'<img class="pont-choice-photo" src="'+esc(d.photo_url)+'" alt="" loading="lazy">':'')+
         '<label class="pont-dish-name" for="qty-'+index+'"><strong>'+esc(d.name)+'</strong></label>'+
         '<span class="pont-dish-price">'+esc(priceText)+'</span>'+
         '<div class="stepper"><button type="button" class="secondary" data-step="-1" '+(d.available===false?'disabled':'')+' aria-label="Scade '+esc(d.name)+'">−</button>'+
