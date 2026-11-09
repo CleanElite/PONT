@@ -164,6 +164,7 @@ function library() {
       '<span class="name"><strong>' + esc(dish.name) + '</strong>' +
       (dish.description ? '<small>' + esc(dish.description) + '</small>' : '') + '</span>' +
       '<span class="pont-dish-price">' + priceRO.format(dish.price) + ' lei</span>' +
+      '<button type="button" data-availability="' + esc(dish.id) + '" aria-pressed="' + String(dish.available !== false) + '" title="Modifică disponibilitatea">' + (dish.available === false ? 'Epuizat · Reactivează' : 'Disponibil · Marchează epuizat') + '</button>' +
       '<div class="admin-row-actions"><button type="button" data-edit-dish="' + esc(dish.id) + '" aria-label="Editează ' + esc(dish.name) + '" title="Editează">' + icon('pencil-simple') + '</button>' +
       '<button type="button" class="admin-danger" data-delete-dish="' + esc(dish.id) + '" aria-label="Șterge ' + esc(dish.name) + '" title="Șterge">' + icon('trash') + '</button></div></div>'
   ).join('') : '<p>Nu există preparate salvate în această categorie.</p>';
@@ -326,6 +327,15 @@ $('pontDishForm').onsubmit = async event => {
   }
 };
 $('pontDishList').onclick = async event => {
+  const toggle = event.target.closest('[data-availability]');
+  if (toggle) {
+    const item = dishes.find(d => d.id === toggle.dataset.availability);
+    if (!item || toggle.disabled) return;
+    toggle.disabled = true;
+    try {const {error} = await db.from('pont_dishes').update({available:item.available === false}).eq('id',item.id).eq('restaurant_id',item.restaurant_id); if(error)throw error; await load(); dishListMessage.textContent='Disponibilitatea a fost actualizată și în meniurile publicate.';}
+    catch(err){dishListMessage.textContent=err.message;toggle.disabled=false;}
+    return;
+  }
   const edit = event.target.closest('[data-edit-dish]');
   const del = event.target.closest('[data-delete-dish]');
   const dish = dishes.find(d => d.id === (edit?.dataset.editDish || del?.dataset.deleteDish));
@@ -361,7 +371,7 @@ $('pontDishList').onclick = async event => {
     }
   }
 };
-$('pontDailyDishes').onchange=e=>{const checkbox=e.target.closest('[data-select]'),price=e.target.closest('[data-price]');if(checkbox){const d=dishes.find(d=>d.id===checkbox.dataset.select);if(!d)return;if(checkbox.checked){selected.set(d.id,{id:d.id,category:d.category,name:d.name,description:d.description||'',price:Number($('pontDailyDishes').querySelector('[data-price="'+d.id+'"]').value),photo_url:d.photo_path?db.storage.from('pont-dish-images').getPublicUrl(d.photo_path).data.publicUrl:''})}else selected.delete(d.id)}if(price&&selected.has(price.dataset.price)){selected.get(price.dataset.price).price=Number(price.value)}};
+$('pontDailyDishes').onchange=e=>{const checkbox=e.target.closest('[data-select]'),price=e.target.closest('[data-price]');if(checkbox){const d=dishes.find(d=>d.id===checkbox.dataset.select);if(!d)return;if(checkbox.checked){selected.set(d.id,{id:d.id,category:d.category,name:d.name,description:d.description||'',price:Number($('pontDailyDishes').querySelector('[data-price="'+d.id+'"]').value),available:d.available !== false,photo_url:d.photo_path?db.storage.from('pont-dish-images').getPublicUrl(d.photo_path).data.publicUrl:''})}else selected.delete(d.id)}if(price&&selected.has(price.dataset.price)){selected.get(price.dataset.price).price=Number(price.value)}};
 $('pontDailyState').onchange=()=>{$('pontDailyNext').textContent=$('pontDailyState').value==='true'?'Publică':'Salvează ciorna'};
 const libraryButton = document.createElement('button');
 libraryButton.type = 'button';
@@ -372,7 +382,7 @@ $('pontDailyClassic').onclick = () => { form.hidden = true; old.hidden = false; 
 document.addEventListener('click',e=>{const b=e.target.closest('[data-edit],[data-copy]');if(!b||!b.closest('#menus,#menuRows'))return;const item=(window.pontAllMenus?.()||[]).find(m=>m.id===(b.dataset.edit||b.dataset.copy));if(!item)return;if(item.dish_selection?.length){e.stopImmediatePropagation();e.preventDefault();if(isRestaurantAdmin)$('showAdd')?.click();const copy=b.dataset.copy?{...item,id:null,service_date:todayRO(),published:false}:item;activate(copy).catch(err=>$('pontDailyError').textContent=err.message);wrap.hidden=false;host.setAttribute('aria-expanded','true');wrap.scrollIntoView({behavior:'smooth'})}else if(b.dataset.edit){form.hidden=true;old.hidden=false}},true);
 form.onsubmit=e=>{e.preventDefault();const items=[...selected.values()];try{if(!items.length)throw Error('Activează cel puțin un preparat.');if(!form.reportValidity())return;if(items.some(i=>!Number.isFinite(i.price)||i.price<0||i.price>10000))throw Error('Verifică prețurile preparatelor.');const date=$('pontDailyDate').value.split('-').reverse().join('.');$('pontDishConfirmTitle').textContent=$('pontDailyState').value==='true'?'Confirmă publicarea':'Confirmă ciorna';$('pontDishRecap').innerHTML='<p><strong>'+esc($('pontDailyTitle').value)+'</strong> · '+esc(date)+'</p>'+groups.map(([cat,n])=>{const x=items.filter(i=>i.category===cat);return x.length?'<div class="pont-dish-recap"><strong>'+n+'</strong>'+x.map(i=>'<div>'+esc(i.name)+' — '+esc(i.price)+' lei</div>').join('')+'</div>':''}).join('')+'<p>Preț meniu complet: '+esc($('pontDailyCombo').value)+' lei</p>';$('pontDishConfirmError').textContent='';$('pontDishPublish').textContent=$('pontDailyState').value==='true'?'Publică':'Salvează ciorna';dialog.showModal()}catch(err){$('pontDailyError').textContent=err.message}};
 $('pontDishBack').onclick=()=>dialog.close();
-$('pontDishPublish').onclick=async()=>{if(saving)return;saving=true;const button=$('pontDishPublish');button.disabled=true;button.textContent='Se salvează…';try{const items=[...selected.values()],restaurant_id=rid(),date=$('pontDailyDate').value,published=$('pontDailyState').value==='true';if(published){const {data,error}=await db.rpc('pont_restaurant_month_paid',{p_restaurant_id:restaurant_id,p_service_date:date});if(error)throw error;if(!data)throw Error('Restaurantul nu este autorizat PONT pentru această lună. Poți salva meniul ca ciornă.')}const first=items.find(i=>i.category==='first'),second=items.find(i=>i.category==='second'),dessert=items.find(i=>i.category==='dessert');const values={restaurant_id,service_date:date,title:$('pontDailyTitle').value.trim(),price:Number($('pontDailyCombo').value),description:'',published,first_course:first?.name||'',first_price:first?.price??null,second_course:second?.name||'',second_price:second?.price??null,dessert:dessert?.name||'',dish_selection:items};const {error}=editingMenu?await db.from('menus').update(values).eq('id',editingMenu):await db.from('menus').insert(values);if(error)throw error;dialog.close();editingMenu=null;selected.clear();
+$('pontDishPublish').onclick=async()=>{if(saving)return;saving=true;const button=$('pontDishPublish');button.disabled=true;button.textContent='Se salvează…';try{const items=[...selected.values()].map(item=>({...item,available:dishes.find(d=>d.id===item.id)?.available !== false})),restaurant_id=rid(),date=$('pontDailyDate').value,published=$('pontDailyState').value==='true';if(published){const {data,error}=await db.rpc('pont_restaurant_month_paid',{p_restaurant_id:restaurant_id,p_service_date:date});if(error)throw error;if(!data)throw Error('Restaurantul nu este autorizat PONT pentru această lună. Poți salva meniul ca ciornă.')}const first=items.find(i=>i.category==='first'),second=items.find(i=>i.category==='second'),dessert=items.find(i=>i.category==='dessert');const values={restaurant_id,service_date:date,title:$('pontDailyTitle').value.trim(),price:Number($('pontDailyCombo').value),description:'',published,first_course:first?.name||'',first_price:first?.price??null,second_course:second?.name||'',second_price:second?.price??null,dessert:dessert?.name||'',dish_selection:items};const {error}=editingMenu?await db.from('menus').update(values).eq('id',editingMenu):await db.from('menus').insert(values);if(error)throw error;dialog.close();editingMenu=null;selected.clear();
 if(!isRestaurantAdmin){
  $('pontDailyDate').value=todayRO();
  $('pontDailyTitle').value='Meniul zilei';
