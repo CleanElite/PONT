@@ -341,3 +341,44 @@ body #order::backdrop{background:#031c1a}
 #order .pont-contact-or{font-size:12px;font-weight:650;color:#d7bc7b;text-transform:lowercase}
 #order .pont-contact-or[hidden]{display:none!important}
 #order .pont-contact-whatsapp{margin:0!important;padding:0 10px;font-size:12px!important;line-height:1.45;color:#d4e8e2!important;font-weight:500!important;text-align:center}
+
+/* Navigation occupies its own strip; never overlaps the centered PONT logo. */
+#order .order-topbar{
+  position:relative!important;
+  z-index:6;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  width:100%;
+  min-height:52px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  box-sizing:border-box;
+  padding:7px max(16px,calc((100vw - 920px)/2))!important;
+  margin:0!important;
+  background:linear-gradient(90deg,#052b29,#062d2b 65%,#041f1e)!important;
+  border-bottom:1px solid rgba(98,197,173,.22);
+}
+#order .order-topbar #close{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:36px;
+  padding:7px 13px!important;
+  border-color:rgba(111,212,191,.42)!important;
+  background:rgba(12,76,68,.36)!important;
+  color:#ebfffa!important;
+  font-size:12px!important;
+  font-weight:650!important;
+  letter-spacing:.015em;
+  box-shadow:none!important;
+}
+#order .order-topbar #close:focus-visible{
+  outline:2px solid #9af4d9;
+  outline-offset:3px;
+}
+@media(max-width:530px){
+  #order .order-topbar{min-height:48px;padding:6px 14px!important}
+  #order .order-topbar #close{min-height:34px;font-size:12px!important;padding:6px 12px!important}
+}
