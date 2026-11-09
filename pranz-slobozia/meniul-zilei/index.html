@@ -612,7 +612,7 @@ const selection=()=>{
  const picked=current.dishes.map((d,i)=>({...d,qty:d.available===false?0:Math.max(0,Number(form.querySelector('#qty-'+i)?.value)||0)}));
  const first=picked.filter(d=>d.category==='first'&&d.qty>0).map(d=>({...d}));
  const second=picked.filter(d=>d.category==='second'&&d.qty>0).map(d=>({...d}));
- const dessert=picked.filter(d=>d.category==='dessert'&&d.qty>0);
+ // Desertul este inclus in meniu, fara cantitate separata.
  const result=[];
  const comboPrice=Number(current.full)||0;
  let i=0,j=0;
@@ -621,7 +621,7 @@ const selection=()=>{
   if(n>0)result.push({qty:n,label:'Meniu complet ('+a.name+' + '+b.name+')',price:comboPrice>0?comboPrice:(Number(a.price)+Number(b.price)),short:'meniuri complete',dish_ids:[a.id,b.id].filter(Boolean)});
   a.qty-=n;b.qty-=n;if(!a.qty)i++;if(!b.qty)j++;
  }
- for(const d of [...first,...second,...dessert])if(d.qty>0)result.push({qty:d.qty,label:d.name,price:Number(d.price)||0,short:d.category==='first'?'felul 1':d.category==='second'?'felul 2':'desert',dish_ids:[d.id].filter(Boolean)});
+ for(const d of [...first,...second])if(d.qty>0)result.push({qty:d.qty,label:d.name,price:Number(d.price)||0,short:d.category==='first'?'felul 1':d.category==='second'?'felul 2':'desert',dish_ids:[d.id].filter(Boolean)});
  return result;
 };
 const validCustomerPhone=value=>{const digits=String(value||'').replace(/[\s().-]/g,'');return /^07[0-9]{8}$/.test(digits)||/^\+407[0-9]{8}$/.test(digits)||/^00407[0-9]{8}$/.test(digits)};
@@ -690,7 +690,11 @@ function openOrder(m,trigger){
     if(!dishes.length)return '';
     return '<details class="pont-dish-group" open><summary><span class="pont-group-symbol">'+symbol+'</span><strong>'+title+'</strong><small>('+dishes.length+' preparate)</small><span class="pont-group-arrow">⌃</span></summary><div class="pont-dish-group__content">'+dishes.map(d=>{
       const index=optionDishes.indexOf(d);
-      const priceText=d.available===false?'Epuizat':d.category==='dessert'&&d.price===0?'Inclus':lei(d.price);
+      if(d.category==='dessert')return '<div class="quantity pont-choice-dish pont-dessert-included'+(d.available===false?' is-soldout':'')+'">'+
+        '<span class="pont-dessert-mark" aria-hidden="true">✦</span>'+
+        '<span class="pont-dish-name"><strong>'+esc(d.name)+'</strong></span>'+
+        '<span class="pont-dessert-label">'+(d.available===false?'Epuizat':'Inclus')+'</span></div>';
+      const priceText=d.available===false?'Epuizat':lei(d.price);
       return '<div class="quantity pont-choice-dish'+(d.available===false?' is-soldout':'')+'">'+
         '<label class="pont-pick" for="qty-'+index+'" aria-label="Selectează '+esc(d.name)+'"><input type="checkbox" data-pick="'+index+'" '+(d.available===false?'disabled':'')+'><span aria-hidden="true"></span></label>'+
         (d.photo_url?'<img class="pont-choice-photo" src="'+esc(d.photo_url)+'" alt="" loading="lazy">':'')+
