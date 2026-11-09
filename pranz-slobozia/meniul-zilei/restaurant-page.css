@@ -318,3 +318,18 @@ body #order::backdrop{background:#031c1a}
   #order .pont-dish-group__content .stepper button{flex-basis:29px!important;width:29px!important;min-width:29px!important}
   #order .pont-dish-group__content .pont-dish-price{width:49px!important;font-size:10px!important}
 }
+
+/* Clear explanation when WhatsApp checkout is unavailable. */
+#order .pont-send-hint{
+  display:block;
+  margin:2px 2px 0!important;
+  padding:10px 12px;
+  border-radius:11px;
+  background:#fff0db;
+  border:1px solid #d8b37e;
+  color:#77421d;
+  font:650 12px/1.5 system-ui,-apple-system,sans-serif;
+  text-align:center;
+}
+#order .pont-send-hint[hidden]{display:none!important}
+#order #send:disabled{opacity:.55;cursor:not-allowed}
