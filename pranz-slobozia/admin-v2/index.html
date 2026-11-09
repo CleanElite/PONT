@@ -72,7 +72,7 @@ $('editContactPhone').onclick=()=>{$('contactPhoneView').hidden=true;$('contactP
 $('cancelContactPhone').onclick=syncContactPhone;
 $('contactForm').onsubmit=async e=>{e.preventDefault();const save=$('saveContactPhone');save.disabled=true;save.textContent='Se salvează…';try{const phone=$('contactPhone').value.trim();await req(db.rpc('set_my_restaurant_phone',{p_restaurant_id:$('contactRestaurant').value,p_phone:phone}));const r=restaurants.find(r=>r.id===$('contactRestaurant').value);if(r)r.phone=phone;syncContactPhone();status('Numărul pentru comenzi a fost actualizat.')}catch(err){status(err.message,true)}finally{save.disabled=false;save.textContent='Salvează modificările'}};
 $('saveCardSettings').onclick=async()=>{const button=$('saveCardSettings');button.disabled=true;try{const restaurant_id=$('contactRestaurant').value,accepts_card=$('acceptsCard').checked;await req(db.rpc('set_my_restaurant_accepts_card',{p_restaurant_id:restaurant_id,p_accepts_card:accepts_card}));const r=restaurants.find(x=>x.id===restaurant_id);if(r)r.accepts_card=accepts_card;status('Metodele de plată au fost salvate.')}catch(e){status(e.message,true)}finally{button.disabled=false}};
-async function enter(){const {data}=await db.auth.getUser();user=data.user;$('login').hidden=!!user;$('app').hidden=!user;if(user){try{await load();await window.pontDishUI?.refresh()}catch(e){status(e.message,true)}}}
+async function enter(){const {data}=await db.auth.getUser();user=data.user;$('login').hidden=!!user;$('app').hidden=!user;if(user){try{await load();await window.pontDishUI?.refresh();await window.pontOperations?.refresh()}catch(e){status(e.message,true)}}}
 $('auth').onsubmit=async e=>{e.preventDefault();const identifier=$('email').value.trim();let error;if(identifier.includes('@')){({error}=await db.auth.signInWithPassword({email:identifier,password:$('password').value}))}else{try{const res=await fetch(c.url+'/functions/v1/pont-restaurant-accounts',{method:'POST',headers:{'Content-Type':'application/json',apikey:c.anonKey},body:JSON.stringify({action:'login',username:identifier,password:$('password').value})});const result=await res.json();if(!res.ok)throw Error(result.error||'Autentificare eșuată');({error}=await db.auth.setSession({access_token:result.session.access_token,refresh_token:result.session.refresh_token}))}catch(err){error=err}}if(error)$('error').textContent='Autentificare eșuată. Verifică numele de utilizator și parola.';else await enter()};$('logout').onclick=async()=>{await db.auth.signOut();location.replace('../login/')};$('refresh').onclick=()=>load().catch(e=>status(e.message,true));$('date').value=new Date().toLocaleDateString('en-CA');
 function menuFormError(message,field){
  const panel=$('menuFormFeedback');panel.hidden=false;panel.textContent=message;
@@ -102,6 +102,7 @@ window.pontDishUI=pontDishUI;
 await enter();
 const {initPontOperations}=await import('../order-operations.js?v=1');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
+window.pontOperations=pontOperations;
 await pontOperations.refresh();
 }
 </script>
