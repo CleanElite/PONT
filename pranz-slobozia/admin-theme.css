@@ -316,7 +316,7 @@
 .admin-category-help { margin: 14px 0 0; font-size: 13px; }
 .admin-dish-editor-fields {
   display: grid;
-  grid-template-columns: minmax(125px, .82fr) minmax(0, 1.35fr);
+  grid-template-columns: 112px minmax(0, 1fr);
   gap: 14px;
   align-items: start;
 }
@@ -328,8 +328,8 @@
   position: relative;
   display: grid;
   place-items: center;
-  aspect-ratio: 1.12;
-  min-height: 115px;
+  width: min(100%, 96px);
+  aspect-ratio: 1;
   overflow: hidden;
   border: 1px solid #638d7c;
   border-radius: 16px;
@@ -347,7 +347,7 @@
 }
 .admin-dish-photo:focus-within { outline: 2px solid var(--admin-gold); outline-offset: 3px; }
 .admin-dish-photo-empty { display: grid; justify-items: center; gap: 8px; text-align: center; color: var(--admin-muted); font-size: 12px; }
-.admin-dish-photo-empty .admin-icon { width: 34px; height: 34px; }
+.admin-dish-photo-empty .admin-icon { width: 22px; height: 22px; }
 .admin-dish-photo-edit {
   position: absolute;
   inset: auto 9px 9px auto;
@@ -528,7 +528,6 @@
   .admin-dish-editor-fields { grid-template-columns: minmax(0, 1fr); }
   .pont-admin .admin-nav > :is(button, a) { min-height: 44px; }
   :is(.pont-admin--platform, .pont-admin--restaurant) .admin-nav > :is(button, a) { min-height: 52px; font-size: 12px; }
-  .pont-admin .admin-dish-photo { aspect-ratio: 1.8; }
   .pont-dish-line {
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas: "summary actions" "price actions" "availability availability";
