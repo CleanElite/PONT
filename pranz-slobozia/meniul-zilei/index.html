@@ -520,7 +520,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-page.css?v=20261109q">
+<link rel="stylesheet" href="./restaurant-page.css?v=20261109r">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
 <dialog id="order" aria-labelledby="orderTitle">
 <div class="order-topbar"><button type="button" id="close" class="secondary pont-nav-action" aria-label="Înapoi la restaurante" autofocus><span class="pont-nav-action__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></span><span class="pont-nav-action__label">Restaurante</span></button></div>
@@ -535,7 +535,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
 <label>Plată<select name="payment"></select></label>
 <details class="pont-order-notes"><summary>Adaugă observații <small>(opțional)</small></summary><label for="orderNotes">Observații<textarea id="orderNotes" name="notes" rows="2" maxlength="250" placeholder="Ex.: fără ceapă"></textarea></label></details><label class="pont-loyalty-consent pont-data-transfer"><input type="checkbox" name="data_transfer_notice" value="yes" required><span>Am înțeles că datele mele sunt prelucrate de PONT pentru evidența solicitării și vor fi transmise restaurantului ales prin WhatsApp. <a href="../confidentialitate.html" target="_blank" rel="noopener noreferrer">Confidențialitate</a>.</span></label><p id="orderMsg" role="status"></p>
 <div class="order-footer"><div class="order-total" aria-live="polite"><span>🛒 &nbsp; Total comandă</span><strong id="total"></strong></div><div id="breakdown"></div><button id="send">◉ &nbsp; Trimite comanda pe WhatsApp &nbsp; ›</button><p id="pontSendHint" class="pont-send-hint" role="status" aria-live="polite" hidden></p></div></section>
-</form></dialog><dialog id="pontDishPhotoDialog" class="pont-dish-photo-dialog" aria-labelledby="pontDishPhotoTitle"><button type="button" id="pontDishPhotoClose" class="pont-dish-photo-close" aria-label="Închide fotografia">×</button><img id="pontDishPhotoLarge" alt=""><p id="pontDishPhotoTitle"></p></dialog><dialog id="orderConfirmationNotice" class="pont-order-confirm-dialog" aria-labelledby="orderConfirmationTitle"><div class="pont-order-confirm-symbol" aria-hidden="true">!</div><h3 id="orderConfirmationTitle">Confirmarea comenzii</h3><p><strong>Comanda trebuie confirmată de restaurant pe WhatsApp.</strong></p><p>Solicitarea este înregistrată când continui către WhatsApp. Restaurantul confirmă separat dacă poate pregăti comanda. Dacă nu primești un răspuns, contactează-l telefonic.</p><div class="pont-order-confirm-actions"><button type="button" id="orderNoticeCancel">Înapoi</button><button type="button" id="orderNoticeContinue">Am înțeles · Continuă</button></div></dialog>
+</form></dialog><dialog id="orderConfirmationNotice" class="pont-order-confirm-dialog" aria-labelledby="orderConfirmationTitle"><div class="pont-order-confirm-symbol" aria-hidden="true">!</div><h3 id="orderConfirmationTitle">Confirmarea comenzii</h3><p><strong>Comanda trebuie confirmată de restaurant pe WhatsApp.</strong></p><p>Solicitarea este înregistrată când continui către WhatsApp. Restaurantul confirmă separat dacă poate pregăti comanda. Dacă nu primești un răspuns, contactează-l telefonic.</p><div class="pont-order-confirm-actions"><button type="button" id="orderNoticeCancel">Înapoi</button><button type="button" id="orderNoticeContinue">Am înțeles · Continuă</button></div></dialog>
 <script src="../super-admin/config.js"></script><script>
 const $=s=>document.querySelector(s), day=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest'}).format(new Date()), lei=n=>new Intl.NumberFormat('ro-RO',{style:'currency',currency:'RON'}).format(n);
 const read=(k,f)=>JSON.parse(localStorage.getItem(k)??JSON.stringify(f)), write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
@@ -701,14 +701,14 @@ function openOrder(m,trigger){
     if(!dishes.length)return '';
     return '<details class="pont-dish-group" open><summary><span class="pont-group-symbol">'+symbol+'</span><strong>'+title+'</strong><small>('+dishes.length+' preparate)</small><span class="pont-group-arrow">⌃</span></summary><div class="pont-dish-group__content">'+dishes.map(d=>{
       const index=optionDishes.indexOf(d);
-      if(d.category==='dessert')return '<div class="quantity pont-choice-dish pont-dessert-included'+(d.photo_url&&/^https:\/\//i.test(d.photo_url)?' pont-has-photo':'')+(d.available===false?' is-soldout':'')+'">'+
-        '<span class="pont-dessert-mark" aria-hidden="true">✦</span>'+ (d.photo_url&&/^https:\/\//i.test(d.photo_url)?'<button type="button" class="pont-dish-photo-button" data-photo="'+esc(d.photo_url)+'" data-photo-title="'+esc(d.name)+'" aria-label="Mărește fotografia: '+esc(d.name)+'"><img class="pont-choice-photo" src="'+esc(d.photo_url)+'" alt="" loading="lazy"><span class="pont-dish-photo-zoom" aria-hidden="true">↗</span></button>':'')+
+      if(d.category==='dessert')return '<div class="quantity pont-choice-dish pont-dessert-included'++(d.available===false?' is-soldout':'')+'">'+
+        '<span class="pont-dessert-mark" aria-hidden="true">✦</span>'+ 
         '<span class="pont-dish-name"><strong>'+esc(d.name)+'</strong></span>'+
         '<span class="pont-dessert-label">'+(d.available===false?'Epuizat':'Inclus')+'</span></div>';
       const priceText=d.available===false?'Epuizat':lei(d.price);
-      return '<div class="quantity pont-choice-dish'+(d.photo_url&&/^https:\/\//i.test(d.photo_url)?' pont-has-photo':'')+(d.available===false?' is-soldout':'')+'">'+
+      return '<div class="quantity pont-choice-dish'++(d.available===false?' is-soldout':'')+'">'+
         '<label class="pont-pick" for="qty-'+index+'" aria-label="Selectează '+esc(d.name)+'"><input type="checkbox" data-pick="'+index+'" '+(d.available===false?'disabled':'')+'><span aria-hidden="true"></span></label>'+
-        (d.photo_url&&/^https:\/\//i.test(d.photo_url)?'<button type="button" class="pont-dish-photo-button" data-photo="'+esc(d.photo_url)+'" data-photo-title="'+esc(d.name)+'" aria-label="Mărește fotografia: '+esc(d.name)+'"><img class="pont-choice-photo" src="'+esc(d.photo_url)+'" alt="" loading="lazy"><span class="pont-dish-photo-zoom" aria-hidden="true">↗</span></button>':'')+
+        
         '<label class="pont-dish-name" for="qty-'+index+'"><strong>'+esc(d.name)+'</strong></label>'+
         '<span class="pont-dish-price">'+esc(priceText)+'</span>'+
         '<div class="stepper"><button type="button" class="secondary" data-step="-1" '+(d.available===false?'disabled':'')+' aria-label="Scade '+esc(d.name)+'">−</button>'+
@@ -750,8 +750,6 @@ $('#order').addEventListener('close',()=>{document.body.classList.remove('pont-r
 $('#order').addEventListener('cancel',e=>{e.preventDefault();returnToRestaurants()});
 form.oninput=update;form.elements.phone.addEventListener('blur',()=>{phoneTouched=true;update()});form.querySelectorAll('[data-method]').forEach(b=>b.addEventListener('click',()=>{form.elements.method.value=b.dataset.method;update()}));
 $('#choices').onclick=e=>{
-const photo=e.target.closest('[data-photo]');
-if(photo){const viewer=$('#pontDishPhotoDialog');$('#pontDishPhotoLarge').src=photo.dataset.photo;$('#pontDishPhotoLarge').alt=photo.dataset.photoTitle;$('#pontDishPhotoTitle').textContent=photo.dataset.photoTitle;viewer.showModal();return;}
 const pick=e.target.closest('[data-pick]');
 if(pick){const field=form.querySelector('#qty-'+pick.dataset.pick);if(field&&!field.disabled){field.value=pick.checked?'1':'0';update()}return;}
 const step=Number(e.target.dataset.step);
@@ -760,8 +758,6 @@ const input=e.target.parentElement.querySelector('[data-qty]');
 input.value=Math.max(0,Math.min(99,Number(input.value)+step));
 update();
 };
-$('#pontDishPhotoClose').onclick=()=>$('#pontDishPhotoDialog').close();
-$('#pontDishPhotoDialog').addEventListener('click',e=>{if(e.target===$('#pontDishPhotoDialog'))$('#pontDishPhotoDialog').close()});
 const normalizeCallPhone=raw=>{const text=String(raw||'').trim();let digits=text.replace(/[^0-9]/g,'');if(!digits)return '';if(digits.startsWith('00'))return '+'+digits.slice(2);if(text.startsWith('+'))return '+'+digits;if(digits.startsWith('40')&&digits.length===11)return '+'+digits;if(digits.startsWith('0'))return digits;return digits};
 const cleanWhatsAppPhone=raw=>{let digits=String(raw||'').replace(/[^0-9]/g,'');if(digits.startsWith('00'))digits=digits.slice(2);if(digits.startsWith('0')&&digits.length===10)digits='40'+digits.slice(1);return digits};
 let submittingOrder=false,orderNoticeAccepted=false;
