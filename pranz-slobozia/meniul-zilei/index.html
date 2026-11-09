@@ -528,10 +528,10 @@ const selection=()=>{
  let i=0,j=0;
  while(i<first.length&&j<second.length){
   const a=first[i],b=second[j],n=Math.min(a.qty,b.qty);
-  if(n>0)result.push({qty:n,label:'Meniu complet ('+a.name+' + '+b.name+')',price:comboPrice>0?comboPrice:(Number(a.price)+Number(b.price)),short:'meniuri complete'});
+  if(n>0)result.push({qty:n,label:'Meniu complet ('+a.name+' + '+b.name+')',price:comboPrice>0?comboPrice:(Number(a.price)+Number(b.price)),short:'meniuri complete',dish_ids:[a.id,b.id].filter(Boolean)});
   a.qty-=n;b.qty-=n;if(!a.qty)i++;if(!b.qty)j++;
  }
- for(const d of [...first,...second,...dessert])if(d.qty>0)result.push({qty:d.qty,label:d.name,price:Number(d.price)||0,short:d.category==='first'?'felul 1':d.category==='second'?'felul 2':'desert'});
+ for(const d of [...first,...second,...dessert])if(d.qty>0)result.push({qty:d.qty,label:d.name,price:Number(d.price)||0,short:d.category==='first'?'felul 1':d.category==='second'?'felul 2':'desert',dish_ids:[d.id].filter(Boolean)});
  return result;
 };
 const validCustomerPhone=value=>{const digits=String(value||'').replace(/[\s().-]/g,'');return /^07[0-9]{8}$/.test(digits)||/^\+407[0-9]{8}$/.test(digits)||/^00407[0-9]{8}$/.test(digits)};
@@ -617,7 +617,7 @@ if(waPhone){
     p_restaurant_id:current.restaurantId,
     p_name:details.full_name,p_phone:details.phone,p_reference:id,
     p_menus:countMenus,p_portions:countPortions,
-    p_items:items.filter(item=>item.qty>0).map(item=>({name:item.label,quantity:item.qty,category:item.short}))
+    p_items:items.filter(item=>item.qty>0).map(item=>({name:item.label,quantity:item.qty,category:item.short,dish_ids:item.dish_ids||[]}))
    }),
    cache:'no-store'
   });
