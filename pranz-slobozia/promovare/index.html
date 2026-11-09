@@ -15,6 +15,28 @@ button { cursor: pointer; }
 .menu-card { justify-content: center; padding-top: clamp(38px, 7vw, 72px); }
 .menu-tile:nth-child(-n+2) .menu-card-copy { width: 100%; }
 .menu-tile:nth-child(-n+2) .menu-card-name { max-width: none; }
+.menu-card--restaurant {
+  border-color: hsl(var(--restaurant-hue) 43% 65%);
+  background:
+    radial-gradient(ellipse at 95% 0%, hsl(var(--restaurant-hue) 55% 38% / .68), transparent 64%),
+    linear-gradient(135deg, hsl(var(--restaurant-hue) 37% 19%), #071318 83%);
+}
+.menu-tile .menu-card--restaurant::after,
+.menu-tile:nth-child(-n+2) .menu-card--restaurant::after {
+  background: linear-gradient(var(--restaurant-angle), transparent 44%, #fff2 49%, #fff1 50%, transparent 61%);
+}
+.menu-card--restaurant .menu-card-name {
+  color: #fff8ee;
+  text-shadow: 0 2px 14px #000b;
+}
+#list .promotion-action {
+  display: inline-flex;
+  width: fit-content;
+  border-color: #a9e7e280;
+  font-size: clamp(11px, 2.15vw, 15px);
+  white-space: normal;
+}
+
 .promotion-footer { margin: 38px auto 0; padding: 22px; text-align: center; color: #a9c3c3; font-size: 13px; }
 .auction-modal button { border: 0; }
 .auction-modal{border:1px solid #e5d9bd;border-radius:26px;background:#fffdf7;color:#18382e;width:min(480px,calc(100% - 28px));max-height:min(88dvh,760px);padding:0;box-shadow:0 25px 70px #051f1b55;overflow:auto}
@@ -76,15 +98,27 @@ const auctionIsOpen=()=>biddingOpen && nextMonth()===month;
 $('date').textContent=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month));
 function orderedOffers(){return [...offers].sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at))}
 function ownOffer(){return offers.find(o=>o.restaurant_id===me)}
+function restaurantCardStyle(id) {
+ let hash=0;
+ for(const character of String(id))hash=(Math.imul(hash,31)+character.charCodeAt(0))>>>0;
+ return '--restaurant-hue:'+(hash%360)+';--restaurant-angle:'+(115+hash%45)+'deg';
+}
 function render(){
+ const list=$('list');
+ const focusedSlot=list.contains(document.activeElement)?document.activeElement.dataset.slot:undefined;
  const sorted=orderedOffers(),count=Math.max(6,sorted.length);
- $('list').innerHTML=Array.from({length:count},(_,i)=>{
-  const o=sorted[i],name=o?(names[o.restaurant_id]||'Restaurant'):'Loc disponibil';
-  const action=role==='super_admin'?'Vezi oferta':'Deschide licitația';
-  return '<article class="menu-tile"><button type="button" class="menu-card" data-slot="'+i+
+ const canBid=role==='restaurant'&&auctionIsOpen()&&ownOffer()?.payment_status!=='paid';
+ list.innerHTML=Array.from({length:count},(_,i)=>{
+  const offer=sorted[i],name=offer?(names[offer.restaurant_id]||'Restaurant'):'Loc disponibil';
+  const action=canBid?'Apasă pentru a licita':'Vezi oferta';
+  const cardClass=offer?'menu-card menu-card--restaurant':'menu-card';
+  const design=offer?' style="'+restaurantCardStyle(offer.restaurant_id)+'"':'';
+  const prompt=canBid?'<span class="menu-card-action promotion-action">Apasă pentru a licita</span>':'';
+  return '<article class="menu-tile"><button type="button" class="'+cardClass+'"'+design+' data-slot="'+i+
    '" aria-label="Poziția '+(i+1)+', '+esc(name)+'. '+action+'"><span class="menu-card-copy"><span class="menu-card-name">'+
-   esc(name)+'</span></span><span class="menu-card-price">'+(o?money(o.amount):'De la '+money(minimumBid))+'</span></button></article>';
+   esc(name)+'</span>'+prompt+'</span><span class="menu-card-price">'+(offer?money(offer.amount):'De la '+money(minimumBid))+'</span></button></article>';
  }).join('');
+ if(focusedSlot!==undefined)list.querySelector('[data-slot="'+focusedSlot+'"]')?.focus({preventScroll:true});
 }
 function renderAuctionStatus(){
  $('auctionHint').textContent=role==='super_admin'?'Apasă un card pentru a vedea oferta. Confirmările se gestionează în Licitații.':auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':'Licitația este închisă. Poți consulta ofertele existente.';
@@ -111,9 +145,7 @@ async function load(){
  if(a.error)throw a.error;if(b.error)throw b.error;
  biddingOpen=!control.error && control.data?.is_open===true;
  offers=a.data||[];names=Object.fromEntries((b.data||[]).map(r=>[r.id,r.name]));
- const focusedSlot = $('list').contains(document.activeElement) ? document.activeElement.dataset.slot : undefined;
  render();
- if (focusedSlot !== undefined) $('list').querySelector('[data-slot="' + focusedSlot + '"]')?.focus({preventScroll:true});
  renderAuctionStatus();
 }
 async function start(){
@@ -133,7 +165,7 @@ async function start(){
   if(role==='restaurant'){const access=await db.rpc('my_restaurant_access');if(access.error)throw access.error;me=access.data?.[0]?.restaurant_id;if(!me)throw Error('Restaurant neatribuit')}
   await load();
   setInterval(()=>{
-   load().catch(e=>{biddingOpen=false;renderAuctionStatus();console.error('Actualizare licitații:',e)});
+   load().catch(e=>{biddingOpen=false;render();renderAuctionStatus();console.error('Actualizare licitații:',e)});
   },15000);
  }catch(e){$('list').textContent='Nu se pot încărca licitațiile: '+e.message}
 }
