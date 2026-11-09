@@ -23,7 +23,7 @@
 }
 
 .menu-art::before { top: 0; left: 0; }
-.menu-art::after { right: 0; bottom: 132px; transform: rotate(180deg); }
+.menu-art::after { right: 0; bottom: 0; transform: rotate(180deg); }
 
 body.lunch.menu-showcase > .menu-header,
 body.lunch.menu-showcase > .menu-main {
@@ -183,7 +183,7 @@ body.lunch.menu-showcase #customer #list {
   width: 100%;
   height: 100%;
 }
-.menu-card-photo { z-index: -2; object-fit: cover; object-position: center 54%; }
+.menu-card-photo { z-index: -2; object-fit: cover; object-position: center 34%; }
 .menu-card::after {
   content: '';
   z-index: -1;
