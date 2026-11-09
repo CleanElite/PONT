@@ -547,14 +547,32 @@ returnFocus=$('#list').querySelector('[data-menu="'+current.id+'"]');
 if(waPhone){
  const countMenus=items.find(item=>item.short==='meniuri complete')?.qty||0;
  const countPortions=items.reduce((sum,item)=>sum+item.qty,0);
- if(details.data_transfer_notice==='yes'&&current.restaurantId){
-  const cfg=window.PONT_CONFIG;
-  try{
-   const response=await fetch(cfg.url+'/rest/v1/rpc/pont_record_opted_in_whatsapp_lead',{method:'POST',headers:{'Content-Type':'application/json',apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},body:JSON.stringify({p_restaurant_id:current.restaurantId,p_name:details.full_name,p_phone:details.phone,p_reference:id,p_menus:countMenus,p_portions:countPortions}),keepalive:true});
-   if(!response.ok)console.warn('PONT loyalty registration unavailable',response.status);
-  }catch(err){console.warn('PONT loyalty registration unavailable')}
+ const cfg=window.PONT_CONFIG;
+ try{
+  if(!current.restaurantId||!cfg?.url||!cfg?.anonKey)throw Error('Nu putem înregistra comanda. Reîncearcă.');
+  const response=await fetch(cfg.url+'/rest/v1/rpc/pont_finalize_whatsapp_order',{
+   method:'POST',
+   headers:{'Content-Type':'application/json',apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},
+   body:JSON.stringify({
+    p_restaurant_id:current.restaurantId,
+    p_name:details.full_name,p_phone:details.phone,p_reference:id,
+    p_menus:countMenus,p_portions:countPortions,
+    p_items:items.filter(item=>item.qty>0).map(item=>({name:item.label,quantity:item.qty,category:item.short}))
+   }),
+   cache:'no-store'
+  });
+  if(!response.ok){
+   let problem='Nu am putut înregistra comanda. Reîncearcă.';
+   try{const err=await response.json();if(err?.message&&response.status!==404)problem=err.message}catch(_){}
+   throw Error(problem);
+  }
+  $('#orderMsg').textContent='Comanda '+id+' a fost înregistrată ca finalizată în PONT. Se deschide WhatsApp.';
+  window.location.href=url;
+ }catch(err){
+  $('#orderMsg').textContent=err.message||'Comanda nu a fost înregistrată. Reîncearcă.';
  }
- trackPontMetric('whatsapp_open',current,countMenus,countPortions);$('#orderMsg').textContent='Se deschide WhatsApp. Comanda '+id+'. Trimite mesajul pentru confirmare.';window.location.href=url}else $('#orderMsg').textContent='Număr WhatsApp indisponibil.';submittingOrder=false;
+}else $('#orderMsg').textContent='Număr WhatsApp indisponibil.';
+submittingOrder=false;
 };
 render();
 async function refreshLiveMenus(){try{const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Conexiune neconfigurată');const params=new URLSearchParams({select:'id,restaurant_id,title,price,description,first_course,second_course,first_price,second_price,dessert,restaurants!inner(name,enabled,phone,accepts_card)',published:'eq.true',service_date:'eq.'+day(),'restaurants.enabled':'eq.true',order:'created_at.desc'});const response=await fetch(cfg.url+'/rest/v1/menus?'+params,{headers:{apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();liveMenus=data.map(m=>({id:m.id,restaurantId:m.restaurant_id,name:m.restaurants.name,first:m.first_course||m.title,second:m.second_course||m.description||'Detalii la restaurant',p1:Number(m.first_price??m.price??0),p2:Number(m.second_price??m.price??0),full:Number(m.price??0),dessert:m.dessert||'',card:!!m.restaurants.accepts_card,delivery:true,phone:m.restaurants.phone||''}));render()}catch(err){console.error('PONT menus',err);$('#list').innerHTML='<p class="pont-empty">Nu am putut încărca meniurile. Reîncearcă în câteva momente.</p>'}}
