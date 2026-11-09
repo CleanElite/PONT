@@ -5,10 +5,11 @@
   --admin-mint: #87f2c6;
   --admin-line: #376657;
   --admin-field: #0a2922;
-  --admin-surface: linear-gradient(150deg, #18483b, #092822 78%);
+  --admin-surface: linear-gradient(149deg, #16463b, #0d342a 52%, #07251f);
   --admin-accent: linear-gradient(155deg, #a1ffe1, #64e7b4 55%, #38ce98);
-  --admin-gutter: clamp(14px, 3.2vw, 30px);
-  --admin-bar-height: 78px;
+  --admin-gutter: clamp(10px, 1.4vw, 20px);
+  --admin-bar-height: 86px;
+  --admin-icon-hit: 52px;
   min-height: 100vh;
   background: radial-gradient(ellipse at 74% 0%, #0d4237, transparent 42%),
     radial-gradient(ellipse at 0% 55%, #0b2d25, transparent 52%), #051916;
@@ -32,28 +33,26 @@
 }
 .admin-brand {
   display: block;
-  width: clamp(118px, 15vw, 152px);
+  width: clamp(126px, 17vw, 176px);
   height: auto;
 }
 .admin-back, .pont-admin .admin-logout {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 7px;
-  min-height: 44px;
+  width: var(--admin-icon-hit);
+  min-height: var(--admin-icon-hit);
   border: 1px solid transparent;
   border-radius: 12px;
-  padding: 0 8px;
+  padding: 0;
   background: transparent;
-  color: var(--admin-muted);
-  font-size: 13px;
-  font-weight: 650;
+  color: var(--admin-ink);
   text-decoration: none;
 }
 .admin-back { justify-self: start; }
 .pont-admin .admin-logout {
   position: absolute;
-  top: calc((var(--admin-bar-height) - 44px) / 2);
+  top: calc((var(--admin-bar-height) - var(--admin-icon-hit)) / 2);
   right: var(--admin-gutter);
 }
 .admin-back:hover, .pont-admin .admin-logout:hover {
@@ -69,14 +68,16 @@
   color: var(--admin-gold);
   vertical-align: middle;
 }
-.admin-back .admin-icon, .admin-logout .admin-icon { color: currentColor; }
+.admin-back .admin-icon, .admin-logout .admin-icon { width: 28px; height: 28px; color: currentColor; }
 .admin-hero {
   display: flex;
   align-items: center;
   gap: clamp(12px, 2.3vw, 22px);
-  margin: clamp(19px, 3.7vw, 36px) 0 20px;
+  min-height: 86px;
+  margin: clamp(16px, 2.45vw, 28px) 0 clamp(16px, 2.8vw, 28px);
+  padding-inline: clamp(3px, 2.25vw, 24px);
 }
-.admin-hero > .admin-icon { width: clamp(42px, 6.4vw, 66px); height: auto; aspect-ratio: 1; }
+.admin-hero > .admin-icon { width: clamp(42px, 7.3vw, 76px); height: auto; aspect-ratio: 1; }
 .admin-hero-copy { flex: 1; min-width: 0; }
 .pont-admin h1 {
   margin: 0;
@@ -84,51 +85,51 @@
   font: 600 clamp(30px, 4.4vw, 48px)/1.06 Georgia, 'Times New Roman', serif;
   letter-spacing: -.035em;
 }
-.admin-hero p { margin: 7px 0 0; font-size: clamp(14px, 1.85vw, 19px); }
+.admin-hero p { margin: 7px 0 0; font-size: clamp(14px, 2.15vw, 22px); }
 .pont-admin p, .pont-admin small { color: var(--admin-muted); }
 .admin-context {
   display: flex;
   align-items: center;
   gap: 10px;
-  max-width: min(35%, 320px);
-  padding: 10px 15px;
+  width: clamp(170px, 35vw, 355px);
+  min-height: clamp(52px, 7.2vw, 74px);
+  padding: 10px clamp(12px, 2.1vw, 23px);
   border: 1px solid #658b7c;
-  border-radius: 16px;
+  border-radius: clamp(15px, 2.5vw, 26px);
   background: #0b3028;
   color: var(--admin-ink);
+  font-size: clamp(16px, 2.25vw, 24px);
   font-weight: 700;
   overflow-wrap: anywhere;
 }
+.admin-context .admin-icon { width: clamp(21px, 3vw, 33px); height: auto; aspect-ratio: 1; }
 
 .pont-admin .admin-nav {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 5px;
-  margin: 0 0 18px;
-  padding: 5px;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 clamp(0px, 1vw, 12px) clamp(14px, 2.6vw, 27px);
+  padding: 6px;
   border: 1px solid var(--admin-line);
-  border-radius: 20px;
+  border-radius: clamp(20px, 2.7vw, 28px);
   background: #0b2c24;
-  overflow-x: auto;
-  scrollbar-width: thin;
-  scrollbar-color: #48786a transparent;
 }
+.pont-admin--platform .admin-nav { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 .pont-admin .admin-nav > :is(button, a) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex: 1 0 auto;
-  gap: 7px;
+  gap: clamp(5px, .9vw, 9px);
   min-width: 0;
-  min-height: clamp(44px, 5.4vw, 56px);
-  padding: 8px 12px;
+  min-height: clamp(51px, 6.45vw, 66px);
+  padding: 8px clamp(4px, .7vw, 8px);
   border: 1px solid transparent;
-  border-radius: 15px;
+  border-radius: 999px;
   background: transparent;
   color: var(--admin-ink);
-  font: 650 clamp(13px, 1.55vw, 16px)/1.2 system-ui, sans-serif;
+  font: 650 clamp(13px, 1.85vw, 19px)/1.2 system-ui, sans-serif;
+  text-align: center;
   text-decoration: none;
-  white-space: nowrap;
 }
 .pont-admin .admin-nav > :is(button, a):hover { background: #164337; }
 .pont-admin .admin-nav > button[aria-pressed='true'],
@@ -138,8 +139,7 @@
   color: #092920;
 }
 .pont-admin :is(.admin-nav, .admin-categories) button[aria-pressed='true'] .admin-icon { color: currentColor; }
-.pont-admin .admin-nav .admin-icon { width: 18px; height: 18px; }
-.pont-admin--platform .admin-nav > :is(button, a) { font-size: clamp(13px, 1.35vw, 15px); }
+.pont-admin .admin-nav .admin-icon { width: clamp(20px, 2.7vw, 28px); height: auto; aspect-ratio: 1; }
 .pont-admin .admin-nav > :focus-visible { outline-offset: -2px; }
 
 .pont-admin .card {
@@ -260,8 +260,14 @@
   gap: clamp(12px, 1.8vw, 18px);
   align-items: start;
 }
-.admin-library-grid { align-items: stretch; }
+.admin-library-grid {
+  grid-template-columns: minmax(0, .295fr) minmax(0, .705fr);
+  gap: clamp(8px, 1.6vw, 16px);
+  align-items: stretch;
+}
 .pont-admin .admin-library-grid > .card { margin: 0; }
+.pont-admin .admin-library-grid > aside { padding: clamp(12px, 1.75vw, 18px); }
+.pont-admin #dishLibrary h2 { font-size: clamp(18px, 2.85vw, 30px); }
 .pont-admin .admin-categories { display: grid; gap: 8px; }
 .pont-admin .admin-categories button {
   display: flex;
@@ -273,6 +279,13 @@
   border-color: #497765;
   text-align: left;
 }
+.pont-admin .admin-library-grid .admin-categories button {
+  min-height: clamp(48px, 6.2vw, 64px);
+  padding: 8px clamp(6px, 1.35vw, 14px);
+  border-radius: clamp(12px, 1.8vw, 19px);
+  font-size: clamp(14px, 1.85vw, 19px);
+}
+.admin-library-grid .admin-categories .admin-icon { width: clamp(18px, 2.65vw, 28px); height: auto; aspect-ratio: 1; }
 .admin-category-count {
   display: grid;
   place-items: center;
@@ -285,7 +298,11 @@
   font-size: 12px;
 }
 .admin-categories button[aria-pressed='true'] .admin-category-count { background: #0b5b442e; }
-.admin-category-help { margin: 14px 0 0; font-size: 13px; }
+.admin-library-grid .admin-category-count {
+  min-width: clamp(20px, 3vw, 32px);
+  min-height: clamp(20px, 3vw, 32px);
+  font-size: clamp(12px, 1.6vw, 17px);
+}
 .admin-dish-editor-fields {
   display: grid;
   grid-template-columns: minmax(125px, .82fr) minmax(0, 1.35fr);
@@ -293,6 +310,9 @@
   align-items: start;
 }
 .admin-dish-details { display: grid; gap: 9px; min-width: 0; }
+.admin-required { color: #ffac9c; }
+.admin-dish-editor :is(label, input:not([type='file']), textarea, select) { font-size: clamp(16px, 1.8vw, 18px); }
+.pont-admin .admin-dish-editor :is(input:not([type='file']), select) { min-height: clamp(44px, 4.65vw, 50px); }
 .pont-admin :is(.admin-dish-details, .pont-dish-grid, .admin-dish-photo-field) label { margin: 0; }
 .pont-admin :is(.admin-dish-details, .pont-dish-grid) label :is(input, textarea, select) { margin-top: 5px; }
 .admin-dish-photo-field { min-width: 0; }
@@ -325,8 +345,8 @@
   inset: auto 9px 9px auto;
   display: grid;
   place-items: center;
-  width: 38px;
-  height: 38px;
+  width: clamp(40px, 5vw, 52px);
+  height: clamp(40px, 5vw, 52px);
   border: 1px solid #9ac2ac;
   border-radius: 50%;
   background: #0a3228e8;
@@ -338,8 +358,16 @@
 .pont-dish-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 13px; }
 .pont-dish-actions button, .admin-panel-head .primary { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
 .pont-dish-actions .primary { min-width: min(100%, 165px); }
+.pont-admin .admin-dish-editor .pont-dish-actions button,
+.pont-admin .admin-dish-list-head .primary {
+  min-height: clamp(46px, 6.1vw, 62px);
+  border-radius: 999px;
+  font-size: clamp(14px, 1.9vw, 19px);
+}
 .admin-dish-editor .pont-dish-actions button { flex: 1 1 125px; }
 .admin-dish-editor .pont-dish-actions .primary { flex: 1.7 1 165px; }
+.pont-admin .admin-dish-editor .pont-dish-actions button:not(.primary) { border-color: #91b5a5; background: transparent; }
+.pont-admin .admin-dish-list-card { margin-top: clamp(14px, 2.4vw, 24px); }
 .pont-admin :is(#pontDishMessage, #pontDailyError, #pontDishConfirmError, #status):empty { display: none; }
 .pont-admin #status:not(:empty) { padding: 11px 14px; border: 1px solid var(--admin-line); border-radius: 12px; background: #0d3027; }
 
@@ -365,15 +393,15 @@
 .pont-dish-placeholder { display: grid; place-items: center; }
 .pont-dish-line .name { min-width: 0; overflow-wrap: anywhere; }
 .pont-dish-line .name small { display: block; margin-top: 3px; }
-#pontDishList .pont-dish-line :is(img, .pont-dish-placeholder) { width: clamp(53px, 13vw, 132px); aspect-ratio: 1.48; }
-#pontDishList .name strong { font-size: clamp(15px, 1.75vw, 18px); }
-.pont-dish-price { font-size: clamp(13px, 1.65vw, 17px); font-weight: 750; white-space: nowrap; }
+#pontDishList .pont-dish-line :is(img, .pont-dish-placeholder) { width: clamp(51px, 15vw, 152px); aspect-ratio: 1.48; }
+#pontDishList .name strong { font-size: clamp(15px, 2.15vw, 22px); }
+.pont-dish-price { font-size: clamp(13px, 2vw, 20px); font-weight: 750; white-space: nowrap; }
 .admin-row-actions { display: flex; gap: 6px; }
 .pont-admin .admin-row-actions button {
   display: grid;
   place-items: center;
-  width: 40px;
-  min-height: 40px;
+  width: clamp(44px, 5vw, 52px);
+  min-height: clamp(44px, 5vw, 52px);
   padding: 0;
 }
 .pont-admin .admin-row-actions .admin-danger { border-color: #9c6c60; background: #392a29; }
@@ -411,27 +439,50 @@
 .pont-dish-recap div { padding: 4px 0; }
 
 @media (max-width: 700px) {
-  .admin-hero { flex-wrap: wrap; gap: 10px 13px; }
+  .admin-hero { flex-wrap: wrap; gap: 10px 13px; min-height: 0; }
   .admin-hero-copy { flex: 1 1 calc(100% - 70px); }
-  .admin-context { max-width: calc(100% - 55px); margin-left: 55px; padding: 7px 10px; font-size: 13px; }
+  .admin-context { width: auto; min-height: 34px; max-width: calc(100% - 55px); margin-left: 55px; padding: 7px 10px; font-size: 13px; }
   .admin-context .admin-icon { width: 17px; height: 17px; }
-  .admin-library-grid, .admin-daily-grid { grid-template-columns: minmax(0, 1fr); }
+  .pont-admin--restaurant .admin-nav { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .pont-admin--restaurant .admin-nav > * { grid-column: span 2; }
+  .pont-admin--restaurant .admin-nav > :nth-last-child(-n+2) { grid-column: span 3; }
+  .pont-admin .admin-nav > :is(button, a) { flex-direction: column; font-size: 13px; min-height: 56px; }
+  .admin-library-grid { grid-template-columns: clamp(80px, 27vw, 180px) minmax(0, 1fr); }
+  .pont-admin .admin-library-grid > .card { padding: clamp(8px, 2.5vw, 16px); }
+  .pont-admin #dishLibrary h2 { font-size: clamp(15px, 4vw, 23px); }
+  .admin-library-grid .admin-panel-head .admin-icon { width: 20px; height: 20px; }
+  .pont-admin .admin-library-grid .admin-categories button {
+    display: grid;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    gap: 4px;
+    min-height: 55px;
+    font-size: clamp(12px, 3vw, 15px);
+  }
+  .admin-library-grid .admin-categories button > span:not(.admin-category-count) { grid-column: 1 / -1; grid-row: 2; }
+  .admin-library-grid .admin-category-count { grid-column: 2; grid-row: 1; }
+  .admin-dish-editor-fields, .admin-daily-grid { grid-template-columns: minmax(0, 1fr); }
+  .pont-admin .admin-dish-editor .admin-dish-photo { aspect-ratio: 1.35; }
   .admin-daily-selection { padding: 12px 0 0; border-left: 0; border-top: 1px solid #5c927d63; }
-  .pont-admin .admin-categories { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
-  .pont-admin .admin-categories button { justify-content: center; padding: 7px 5px; font-size: 12px; gap: 4px; }
-  .admin-categories .admin-icon { width: 17px; height: 17px; }
-  .admin-category-count { min-width: 18px; min-height: 18px; margin-inline-start: 0; font-size: 11px; }
+  .pont-admin .admin-daily-grid .admin-categories { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+  .pont-admin .admin-daily-grid .admin-categories button { justify-content: center; padding: 7px 5px; font-size: 12px; gap: 4px; }
+  .admin-daily-grid .admin-categories .admin-icon { width: 17px; height: 17px; }
+  .admin-daily-grid .admin-category-count { min-width: 18px; min-height: 18px; margin-inline-start: 0; font-size: 11px; }
 }
 
 @media (max-width: 460px) {
-  .pont-admin { --admin-bar-height: 61px; }
-  .admin-topbar :is(.admin-back, .admin-logout), .pont-admin .admin-logout { width: 44px; padding-inline: 0; }
-  :is(.admin-back, .admin-logout) .admin-control-text { display: none; }
-  .admin-dish-editor-fields { grid-template-columns: minmax(0, 1fr); }
-  .pont-admin .admin-nav > :is(button, a) { min-height: 44px; }
-  .pont-admin .admin-dish-photo { aspect-ratio: 1.8; }
-  .pont-dish-line { grid-template-columns: auto minmax(0, 1fr) auto; }
-  .admin-row-actions { grid-column: 2 / -1; justify-self: end; }
-  .pont-admin #pontDailyDishes .pont-dish-line { grid-template-columns: auto minmax(0, 1fr) auto auto; }
+  .pont-admin { --admin-bar-height: 64px; --admin-icon-hit: 44px; }
+  .admin-back .admin-icon, .admin-logout .admin-icon { width: 24px; height: 24px; }
+  .pont-admin .admin-nav > :is(button, a) { font-size: 12px; }
+  .pont-admin .admin-dish-editor .pont-dish-actions button { flex-basis: 100%; }
   .pont-admin .admin-stats .stat { font-size: 12px; }
+}
+
+@media (max-width: 370px) {
+  .pont-admin--platform .admin-nav { grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .pont-admin--platform .admin-nav > * { grid-column: span 2; }
+  .pont-admin--platform .admin-nav > :nth-last-child(-n+2) { grid-column: span 3; }
+  .admin-dish-editor .pont-dish-grid { grid-template-columns: minmax(0, 1fr); }
+  #pontDishList .pont-dish-line { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .admin-row-actions { grid-column: 2 / -1; justify-self: end; }
 }
