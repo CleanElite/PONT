@@ -30,6 +30,8 @@ button { cursor: pointer; }
 .auction-modal button.primary-bid:disabled{opacity:.5}
 .auction-modal .modal-status{min-height:22px;font-size:13px;font-weight:650}
 .auction-modal .modal-note{font-size:12px;color:#67685c;line-height:1.5}
+.auction-success { text-align: center; }
+.auction-success h2 { margin: 11px 0 10px; }
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -53,6 +55,14 @@ button { cursor: pointer; }
 </main>
 <footer class="promotion-footer">PONT Slobozia · Promovare pentru restaurante partenere</footer>
 <dialog id="auctionDialog" class="auction-modal" aria-labelledby="auctionModalTitle"><div class="auction-modal-inner"><button type="button" class="auction-modal-close" id="auctionClose" aria-label="Închide">×</button><div class="modal-kicker" id="auctionModalPosition">LICITAȚIE PONT</div><h2 id="auctionModalTitle">Licitează pentru vizibilitate</h2><p class="modal-explainer">Ofertele se clasează automat după sumă. Licitezi pentru promovare, nu cumperi o poziție fixă.</p><div class="modal-current" id="auctionModalCurrent"></div><form id="bidForm"><label for="bidAmount">Oferta ta totală (lei)</label><input id="bidAmount" type="number" min="50" step="1" inputmode="numeric" required placeholder="Minimum 50 lei"><button class="primary-bid" type="submit" id="bidSubmit">Confirmă oferta</button></form><p class="modal-status" id="bidMessage" role="status" aria-live="polite"></p><p class="modal-note" id="auctionModalNote">Oferta minimă este 50 lei. Fiecare majorare trebuie să fie de cel puțin 10 lei. Plata este verificată separat.</p></div></dialog>
+<dialog id="bidSuccess" class="auction-modal auction-success" aria-labelledby="bidSuccessTitle" aria-describedby="bidSuccessMessage">
+  <div class="auction-modal-inner">
+    <div class="modal-kicker">Promovare PONT</div>
+    <h2 id="bidSuccessTitle">Felicitări!</h2>
+    <p id="bidSuccessMessage" class="modal-current">Ai licitat suma de <strong id="bidSuccessAmount"></strong> pentru Promovare.</p>
+    <form method="dialog"><button class="primary-bid" autofocus>Închide</button></form>
+  </div>
+</dialog>
 <script src="../super-admin/config.js"></script><script type="module">
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
@@ -137,10 +147,17 @@ $('bidForm').onsubmit=async e=>{
  try{
   const {error}=await db.rpc('place_my_auction_bid',{p_month:month,p_amount:value});
   if(error)throw error;
-  await load();$('bidAmount').value='';
-  $('bidMessage').textContent='Oferta a fost înregistrată și apare în clasament. Plata este în așteptare.';
- }catch(e){$('bidMessage').textContent='Oferta nu a fost salvată: '+e.message}
- finally{busy=false;updateModal()}
+ }catch(e){
+  $('bidMessage').textContent='Oferta nu a fost salvată: '+e.message;
+  return;
+ }finally{
+  busy=false;updateModal();
+ }
+ $('bidAmount').value='';
+ $('auctionDialog').close();
+ $('bidSuccessAmount').textContent=money(value);
+ $('bidSuccess').showModal();
+ await load().catch(e=>console.error('Actualizare clasament:',e));
 };
 start();
 </script></body></html>
