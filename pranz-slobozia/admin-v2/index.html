@@ -86,7 +86,7 @@ const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMe
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
 await enter();
-const {initPontOperations}=await import('../order-operations.js?v=2');
+const {initPontOperations}=await import('../order-operations.js?v=3');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();

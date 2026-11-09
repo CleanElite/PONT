@@ -39,7 +39,7 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  </style>
  <details id="pontHoursPanel"><summary>Programul comenzilor și comanda minimă</summary>
  <label id="pontOpRestaurantWrap">Restaurant<select id="pontOpRestaurant"></select></label>
- <p>Alege intervalul în care primești comenzi. Lasă ambele ore goale dacă programul nu este încă stabilit.</p>
+ <p>Alege intervalul în care primești comenzi. Programul implicit este 09:00–15:00. Îl poți modifica oricând.</p>
  <div class="pont-op-grid"><label>Comenzi de la ora<input id="pontOpStart" type="time"></label><label>Comenzi până la ora<input id="pontOpEnd" type="time"></label><label>Minim meniuri complete<input id="pontOpMin" type="number" min="1" max="20" step="1" value="1" required></label></div>
  <button type="button" id="pontOpSave" class="${settingsHost ? 'primary' : 'pont-op-button'}">${settingsHost ? 'Salvează setările comenzilor' : 'Salvează programul'}</button><p id="pontOpStatus" role="status"></p></details>
  <details id="pontWeekPanel"><summary>Planifică meniul pe toată săptămâna</summary>
@@ -60,7 +60,8 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  const dateAt=(start,days)=>{const d=new Date(start+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10)};
  $('pontOpWeek').value=monday().toISOString().slice(0,10);
  const restaurants=()=>getRestaurants()||[];
- let activeRestaurant='',settings={};
+ const defaultStart='09:00', defaultEnd='15:00';
+ let activeRestaurant='';
  function options(){
    const rs=restaurants(),selector=$('pontOpRestaurant');
    const previous=activeRestaurant;
@@ -81,21 +82,25 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    const {data,error}=await db.from('pont_order_settings').select('opens_at,closes_at,min_full_menus').eq('restaurant_id',restaurantId).maybeSingle();
    if(restaurantId!==activeRestaurant)return;
    if(error){$('pontOpStatus').textContent=error.message;return}
-   settings=data||{};
-   $('pontOpStart').value=settings.opens_at?.slice(0,5)||'';
-   $('pontOpEnd').value=settings.closes_at?.slice(0,5)||'';
-   $('pontOpMin').value=settings.min_full_menus||1;
+   $('pontOpStart').value=data?.opens_at?.slice(0,5)||defaultStart;
+   $('pontOpEnd').value=data?.closes_at?.slice(0,5)||defaultEnd;
+   $('pontOpMin').value=data?.min_full_menus||1;
  }
  for(const selector of [$('pontOpRestaurant'), $('pontOpWeekRestaurant')].filter(Boolean)){
    selector.addEventListener('change',()=>{activeRestaurant=selector.value;loadSettings();renderWeek()});
  }
  $('pontOpSave').addEventListener('click',async()=>{
    const start=$('pontOpStart').value,end=$('pontOpEnd').value,min=Number($('pontOpMin').value);
-   if(Boolean(start)!==Boolean(end)){ $('pontOpStatus').textContent='Completează ambele ore sau lasă-le goale.';return}
+   if(Boolean(start)!==Boolean(end)){ $('pontOpStatus').textContent='Completează ambele ore sau lasă-le goale pentru programul implicit.';return}
    if(start&&start===end){$('pontOpStatus').textContent='Ora de început și ora de încheiere nu pot fi egale.';return}
    if(!Number.isInteger(min)||min<1||min>20){$('pontOpStatus').textContent='Minimum permis: între 1 și 20 meniuri complete.';return}
-   const button=$('pontOpSave');button.disabled=true;
-   try{const {error}=await db.from('pont_order_settings').upsert({restaurant_id:activeRestaurant,opens_at:start||null,closes_at:end||null,min_full_menus:min,updated_at:new Date().toISOString()},{onConflict:'restaurant_id'});if(error)throw error;$('pontOpStatus').textContent='Programul și comanda minimă au fost salvate.'}
+   const restaurantId=activeRestaurant,button=$('pontOpSave');button.disabled=true;
+   try{const {error}=await db.from('pont_order_settings').upsert({restaurant_id:restaurantId,opens_at:start||defaultStart,closes_at:end||defaultEnd,min_full_menus:min,updated_at:new Date().toISOString()},{onConflict:'restaurant_id'});if(error)throw error;
+     if(restaurantId===activeRestaurant&&!start&&!$('pontOpStart').value&&!$('pontOpEnd').value){
+       $('pontOpStart').value=defaultStart;
+       $('pontOpEnd').value=defaultEnd;
+     }
+     $('pontOpStatus').textContent='Programul și comanda minimă au fost salvate.'}
    catch(e){$('pontOpStatus').textContent=e.message}finally{button.disabled=false}
  });
  function renderWeek(){
