@@ -53,52 +53,84 @@ body #order::backdrop{background:#031c1a}
 #order .pont-dish-group:not([open]) .pont-group-arrow{transform:rotate(180deg)}
 #order .pont-dish-group__content{padding-left:6px}
 #order .quantity{display:flex!important;justify-content:initial!important;gap:9px!important;min-height:41px;padding:4px 0!important;border:0!important;color:#f5fbf7;align-items:center!important}
-/* Compact course layout in the QUANTITY SELECTION area (not the header). */
+/* Compact vertical selection matching the supplied mobile reference. */
 #order .pont-dish-group__content{
-  min-width:0;
-  padding:3px 0 9px 4px;
-  scrollbar-color:#378f80 transparent;
-  scrollbar-width:thin;
-  -webkit-overflow-scrolling:touch;
-}
-#order .pont-dish-group:has(.pont-choice-dish) .pont-dish-group__content{overflow-x:auto;overscroll-behavior-x:contain}
-#order .pont-dish-group:has(.pont-choice-dish) .pont-choice-dish{
-  box-sizing:border-box;min-width:0;
-  padding:8px 9px!important;
-  border:1px solid rgba(91,191,169,.30)!important;
-  border-radius:12px;
-  background:linear-gradient(115deg,rgba(13,65,57,.62),rgba(7,41,38,.36));
-}
-#order .pont-dish-group:has(.pont-choice-dish) .pont-dish-group__content{
-  display:flex;
-  flex-wrap:nowrap;
-  gap:8px;
-}
-#order .pont-dish-group:has(.pont-choice-dish) .pont-choice-dish{
-  flex:0 0 clamp(235px,45%,330px);
-}
-#order .pont-dish-group--second .pont-dish-group__content{
-  display:grid;
-  grid-auto-flow:column;
-  grid-template-rows:repeat(2,minmax(0,auto));
-  grid-auto-columns:clamp(235px,45%,330px);
-  align-items:stretch;
-  gap:8px;
-}
-#order .pont-dish-group--second .pont-choice-dish{
+  display:block!important;
   width:100%;
+  min-width:0;
+  padding:0 2px 7px 4px!important;
+  overflow:visible!important;
+  scrollbar-width:auto;
 }
-@media(max-width:530px){
-  #order .pont-dish-group:has(.pont-choice-dish) .pont-choice-dish{
-    flex-basis:min(86vw,300px);
-    gap:6px!important;
-    padding:8px 7px!important;
-  }
-  #order .pont-dish-group--second .pont-dish-group__content{
-    grid-auto-columns:min(86vw,300px);
-  }
-  #order .pont-dish-group:has(.pont-choice-dish) .pont-choice-photo{width:30px;height:30px}
-  #order .pont-dish-group:has(.pont-choice-dish) .pont-dish-price{min-width:0;font-size:11px}
+#order .pont-dish-group__content .pont-choice-dish{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:3px 2px!important;
+  min-height:33px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  gap:clamp(5px,1.3vw,11px)!important;
+}
+#order .pont-dish-group__content .pont-choice-photo{display:none!important}
+#order .pont-dish-group__content .pont-dish-name{
+  flex:1 1 0!important;
+  min-width:0!important;
+  margin:0!important;
+  font-size:clamp(11px,2.55vw,14px)!important;
+  line-height:1.2!important;
+  font-weight:450!important;
+}
+#order .pont-dish-group__content .pont-dish-name strong{
+  display:block;
+  font-weight:500!important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#order .pont-dish-group__content .pont-dish-price{
+  flex:0 0 auto!important;
+  min-width:0!important;
+  width:clamp(52px,14vw,95px);
+  font-size:clamp(10px,2.3vw,13px)!important;
+  font-weight:550!important;
+  white-space:nowrap;
+  text-align:right;
+}
+#order .pont-dish-group__content .pont-pick{
+  flex:0 0 22px!important;
+  width:22px!important;min-width:22px!important;height:22px!important;
+}
+#order .pont-dish-group__content .pont-pick span{width:20px;height:20px}
+#order .pont-dish-group__content .stepper{
+  flex:0 0 auto!important;
+  width:clamp(78px,21vw,108px);
+  justify-content:space-between;
+  padding:0 2px!important;
+}
+#order .pont-dish-group__content .stepper button{
+  flex:0 0 auto;min-width:24px!important;min-height:26px!important;
+  padding:2px 4px!important;font-size:17px!important;line-height:1!important;
+}
+#order .pont-dish-group__content .stepper input{
+  flex:1 1 auto;min-width:0!important;width:22px!important;
+  font-size:16px!important;line-height:1!important;text-align:center;
+}
+#order .pont-dish-group{padding:3px 0 7px!important}
+#order .pont-dish-group>summary{gap:8px!important;padding:8px 2px 7px!important}
+#order .pont-dish-group>summary strong{font-size:clamp(17px,3.4vw,21px)!important}
+#order .pont-dish-group>summary small{font-size:clamp(10px,2.2vw,12px)!important}
+#order .pont-group-symbol{min-width:27px!important;font-size:21px!important}
+@media(max-width:380px){
+ #order .pont-dish-group__content .pont-choice-dish{gap:4px!important}
+ #order .pont-dish-group__content .pont-dish-name{font-size:11px!important}
+ #order .pont-dish-group__content .pont-dish-price{width:53px;font-size:10px!important}
+ #order .pont-dish-group__content .stepper{width:78px}
 }
 #order .pont-pick{flex:none!important;display:block!important;width:24px;min-width:24px;height:24px;margin:0!important;position:relative;cursor:pointer}
 #order .pont-pick input{position:absolute;inset:0;width:100%!important;height:100%!important;margin:0!important;opacity:0;cursor:pointer}
