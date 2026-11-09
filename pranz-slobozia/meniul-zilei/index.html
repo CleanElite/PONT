@@ -872,7 +872,7 @@ function trackPontMetric(type,menu,menusCount=0,portionsCount=0){
 function openOrder(m,trigger){
   document.body.classList.add('pont-restaurant-page');
   document.title=m.name+' · Meniul zilei · PONT';
-  const featuredPhoto=restaurantCover(m);
+  const featuredPhoto=/blabla\s*bistro/i.test(m.name||'')?'./showcase/pizza.webp':restaurantCover(m);
   $('#restaurantHeroPhoto').style.backgroundImage='url("'+String(featuredPhoto).replace(/[\\\"\n]/g,'')+'")';
   $('#heroMenuPrice').textContent=lei(m.full);
 
