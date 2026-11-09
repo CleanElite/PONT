@@ -5,6 +5,33 @@
     font-size: 16px !important;
   }
 }
+
+/* Compact premium auction ranking, restricted to SuperAdmin's auctions panel. */
+#auctions .pont-auction-ranking-trigger{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:41px;padding:9px 14px;border-radius:13px;border:1px solid rgba(147,214,194,.38);background:linear-gradient(135deg,#15473f,#0d302e);color:#eefaf6;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:inset 0 1px #ffffff16;cursor:pointer}
+#auctions .pont-auction-ranking-trigger:hover{border-color:#98d8bb;background:#1a5549}
+#auctions .pont-auction-ranking-trigger svg{width:17px;height:17px;flex:none;color:#dccc92}
+#auctions .pont-auction-ranking-dialog{box-sizing:border-box;width:min(93vw,540px);max-width:93vw;max-height:85dvh;padding:0;overflow:auto;background:#0a2b2c;color:#f2f9f6;border:1px solid #568577;border-radius:20px;box-shadow:0 24px 90px #0009}
+#auctions .pont-auction-ranking-dialog::backdrop{background:#03171bba;backdrop-filter:blur(6px)}
+#auctions .pont-auction-ranking-head{position:relative;display:flex;justify-content:space-between;align-items:flex-start;padding:22px 22px 13px;border-bottom:1px solid #36685e}
+#auctions .pont-auction-ranking-kicker{display:block;color:#e9cb8e;font-size:10px;font-weight:750;letter-spacing:.18em;margin-bottom:6px}
+#auctions .pont-auction-ranking-head h3{margin:0;font:600 25px/1.2 Georgia,serif;color:#fffdf8}
+#auctions .pont-auction-ranking-head p{margin:7px 0 0;color:#bbd9d2;font-size:13px;text-transform:capitalize}
+#auctions .pont-auction-ranking-close{width:36px;height:36px;min-height:36px;padding:0;border-radius:50%;border:1px solid #567d73;background:#153f3a;color:#eafaf3;font-size:25px;line-height:1}
+#auctions .pont-auction-ranking-info{padding:14px 22px 6px;margin:0;font-size:12px;color:#bad4cb}
+#auctions .pont-auction-ranking-rows{padding:8px 14px 13px}
+#auctions .pont-auction-ranking-row{display:grid;grid-template-columns:35px minmax(0,1fr) auto;gap:12px;align-items:center;min-height:64px;padding:10px;border-bottom:1px solid #37635a67}
+#auctions .pont-auction-ranking-row:last-child{border-bottom:0}
+#auctions .pont-auction-ranking-position{display:grid;place-items:center;width:33px;height:33px;border:1px solid #50776b;border-radius:11px;color:#e6eee9;font-size:14px;font-weight:750}
+#auctions .pont-auction-ranking-row.is-first .pont-auction-ranking-position{background:#e9cd8b;color:#263428;border-color:#f5dfaa}
+#auctions .pont-auction-ranking-name{display:flex;flex-direction:column;gap:4px;min-width:0}
+#auctions .pont-auction-ranking-name strong{font-size:14px;font-weight:700;color:#f0f9f6;overflow-wrap:anywhere}
+#auctions .pont-auction-ranking-name small{color:#93b5a9;font-size:11px}
+#auctions .pont-auction-ranking-value{white-space:nowrap;font-size:15px;font-weight:780;color:#f2d898;font-variant-numeric:tabular-nums}
+#auctions .pont-auction-ranking-footer{display:flex;justify-content:space-between;gap:15px;align-items:center;padding:14px 22px 20px;border-top:1px solid #36685e}
+#auctions .pont-auction-ranking-footer span{font-size:11px;color:#9fbbb4;line-height:1.45}
+#auctions .pont-auction-ranking-footer button{flex:none;min-height:36px;padding:8px 11px;border-radius:11px;font-size:12px;background:#16453e;color:#e9f8ef;border:1px solid #4c8072}
+@media(max-width:530px){#auctions .pont-auction-ranking-trigger{width:100%}#auctions .pont-auction-ranking-head{padding:19px 16px 12px}#auctions .pont-auction-ranking-rows{padding:6px 8px 10px}#auctions .pont-auction-ranking-row{gap:8px;grid-template-columns:30px minmax(0,1fr) auto;padding:10px 5px}#auctions .pont-auction-ranking-value{font-size:13px}#auctions .pont-auction-ranking-footer{padding:12px 15px 17px;gap:8px}}
+
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><body class="pont-admin pont-admin--platform">
@@ -137,6 +164,7 @@
 <section id="auctions" class="card dashboard-panel" aria-labelledby="auctionsTitle" hidden>
   <div class="dashboard-heading">
     <div><h2 id="auctionsTitle">Licitații și încasări</h2><p>Alege luna în care restaurantul va putea publica meniuri.</p></div>
+    <button type="button" id="showAuctionRanking" class="pont-auction-ranking-trigger" aria-haspopup="dialog" aria-controls="auctionRankingDialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M6 16V9h4v7M10 16V5h4v11M14 16v-5h4v5"/></svg><span>Rezumat licitații</span></button>
   </div>
   <div class="dashboard-heading">
     <div><strong>Licitația pentru luna următoare</strong><p id="auctionControlStatus" role="status">Se verifică starea licitației…</p></div>
@@ -158,6 +186,15 @@
   </div>
   <p id="auctionFeedback" class="dashboard-message" role="status"></p>
   <div id="auctionRows"></div>
+  <dialog id="auctionRankingDialog" class="pont-auction-ranking-dialog" aria-labelledby="auctionRankingTitle">
+    <div class="pont-auction-ranking-head">
+      <div><span class="pont-auction-ranking-kicker">CLASAMENT</span><h3 id="auctionRankingTitle">Rezumat licitații</h3><p id="auctionRankingMonth"></p></div>
+      <button type="button" id="closeAuctionRanking" class="pont-auction-ranking-close" aria-label="Închide rezumatul">×</button>
+    </div>
+    <p id="auctionRankingInfo" class="pont-auction-ranking-info" role="status" aria-live="polite"></p>
+    <div id="auctionRankingRows" class="pont-auction-ranking-rows"></div>
+    <div class="pont-auction-ranking-footer"><span>Pozițiile sunt stabilite după valoarea maximă licitată. La egalitate contează oferta mai veche.</span><button type="button" id="refreshAuctionRanking">Actualizează</button></div>
+  </dialog>
   <dialog id="auctionChoiceDialog" class="auction-choice-dialog" aria-labelledby="auctionChoiceTitle">
     <div class="auction-choice-header"><h3 id="auctionChoiceTitle">Confirmare restaurant</h3><button type="button" id="auctionChoiceClose" aria-label="Închide">×</button></div>
     <p id="auctionChoiceRestaurant"></p>
@@ -506,6 +543,54 @@ $('analyticsRefresh').onclick = loadAnalytics;
 
 const auctionMoney = value => Number(value || 0).toLocaleString('ro-RO', {maximumFractionDigits:2}) + ' lei';
 let auctionOffers = [], manualPaidApprovals = [], auctionRequest = 0, loadedAuctionMonth = '';
+
+const auctionRankingDialog=$('auctionRankingDialog');
+let auctionRankingRequest=0;
+function rankedAuctionOffers(offers){
+ const best=new Map();
+ for(const offer of offers){
+  const key=offer.restaurant_id;
+  const prior=best.get(key);
+  const amount=Number(offer.amount);
+  const earlier=offer.created_at||'';
+  if(!prior||amount>Number(prior.amount)||(amount===Number(prior.amount)&&earlier<(prior.created_at||'')))best.set(key,offer);
+ }
+ return [...best.values()].sort((a,b)=>Number(b.amount)-Number(a.amount)||
+  (a.created_at||'').localeCompare(b.created_at||'')||
+  (restaurantName(a.restaurant_id)||'').localeCompare(restaurantName(b.restaurant_id)||'','ro'));
+}
+async function renderAuctionRanking(){
+ const month=$('auctionMonth').value;
+ const request=++auctionRankingRequest;
+ $('auctionRankingMonth').textContent=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'-01T00:00:00Z'));
+ $('auctionRankingInfo').textContent='Se încarcă ofertele…';
+ $('auctionRankingRows').innerHTML='';
+ try{
+  if(!/^\d{4}-\d{2}$/.test(month))throw Error('Selectează o lună validă.');
+  const offers=await req(db.from('auction_offers').select('restaurant_id,amount,created_at,round').eq('campaign_month',month+'-01').order('amount',{ascending:false}).order('created_at',{ascending:true}));
+  if(request!==auctionRankingRequest||!auctionRankingDialog.open)return;
+  const ranked=rankedAuctionOffers(offers);
+  $('auctionRankingInfo').textContent=ranked.length?ranked.length+' restaurante participante · Clasament actualizat':'Nu există oferte pentru luna selectată.';
+  $('auctionRankingRows').innerHTML=ranked.map((offer,index)=>
+   '<div class="pont-auction-ranking-row'+(index===0?' is-first':'')+'">'+
+   '<span class="pont-auction-ranking-position">'+(index+1)+'</span>'+
+   '<span class="pont-auction-ranking-name"><strong>'+esc(restaurantName(offer.restaurant_id)||'Restaurant necunoscut')+'</strong><small>Locul '+(index+1)+' · Runda '+esc(offer.round)+'</small></span>'+
+   '<strong class="pont-auction-ranking-value">'+auctionMoney(offer.amount)+'</strong>'+
+   '</div>').join('');
+ }catch(error){
+  if(request!==auctionRankingRequest||!auctionRankingDialog.open)return;
+  $('auctionRankingInfo').textContent='Nu am putut încărca licitațiile: '+error.message;
+ }
+}
+$('showAuctionRanking').onclick=()=>{
+ auctionRankingDialog.showModal();
+ void renderAuctionRanking();
+};
+$('refreshAuctionRanking').onclick=()=>void renderAuctionRanking();
+$('closeAuctionRanking').onclick=()=>auctionRankingDialog.close();
+auctionRankingDialog.addEventListener('click',event=>{if(event.target===auctionRankingDialog)auctionRankingDialog.close()});
+auctionRankingDialog.addEventListener('close',()=>{auctionRankingRequest++});
+
 const auctionEdits = new Map();
 let auctionSaving = false, activeAuctionRestaurant = null;
 
