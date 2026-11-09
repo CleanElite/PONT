@@ -18,7 +18,7 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
 .evening-shell::before{content:"";position:absolute;z-index:-2;inset:0 0 auto;height:clamp(320px,43vw,490px);pointer-events:none;background:linear-gradient(180deg,transparent 70%,#001b18),url("./ambient.webp") center top/cover no-repeat}
 .evening-shell::after{content:"";pointer-events:none;position:absolute;z-index:-1;bottom:-112px;left:-15%;width:130%;height:250px;border-top:2px solid rgba(117,255,229,.69);border-radius:50% 50% 0 0;transform:rotate(-3deg);background:radial-gradient(ellipse at 50% 0,rgba(5,204,178,.26),transparent 60%);box-shadow:0 -18px 60px rgba(13,227,200,.27)}
 .evening-wrap{width:min(92%,1040px);margin-inline:auto}
-.evening-header{height:clamp(126px,17vw,185px);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:start;padding-top:10px;position:relative;z-index:2}
+.evening-header{height:clamp(114px,14vw,156px);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:start;padding-top:10px;position:relative;z-index:2}
 .evening-logo{grid-column:2;display:flex;align-items:center;justify-content:center;flex-direction:column;width:clamp(185px,32vw,295px);min-height:103px}
 .evening-logo img{display:block;width:100%;height:auto;max-height:132px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(66,235,220,.19))}
 .evening-logo-city{display:flex;align-items:center;gap:.85em;margin-top:-.15em;color:#f3faf6;font-size:clamp(8px,1.5vw,16px);letter-spacing:.4em;padding-left:.4em}
@@ -28,29 +28,22 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
 .evening-back:hover{background:#105a4c;transform:translateY(-1px)}
 .evening-back svg{width:19px;height:19px;flex:none}
 .evening-intro{position:relative;z-index:1;padding:2px 0 clamp(27px,4.3vw,46px);padding-inline:clamp(0px,8%,84px)}
-.evening-intro h1{display:flex;align-items:center;justify-content:center;gap:19px;margin:5px 0 14px;font:italic 600 clamp(39px,7.1vw,72px)/1.05 Georgia,"Times New Roman",serif;letter-spacing:-.035em;color:#fffdf8;text-align:center;text-shadow:0 5px 23px #00110fe8}
-.evening-intro h1 svg{width:clamp(48px,8vw,76px);height:clamp(48px,8vw,76px);flex:none;color:#f4c56c;filter:drop-shadow(0 0 11px #ffd26a40)}
+.evening-intro h1{margin:5px 0 14px;font:italic 600 clamp(39px,6vw,65px)/1.05 Georgia,"Times New Roman",serif;letter-spacing:-.035em;color:#fffdf8;text-align:center;text-shadow:0 5px 23px #00110fe8}
 .evening-title-glow{display:block;width:min(350px,59vw);height:2px;margin:10px auto 21px;background:linear-gradient(90deg,transparent,var(--gold),transparent);box-shadow:0 0 17px #f9ce77b0}
-.evening-intro p{max-width:min(67%,660px);margin:0;color:#f2faf7;text-align:left;font-size:clamp(15px,2.55vw,26px);line-height:1.5;text-wrap:balance;text-shadow:0 2px 12px #001812}
-.venues{display:grid;gap:18px;padding:0 0 38px;position:relative;z-index:1}
-.venue{position:relative;isolation:isolate;display:flex;align-items:center;overflow:hidden;min-height:clamp(210px,26.5vw,300px);border:2px solid transparent;border-radius:clamp(22px,4.1vw,44px);background:linear-gradient(#03221e,#03221e) padding-box,linear-gradient(130deg,#fff0bc,#4ca49b 26%,#72c2b5 74%,#fff1cb) border-box;box-shadow:inset 0 1px 0 #ffffff4d,0 9px 32px rgba(0,8,9,.35),0 0 17px rgba(37,230,207,.12);transition:transform .24s ease,border-color .24s ease}
-.venue:hover{transform:translateY(-3px);border-color:#bbffe7}
-.venue-image{position:absolute;z-index:-2;inset:0;width:100%;height:100%;background-position:right center;background-size:cover;background-repeat:no-repeat}
-.venue::before{content:"";pointer-events:none;position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,#00131152,transparent 64%)}
-.venue::after{content:"";position:absolute;left:28px;top:21%;height:41%;width:5px;border-radius:3px;background:linear-gradient(#fff6d4,#d39e3b 60%,transparent);box-shadow:0 0 15px #efc16d7d}
-.venue-copy{padding:22px 20px 23px clamp(54px,6.5vw,76px);width:min(73%,630px);min-width:0}
-.venue-title{margin:0 0 14px;font:500 clamp(36px,7vw,74px)/.98 Georgia,"Times New Roman",serif;letter-spacing:-.034em;color:#fffefa;text-shadow:0 3px 15px rgba(0,9,9,.7)}
-.venue-subtitle{display:block;font-size:clamp(18px,3.2vw,35px);line-height:1.08;margin-top:2px;letter-spacing:-.02em}
-.venue-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:#fbfffd;font-size:15px;text-shadow:0 2px 10px #001b19}
-.venue-place{display:inline-flex;align-items:center;gap:7px}
-.venue-place svg{width:18px;height:18px;flex:none}
-.venue-vibe{border:1px solid rgba(249,210,129,.79);border-radius:999px;padding:6px 12px;background:rgba(20,32,24,.65);color:#f6deae;font-size:13px}
-.venue-action{display:inline-flex;gap:11px;align-items:center;justify-content:center;margin-top:19px;padding:10px 18px;min-height:43px;border:1px solid #77ffe2;border-radius:999px;background:linear-gradient(120deg,rgba(2,85,73,.98),rgba(0,56,51,.87));color:#fff;font-weight:700;font-size:14px;box-shadow:inset 0 1px rgba(235,255,247,.17),0 0 15px rgba(35,244,202,.29);cursor:pointer;transition:background .2s}
-.venue-action:hover{background:#10755f}
-.venue-action svg{width:18px;height:18px}
-.venue--hambar .venue-image{background-image:url("./hambar.webp")}
-.venue--vista .venue-image{background-image:url("./vista.webp")}
-.venue--noa .venue-image{background-image:url("./noa.webp")}
+.evening-intro p{max-width:550px;margin:0 auto;color:#f2faf7;text-align:center;font-size:clamp(15px,2.55vw,26px);line-height:1.5;text-wrap:balance;text-shadow:0 2px 12px #001812}
+
+.venues{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding-bottom:12px}
+.venue{display:grid;grid-template-columns:minmax(80px,26%) minmax(0,1fr);align-items:center;gap:14px;padding:12px;border:1px solid #75bdb159;border-radius:19px;background:linear-gradient(145deg,#0c2925,#041a18);box-shadow:0 8px 24px #0003}
+.venue-image{display:block;width:100%;height:auto;aspect-ratio:1;object-fit:cover;object-position:88% center;border-radius:12px;background:#102c27}
+.venue-copy{text-align:center;min-width:0}
+.venue-title{margin:0;color:#fffdf8;font:600 clamp(18px,2.3vw,25px)/1.12 Georgia,serif;text-wrap:balance}
+.venue-vibe{display:inline-block;margin-top:6px;padding:3px 8px;border:1px solid #e8c77b50;border-radius:999px;color:#f5d998;font-size:11px;line-height:1.3}
+.venue-description{margin:7px 0 0;color:#d4e3de;font-size:13px;line-height:1.4}
+.venue-map{display:inline-flex;align-items:center;min-height:34px;margin-top:3px;padding:0 6px;color:#9cf0dc;font-size:12px;font-weight:650}
+.venue-map:hover{text-decoration:underline}
+.venue-photo-note{margin:0;text-align:center;color:#c0d4ce;font-size:12px}
+@media(max-width:760px){.venues{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:420px){.venue{grid-template-columns:76px minmax(0,1fr);gap:9px;padding:9px}.venue-description{font-size:12px}.venue-map{min-height:40px}}
 .evening-bottom{height:55px}
 .evening-footer{position:relative;background:#001714;padding:14px 18px 45px;border-top:1px solid rgba(151,223,199,.2);color:#a8c6bc;font-size:12px}
 .evening-footer .footer-brand{max-width:1040px;margin:0 auto;font-size:13px;letter-spacing:.24em;color:#e9ede2}
@@ -58,47 +51,21 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
 .evening-footer .pont-legal-footer p{color:#a8c6bc}
 .evening-footer .pont-legal-footer a{color:#c4fbe6;text-decoration:underline;text-underline-offset:2px}
 .evening-footer .pont-legal-footer nav a{padding:0}
-.venue-dialog{box-sizing:border-box;width:min(92vw,480px);max-width:92vw;max-height:85dvh;overflow:auto;padding:0;border:1px solid rgba(139,235,205,.5);border-radius:22px;background:#082b27;color:#f1fff8;box-shadow:0 20px 80px #000a}
-.venue-dialog::backdrop{background:#001512dc;backdrop-filter:blur(7px)}
-.venue-dialog-picture{height:195px;background:center/cover no-repeat;position:relative}
-.venue-dialog-picture::after{content:"";position:absolute;inset:50% 0 0;background:linear-gradient(transparent,#082b27)}
-.venue-dialog-body{padding:12px 24px 26px}
-.venue-dialog-kicker{font-size:11px;letter-spacing:.14em;color:#e8cc8c;text-transform:uppercase;font-weight:700}
-.venue-dialog h2{margin:8px 0;font:500 34px/1.07 Georgia,serif}
-.venue-dialog p{font-size:14px;line-height:1.6;color:#d3e8dd}
-.venue-dialog-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
-.venue-dialog-links a,.venue-dialog-links button{display:inline-flex;align-items:center;justify-content:center;min-height:41px;padding:9px 17px;border:1px solid #74e5c8;border-radius:999px;background:#145345;color:#f4fff8;font-size:13px;font-weight:700;text-decoration:none}
-.venue-dialog-links button{background:transparent;border-color:#4d8072}
-.venue-dialog-close{position:absolute;z-index:2;top:13px;right:13px;width:37px;height:37px;display:grid;place-items:center;border:1px solid #ffffff90;border-radius:50%;background:#00231fcb;color:#fff;font-size:23px}
 @media(max-width:600px){
  .evening-wrap{width:calc(100% - 26px)}
- .evening-header{height:128px;padding-top:5px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+ .evening-header{height:106px;padding-top:5px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
  .evening-logo{width:clamp(147px,43vw,205px);min-height:90px}
  .evening-logo img{max-height:88px}
  .evening-back{margin-top:15px;min-height:38px;padding:0 10px;font-size:11px;gap:5px}
  .evening-back svg{width:16px;height:16px}
  .evening-intro{padding:0 10px 25px}
- .evening-intro h1{font-size:clamp(34px,9vw,47px);gap:9px;margin-top:0}
- .evening-intro h1 svg{width:42px;height:42px}
- .evening-title-glow{margin:8px auto 17px}
- .evening-intro p{font-size:14px;max-width:78%}
- .venues{gap:14px}
- .venue{min-height:196px;border-radius:24px}
- .venue-image{background-position:84% center}
- .venue::before{background:linear-gradient(90deg,#001311c9 5%,#00131180 42%,transparent 84%)}
- .venue::after{left:14px;width:3px}
- .venue-copy{padding:17px 10px 17px 30px;width:76%}
- .venue-title{font-size:clamp(34px,10vw,48px);margin-bottom:10px}
- .venue-subtitle{font-size:clamp(17px,5vw,23px)}
- .venue-meta{gap:8px;font-size:12px}
- .venue-place svg{width:15px;height:15px}
- .venue-vibe{font-size:11px;padding:5px 9px}
- .venue-action{margin-top:16px;padding:8px 13px;min-height:39px;font-size:12px}
- .venue-action svg{width:16px;height:16px}
+ .evening-intro h1{font-size:clamp(34px,9vw,47px);margin-top:0}
+  .evening-title-glow{margin:8px auto 17px}
+ .evening-intro p{font-size:14px;max-width:320px}
 }
 @media(max-width:540px){.evening-back .back-text{display:none}.evening-back{width:42px;min-height:42px;justify-content:center;padding:0}}
-@media(max-width:380px){.evening-header{height:110px}.evening-logo{width:143px}.evening-back .back-text{display:none}.evening-back{width:38px;justify-content:center;padding:0}.venue-copy{width:82%}.venue-title{font-size:33px}.venue--noa .venue-title{font-size:31px}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.venue,.venue-action,.evening-back{transition:none}}
+@media(max-width:380px){.evening-header{height:110px}.evening-logo{width:143px}.evening-back .back-text{display:none}.evening-back{width:38px;justify-content:center;padding:0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.evening-back{transition:none}}
 </style>
 </head>
 <body class="evening-page">
@@ -109,46 +76,141 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
   </header>
   <main class="evening-wrap">
     <section class="evening-intro" aria-labelledby="evening-title">
-      <h1 id="evening-title"><svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M11 8h24l-1 18c-.4 7-5 12-11 12s-10.6-5-11-12L11 8ZM23 38v17m-12 0h24M43 8h24l-1 18c-.4 7-5 12-11 12s-10.6-5-11-12L43 8ZM55 38v17m-12 0h24" transform="rotate(-13 23 32)"/><path d="M14 23h19M46 23h19" opacity=".8"/></svg><span>Ieșire în oraș</span></h1>
+      <h1 id="evening-title">Ieșire în oraș</h1>
       <span class="evening-title-glow" aria-hidden="true"></span>
       <p>De la o cină în doi la o seară cu prietenii. Alege locul care ți se potrivește în Slobozia.</p>
     </section>
-    <section class="venues" aria-label="Restaurante și localuri din Slobozia"><article class="venue venue--hambar"><div class="venue-image" role="img" aria-label="Imagine ilustrativă pentru Hambar"></div><div class="venue-copy"><h2 class="venue-title">Hambar</h2><div class="venue-meta"><span class="venue-place"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a8.1 8.1 0 0 0-8 8.2C4 16 12 22 12 22s8-6 8-11.8A8.1 8.1 0 0 0 12 2Zm0 11.2a3.1 3.1 0 1 1 0-6.2 3.1 3.1 0 0 1 0 6.2Z"/></svg> Slobozia</span><span class="venue-vibe">Relaxat</span></div><button class="venue-action" type="button" data-venue="hambar" aria-label="Vezi detalii despre Hambar">Vezi detalii <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16m0 0-7-7m7 7-7 7"/></svg></button></div></article>
-<article class="venue venue--vista"><div class="venue-image" role="img" aria-label="Imagine ilustrativă pentru Vista"></div><div class="venue-copy"><h2 class="venue-title">Vista</h2><div class="venue-meta"><span class="venue-place"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a8.1 8.1 0 0 0-8 8.2C4 16 12 22 12 22s8-6 8-11.8A8.1 8.1 0 0 0 12 2Zm0 11.2a3.1 3.1 0 1 1 0-6.2 3.1 3.1 0 0 1 0 6.2Z"/></svg> Slobozia</span><span class="venue-vibe">Elegant</span></div><button class="venue-action" type="button" data-venue="vista" aria-label="Vezi detalii despre Vista">Vezi detalii <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16m0 0-7-7m7 7-7 7"/></svg></button></div></article>
-<article class="venue venue--noa"><div class="venue-image" role="img" aria-label="Imagine ilustrativă pentru NOA"></div><div class="venue-copy"><h2 class="venue-title">NOA<span class="venue-subtitle">Restaurant & Lounge</span></h2><div class="venue-meta"><span class="venue-place"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a8.1 8.1 0 0 0-8 8.2C4 16 12 22 12 22s8-6 8-11.8A8.1 8.1 0 0 0 12 2Zm0 11.2a3.1 3.1 0 1 1 0-6.2 3.1 3.1 0 0 1 0 6.2Z"/></svg> Slobozia</span><span class="venue-vibe">Lounge</span></div><button class="venue-action" type="button" data-venue="noa" aria-label="Vezi detalii despre NOA">Vezi detalii <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16m0 0-7-7m7 7-7 7"/></svg></button></div></article></section>
+    <section class="venues" aria-label="Restaurante și localuri din Slobozia">
+      <article class="venue">
+        <img class="venue-image" src="./hambar.webp" width="120" height="120" alt="" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">Hambar Bistro</h2>
+          <span class="venue-vibe">Rafinament relaxat</span>
+          <p class="venue-description">O cină obișnuită poate deveni o seară specială. Hambar este alegerea pentru momente în doi, preparate savuroase și o atmosferă elegantă, dar relaxată.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Hambar%20Bistro%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Hambar Bistro pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="./vista.webp" width="120" height="120" alt="" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">Vista Cafe</h2>
+          <span class="venue-vibe">Confort și socializare</span>
+          <p class="venue-description">Locul în care o cafea se poate transforma într-o conversație lungă. Potrivit pentru întâlniri cu prietenii, mese relaxate și ieșiri spontane.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Vista%20Cafe%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Vista Cafe pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="./noa.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">NOA Restaurant &amp; Lounge</h2>
+          <span class="venue-vibe">Atmosferă de seară</span>
+          <p class="venue-description">Mai mult decât o simplă masă. NOA te invită să prelungești seara într-un cadru de lounge, potrivit pentru socializare și momente petrecute cu prietenii.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=NOA%20Restaurant%20%26%20Lounge%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi NOA Restaurant &amp; Lounge pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="../meniul-zilei/showcase/pizza.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">Donna Carmela</h2>
+          <span class="venue-vibe">Gusturi italienești</span>
+          <p class="venue-description">O masă savuroasă, fără formalități. Un loc de ales când ai poftă de preparate în stil italian și vrei să petreci timp cu familia sau prietenii.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Donna%20Carmela%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Donna Carmela pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="../meniul-zilei/showcase/somon.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">Restaurant LaCosta</h2>
+          <span class="venue-vibe">Eleganță clasică</span>
+          <p class="venue-description">Pentru aniversări, mese importante și ocazii care merită un cadru aparte. O alegere inspirată când vrei să aduci un plus de eleganță întâlnirii.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Restaurant%20LaCosta%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Restaurant LaCosta pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="../meniul-zilei/showcase/supa.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">Restaurant Central</h2>
+          <span class="venue-vibe">Tradiție și familiaritate</span>
+          <p class="venue-description">Un loc pentru mesele care aduc familia la aceeași masă. Atmosferă clasică și o experiență familiară, potrivită pentru un prânz sau o cină fără complicații.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Restaurant%20Central%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Restaurant Central pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="../meniul-zilei/showcase/burger.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">Spring No. 3</h2>
+          <span class="venue-vibe">Relaxare fără formalități</span>
+          <p class="venue-description">O ieșire spontană, o masă consistentă și timp petrecut cu prietenii. Potrivit pentru zilele în care vrei să te bucuri de mâncare într-un cadru relaxat.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Spring%20No.%203%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Spring No. 3 pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="../meniul-zilei/showcase/paste.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">By Jules</h2>
+          <span class="venue-vibe">Descoperire culinară</span>
+          <p class="venue-description">Pentru cei care vor mai multă varietate în farfurie. Un loc de luat în calcul când ieși cu un grup cu preferințe diferite sau ai chef să încerci ceva nou.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=By%20Jules%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi By Jules pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="../assets/choice-lunch.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">VIVO Bistro</h2>
+          <span class="venue-vibe">Casual și modern</span>
+          <p class="venue-description">O pauză plăcută din ritmul zilei. Un loc cu o poziționare relaxată, potrivit pentru o masă informală sau o întâlnire fără planuri complicate.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=VIVO%20Bistro%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi VIVO Bistro pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="../meniul-zilei/showcase/friptura.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">Bistro 21</h2>
+          <span class="venue-vibe">Poftă și simplitate</span>
+          <p class="venue-description">Când ai poftă de o masă consistentă și nu cauți formalități. O alegere pentru preparate savuroase și momente în care mâncarea este în centrul atenției.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Bistro%2021%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Bistro 21 pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="../assets/pont-evening.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">Restaurant Atlantic</h2>
+          <span class="venue-vibe">Confort și varietate</span>
+          <p class="venue-description">Pentru un prânz liniștit sau o cină obișnuită, când vrei o alegere familiară. Un loc de luat în calcul pentru o masă practică, fără prea multe pregătiri.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Restaurant%20Atlantic%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Restaurant Atlantic pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="../assets/pont-lunch.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">Yoo Hoo</h2>
+          <span class="venue-vibe">Familiar și relaxat</span>
+          <p class="venue-description">Un loc în care să te oprești, să iei masa și să te bucuri de o pauză. Potrivit pentru momente simple, alături de familie sau în timpul unei zile aglomerate.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Yoo%20Hoo%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Yoo Hoo pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="./vista.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">Good Food WOK</h2>
+          <span class="venue-vibe">Gust și rapiditate</span>
+          <p class="venue-description">Pentru zilele în care vrei ceva diferit, gustos și rapid. O opțiune practică atunci când pofta de mâncare nu poate aștepta.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Good%20Food%20WOK%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Good Food WOK pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+      <article class="venue">
+        <img class="venue-image" src="../assets/choice-evening.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
+        <div class="venue-copy">
+          <h2 class="venue-title">Berăria HM Garden</h2>
+          <span class="venue-vibe">Prieteni și voie bună</span>
+          <p class="venue-description">O seară reușită începe cu oamenii potriviți. Un loc de luat în calcul pentru întâlniri cu prietenii, conversații și o atmosferă degajată.</p>
+          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Ber%C4%83ria%20HM%20Garden%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Berăria HM Garden pe hartă">Vezi pe hartă →</a>
+        </div>
+      </article>
+    </section>
+    <p class="venue-photo-note">Imagini ilustrative.</p>
     <div class="evening-bottom" aria-hidden="true"></div>
   </main>
 </div>
-<dialog id="venueDialog" class="venue-dialog" aria-labelledby="venueTitle">
-  <button type="button" class="venue-dialog-close" id="closeVenue" aria-label="Închide">×</button>
-  <div class="venue-dialog-picture" id="venuePicture"></div>
-  <div class="venue-dialog-body">
-    <span class="venue-dialog-kicker" id="venueType"></span>
-    <h2 id="venueTitle"></h2>
-    <p id="venueDescription"></p>
-    <p>Slobozia, Ialomița · Pentru program, rezervări și meniu, verifică direct informațiile localului.</p>
-    <div class="venue-dialog-links"><a id="venueMap" target="_blank" rel="noopener noreferrer">Vezi pe hartă <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16m0 0-7-7m7 7-7 7"/></svg></a><button type="button" id="venueDone">Închide</button></div>
-  </div>
-</dialog>
 <footer class="evening-footer"><div class="footer-brand">PONT · SLOBOZIA</div><section class="pont-legal-footer" aria-label="Informații juridice" style="max-width:1120px;margin:32px auto 0;padding:22px;border-top:1px solid #9b9b8b55;font:13px/1.7 system-ui"><strong>Operator PONT</strong><p>NEGRĂU GEORGIANA-NICOLETA PERSOANĂ FIZICĂ AUTORIZATĂ · CUI 54519245 · Registrul Comerțului F2026020830003 · EUID ROONRC.F2026020830003<br>Sediu: Aleea Bujorului nr. 5, bl. B2, sc. C, et. 3, ap. 55, Slobozia, Ialomița · <a href="mailto:clean.slobozia@gmail.com">clean.slobozia@gmail.com</a></p><p>Versiune de test. PONT facilitează contactul; restaurantul confirmă comenzile și încasează direct.</p><nav style="display:flex;gap:14px;flex-wrap:wrap"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate</a><a href="../cookies.html">Cookies</a><a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer">SAL – ANPC</a></nav></section></footer>
-<script>
-const venueData={
- hambar:{name:'Hambar',vibe:'Relaxat',description:'O alegere pentru o masă tihnită și o ieșire cu prietenii sau familia.',photo:'./hambar.webp',query:'Hambar Slobozia'},
- vista:{name:'Vista',vibe:'Elegant',description:'Un cadru potrivit pentru întâlniri speciale și o seară în oraș.',photo:'./vista.webp',query:'Vista Slobozia restaurant'},
- noa:{name:'NOA Restaurant & Lounge',vibe:'Lounge',description:'O atmosferă de seară pentru socializare, conversații și momente relaxante.',photo:'./noa.webp',query:'NOA Restaurant Lounge Slobozia'}
-};
-const dlg=document.getElementById('venueDialog');
-document.querySelectorAll('[data-venue]').forEach(button=>button.addEventListener('click',()=>{
- const item=venueData[button.dataset.venue];if(!item)return;
- document.getElementById('venueTitle').textContent=item.name;
- document.getElementById('venueType').textContent=item.vibe+' · Slobozia';
- document.getElementById('venueDescription').textContent=item.description;
- document.getElementById('venuePicture').style.backgroundImage='url("'+item.photo+'")';
- document.getElementById('venueMap').href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(item.query);
- dlg.showModal();
-}));
-document.getElementById('closeVenue').onclick=()=>dlg.close();
-document.getElementById('venueDone').onclick=()=>dlg.close();
-dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
-</script>
 </body></html>
