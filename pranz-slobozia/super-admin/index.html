@@ -253,5 +253,5 @@ window.pontAllMenus=()=>menus;
 const {initPontDishEditor}=await import('../dish-editor.js');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
-await enter();if(user)await pontDishUI.refresh()}
+await enter()}
 </script></html>
