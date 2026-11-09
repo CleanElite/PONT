@@ -46,5 +46,6 @@ jobs:
           git add pranz-slobozia/pont-180.png pranz-slobozia/pont-192.png pranz-slobozia/pont-512.png pranz-slobozia/pont-maskable-512.png
           if ! git diff --cached --quiet; then
             git commit -m "Build PONT iOS and Android icon PNGs"
-            git push
+            git pull --rebase origin main
+            git push origin HEAD:main
           fi
