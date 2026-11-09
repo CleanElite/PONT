@@ -154,6 +154,19 @@
 }
 .pont-admin :is(.admin-nav, .admin-categories) button[aria-pressed='true'] .admin-icon { color: currentColor; }
 .pont-admin .admin-nav .admin-icon { width: 18px; height: 18px; }
+/* Three controls above, two equal-width controls below. */
+.pont-admin--restaurant .admin-nav {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  overflow: visible;
+}
+.pont-admin--restaurant .admin-nav > :is(button, a) {
+  grid-column: span 2;
+  padding-inline: 4px;
+  text-align: center;
+  white-space: normal;
+}
+.pont-admin--restaurant .admin-nav > :nth-last-child(-n+2) { grid-column: span 3; }
 .pont-admin--platform .admin-nav { flex-wrap: wrap; overflow: visible; }
 .pont-admin--platform .admin-nav > :is(button, a) { font-size: clamp(13px, 1.35vw, 15px); }
 .pont-admin .admin-nav > :focus-visible { outline-offset: -2px; }
@@ -505,7 +518,7 @@
 }
 
 @media (max-width: 620px) {
-  .pont-admin--platform .admin-nav > :is(button, a) { flex-direction: column; gap: 5px; min-height: 52px; }
+  :is(.pont-admin--platform, .pont-admin--restaurant) .admin-nav > :is(button, a) { flex-direction: column; gap: 5px; min-height: 52px; }
 }
 
 @media (max-width: 460px) {
@@ -514,7 +527,7 @@
   :is(.admin-back, .admin-logout) .admin-control-text { display: none; }
   .admin-dish-editor-fields { grid-template-columns: minmax(0, 1fr); }
   .pont-admin .admin-nav > :is(button, a) { min-height: 44px; }
-  .pont-admin--platform .admin-nav > :is(button, a) { min-height: 52px; font-size: 12px; }
+  :is(.pont-admin--platform, .pont-admin--restaurant) .admin-nav > :is(button, a) { min-height: 52px; font-size: 12px; }
   .pont-admin .admin-dish-photo { aspect-ratio: 1.8; }
   .pont-dish-line {
     grid-template-columns: minmax(0, 1fr) auto;
