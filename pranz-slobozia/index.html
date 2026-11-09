@@ -178,13 +178,6 @@ button{font:inherit}
 .pont-intro__flight{display:none;position:absolute;inset:0 auto auto 0;transform-origin:0 0;filter:url(#pont-logo-alpha);mix-blend-mode:normal}
 .pont-intro.is-matching .pont-intro__flight{display:block}
 .entry.intro-playing .entry-mark{visibility:hidden}
-.pont-intro__skip{
-  position:absolute;right:max(15px,env(safe-area-inset-right));
-  bottom:calc(13px + env(safe-area-inset-bottom,0px));
-  min-height:44px;padding:8px 13px;border:1px solid #eefaff3c;border-radius:999px;
-  color:#eff4f7;background:#060a0ccf;font-size:.70rem;cursor:pointer;
-}
-.pont-intro.is-splitting .pont-intro__skip:not(:focus-visible){opacity:0;transition:opacity .2s}
 html.pont-intro-active{overflow:hidden}
 .entry.intro-reveal{overflow-x:clip}
 .entry.intro-reveal .choice-card{
@@ -336,7 +329,6 @@ html.pont-intro-active{overflow:hidden}
     <path/><path/>
   </svg>
   <span class="entry-mark pont-intro__flight" aria-hidden="true"></span>
-  <button class="pont-intro__skip" type="button">Sari peste intro</button>
 </div>
 <script>
 (() => {
@@ -349,7 +341,6 @@ html.pont-intro-active{overflow:hidden}
   const image = art.querySelector('img');
   const logo = page.querySelector('.entry-mark');
   const flight = intro.querySelector('.pont-intro__flight');
-  const skip = intro.querySelector('button');
   const leftPanel = intro.querySelector('.pont-intro__panel.left');
   const led = intro.querySelector('.pont-intro__led');
   const ledGradient = led.querySelector('linearGradient');
@@ -365,7 +356,6 @@ html.pont-intro-active{overflow:hidden}
   function finish() {
     if (finished) return;
     finished = true;
-    const restoreFocus = document.activeElement === skip;
     clearTimeout(readyTimer);
     clearTimeout(holdTimer);
     clearTimeout(finishTimer);
@@ -381,7 +371,6 @@ html.pont-intro-active{overflow:hidden}
     window.removeEventListener('resize', onResize);
     document.removeEventListener('keydown', onKey);
     motion.removeEventListener?.('change', onMotion);
-    if (restoreFocus) page.querySelector('.choice a')?.focus();
   }
 
   function onKey(event) {
@@ -479,7 +468,6 @@ html.pont-intro-active{overflow:hidden}
   intro.hidden = false;
   page.inert = true;
   root.classList.add('pont-intro-active');
-  skip.addEventListener('click', finish, { once:true });
   window.addEventListener('pagehide', finish);
   window.addEventListener('resize', onResize);
   document.addEventListener('keydown', onKey);
