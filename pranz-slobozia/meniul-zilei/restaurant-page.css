@@ -269,25 +269,37 @@ body #order::backdrop{background:#031c1a}
 #order .pont-dessert-label{margin-left:auto;flex:none;font-size:13px;font-weight:800;color:#ffe1a0;white-space:nowrap}
 #order .pont-dessert-included.is-soldout .pont-dessert-label{color:#efb7a6}
 
-/* Larger real tap targets for + and - without changing the quantity logic. */
+/* Compact quantity control; invisible tap extension keeps it usable. */
 #order .pont-dish-group__content .stepper{
-  width:clamp(111px,30vw,128px)!important;
-  min-height:44px!important;
-  align-items:stretch!important;
-  padding:0!important;
-  overflow:hidden;
+  width:96px!important;
+  min-height:32px!important;
+  height:32px!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  padding:0 2px!important;
+  overflow:visible!important;
+  border-radius:999px!important;
 }
 #order .pont-dish-group__content .stepper button{
-  display:grid!important;place-items:center!important;
-  flex:0 0 42px!important;
-  min-width:42px!important;
-  min-height:44px!important;
+  position:relative!important;
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 30px!important;
+  min-width:30px!important;
+  width:30px!important;
+  min-height:30px!important;
+  height:30px!important;
   padding:0!important;
   margin:0!important;
+  font-size:18px!important;
   line-height:1!important;
-  font-size:20px!important;
   touch-action:manipulation;
   -webkit-tap-highlight-color:transparent;
+}
+#order .pont-dish-group__content .stepper button::before{
+  content:"";
+  position:absolute;
+  inset:-6px -3px;
 }
 #order .pont-dish-group__content .stepper input{
   flex:1 1 25px!important;
@@ -297,11 +309,12 @@ body #order::backdrop{background:#031c1a}
   font-size:16px!important;
 }
 #order .pont-dish-group__content .pont-choice-dish:not(.pont-dessert-included){
-  min-height:48px!important;
-  padding-top:2px!important;padding-bottom:2px!important;
+  min-height:40px!important;
+  padding-top:3px!important;
+  padding-bottom:3px!important;
 }
 @media(max-width:380px){
- #order .pont-dish-group__content .stepper{width:111px!important}
- #order .pont-dish-group__content .stepper button{flex-basis:42px!important;min-width:42px!important}
- #order .pont-dish-group__content .pont-dish-price{width:49px!important;font-size:10px!important}
+  #order .pont-dish-group__content .stepper{width:92px!important}
+  #order .pont-dish-group__content .stepper button{flex-basis:29px!important;width:29px!important;min-width:29px!important}
+  #order .pont-dish-group__content .pont-dish-price{width:49px!important;font-size:10px!important}
 }
