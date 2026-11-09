@@ -1,4 +1,5 @@
 <!doctype html><html lang="ro"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>PONT • Super Admin</title><style>*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#154956,#081923 70%);color:#eff9f9;font:15px system-ui}main{max-width:1080px;margin:auto;padding:24px 18px 70px}header,.row,.actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}header{padding-bottom:18px;border-bottom:1px solid #2c5760}a{color:#7fe9e0}h1{font-size:clamp(29px,5vw,45px);margin:20px 0 8px}h2{font-size:21px}p,small{color:#b4cbd0}.card{border:1px solid #28505c;background:#0d2a35;padding:21px;border-radius:20px;margin:17px 0}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:13px}.stat{border-radius:15px;padding:17px;background:#133b48}.stat strong{display:block;font-size:30px;margin-top:10px}button{cursor:pointer;border:1px solid #42727d;border-radius:12px;background:#194351;color:#fff;padding:11px 14px;font:600 14px system-ui}button.primary{background:#73e7d6;color:#052731;border-color:#73e7d6}input,select,textarea{display:block;width:100%;background:#08202a;border:1px solid #426c74;border-radius:11px;color:white;padding:12px;font:15px system-ui}label{display:block;margin:12px 0 5px;color:#c2dcdd}.row{border-top:1px solid #2c505a;padding:13px 0}.row small{display:block}.actions{justify-content:flex-start}.tabs{display:flex;gap:8px;overflow:auto}.tabs button.active{background:#73e7d6;color:#06232b}.error{color:#ffb1b1}[hidden]{display:none!important}.menu-log{margin-top:24px}.menu-log>h3{font-size:19px;margin:0 0 6px}.menu-log>p{margin:0 0 15px}.menu-group{border:1px solid #315967;border-radius:16px;background:#0b2530;margin:12px 0;overflow:hidden}.menu-group summary{cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 18px;list-style:none}.menu-group summary::-webkit-details-marker{display:none}.menu-group summary:after{content:"⌄";color:#83d9d0;font-size:21px}.menu-group[open] summary:after{content:"⌃"}.menu-group summary strong{font-size:17px}.menu-group summary small{display:block;margin-top:5px}.menu-group .menu-items{padding:0 16px 8px}.menu-group .row{align-items:flex-start}.menu-group .row>div:first-child{flex:1;min-width:180px}.menu-group .menu-actions{display:flex;gap:7px;flex-wrap:wrap}.menu-group .menu-actions button{padding:8px 11px;font-size:12px}.menu-status{display:inline-block;border-radius:100px;padding:3px 9px;background:#173e42;color:#a5e4d9;font-size:12px;font-weight:650}.menu-status.draft{background:#463c30;color:#f1d7a1}.menu-status.active{background:#164d38;color:#aaf2c8}.menu-status.scheduled{background:#243e64;color:#bdd9ff}.menu-status.expired{background:#393d42;color:#c3cbd0}.menu-empty{padding:18px;border:1px dashed #456673;border-radius:14px}.auction-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0}.auction-summary>.stat{min-width:0}.auction-summary>.stat strong{font-size:clamp(18px,3vw,28px)}.auction-list-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.auction-entry{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 0;border-top:1px solid #315967}.auction-entry-main{flex:1;min-width:0}.auction-entry-main strong{display:block;font-size:16px}.auction-entry-main small{margin-top:5px}.auction-amount{font-weight:750;font-size:19px;white-space:nowrap}.auction-pay{display:flex;align-items:center;gap:9px;cursor:pointer;border:1px solid #52777d;border-radius:12px;padding:9px 12px;white-space:nowrap;font-size:14px;font-weight:650}.auction-pay input{appearance:auto;width:21px;height:21px;accent-color:#72e3c7;margin:0}.auction-pay:has(input:checked){background:#174c40;border-color:#56bca8}.auction-pay:has(input:disabled){opacity:.4;cursor:not-allowed}@media(max-width:690px){.auction-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.auction-entry{flex-wrap:wrap}.auction-entry-main{flex-basis:55%}.auction-pay{margin-left:auto}}.restaurant-card-toggle{display:flex;align-items:center;gap:12px;border:1px solid #315967;border-radius:13px;padding:14px;margin:18px 0;background:#102f3a;cursor:pointer}.restaurant-card-toggle input{width:23px;height:23px;flex:none;accent-color:#73e7d6}.restaurant-card-toggle strong{display:block}.restaurant-card-toggle small{display:block;margin-top:4px}.restaurant-card-toggle span{min-width:0}.restaurant-admin-item{display:flex;flex-direction:column;align-items:stretch;gap:14px;padding:19px 12px;border-top:1px solid #2c505a;text-align:center}.restaurant-admin-heading{display:flex;flex-direction:column;align-items:center;gap:5px}.restaurant-admin-heading strong{font-size:18px;line-height:1.3}.restaurant-admin-heading small{color:#a6c0c6}.restaurant-admin-actions{display:flex;justify-content:center;gap:9px;flex-wrap:wrap}.restaurant-admin-actions button{flex:0 1 auto;min-width:104px}@media(max-width:420px){.restaurant-admin-actions{gap:6px}.restaurant-admin-actions button{min-width:0;flex:1;padding:11px 7px;font-size:12px}}.restaurant-password-box{margin:20px 0 6px;padding:18px;border:1px solid #3d6267;background:#102c35;border-radius:17px}.restaurant-password-box[hidden]{display:none}.restaurant-password-top{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.restaurant-password-top h3{font:600 19px Georgia,serif;margin:0}.password-lock{font:700 10px system-ui;letter-spacing:.08em;color:#a7e8d6;border:1px solid #437f73;border-radius:50px;padding:5px 9px}.restaurant-password-note{font-size:13px;color:#b1cacc;line-height:1.5}.restaurant-password-box select{display:block;width:100%;padding:12px;color:#edf6f5;background:#0b2631;border:1px solid #48757b;border-radius:10px}.restaurant-password-input{display:flex;align-items:stretch;gap:7px}.restaurant-password-input input{flex:1;min-width:0}.restaurant-password-input button{font-size:12px;flex:none;padding:8px}.restaurant-password-box>small{display:block;color:#a7d6ce;line-height:1.5;margin-top:8px}.auction-save-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:18px 0 12px;padding:16px;border:1px solid #385e65;background:#10303c;border-radius:15px}.auction-save-bar span{color:#b4cbd0;font-size:13px}.auction-save-bar button:disabled{opacity:.45;cursor:not-allowed}@media(max-width:520px){.auction-save-bar button{width:100%}}.auction-choice-dialog{border:1px solid #4c7b7e;background:#102e39;color:#eff9f7;width:min(92vw,395px);border-radius:19px;padding:22px;box-shadow:0 25px 80px #0009}.auction-choice-dialog::backdrop{background:#020e18bf;backdrop-filter:blur(4px)}.auction-choice-header{display:flex;align-items:center;justify-content:space-between;gap:10px}.auction-choice-header h3{margin:0;font:600 22px Georgia,serif}.auction-choice-header button{font-size:26px;background:none;border:0;padding:0 6px}.auction-choice-dialog>p{color:#b6ccce;font-size:13px;margin:10px 0}.auction-choice-options{display:grid;gap:10px;margin-top:15px}.auction-choice-options label{display:flex;align-items:center;gap:12px;border:1px solid #466b73;border-radius:12px;background:#0a2630;padding:13px;cursor:pointer;margin:0}.auction-choice-options label:has(input:checked){border-color:#8debd8;background:#123c44}.auction-choice-options input{width:18px;height:18px;accent-color:#8debd8;flex:none;margin:0}.auction-choice-options strong{display:block;font-size:14px}.auction-choice-options small{font-size:11px;color:#acccca}.auction-choice-alert{min-height:18px;color:#f6d3a0!important}.auction-choice-buttons{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:15px}.auction-choice-buttons button{padding:10px 13px}.auction-choice-remove{margin-right:auto;color:#ffd6ce;border-color:#8f5050}.auction-entry .auction-pay{cursor:pointer}.auction-entry .auction-selection-note{color:#9dd9d0;font-size:11px;display:block;margin-top:4px}@media(max-width:420px){.auction-choice-buttons{gap:6px}.auction-choice-buttons button{font-size:12px}}.pont-menu-toggle{display:flex;width:100%;align-items:center;justify-content:space-between;gap:12px;text-align:left;padding:17px 19px;border:1px solid #46767d;border-radius:14px;background:#143945;color:#e4fbf4;font-weight:700;font-size:16px}.pont-menu-toggle .pont-toggle-chevron{font-size:21px;transition:transform .22s ease}.pont-menu-toggle[aria-expanded="true"] .pont-toggle-chevron{transform:rotate(180deg)}.pont-menu-form-wrap{padding-top:17px}.pont-menu-form-wrap[hidden]{display:none!important}.pont-menu-submit{min-width:145px}.pont-menu-dialog{width:min(92vw,410px);border:1px solid #4e837e;border-radius:22px;background:#102c36;color:#f0f9f8;padding:26px;box-shadow:0 20px 65px #0008;text-align:center}.pont-menu-dialog::backdrop{background:#04131bc9;backdrop-filter:blur(5px)}.pont-menu-dialog .pont-menu-success-icon{font-size:31px;display:grid;place-items:center;width:58px;height:58px;margin:0 auto 12px;border-radius:50%;background:#184d45;color:#a4efdc}.pont-menu-dialog h3{font-size:25px;margin:0 0 12px}.pont-menu-dialog p{color:#bad2d1;line-height:1.6;margin-bottom:20px}.pont-menu-dialog button{min-width:115px}.pont-menu-feedback{padding:12px 14px;border:1px solid #a75f5b;border-radius:11px;background:#3b2229;color:#ffd6ce!important;font-size:13px;line-height:1.5}.pont-menu-feedback[hidden]{display:none!important}.pont-menu-submit:disabled{opacity:.6;cursor:wait}.pont-invalid-field{border-color:#e99182!important;box-shadow:0 0 0 2px #e9918236!important}.pont-analytics-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}.pont-analytics-head>div:first-child{flex:1;min-width:190px}.pont-analytics-head h2{margin-top:0}.pont-analytics-head p{font-size:13px;max-width:680px;line-height:1.5}.pont-analytics-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.pont-analytics-actions label{margin:0}.pont-analytics-actions select{width:auto;min-width:155px}.pont-analytics-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:16px 0}.pont-analytics-summary .stat{font-size:12px;color:#b7d1d1}.pont-analytics-summary .stat strong{font-size:clamp(21px,3vw,30px);color:#f5faf9}.pont-analytics-table-wrap{overflow-x:auto;border:1px solid #375c64;border-radius:14px}.pont-analytics-table{width:100%;border-collapse:collapse;font-size:13px;min-width:650px}.pont-analytics-table th,.pont-analytics-table td{padding:14px 11px;text-align:right;border-bottom:1px solid #244955}.pont-analytics-table th:first-child,.pont-analytics-table td:first-child{text-align:left}.pont-analytics-table th{background:#153843;color:#a9d9d4;font-size:12px}.pont-analytics-table tr:last-child td{border-bottom:0}.pont-analytics-table td:not(:first-child){font-variant-numeric:tabular-nums;font-weight:650}@media(max-width:640px){.pont-analytics-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.pont-analytics-actions{width:100%}}.pont-customers-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap}.pont-customers-top h2{margin-top:0}.pont-customers-top p{font-size:13px;line-height:1.5;max-width:660px}.pont-customers-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:18px 0}.pont-customers-summary .stat{color:#afd2d0;font-size:12px}.pont-customers-summary strong{font-size:24px;color:#fff}.pont-customers-orders{margin:22px 0;border:1px solid #345c62;border-radius:15px;padding:14px}.pont-customers-orders summary{cursor:pointer;font-weight:700;padding:5px}.pont-customers-orders p{font-size:12px;line-height:1.5}.pont-customers-orders button{padding:7px 10px;font-size:11px;white-space:nowrap}.pont-customers-table td:first-child{min-width:135px}.pont-customers-table td:nth-child(2){white-space:nowrap}.pont-customer-phone{color:#a4e0d1;text-decoration:underline}.pont-customer-pending{color:#e7ca91}.pont-customer-confirmed{color:#9de8c4}@media(max-width:600px){.pont-customers-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.pont-customers-summary .stat:last-child{grid-column:span 2}}.pont-customers-month{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}.pont-customers-month label{margin:0}.pont-customers-month input{width:min(100%,220px)}</style><link rel="stylesheet" href="../admin-theme.css?v=3">
+<link rel="stylesheet" href="./dashboard.css?v=1">
 <body class="pont-admin pont-admin--platform">
 <main>
 <header class="admin-topbar">
@@ -6,10 +7,9 @@
   <img class="admin-brand" src="../meniul-zilei/showcase/pont-wordmark.webp" alt="PONT" width="576" height="240">
 </header>
 <section id="setup" class="card" hidden><h1>Activare securizată</h1><p>Interfața este instalată. Pentru utilizare reală trebuie configurat Supabase și executat fișierul schema.sql în baza de date. Fără această configurare nu există acces la datele restaurantelor.</p></section><section id="login" class="card" hidden><h1>Conectare Super Admin</h1><form id="auth"><label for="email">Email</label><input id="email" type="email" required autocomplete="username"><label for="password">Parolă</label><input id="password" type="password" required autocomplete="current-password"><p><button class="primary">Conectare</button></p></form><p id="error" class="error"></p></section><section id="app" hidden><button type="button" id="logout" class="admin-logout" aria-label="Deconectare"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#sign-out"></use></svg><span class="admin-control-text">Deconectare</span></button>
-<div class="admin-hero">
-  <svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#chef-hat"></use></svg>
-  <div class="admin-hero-copy"><h1>Controlul platformei</h1><p>Gestionează restaurantele, meniurile și accesul partenerilor.</p></div>
-  <div class="admin-context"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#shield-check"></use></svg><span>Super Admin</span></div>
+<div class="admin-hero dashboard-intro">
+  <div class="admin-hero-copy"><h1>Super Admin</h1><p>Administrarea platformei PONT</p></div>
+  <svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#shield-check"></use></svg>
 </div>
 <nav class="admin-nav" aria-label="Secțiunile Super Admin">
   <button type="button" data-tab="menus" aria-controls="menus" aria-pressed="true"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Meniuri</button>
@@ -21,12 +21,230 @@
   <button type="button" data-tab="customers" aria-controls="customers" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#list-bullets"></use></svg>Clienți</button>
   <a href="../promovare/"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg>Promovare</a>
 </nav>
-<div class="grid admin-stats"><div class="stat">Restaurante<strong id="nr">0</strong></div><div class="stat">Meniuri<strong id="nm">0</strong></div><div class="stat">Publicate azi<strong id="nt">0</strong></div></div>
-<section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section><section id="menus"><section class="card admin-workspace"><h2>Planificare meniuri</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="true" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap"><form id="menuForm" novalidate><input type="hidden" id="editingMenu"><p id="menuMode" hidden>Editezi un meniu existent. <button type="button" id="cancelMenu">Anulează editarea</button></p><div class="grid"><div><label>Restaurant</label><select id="restaurant" required></select></div><div><label>Data</label><input id="date" type="date" required></div><div><label>Titlu</label><input id="title" maxlength="120" required></div><div><label>Preț lei</label><input id="price" type="number" min="0" step=".01" required></div></div><div class="grid"><div><label>Felul 1 — ciorbă / supă</label><input id="firstCourse" required placeholder="Ex.: Ciorbă de perișoare"></div><div><label>Preț felul 1 (lei)</label><input id="firstPrice" type="number" min="0" step=".01" required></div><div><label>Felul 2 — fel principal</label><input id="secondCourse" required placeholder="Ex.: Șnițel cu piure"></div><div><label>Preț felul 2 (lei)</label><input id="secondPrice" type="number" min="0" step=".01" required></div><div><label>Desert (opțional)</label><input id="dessert" placeholder="Ex.: Clătite"></div></div><p style="color:#a8d8d5">Prețul meniului complet este cel afișat pe site. Felurile pot fi comandate și separat.</p><label>Detalii suplimentare (opțional)</label><textarea id="description" rows="3"></textarea><label>Stare</label><select id="published"><option value="true">Publică automat în ziua stabilită</option><option value="false">Ciornă</option></select><p id="menuFormFeedback" class="pont-menu-feedback" role="alert" hidden></p><p><button class="primary pont-menu-submit" id="menuSubmitButton" type="submit">Publică</button></p></form></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section><div class="card menu-log"><h3>Istoric meniuri pe restaurante</h3><p>Meniurile sunt grupate pe restaurant, de la cele mai recente la cele mai vechi.</p><div id="menuRows"></div></div></section><section id="customers" class="card" hidden><div class="pont-customers-top"><div><h2>Clienți și solicitări WhatsApp</h2><p>Comenzile sunt considerate finalizate în PONT la apăsarea butonului „Trimite comanda pe WhatsApp”. Clasamentul este ordonat după numărul de meniuri complete înregistrate.</p></div><button type="button" id="customersRefresh">Actualizează</button></div><div class="pont-customers-month"><label for="customersMonth">Luna istoricului</label><input type="month" id="customersMonth"></div><label for="customersSearch">Caută client sau restaurant</label><input id="customersSearch" placeholder="Nume, telefon sau restaurant" autocomplete="off" type="search"><div class="pont-customers-summary"><div class="stat">Clienți înregistrați<strong id="customersTotal">0</strong></div><div class="stat">Meniuri înregistrate<strong id="customersMenus">0</strong></div><div class="stat">Comenzi finalizate PONT<strong id="customersLeads">0</strong></div></div><div class="pont-analytics-table-wrap"><table class="pont-analytics-table pont-customers-table"><thead><tr><th>Client</th><th>Telefon</th><th>Restaurant preferat</th><th>Meniuri înregistrate</th><th>Porții selectate</th><th>Solicitări</th></tr></thead><tbody id="customersRows"><tr><td colspan="6">Se încarcă…</td></tr></tbody></table></div><details class="pont-customers-orders"><summary>Istoricul comenzilor PONT</summary><p>Comenzile sunt înregistrate ca finalizate în PONT când clientul apasă „Trimite comanda pe WhatsApp” și salvarea se încheie cu succes.</p><div class="pont-analytics-table-wrap"><table class="pont-analytics-table"><thead><tr><th>Client</th><th>Restaurant</th><th>Referință</th><th>Preparate / cantități</th><th>Data</th><th>Acțiune</th></tr></thead><tbody id="customerOrderRows"><tr><td colspan="6">Se încarcă…</td></tr></tbody></table></div></details><p id="customersStatus" role="status"></p><small>Nu putem identifica persoanele care apasă „Sună acum” printr-un link telefonic. Înregistrăm comenzile finalizate în PONT la trimiterea către WhatsApp, cu numele, telefonul, restaurantul și preparatele selectate.</small></section><section id="analytics" class="card" hidden><div class="pont-analytics-head"><div><h2>Statistici restaurante</h2><p>Interacțiuni înregistrate de la activarea monitorizării. Numărul de vizite reprezintă sesiuni care au deschis restaurantul, nu persoane unice verificate.</p></div><div class="pont-analytics-actions"><label for="analyticsMonth">Luna</label><input type="month" id="analyticsMonth"><button type="button" id="analyticsRefresh">Actualizează</button></div></div><div class="pont-analytics-summary"><div class="stat">Vizite restaurante<strong id="analyticsTotalViews">—</strong></div><div class="stat">Apăsări Sună acum<strong id="analyticsTotalCalls">—</strong></div><div class="stat">Comenzi WhatsApp finalizate<strong id="analyticsTotalWhatsApp">—</strong></div><div class="stat">Meniuri complete trimise<strong id="analyticsTotalMenus">—</strong></div></div><div class="pont-analytics-table-wrap"><table class="pont-analytics-table"><thead><tr><th>Restaurant</th><th>Vizite</th><th>Apeluri</th><th>Trimiteri WhatsApp</th><th>Meniuri complete</th><th>Porții / produse</th></tr></thead><tbody id="analyticsRows"><tr><td colspan="6">Se încarcă…</td></tr></tbody></table></div><p id="analyticsStatus" role="status"></p><small>În raportarea PONT, apăsarea „Trimite comanda pe WhatsApp” după validarea formularului este considerată comandă finalizată. Meniuri complete = combinațiile felul 1 + felul 2; porțiile includ și preparatele individuale.</small></section><section id="restaurants" class="card" hidden><h2>Restaurante partenere</h2><form id="restaurantForm"><input type="hidden" id="editingRestaurant"><p id="restaurantMode" hidden>Editezi un restaurant. <button type="button" id="cancelRestaurant">Anulează</button></p><div class="grid"><div><label>Nume</label><input id="name" required></div><div><label>Adresă URL</label><p style="margin:8px 0;color:#9db6b9">Se generează automat din numele restaurantului.</p></div></div><label class="restaurant-card-toggle"><input id="restaurantAcceptsCard" type="checkbox" role="switch"> <span><strong>Acceptă plata cu cardul</strong><small>Dacă este bifat, clientul poate alege Cash sau Card. Dacă nu, doar Cash.</small></span></label><section id="restaurantPasswordBox" class="restaurant-password-box" hidden><div class="restaurant-password-top"><h3>Acces administrator restaurant</h3><span class="password-lock">DOAR SUPER ADMIN</span></div><p class="restaurant-password-note">Parola actuală nu poate fi afișată din motive de securitate. Poți stabili o parolă nouă pentru utilizatorul selectat.</p><label for="restaurantPasswordAccount">Utilizator existent</label><select id="restaurantPasswordAccount"><option value="">Se încarcă…</option></select><label for="restaurantUsernameNew">Nume de cont (spațiile sunt permise)</label><div class="restaurant-password-input"><input id="restaurantUsernameNew" type="text" autocomplete="off" maxlength="64" placeholder="Ex.: Restaurant Central"><button id="restaurantRenameUsername" type="button">Redenumește</button></div><p class="restaurant-password-note">Numele vechi rămâne activ până îl redenumești. Parola rămâne neschimbată.</p><label for="restaurantNewPassword">Parolă nouă (minimum 12 caractere)</label><div class="restaurant-password-input"><input id="restaurantNewPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" placeholder="Introdu parola nouă"><button id="restaurantPasswordToggle" type="button" aria-label="Afișează sau ascunde parola nouă">Arată</button></div><label for="restaurantConfirmPassword">Confirmă parola nouă</label><input id="restaurantConfirmPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" placeholder="Reintrodu parola nouă"><p><button id="restaurantChangePassword" type="button" class="primary">Schimbă parola</button></p><small id="restaurantPasswordStatus" role="status"></small></section><p><button class="primary" id="saveRestaurantButton" type="submit">Adaugă restaurant</button></p></form><div id="restaurantRows"></div></section><section id="members" class="card" hidden><h2>Administratori restaurante</h2><p>Creează un nume de utilizator și o parolă pentru restaurant. Nu este necesară o adresă de email.</p><form id="memberForm"><label>Nume de utilizator</label><input id="uid" required minlength="3" maxlength="64" autocomplete="off" placeholder="ex.: Restaurant Central"><label>Parolă inițială (minimum 12 caractere)</label><div class="restaurant-password-input"><input id="memberPassword" type="password" required minlength="12" autocomplete="new-password"><button id="memberPasswordToggle" type="button">Arată</button></div><label>Numele restaurantului nou</label><input id="memberRestaurantName" required maxlength="120" placeholder="Ex.: Bistro Central" autocomplete="organization"><p style="color:#9db6b9;font-size:13px">Restaurantul va fi creat automat și asociat acestui administrator.</p><p><button class="primary">Creează administrator</button></p></form><div id="memberRows"></div></section><section id="auctions" class="card" hidden><h2>Licitații &amp; încasări</h2><p>Fiecare restaurant apare automat aici. Când licitează, suma și poziția se actualizează. Pentru publicarea meniurilor, selectează luna corespunzătoare datei meniului. Poți confirma încasarea sau acorda doar autorizarea, fără plată.</p><div class="auction-summary"><div><label for="auctionMonth">Luna pentru care autorizezi publicarea</label><input type="month" id="auctionMonth"></div><div class="stat">Total licitat<strong id="auctionTotal">0 lei</strong></div><div class="stat">Încasat<strong id="auctionPaid">0 lei</strong></div><div class="stat">De încasat<strong id="auctionPending">0 lei</strong></div></div><div class="auction-list-head"><h3>Restaurante și plăți</h3><span id="auctionCount">0 oferte</span></div><div id="auctionRows"></div><dialog id="auctionChoiceDialog" class="auction-choice-dialog" aria-labelledby="auctionChoiceTitle"><div class="auction-choice-header"><h3 id="auctionChoiceTitle">Confirmare restaurant</h3><button type="button" id="auctionChoiceClose" aria-label="Închide">×</button></div><p id="auctionChoiceRestaurant"></p><div class="auction-choice-options"><label><input type="radio" name="auctionChoice" value="paid"><span><strong>Plătit</strong><small>Confirm încasarea manual.</small></span></label><label><input type="radio" name="auctionChoice" value="authorization"><span><strong>Doar autorizare</strong><small>Permite publicarea meniului, fără încasare.</small></span></label></div><p class="auction-choice-alert" id="auctionChoiceAlert" role="status"></p><div class="auction-choice-buttons"><button type="button" id="auctionChoiceRemove" class="auction-choice-remove" hidden>Retrage confirmarea</button><button type="button" id="auctionChoiceCancel">Anulează</button><button type="button" id="auctionChoiceOK" class="primary">OK</button></div></dialog><div class="auction-save-bar"><span id="auctionSaveHint" role="status">Bifează restaurantele, apoi salvează.</span><button type="button" class="primary" id="saveAuctionPayments" disabled>Salvează modificările</button></div><small>Bifarea nu procesează o plată. Confirmările se aplică numai după apăsarea butonului „Salvează modificările”. Confirmarea este valabilă numai pentru luna selectată. Ofertele se sincronizează automat când nu există schimbări nesalvate.</small></section><p id="status" role="status"></p></section></main><script src="./config.js"></script><script type="module">
+<section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section>
+
+<section id="menus" class="card dashboard-panel" aria-labelledby="menusTitle">
+  <div class="dashboard-heading">
+    <div><h2 id="menusTitle">Meniurile zilei</h2><p>Planifică publicări și găsește meniurile salvate.</p></div>
+    <button type="button" id="toggleMenuForm" class="primary" aria-expanded="false" aria-controls="menuFormWrap">
+      <span class="dashboard-when-closed">Meniu nou</span><span class="dashboard-when-open">Ascunde editorul</span>
+    </button>
+  </div>
+  <div class="grid admin-stats dashboard-stats" aria-label="Rezumat">
+    <div class="stat">Restaurante<strong id="nr">0</strong></div>
+    <div class="stat">Meniuri recente<strong id="nm">0</strong></div>
+    <div class="stat">Publicate azi<strong id="nt">0</strong></div>
+  </div>
+  <div id="menuFormWrap" class="dashboard-form pont-menu-form-wrap" hidden>
+    <form id="menuForm" novalidate>
+      <input type="hidden" id="editingMenu">
+      <p id="menuMode" hidden>Editezi un meniu existent. <button type="button" id="cancelMenu">Anulează editarea</button></p>
+      <div class="dashboard-fields">
+        <label for="restaurant">Restaurant<select id="restaurant" required></select></label>
+        <label for="date">Data<input id="date" type="date" required></label>
+        <label for="title">Titlu<input id="title" maxlength="120" required></label>
+        <label for="price">Preț meniu complet (lei)<input id="price" type="number" min="0" step=".01" required></label>
+        <label for="firstCourse">Felul 1<input id="firstCourse" required placeholder="Ciorbă sau supă"></label>
+        <label for="firstPrice">Preț felul 1 (lei)<input id="firstPrice" type="number" min="0" step=".01" required></label>
+        <label for="secondCourse">Felul 2<input id="secondCourse" required placeholder="Fel principal"></label>
+        <label for="secondPrice">Preț felul 2 (lei)<input id="secondPrice" type="number" min="0" step=".01" required></label>
+        <label for="dessert">Desert (opțional)<input id="dessert"></label>
+        <label for="published">Stare<select id="published"><option value="true">Publică la data aleasă</option><option value="false">Ciornă</option></select></label>
+        <label class="dashboard-wide" for="description">Detalii (opțional)<textarea id="description" rows="2"></textarea></label>
+      </div>
+      <p id="menuFormFeedback" class="pont-menu-feedback" role="alert" hidden></p>
+      <div class="dashboard-actions"><button class="primary pont-menu-submit" id="menuSubmitButton" type="submit">Publică</button></div>
+    </form>
+  </div>
+  <dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle">
+    <span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span>
+    <h3 id="menuSuccessTitle">Meniu salvat</h3><p id="menuSuccessMessage"></p>
+    <button class="primary" id="menuSuccessOK" type="button">Înapoi la meniuri</button>
+  </dialog>
+  <div class="dashboard-list">
+    <h3>Istoric meniuri</h3>
+    <div class="dashboard-tools">
+      <label class="dashboard-search" for="menuSearch">Caută în istoric<input type="search" id="menuSearch" placeholder="Restaurant sau titlu" autocomplete="off"></label>
+      <label for="menuFilter">Stare<select id="menuFilter"><option value="">Toate stările</option><option value="active">Active azi</option><option value="draft">Ciorne</option><option value="scheduled">Programate</option><option value="expired">Expirate</option></select></label>
+    </div>
+    <div id="menuRows"></div>
+  </div>
+</section>
+
+<section id="restaurants" class="card dashboard-panel" aria-labelledby="restaurantsTitle" hidden>
+  <div class="dashboard-heading">
+    <div><h2 id="restaurantsTitle">Restaurante</h2><p>Gestionează vizibilitatea, plata cu cardul și accesul.</p></div>
+    <div class="dashboard-actions">
+      <button class="primary" id="addRestaurantAccount" type="button">Adaugă cu acces</button>
+      <button id="addRestaurantOnly" type="button" aria-expanded="false" aria-controls="restaurantForm">Doar restaurant</button>
+    </div>
+  </div>
+  <form id="restaurantForm" class="dashboard-form" hidden>
+    <input type="hidden" id="editingRestaurant">
+    <h3 id="restaurantFormTitle">Adaugă restaurant</h3>
+    <div class="dashboard-fields">
+      <label for="name">Numele restaurantului<input id="name" required></label>
+      <label class="restaurant-card-toggle">
+        <input id="restaurantAcceptsCard" type="checkbox" role="switch">
+        <span><strong>Acceptă plata cu cardul</strong><small>Clientul poate alege numerar sau card.</small></span>
+      </label>
+    </div>
+    <div class="dashboard-actions">
+      <button id="cancelRestaurant" type="button">Anulează</button>
+      <button class="primary" id="saveRestaurantButton" type="submit">Adaugă restaurant</button>
+    </div>
+    <p class="dashboard-message" id="restaurantFormStatus" role="status"></p>
+  </form>
+    <details id="restaurantAccess" class="dashboard-disclosure" hidden>
+      <summary>Acces administrator și parolă</summary>
+      <section id="restaurantPasswordBox" class="restaurant-password-box" hidden>
+        <p class="restaurant-password-note">Selectează contul pe care vrei să îl redenumești sau pentru care vrei să setezi o parolă nouă.</p>
+        <label for="restaurantPasswordAccount">Cont existent</label>
+        <select id="restaurantPasswordAccount"><option value="">Se încarcă…</option></select>
+        <label for="restaurantUsernameNew">Nume de cont</label>
+        <div class="restaurant-password-input"><input id="restaurantUsernameNew" type="text" autocomplete="off" maxlength="64"><button id="restaurantRenameUsername" type="button">Redenumește</button></div>
+        <label for="restaurantNewPassword">Parolă nouă (minimum 12 caractere)</label>
+        <div class="restaurant-password-input"><input id="restaurantNewPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password"><button id="restaurantPasswordToggle" type="button" aria-label="Afișează sau ascunde parola nouă">Arată</button></div>
+        <label for="restaurantConfirmPassword">Confirmă parola nouă</label>
+        <input id="restaurantConfirmPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password">
+        <div class="dashboard-actions"><button id="restaurantChangePassword" type="button">Schimbă parola</button></div>
+        <p class="dashboard-message" id="restaurantPasswordStatus" role="status"></p>
+      </section>
+    </details>
+  <div class="dashboard-tools">
+    <label class="dashboard-search" for="restaurantSearch">Caută restaurant<input type="search" id="restaurantSearch" placeholder="Nume restaurant" autocomplete="off"></label>
+    <label for="restaurantFilter">Stare<select id="restaurantFilter"><option value="">Toate</option><option value="enabled">Active</option><option value="disabled">Suspendate</option><option value="no-access">Fără cont</option></select></label>
+  </div>
+  <div id="restaurantRows"></div>
+</section>
+
+<section id="members" class="card dashboard-panel" aria-labelledby="membersTitle" hidden>
+  <div class="dashboard-heading">
+    <div><h2 id="membersTitle">Conturi restaurante</h2><p>Vezi accesul acordat și creează conturi de administrator.</p></div>
+    <button class="primary" id="newMember" type="button" aria-expanded="false" aria-controls="memberForm">Restaurant nou cu acces</button>
+  </div>
+  <form id="memberForm" class="dashboard-form" hidden>
+    <h3 id="memberFormTitle">Restaurant și cont nou</h3>
+    <p id="memberFormHint">Numele de utilizator se completează automat. Îl poți modifica.</p>
+    <div class="dashboard-fields">
+      <label for="memberRestaurantName">Numele restaurantului<input id="memberRestaurantName" required maxlength="120" autocomplete="organization"></label>
+      <label for="uid">Nume de utilizator<input id="uid" required minlength="3" maxlength="64" autocomplete="off"></label>
+      <div class="dashboard-wide">
+        <label for="memberPassword">Parolă inițială (minimum 12 caractere)</label>
+        <div class="restaurant-password-input"><input id="memberPassword" type="password" required minlength="12" maxlength="128" autocomplete="new-password"><button id="memberPasswordToggle" type="button" aria-label="Afișează sau ascunde parola inițială">Arată</button></div>
+      </div>
+    </div>
+    <div class="dashboard-actions"><button id="cancelMember" type="button">Anulează</button><button class="primary" id="saveMember" type="submit">Creează restaurant și cont</button></div>
+    <p class="dashboard-message" id="memberFormStatus" role="status"></p>
+  </form>
+  <div class="dashboard-tools">
+    <label class="dashboard-search" for="memberSearch">Caută un cont<input type="search" id="memberSearch" placeholder="Restaurant sau ID cont" autocomplete="off"></label>
+  </div>
+  <div id="memberRows"></div>
+</section>
+
+<section id="auctions" class="card dashboard-panel" aria-labelledby="auctionsTitle" hidden>
+  <div class="dashboard-heading">
+    <div><h2 id="auctionsTitle">Licitații și încasări</h2><p>Alege luna în care restaurantul va putea publica meniuri.</p></div>
+  </div>
+  <div class="auction-summary dashboard-stats">
+    <div class="stat">Total licitat<strong id="auctionTotal">—</strong></div>
+    <div class="stat">Încasat din oferte<strong id="auctionPaid">—</strong></div>
+    <div class="stat">De încasat<strong id="auctionPending">—</strong></div>
+  </div>
+  <div class="dashboard-tools">
+    <label for="auctionMonth">Luna autorizării<input type="month" id="auctionMonth"></label>
+    <label class="dashboard-search" for="auctionSearch">Caută restaurant<input type="search" id="auctionSearch" placeholder="Nume restaurant" autocomplete="off"></label>
+    <label for="auctionFilter">Confirmare<select id="auctionFilter"><option value="">Toate</option><option value="none">Neconfirmat</option><option value="paid">Plătit</option><option value="authorization">Doar autorizat</option></select></label>
+  </div>
+  <div class="auction-save-bar">
+    <div><strong id="auctionCount"></strong><span id="auctionSaveHint" role="status">Selectează confirmările, apoi salvează.</span></div>
+    <button type="button" class="primary" id="saveAuctionPayments" disabled>Salvează modificările</button>
+  </div>
+  <p id="auctionFeedback" class="dashboard-message" role="status"></p>
+  <div id="auctionRows"></div>
+  <dialog id="auctionChoiceDialog" class="auction-choice-dialog" aria-labelledby="auctionChoiceTitle">
+    <div class="auction-choice-header"><h3 id="auctionChoiceTitle">Confirmare restaurant</h3><button type="button" id="auctionChoiceClose" aria-label="Închide">×</button></div>
+    <p id="auctionChoiceRestaurant"></p>
+    <div class="auction-choice-options">
+      <label><input type="radio" name="auctionChoice" value="paid"><span><strong>Plătit</strong><small>Înregistrează încasarea confirmată manual.</small></span></label>
+      <label><input type="radio" name="auctionChoice" value="authorization"><span><strong>Doar autorizare</strong><small>Permite publicarea meniurilor pentru luna selectată.</small></span></label>
+    </div>
+    <p class="auction-choice-alert" id="auctionChoiceAlert" role="status"></p>
+    <div class="auction-choice-buttons">
+      <button type="button" id="auctionChoiceRemove" class="auction-choice-remove" hidden>Retrage confirmarea</button>
+      <button type="button" id="auctionChoiceCancel">Anulează</button>
+      <button type="button" id="auctionChoiceOK" class="primary">Aplică</button>
+    </div>
+  </dialog>
+</section>
+
+<section id="analytics" class="card dashboard-panel" aria-labelledby="analyticsTitle" hidden>
+  <div class="dashboard-heading">
+    <div><h2 id="analyticsTitle">Statistici</h2><p>Urmărește vizitele și interacțiunile pe restaurant.</p></div>
+    <button type="button" id="analyticsRefresh">Actualizează</button>
+  </div>
+  <div class="dashboard-tools">
+    <label for="analyticsMonth">Luna raportului<input type="month" id="analyticsMonth"></label>
+    <label class="dashboard-search" for="analyticsSearch">Caută restaurant<input type="search" id="analyticsSearch" placeholder="Nume restaurant" autocomplete="off"></label>
+  </div>
+  <div class="pont-analytics-summary dashboard-stats">
+    <div class="stat">Vizite<strong id="analyticsTotalViews">—</strong></div>
+    <div class="stat">Apăsări de apel<strong id="analyticsTotalCalls">—</strong></div>
+    <div class="stat">Trimise spre WhatsApp<strong id="analyticsTotalWhatsApp">—</strong></div>
+    <div class="stat">Meniuri complete<strong id="analyticsTotalMenus">—</strong></div>
+  </div>
+  <p id="analyticsStatus" class="dashboard-message" role="status"></p>
+  <div class="pont-analytics-table-wrap">
+    <table class="pont-analytics-table dashboard-table dashboard-analytics" role="table" aria-label="Statistici pe restaurant">
+      <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Restaurant</th><th scope="col" role="columnheader">Vizite</th><th scope="col" role="columnheader">Apăsări de apel</th><th scope="col" role="columnheader">WhatsApp</th><th scope="col" role="columnheader">Meniuri</th><th scope="col" role="columnheader">Porții</th></tr></thead>
+      <tbody id="analyticsRows" role="rowgroup"></tbody>
+    </table>
+  </div>
+  <details class="dashboard-disclosure"><summary>Cum se citesc statisticile</summary><p>Vizitele reprezintă sesiuni. WhatsApp măsoară trimiterile înregistrate în PONT, fără confirmarea restaurantului. Porțiile includ și preparatele individuale.</p></details>
+</section>
+
+<section id="customers" class="card dashboard-panel" aria-labelledby="customersTitle" hidden>
+  <div class="dashboard-heading">
+    <div><h2 id="customersTitle">Clienți</h2><p>Consultă clienții și solicitările trimise spre WhatsApp.</p></div>
+    <button type="button" id="customersRefresh">Actualizează</button>
+  </div>
+  <div class="dashboard-tools">
+    <label for="customersMonth">Luna istoricului<input type="month" id="customersMonth"></label>
+    <label class="dashboard-search" for="customersSearch">Caută în istoric<input id="customersSearch" placeholder="Nume, telefon sau restaurant" autocomplete="off" type="search"></label>
+  </div>
+  <div class="pont-customers-summary dashboard-stats">
+    <div class="stat">Clienți<strong id="customersTotal">—</strong></div>
+    <div class="stat">Meniuri înregistrate<strong id="customersMenus">—</strong></div>
+    <div class="stat">Solicitări WhatsApp<strong id="customersLeads">—</strong></div>
+  </div>
+  <p id="customersStatus" class="dashboard-message" role="status"></p>
+  <div class="pont-analytics-table-wrap">
+    <table class="pont-analytics-table dashboard-table" role="table" aria-label="Clienți și solicitări">
+      <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Client</th><th scope="col" role="columnheader">Telefon</th><th scope="col" role="columnheader">Restaurant preferat</th><th scope="col" role="columnheader">Meniuri</th><th scope="col" role="columnheader">Porții</th><th scope="col" role="columnheader">Solicitări</th></tr></thead>
+      <tbody id="customersRows" role="rowgroup"></tbody>
+    </table>
+  </div>
+  <details class="dashboard-disclosure pont-customers-orders">
+    <summary>Istoricul solicitărilor</summary>
+    <div class="pont-analytics-table-wrap">
+      <table class="pont-analytics-table dashboard-table dashboard-orders" role="table" aria-label="Istoricul solicitărilor WhatsApp">
+        <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Client</th><th scope="col" role="columnheader">Restaurant</th><th scope="col" role="columnheader">Referință</th><th scope="col" role="columnheader">Preparate</th><th scope="col" role="columnheader">Data</th><th scope="col" role="columnheader">Acțiune</th></tr></thead>
+        <tbody id="customerOrderRows" role="rowgroup"></tbody>
+      </table>
+    </div>
+  </details>
+</section>
+<p id="status" class="dashboard-message" role="status"></p>
+</section></main><script src="./config.js"></script><script type="module">
 const $=id=>document.getElementById(id),c=window.PONT_CONFIG||{};if(!c.url||!c.anonKey){$('setup').hidden=false}else start().catch(e=>{$('setup').hidden=false;$('setup').querySelector('p').textContent=e.message});
 async function start(){
 function setMenuFormOpen(open){$('menuFormWrap').hidden=!open;$('toggleMenuForm').setAttribute('aria-expanded',String(open));}
-$('toggleMenuForm').onclick=()=>setMenuFormOpen($('menuFormWrap').hidden);
+$('toggleMenuForm').onclick = () => {
+ const open = $('menuFormWrap').hidden;
+ setMenuFormOpen(open);
+ if (open) window.pontDishUI?.refresh().catch(error => { $('pontDailyError').textContent = error.message; });
+};
 function updateMenuSubmitLabel(){$('menuSubmitButton').textContent=$('published').value==='true'?'Publică':'Salvează ciorna'}
 $('published').addEventListener('change',updateMenuSubmitLabel);
 updateMenuSubmitLabel();
@@ -36,7 +254,8 @@ function showMenuSaveSuccess(date,published){
  $('menuSuccessDialog').showModal();
 }
 $('menuSuccessOK').onclick=()=>$('menuSuccessDialog').close();
-const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');const db=createClient(c.url,c.anonKey);let user=null,restaurants=[],menus=[],members=[];const esc=s=>String(s??'').replace(/[&<>"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));const req=async q=>{let {data,error}=await q;if(error)throw error;return data||[]};const status=(s,bad=false)=>{$('status').textContent=s;$('status').className=bad?'error':''};async function restaurantAccountAction(action,params={}){
+const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');const db=createClient(c.url,c.anonKey);let restaurants=[],menus=[],members=[];const esc=s=>String(s??'').replace(/[&<>"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));const req=async q=>{let {data,error}=await q;if(error)throw error;return data||[]};
+async function restaurantAccountAction(action,params={}){
  const {data:{session}}=await db.auth.getSession();
  if(!session)throw Error('Sesiunea a expirat. Reconectează-te.');
  const res=await fetch(c.url+'/functions/v1/pont-restaurant-accounts',{method:'POST',headers:{'Content-Type':'application/json',apikey:c.anonKey,Authorization:'Bearer '+session.access_token},body:JSON.stringify({action,...params})});
@@ -44,188 +263,513 @@ const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supaba
 }
 async function showRestaurantPasswordBox(restaurantId){
  const panel=$('restaurantPasswordBox'),select=$('restaurantPasswordAccount');
- panel.hidden=false;select.innerHTML='<option value="">Se încarcă utilizatorii…</option>';
- $('restaurantNewPassword').value='';$('restaurantConfirmPassword').value='';$('restaurantUsernameNew').value='';$('restaurantPasswordStatus').textContent='';
+ panel.hidden=false;$('restaurantChangePassword').disabled=true;$('restaurantRenameUsername').disabled=true;select.innerHTML='<option value="">Se încarcă utilizatorii…</option>';
+ $('restaurantNewPassword').value='';$('restaurantNewPassword').type='password';$('restaurantPasswordToggle').textContent='Arată';$('restaurantConfirmPassword').value='';$('restaurantUsernameNew').value='';$('restaurantPasswordStatus').textContent='';
  try{
   const result=await restaurantAccountAction('accounts_for_restaurant',{restaurant_id:restaurantId});
   if($('editingRestaurant').value!==restaurantId)return;
   select.innerHTML=(result.accounts||[]).length?result.accounts.map(x=>'<option value="'+esc(x.username)+'">'+esc(x.username)+'</option>').join(''):'<option value="">Nu există cont atribuit</option>';
   $('restaurantChangePassword').disabled=!(result.accounts||[]).length;$('restaurantRenameUsername').disabled=!(result.accounts||[]).length;$('restaurantUsernameNew').value=(result.accounts||[])[0]?.username.replace(/\b\w/g,ch=>ch.toUpperCase())||'';
- }catch(e){select.innerHTML='<option value="">Eroare la încărcare</option>';$('restaurantChangePassword').disabled=true;$('restaurantRenameUsername').disabled=true;$('restaurantPasswordStatus').textContent=e.message;}
+ }catch(e){if($('editingRestaurant').value!==restaurantId)return;select.innerHTML='<option value="">Eroare la încărcare</option>';$('restaurantChangePassword').disabled=true;$('restaurantRenameUsername').disabled=true;$('restaurantPasswordStatus').textContent=e.message;}
 }
-const todayRO=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());const menuState=m=>!m.published?{label:'Ciornă',css:'draft'}:m.service_date<todayRO()?{label:'Expirat',css:'expired'}:m.service_date===todayRO()?{label:'Activ acum',css:'active'}:{label:'Programat pentru '+m.service_date.split('-').reverse().join('.'),css:'scheduled'};
-let customerLeads=[];
-function normalizeCustomerPhone(phone){return String(phone||'').replace(/\D/g,'')}
-function customerGroups(){
- const groups=new Map();
- for(const l of customerLeads){
-  const phone=normalizeCustomerPhone(l.customer_phone);if(!phone)continue;
-  if(!groups.has(phone))groups.set(phone,{name:l.customer_name,phone:l.customer_phone,initiatedMenus:0,portions:0,requests:0,restaurants:new Map(),latest:l.started_at});
-  const g=groups.get(phone);g.requests++;g.initiatedMenus+=Number(l.menus_count)||0;g.portions+=Number(l.portions_count)||0;
-  if(l.started_at>g.latest){g.latest=l.started_at;g.name=l.customer_name}
-  const r=g.restaurants.get(l.restaurant_id)||{initiated:0,requests:0};
-  r.requests++;r.initiated+=Number(l.menus_count)||0;g.restaurants.set(l.restaurant_id,r);
+const todayRO = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+function menuState(menu, today = todayRO()) {
+ if (!menu.published) return {label:'Ciornă', css:'draft'};
+ if (menu.service_date < today) return {label:'Expirat', css:'expired'};
+ if (menu.service_date === today) return {label:'Activ azi', css:'active'};
+ return {label:'Programat', css:'scheduled'};
+}
+function showMessage(id, message, error = false) {
+ const element = $(id);
+ element.textContent = message;
+ element.classList.toggle('error', error);
+}
+const status = (message, error) => showMessage('status', message, error);
+const searchText = value => String(value ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLocaleLowerCase('ro').trim();
+const matching = (value, field) => searchText(value).includes(searchText($(field).value));
+const dateRO = date => date ? date.split('-').reverse().join('.') : '—';
+const countLabel = (count, singular, plural) => count + ' ' + (count === 1 ? singular : plural);
+const formatCount = value => Number(value || 0).toLocaleString('ro-RO');
+const emptyMessage = message => '<p class="dashboard-empty">' + esc(message) + '</p>';
+const emptyRow = message => '<tr role="row"><td role="cell" colspan="6">' + esc(message) + '</td></tr>';
+const dataCell = (label, html) => '<td role="cell"><span class="dashboard-cell-label" aria-hidden="true">' + label + '</span>' + html + '</td>';
+const restaurantName = id => restaurants.find(restaurant => restaurant.id === id)?.name || 'Restaurant';
+const hasMember = id => members.some(member => member.restaurant_id === id);
+
+function renderMenuRows() {
+ const target = $('menuRows');
+ const open = new Set([...target.querySelectorAll('details[open]')].map(group => group.dataset.restaurant));
+ const filter = $('menuFilter').value, today = todayRO();
+ const result = restaurants.map(restaurant => ({
+  restaurant, items: menus.filter(menu => menu.restaurant_id === restaurant.id &&
+    (!filter || menuState(menu, today).css === filter) && matching(restaurant.name + ' ' + menu.title, 'menuSearch'))
+ })).filter(group => group.items.length);
+ target.innerHTML = result.length ? result.map(({restaurant, items}) => {
+  const states = {active:0,draft:0,scheduled:0,expired:0};
+  for (const menu of items) states[menuState(menu,today).css]++;
+  const recap = [
+   ['active','activ','active'], ['draft','ciornă','ciorne'], ['scheduled','programat','programate'], ['expired','expirat','expirate']
+  ].filter(([state]) => states[state]).map(([state,singular,plural]) => countLabel(states[state],singular,plural));
+  return '<details class="menu-group" data-restaurant="' + esc(restaurant.id) + '"' +
+  (open.has(restaurant.id) || result.length === 1 ? ' open' : '') + '><summary><span><strong>' + esc(restaurant.name) +
+  '</strong><small>' + recap.join(' · ') + '</small></span></summary><div class="menu-items">' +
+  items.map(menu => {
+   const state = menuState(menu,today);
+   return '<div class="row"><div><strong>' + esc(menu.title) + '</strong><small>' + esc(dateRO(menu.service_date)) +
+    ' · ' + (menu.price == null ? '—' : esc(menu.price) + ' lei') + '</small><span class="menu-status ' + state.css + '">' +
+    esc(state.label) + '</span></div><div class="menu-actions">' +
+    '<button type="button" data-edit="' + esc(menu.id) + '">Editează</button>' +
+    '<button type="button" data-copy="' + esc(menu.id) + '">Duplică</button>' +
+    '<button type="button" class="admin-danger" data-remove="' + esc(menu.id) + '">Șterge</button></div></div>';
+  }).join('') + '</div></details>';
+ }).join('') : emptyMessage('Niciun meniu pentru selecția curentă.');
+}
+
+function renderRestaurants() {
+ const filter = $('restaurantFilter').value;
+ const result = restaurants.filter(restaurant => matching(restaurant.name, 'restaurantSearch') &&
+  (!filter || (filter === 'no-access' ? !hasMember(restaurant.id) : restaurant.enabled === (filter === 'enabled'))));
+ $('restaurantRows').innerHTML = result.length ? result.map(restaurant => {
+  const id = esc(restaurant.id), enabled = restaurant.enabled;
+  const access = hasMember(restaurant.id);
+  return '<div class="restaurant-admin-item"><div class="restaurant-admin-heading"><strong>' + esc(restaurant.name) + '</strong>' +
+   '<div class="dashboard-badges"><span class="dashboard-badge" data-state="' + (enabled ? 'enabled' : 'disabled') + '">' +
+   (enabled ? 'Activ' : 'Suspendat') + '</span>' +
+   (restaurant.accepts_card ? '<span class="dashboard-badge">Acceptă card</span>' : '') +
+   (access ? '' : '<span class="dashboard-badge">Fără cont</span>') +
+   '</div></div><div class="restaurant-admin-actions">' +
+   '<button type="button" data-edit-restaurant="' + id + '">Editează</button>' +
+   (access ? '' : '<button type="button" data-create-access="' + id + '">Creează acces</button>') +
+   '<button type="button" data-toggle="' + id + '">' + (enabled ? 'Suspendă' : 'Activează') + '</button>' +
+   '<button type="button" class="admin-danger" data-delete-restaurant="' + id + '">Șterge</button></div></div>';
+ }).join('') : emptyMessage('Niciun restaurant pentru selecția curentă.');
+}
+
+function renderMembers() {
+ const result = members.filter(member => matching(restaurantName(member.restaurant_id) + ' ' + member.user_id, 'memberSearch'));
+ $('memberRows').innerHTML = result.length ? result.map(member =>
+  '<div class="dashboard-member"><div><strong>' + esc(restaurantName(member.restaurant_id)) + '</strong><small>ID cont · ' +
+  esc(member.user_id) + '</small></div><button type="button" class="admin-danger" data-revoke="' + esc(member.user_id) +
+  '" data-restaurant="' + esc(member.restaurant_id) + '">Revocă accesul</button></div>').join('') :
+  emptyMessage('Niciun cont pentru selecția curentă.');
+}
+
+$('menuSearch').addEventListener('input', renderMenuRows);
+$('menuFilter').addEventListener('change', renderMenuRows);
+$('restaurantSearch').addEventListener('input', renderRestaurants);
+$('restaurantFilter').addEventListener('change', renderRestaurants);
+$('memberSearch').addEventListener('input', renderMembers);
+
+async function load() {
+ [restaurants, menus, members] = await Promise.all([
+  req(db.from('restaurants').select('*').order('name')),
+  req(db.from('menus').select('*').order('service_date', {ascending:false}).limit(200)),
+  req(db.from('restaurant_members').select('*'))
+ ]);
+ $('nr').textContent = restaurants.length;
+ $('nm').textContent = menus.length;
+ const today = todayRO();
+ $('nt').textContent = menus.filter(menu => menu.published && menu.service_date === today).length;
+ const picker = $('restaurant'), current = picker.value;
+ picker.innerHTML = restaurants.map(restaurant => '<option value="' + esc(restaurant.id) + '">' + esc(restaurant.name) + '</option>').join('');
+ if (restaurants.some(restaurant => restaurant.id === current)) picker.value = current;
+ renderMenuRows();
+ renderRestaurants();
+ renderMembers();
+}
+
+let customerLeads = [], customerRequest = 0;
+function normalizeCustomerPhone(phone) {
+ return String(phone || '').replace(/\D/g, '');
+}
+function customerGroups() {
+ const groups = new Map();
+ for (const lead of customerLeads) {
+  const phone = normalizeCustomerPhone(lead.customer_phone);
+  if (!phone) continue;
+  if (!groups.has(phone)) groups.set(phone, {name:lead.customer_name, phone:lead.customer_phone, initiatedMenus:0, portions:0, requests:0, restaurants:new Map(), latest:lead.started_at});
+  const group = groups.get(phone);
+  group.requests++;
+  group.initiatedMenus += Number(lead.menus_count) || 0;
+  group.portions += Number(lead.portions_count) || 0;
+  if (lead.started_at > group.latest) {
+   group.latest = lead.started_at;
+   group.name = lead.customer_name;
+  }
+  const restaurant = group.restaurants.get(lead.restaurant_id) || {initiated:0, requests:0};
+  restaurant.requests++;
+  restaurant.initiated += Number(lead.menus_count) || 0;
+  group.restaurants.set(lead.restaurant_id, restaurant);
  }
- return [...groups.values()].map(g=>{
-  const preferred=[...g.restaurants.entries()].sort((a,b)=>b[1].initiated-a[1].initiated||b[1].requests-a[1].requests)[0];
-  g.favorite=restaurants.find(r=>r.id===preferred?.[0])?.name||'—';return g;
- }).sort((a,b)=>b.initiatedMenus-a.initiatedMenus||b.portions-a.portions||b.requests-a.requests);
+ return [...groups.values()].map(group => {
+  const preferred = [...group.restaurants.entries()].sort((a,b) => b[1].initiated - a[1].initiated || b[1].requests - a[1].requests)[0];
+  group.favorite = restaurants.find(restaurant => restaurant.id === preferred?.[0])?.name || '—';
+  return group;
+ }).sort((a,b) => b.initiatedMenus - a.initiatedMenus || b.portions - a.portions || b.requests - a.requests);
 }
-function renderCustomers(){
- const groups=customerGroups(),needle=$('customersSearch').value.trim().toLowerCase();
- const list=groups.filter(g=>(g.name+' '+g.phone+' '+g.favorite).toLowerCase().includes(needle));
- const n=x=>Number(x||0).toLocaleString('ro-RO');
- $('customersTotal').textContent=n(groups.length);
- $('customersMenus').textContent=n(groups.reduce((sum,g)=>sum+g.initiatedMenus,0));
- $('customersLeads').textContent=n(groups.reduce((sum,g)=>sum+g.requests,0));
- $('customersRows').innerHTML=list.length?list.map(g=>'<tr><td><strong>'+esc(g.name)+'</strong></td><td><a class="pont-customer-phone" href="tel:'+esc(g.phone)+'">'+esc(g.phone)+'</a></td><td>'+esc(g.favorite)+'</td><td>'+n(g.initiatedMenus)+'</td><td>'+n(g.portions)+'</td><td>'+n(g.requests)+'</td></tr>').join(''):'<tr><td colspan="6">Niciun client pentru luna selectată.</td></tr>';
- const orders=customerLeads.filter(l=>(l.customer_name+' '+l.customer_phone+' '+(restaurants.find(r=>r.id===l.restaurant_id)?.name||'')).toLowerCase().includes(needle));
- $('customerOrderRows').innerHTML=orders.length?orders.map(l=>{
-  const name=restaurants.find(r=>r.id===l.restaurant_id)?.name||'Restaurant';
-  const date=new Date(l.started_at).toLocaleDateString('ro-RO',{timeZone:'Europe/Bucharest',day:'2-digit',month:'2-digit',year:'numeric'});
-  return '<tr><td>'+esc(l.customer_name)+'</td><td>'+esc(name)+'</td><td>'+esc(l.order_reference)+'</td><td>'+esc((Array.isArray(l.items)&&l.items.length?l.items.map(i=>String(i.quantity||0)+' × '+String(i.name||'Preparat')).join(' · '):n(l.menus_count)+' meniuri complete'))+'</td><td>'+esc(date)+'</td><td><button type="button" data-delete-customer-order="'+l.id+'">Șterge</button></td></tr>'
- }).join(''):'<tr><td colspan="6">Nu există solicitări înregistrate.</td></tr>';
+function renderCustomers() {
+ const groups = customerGroups();
+ const list = groups.filter(group => matching(group.name + ' ' + group.phone + ' ' + group.favorite, 'customersSearch'));
+ $('customersTotal').textContent = formatCount(groups.length);
+ $('customersMenus').textContent = formatCount(groups.reduce((sum, group) => sum + group.initiatedMenus, 0));
+ $('customersLeads').textContent = formatCount(customerLeads.length);
+ $('customersRows').innerHTML = list.length ? list.map(group => '<tr role="row">' + [
+  dataCell('Client', '<strong>' + esc(group.name) + '</strong>'),
+  dataCell('Telefon', '<a class="pont-customer-phone" href="tel:' + esc(group.phone) + '">' + esc(group.phone) + '</a>'),
+  dataCell('Restaurant preferat', esc(group.favorite)),
+  dataCell('Meniuri', formatCount(group.initiatedMenus)),
+  dataCell('Porții', formatCount(group.portions)),
+  dataCell('Solicitări', formatCount(group.requests))
+ ].join('') + '</tr>').join('') : emptyRow('Niciun client pentru selecția curentă.');
+ const orders = customerLeads.filter(lead => matching(lead.customer_name + ' ' + lead.customer_phone + ' ' + restaurantName(lead.restaurant_id), 'customersSearch'));
+ $('customerOrderRows').innerHTML = orders.length ? orders.map(lead => {
+  const date = new Date(lead.started_at).toLocaleDateString('ro-RO', {timeZone:'Europe/Bucharest',day:'2-digit',month:'2-digit',year:'numeric'});
+  const items = Array.isArray(lead.items) && lead.items.length ?
+   lead.items.map(item => String(item.quantity || 0) + ' × ' + String(item.name || 'Preparat')).join(' · ') :
+   formatCount(lead.menus_count) + ' meniuri complete';
+  return '<tr role="row">' + [
+   dataCell('Client', '<strong>' + esc(lead.customer_name) + '</strong>'),
+   dataCell('Restaurant', esc(restaurantName(lead.restaurant_id))),
+   dataCell('Referință', esc(lead.order_reference)),
+   dataCell('Preparate', esc(items)),
+   dataCell('Data', esc(date)),
+   dataCell('Acțiune', '<button type="button" class="admin-danger" data-delete-customer-order="' + esc(lead.id) + '">Șterge</button>')
+  ].join('') + '</tr>';
+ }).join('') : emptyRow('Nicio solicitare pentru selecția curentă.');
 }
-async function loadCustomers(){
- $('customersStatus').textContent='Se încarcă…';
- const month=$('customersMonth').value;
- if(!/^\d{4}-\d{2}$/.test(month))throw Error('Alege o lună validă.');
- customerLeads=await req(db.rpc('pont_admin_customer_leads_month_v2',{p_month:month+'-01'}));
- renderCustomers();$('customersStatus').textContent='Luna '+month+' · '+customerLeads.length+' comenzi finalizate în PONT'+(customerLeads.length===1000?' (limită 1.000).':'.');
+async function loadCustomers() {
+ const request = ++customerRequest, month = $('customersMonth').value;
+ showMessage('customersStatus', 'Se încarcă istoricul…');
+ try {
+  if (!/^\d{4}-\d{2}$/.test(month)) throw Error('Alege o lună validă.');
+  const result = await req(db.rpc('pont_admin_customer_leads_month_v2', {p_month:month + '-01'}));
+  if (request !== customerRequest) return;
+  customerLeads = result;
+  renderCustomers();
+  showMessage('customersStatus', countLabel(result.length, 'solicitare înregistrată', 'solicitări înregistrate') + (result.length === 1000 ? ' · limită 1.000' : ''));
+ } catch (error) {
+  if (request !== customerRequest) return;
+  customerLeads = [];
+  renderCustomers();
+  showMessage('customersStatus', error.message, true);
+ }
 }
-$('customersMonth').value=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit'}).format(new Date());
-$('customersMonth').onchange=()=>loadCustomers().catch(e=>$('customersStatus').textContent=e.message);
-$('customersSearch').addEventListener('input',renderCustomers);
-$('customersRefresh').onclick=()=>loadCustomers().catch(e=>$('customersStatus').textContent=e.message);
-$('customerOrderRows').onclick=async e=>{
- const button=e.target.closest('[data-delete-customer-order]');if(!button)return;
- const id=Number(button.dataset.deleteCustomerOrder),l=customerLeads.find(x=>x.id===id);
- if(!l||!confirm('Ștergi definitiv această solicitare a clientului '+l.customer_name+'?'))return;
- button.disabled=true;
- try{await req(db.rpc('pont_admin_delete_whatsapp_lead',{p_id:id}));await loadCustomers();$('customersStatus').textContent='Solicitarea a fost ștearsă.'}catch(err){button.disabled=false;$('customersStatus').textContent=err.message}
+$('customersMonth').value = todayRO().slice(0,7);
+$('customersMonth').onchange = loadCustomers;
+$('customersSearch').addEventListener('input', renderCustomers);
+$('customersRefresh').onclick = loadCustomers;
+$('customerOrderRows').onclick = async event => {
+ const button = event.target.closest('[data-delete-customer-order]');
+ if (!button) return;
+ const id = Number(button.dataset.deleteCustomerOrder), lead = customerLeads.find(item => item.id === id);
+ if (!lead || !confirm('Ștergi definitiv solicitarea clientului ' + lead.customer_name + '?')) return;
+ button.disabled = true;
+ try {
+  await req(db.rpc('pont_admin_delete_whatsapp_lead', {p_id:id}));
+  await loadCustomers();
+  status('Solicitarea a fost ștearsă.');
+ } catch (error) {
+  button.disabled = false;
+  status(error.message, true);
+ }
 };
-const analyticsDateRO=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-$('analyticsMonth').value=analyticsDateRO().slice(0,7);
-async function loadAnalytics(){
- $('analyticsStatus').textContent='Se actualizează…';
- const stats=await req(db.rpc('pont_admin_restaurant_metrics_month',{p_month:$('analyticsMonth').value+'-01'}));
- const rows=new Map(stats.map(s=>[s.restaurant_id,s]));
- const sum=key=>stats.reduce((n,r)=>n+Number(r[key]||0),0);
- $('analyticsTotalViews').textContent=sum('views').toLocaleString('ro-RO');
- $('analyticsTotalCalls').textContent=sum('calls').toLocaleString('ro-RO');
- $('analyticsTotalWhatsApp').textContent=sum('whatsapp_opens').toLocaleString('ro-RO');
- $('analyticsTotalMenus').textContent=sum('menus_count').toLocaleString('ro-RO');
- const n=v=>Number(v||0).toLocaleString('ro-RO');
- $('analyticsRows').innerHTML=restaurants.length?restaurants.map(r=>{const m=rows.get(r.id)||{};return '<tr><td><strong>'+esc(r.name)+'</strong></td><td>'+n(m.views)+'</td><td>'+n(m.calls)+'</td><td>'+n(m.whatsapp_opens)+'</td><td>'+n(m.menus_count)+'</td><td>'+n(m.portions_count)+'</td></tr>'}).join(''):'<tr><td colspan="6">Nu există restaurante.</td></tr>';
- $('analyticsStatus').textContent='Actualizat. Sunt afișate numai interacțiunile înregistrate după activarea statisticilor.';
+
+let analytics = [], analyticsRequest = 0;
+function renderAnalytics() {
+ const rows = new Map(analytics.map(row => [row.restaurant_id, row]));
+ const totals = {
+  analyticsTotalViews:'views', analyticsTotalCalls:'calls',
+  analyticsTotalWhatsApp:'whatsapp_opens', analyticsTotalMenus:'menus_count'
+ };
+ for (const [id, metric] of Object.entries(totals)) {
+  $(id).textContent = formatCount(analytics.reduce((total, row) => total + Number(row[metric] || 0), 0));
+ }
+ const result = restaurants.filter(restaurant => matching(restaurant.name, 'analyticsSearch'));
+ $('analyticsRows').innerHTML = result.length ? result.map(restaurant => {
+  const metrics = rows.get(restaurant.id) || {};
+  return '<tr role="row">' + [
+   dataCell('Restaurant', '<strong>' + esc(restaurant.name) + '</strong>'),
+   dataCell('Vizite', formatCount(metrics.views)),
+   dataCell('Apeluri', formatCount(metrics.calls)),
+   dataCell('WhatsApp', formatCount(metrics.whatsapp_opens)),
+   dataCell('Meniuri', formatCount(metrics.menus_count)),
+   dataCell('Porții', formatCount(metrics.portions_count))
+  ].join('') + '</tr>';
+ }).join('') : emptyRow('Niciun restaurant pentru selecția curentă.');
 }
-$('analyticsMonth').onchange=()=>loadAnalytics().catch(e=>$('analyticsStatus').textContent=e.message);
-$('analyticsRefresh').onclick=()=>loadAnalytics().catch(e=>$('analyticsStatus').textContent=e.message);
-async function load(){restaurants=await req(db.from('restaurants').select('*').order('name'));menus=await req(db.from('menus').select('*').order('service_date',{ascending:false}).limit(200));members=await req(db.from('restaurant_members').select('*'));$('nr').textContent=restaurants.length;$('nm').textContent=menus.length;$('nt').textContent=menus.filter(x=>x.published&&x.service_date===todayRO()).length;let options=restaurants.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.name)+'</option>').join('');$('restaurant').innerHTML=options;$('menuRows').innerHTML=restaurants.map(r=>{const own=menus.filter(m=>m.restaurant_id===r.id);const active=own.filter(m=>menuState(m).css==='active').length;const scheduled=own.filter(m=>menuState(m).css==='scheduled').length;const expired=own.filter(m=>menuState(m).css==='expired').length;const drafts=own.filter(m=>menuState(m).css==='draft').length;return '<details class="menu-group" '+(restaurants.length===1?'open':'')+'><summary><span><strong>'+esc(r.name)+'</strong><small>'+own.length+' meniuri · '+active+' active · '+scheduled+' programate · '+expired+' expirate · '+drafts+' ciorne</small></span></summary><div class="menu-items">'+(own.length?own.map(m=>'<div class="row"><div><strong>'+esc(m.title)+'</strong><small>'+esc(m.service_date)+' · '+esc(m.price)+' lei</small><span class="menu-status '+menuState(m).css+'">'+menuState(m).label+'</span></div><div class="menu-actions"><button data-edit="'+esc(m.id)+'">Editează</button><button data-copy="'+esc(m.id)+'">Duplică</button><button data-remove="'+esc(m.id)+'">Șterge</button></div></div>').join(''):'<p>Nu există meniuri înregistrate pentru acest restaurant.</p>')+'</div></details>'}).join('')+(restaurants.length?'':'<p class="menu-empty">Nu există restaurante înregistrate.</p>');$('restaurantRows').innerHTML=restaurants.map(r=>'<div class="restaurant-admin-item"><div class="restaurant-admin-heading"><strong>'+esc(r.name)+'</strong><small>'+esc(r.slug)+'</small></div><div class="restaurant-admin-actions"><button data-edit-restaurant="'+esc(r.id)+'">Editează</button><button data-delete-restaurant="'+esc(r.id)+'">Șterge</button><button data-toggle="'+esc(r.id)+'">'+(r.enabled?'Suspendă':'Activează')+'</button></div></div>').join('');$('memberRows').innerHTML=members.map(m=>'<div class="row"><div><strong>'+esc(restaurants.find(r=>r.id===m.restaurant_id)?.name)+'</strong><small>'+esc(m.user_id)+'</small></div><button data-revoke="'+esc(m.user_id)+'" data-restaurant="'+esc(m.restaurant_id)+'">Revocă</button></div>').join('')}
-const auctionMoney=n=>Number(n||0).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
-const auctionMonthDefault=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit'}).format(new Date());
-let auctionOffers=[],manualPaidApprovals=[],auctionEdits=new Map(),auctionSaving=false,activeAuctionRestaurant=null;
-function savedAuctionMode(rid){
- const manual=manualPaidApprovals.find(x=>x.restaurant_id===rid);
- if(manual)return manual.approval_type==='authorization'?'authorization':'paid';
- return auctionOffers.find(o=>o.restaurant_id===rid)?.payment_status==='paid'?'paid':'none';
+async function loadAnalytics() {
+ const request = ++analyticsRequest, month = $('analyticsMonth').value;
+ showMessage('analyticsStatus', 'Se actualizează statisticile…');
+ try {
+  if (!/^\d{4}-\d{2}$/.test(month)) throw Error('Alege o lună validă.');
+  const result = await req(db.rpc('pont_admin_restaurant_metrics_month', {p_month:month + '-01'}));
+  if (request !== analyticsRequest) return;
+  analytics = result;
+  renderAnalytics();
+  showMessage('analyticsStatus', result.length ? '' : 'Nu sunt interacțiuni înregistrate pentru luna selectată.');
+ } catch (error) {
+  if (request !== analyticsRequest) return;
+  analytics = [];
+  $('analyticsRows').innerHTML = emptyRow('Statisticile nu au putut fi încărcate.');
+  for (const stat of $('analytics').querySelectorAll('.stat strong')) stat.textContent = '—';
+  showMessage('analyticsStatus', error.message, true);
+ }
 }
-function currentAuctionMode(rid){return auctionEdits.has(rid)?auctionEdits.get(rid):savedAuctionMode(rid)}
-function auctionModeLabel(mode){return mode==='paid'?'Plătit':mode==='authorization'?'Doar autorizare':'Neconfirmat'}
-function refreshAuctionSave(){const n=auctionEdits.size;$('saveAuctionPayments').disabled=!n||auctionSaving;$('auctionSaveHint').textContent=auctionSaving?'Se salvează modificările…':n?n+' '+(n===1?'modificare nesalvată':'modificări nesalvate'):'Selectează confirmările, apoi salvează.'}
-function updateAuctionRow(rid){
- const cb=[...$('auctionRows').querySelectorAll('[data-auction-restaurant]')].find(x=>x.dataset.auctionRestaurant===rid);
- if(!cb)return;
- const mode=currentAuctionMode(rid);cb.checked=mode!=='none';
- const note=cb.closest('.auction-pay').querySelector('.auction-selection-note');if(note)note.textContent=auctionModeLabel(mode)+(auctionEdits.has(rid)?' · nesalvat':'');
+$('analyticsMonth').value = todayRO().slice(0,7);
+$('analyticsMonth').onchange = loadAnalytics;
+$('analyticsSearch').addEventListener('input', renderAnalytics);
+$('analyticsRefresh').onclick = loadAnalytics;
+
+const auctionMoney = value => Number(value || 0).toLocaleString('ro-RO', {maximumFractionDigits:2}) + ' lei';
+let auctionOffers = [], manualPaidApprovals = [], auctionRequest = 0, loadedAuctionMonth = '';
+const auctionEdits = new Map();
+let auctionSaving = false, activeAuctionRestaurant = null;
+
+function savedAuctionMode(restaurantId) {
+ const manual = manualPaidApprovals.find(row => row.restaurant_id === restaurantId);
+ if (manual) return manual.approval_type === 'authorization' ? 'authorization' : 'paid';
+ return auctionOffers.find(offer => offer.restaurant_id === restaurantId)?.payment_status === 'paid' ? 'paid' : 'none';
 }
-async function loadAuctions(){if(auctionEdits.size||auctionSaving)return;const month=$('auctionMonth').value;if(!month)return;
- auctionOffers=await req(db.from('auction_offers').select('*').eq('campaign_month',month+'-01').order('amount',{ascending:false}).order('created_at',{ascending:true}));
- manualPaidApprovals=await req(db.from('pont_manual_payment_approvals').select('restaurant_id,campaign_month,approval_type').eq('campaign_month',month+'-01'));
- $('auctionCount').textContent=auctionOffers.length+' '+(auctionOffers.length===1?'ofertă':'oferte');
- $('auctionTotal').textContent=auctionMoney(auctionOffers.reduce((a,o)=>a+Number(o.amount),0));
- $('auctionPaid').textContent=auctionMoney(auctionOffers.filter(o=>o.payment_status==='paid').reduce((a,o)=>a+Number(o.amount),0));
- $('auctionPending').textContent=auctionMoney(auctionOffers.filter(o=>o.payment_status!=='paid').reduce((a,o)=>a+Number(o.amount),0));
- const sorted=[...restaurants].sort((a,b)=>{const x=auctionOffers.find(o=>o.restaurant_id===a.id),y=auctionOffers.find(o=>o.restaurant_id===b.id);return Number(y?.amount||0)-Number(x?.amount||0)||a.name.localeCompare(b.name,'ro')});
- $('auctionRows').innerHTML=sorted.length?sorted.map(r=>{const o=auctionOffers.find(x=>x.restaurant_id===r.id),mode=currentAuctionMode(r.id);const rank=o?auctionOffers.findIndex(x=>x.id===o.id)+1:null;
- return '<div class="auction-entry"><div class="auction-entry-main"><strong>'+esc(r.name)+'</strong><small>'+(o?'Locul '+rank+' · Runda '+o.round:'Nu a licitat pentru această lună')+'</small></div><span class="auction-amount">'+(o?auctionMoney(o.amount):'—')+'</span><label class="auction-pay"><input type="checkbox" data-auction-restaurant="'+esc(r.id)+'" '+(mode!=='none'?'checked':'')+'><span>Confirmare<span class="auction-selection-note">'+auctionModeLabel(mode)+'</span></span></label></div>'}).join(''):'<p>Nu există restaurante înregistrate.</p>';
+function currentAuctionMode(restaurantId) {
+ return auctionEdits.get(restaurantId) ?? savedAuctionMode(restaurantId);
+}
+function auctionModeLabel(mode) {
+ return {paid:'Plătit', authorization:'Doar autorizat', none:'Neconfirmat'}[mode];
+}
+function warnAuctionExit(event) {
+ event.preventDefault();
+ event.returnValue = '';
+}
+function refreshAuctionSave() {
+ const count = auctionEdits.size, button = $('saveAuctionPayments');
+ button.disabled = !count || auctionSaving;
+ button.closest('.auction-save-bar').dataset.pending = String(count > 0);
+ $('auctionMonth').disabled = auctionSaving;
+ $('auctionSaveHint').textContent = auctionSaving ? 'Se salvează modificările…' :
+  count ? countLabel(count, 'modificare nesalvată', 'modificări nesalvate') : 'Alege o confirmare pentru a o modifica.';
+ if (count || auctionSaving) window.addEventListener('beforeunload', warnAuctionExit);
+ else window.removeEventListener('beforeunload', warnAuctionExit);
+}
+function renderAuctionRows() {
+ const month = $('auctionMonth').value;
+ if (month !== loadedAuctionMonth) return;
+ const positions = new Map(auctionOffers.map((offer, index) => [offer.restaurant_id, {offer,rank:index+1}]));
+ const filter = $('auctionFilter').value;
+ const result = restaurants.filter(restaurant => matching(restaurant.name, 'auctionSearch') &&
+  (!filter || currentAuctionMode(restaurant.id) === filter));
+ const rank = restaurant => positions.get(restaurant.id)?.rank ?? Number.MAX_SAFE_INTEGER;
+ result.sort((a,b) => rank(a) - rank(b) || a.name.localeCompare(b.name, 'ro'));
+ $('auctionCount').textContent = countLabel(auctionOffers.length, 'ofertă', 'oferte') + ' · ' + countLabel(result.length, 'restaurant afișat', 'restaurante afișate');
+ $('auctionRows').innerHTML = result.length ? result.map(restaurant => {
+  const item = positions.get(restaurant.id), mode = currentAuctionMode(restaurant.id);
+  const label = auctionModeLabel(mode);
+  const pending = auctionEdits.has(restaurant.id);
+  return '<div class="auction-entry"><div class="auction-entry-main"><strong>' + esc(restaurant.name) +
+   '</strong><small>' + (item ? 'Locul ' + item.rank + ' · Runda ' + esc(item.offer.round) : 'Fără ofertă') +
+   '</small></div><span class="auction-amount">' + (item ? auctionMoney(item.offer.amount) : '—') +
+   '</span><button type="button" class="dashboard-auction-state" data-mode="' + mode + '" data-auction-restaurant="' +
+   esc(restaurant.id) + '" aria-label="' + esc(label + '. Modifică confirmarea pentru ' + restaurant.name) + '">' +
+   label + '<small>' + (pending ? 'Nesalvat' : 'Modifică') + '</small></button></div>';
+ }).join('') : emptyMessage('Niciun restaurant pentru selecția curentă.');
  refreshAuctionSave();
 }
-$('auctionMonth').value=auctionMonthDefault();let lastAuctionMonth=$('auctionMonth').value;
-$('auctionMonth').onchange=()=>{if(auctionEdits.size&&!confirm('Există modificări nesalvate. Le abandonezi și schimbi luna?')){$('auctionMonth').value=lastAuctionMonth;return}auctionEdits.clear();lastAuctionMonth=$('auctionMonth').value;loadAuctions().catch(e=>status(e.message,true))};
-function closeAuctionChoice(){$('auctionChoiceDialog').close();activeAuctionRestaurant=null}
-$('auctionChoiceClose').onclick=closeAuctionChoice;
-$('auctionChoiceCancel').onclick=closeAuctionChoice;
-$('auctionChoiceDialog').addEventListener('close',()=>{activeAuctionRestaurant=null});
-$('auctionRows').addEventListener('click',e=>{
- const cb=e.target.closest('[data-auction-restaurant]');if(!cb||auctionSaving)return;
- e.preventDefault();
- const rid=cb.dataset.auctionRestaurant,r=restaurants.find(x=>x.id===rid);if(!r)return;
- // On click, leave the checkbox at the last confirmed selection until OK.
- cb.checked=currentAuctionMode(rid)!=='none';activeAuctionRestaurant=rid;
- $('auctionChoiceRestaurant').textContent=r.name+' · '+$('auctionMonth').value;
- const mode=currentAuctionMode(rid);
- $('auctionChoiceDialog').querySelectorAll('[name="auctionChoice"]').forEach(x=>x.checked=x.value===mode);
- $('auctionChoiceRemove').hidden=mode==='none';
- $('auctionChoiceAlert').textContent='';
+async function loadAuctions() {
+ if (auctionEdits.size || auctionSaving || activeAuctionRestaurant) return;
+ const month = $('auctionMonth').value, request = ++auctionRequest;
+ if (loadedAuctionMonth !== month) {
+  $('auctionRows').innerHTML = emptyMessage('Se încarcă licitațiile…');
+  $('auctionCount').textContent = '';
+  for (const stat of $('auctions').querySelectorAll('.stat strong')) stat.textContent = '—';
+  showMessage('auctionFeedback', '');
+ }
+ try {
+  if (!/^\d{4}-\d{2}$/.test(month)) throw Error('Alege o lună validă.');
+  const [offers, approvals] = await Promise.all([
+   req(db.from('auction_offers').select('*').eq('campaign_month', month + '-01').order('amount', {ascending:false}).order('created_at', {ascending:true})),
+   req(db.from('pont_manual_payment_approvals').select('restaurant_id,campaign_month,approval_type').eq('campaign_month', month + '-01'))
+  ]);
+  if (request !== auctionRequest || month !== $('auctionMonth').value || auctionEdits.size || auctionSaving || activeAuctionRestaurant) return;
+  auctionOffers = offers;
+  manualPaidApprovals = approvals;
+  loadedAuctionMonth = month;
+  $('auctionTotal').textContent = auctionMoney(offers.reduce((sum,offer) => sum + Number(offer.amount), 0));
+  $('auctionPaid').textContent = auctionMoney(offers.filter(offer => offer.payment_status === 'paid').reduce((sum,offer) => sum + Number(offer.amount), 0));
+  $('auctionPending').textContent = auctionMoney(offers.filter(offer => offer.payment_status !== 'paid').reduce((sum,offer) => sum + Number(offer.amount), 0));
+  const focusId = document.activeElement?.dataset.auctionRestaurant;
+  renderAuctionRows();
+  if (focusId) focusAuctionRow(focusId);
+ } catch (error) {
+  if (request !== auctionRequest) return;
+  if (loadedAuctionMonth !== month) $('auctionRows').innerHTML = emptyMessage('Licitațiile nu au putut fi încărcate.');
+  showMessage('auctionFeedback', error.message, true);
+ }
+}
+function focusAuctionRow(restaurantId) {
+ const button = [...$('auctionRows').querySelectorAll('[data-auction-restaurant]')].find(item => item.dataset.auctionRestaurant === restaurantId);
+ (button ?? $('auctionFilter')).focus({preventScroll:true});
+}
+
+const requestedMonth = new URLSearchParams(location.search).get('month') || '';
+$('auctionMonth').value = /^\d{4}-(0[1-9]|1[0-2])$/.test(requestedMonth) ? requestedMonth : todayRO().slice(0,7);
+let lastAuctionMonth = $('auctionMonth').value;
+$('auctionMonth').onchange = () => {
+ if (auctionEdits.size && !confirm('Abandonezi modificările nesalvate și schimbi luna?')) {
+  $('auctionMonth').value = lastAuctionMonth;
+  return;
+ }
+ auctionEdits.clear();
+ lastAuctionMonth = $('auctionMonth').value;
+ refreshAuctionSave();
+ loadAuctions();
+};
+$('auctionSearch').addEventListener('input', renderAuctionRows);
+$('auctionFilter').addEventListener('change', renderAuctionRows);
+function closeAuctionChoice() {
+ $('auctionChoiceDialog').close();
+ activeAuctionRestaurant = null;
+}
+$('auctionChoiceClose').onclick = closeAuctionChoice;
+$('auctionChoiceCancel').onclick = closeAuctionChoice;
+$('auctionChoiceDialog').addEventListener('close', () => { activeAuctionRestaurant = null; });
+$('auctionRows').addEventListener('click', event => {
+ const button = event.target.closest('[data-auction-restaurant]');
+ if (!button || auctionSaving) return;
+ activeAuctionRestaurant = button.dataset.auctionRestaurant;
+ const mode = currentAuctionMode(activeAuctionRestaurant);
+ $('auctionChoiceRestaurant').textContent = restaurantName(activeAuctionRestaurant) + ' · ' + $('auctionMonth').value;
+ $('auctionChoiceDialog').querySelectorAll('[name="auctionChoice"]').forEach(input => { input.checked = input.value === mode; });
+ $('auctionChoiceRemove').hidden = mode === 'none';
+ $('auctionChoiceAlert').textContent = '';
  $('auctionChoiceDialog').showModal();
 });
-$('auctionChoiceOK').onclick=()=>{
- const rid=activeAuctionRestaurant;if(!rid)return;
- const selected=$('auctionChoiceDialog').querySelector('[name="auctionChoice"]:checked');
- if(!selected){$('auctionChoiceAlert').textContent='Alege Plătit sau Doar autorizare.';return}
- const choice=selected.value;
- if(choice===savedAuctionMode(rid))auctionEdits.delete(rid);else auctionEdits.set(rid,choice);
- closeAuctionChoice();updateAuctionRow(rid);refreshAuctionSave();
-};
-$('auctionChoiceRemove').onclick=()=>{
- const rid=activeAuctionRestaurant;if(!rid)return;
- if(savedAuctionMode(rid)==='none')auctionEdits.delete(rid);else auctionEdits.set(rid,'none');
- closeAuctionChoice();updateAuctionRow(rid);refreshAuctionSave();
-};
-$('saveAuctionPayments').onclick=async()=>{
- if(!auctionEdits.size||auctionSaving)return;
- const month=$('auctionMonth').value+'-01',items=[...auctionEdits.entries()];
- const paidCount=items.filter(([,mode])=>mode==='paid').length,authCount=items.filter(([,mode])=>mode==='authorization').length,removedCount=items.filter(([,mode])=>mode==='none').length;
- if(!confirm('Salvezi '+items.length+' modificări? '+paidCount+' plătit, '+authCount+' doar autorizare, '+removedCount+' retrageri. Operația NU încasează bani.'))return;
- auctionSaving=true;refreshAuctionSave();let completed=0;const failed=[];
- for(const [rid,mode] of items){
-  const o=auctionOffers.find(x=>x.restaurant_id===rid);
-  try{
-   if(mode==='paid'){
-    if(o){
-     await req(db.from('auction_offers').update({payment_status:'paid',paid_at:new Date().toISOString()}).eq('id',o.id));
-     await req(db.from('pont_manual_payment_approvals').delete().eq('restaurant_id',rid).eq('campaign_month',month));
-    }else await req(db.from('pont_manual_payment_approvals').upsert({restaurant_id:rid,campaign_month:month,approval_type:'paid'},{onConflict:'restaurant_id,campaign_month'}));
-   }else if(mode==='authorization'){
-    await req(db.from('pont_manual_payment_approvals').upsert({restaurant_id:rid,campaign_month:month,approval_type:'authorization'},{onConflict:'restaurant_id,campaign_month'}));
-    if(o&&o.payment_status==='paid')await req(db.from('auction_offers').update({payment_status:'pending',paid_at:null}).eq('id',o.id));
-   }else{
-    await req(db.from('pont_manual_payment_approvals').delete().eq('restaurant_id',rid).eq('campaign_month',month));
-    if(o&&o.payment_status==='paid')await req(db.from('auction_offers').update({payment_status:'pending',paid_at:null}).eq('id',o.id));
-   }
-   auctionEdits.delete(rid);completed++;
-  }catch(err){failed.push((restaurants.find(x=>x.id===rid)?.name||'Restaurant')+': '+err.message)}
+function setAuctionChoice(mode) {
+ const restaurantId = activeAuctionRestaurant;
+ if (!restaurantId) return;
+ if (mode === savedAuctionMode(restaurantId)) auctionEdits.delete(restaurantId);
+ else auctionEdits.set(restaurantId, mode);
+ closeAuctionChoice();
+ renderAuctionRows();
+ focusAuctionRow(restaurantId);
+ showMessage('auctionFeedback', '');
+}
+$('auctionChoiceOK').onclick = () => {
+ const selected = $('auctionChoiceDialog').querySelector('[name="auctionChoice"]:checked');
+ if (!selected) {
+  $('auctionChoiceAlert').textContent = 'Alege Plătit sau Doar autorizare.';
+  return;
  }
- auctionSaving=false;
- if(failed.length){status('Salvate: '+completed+'. Eșuate: '+failed.join('; '),true);refreshAuctionSave();return}
- try{await loadAuctions();status('Modificările au fost salvate pentru '+completed+' '+(completed===1?'restaurant':'restaurante')+'.')}catch(err){status('Salvarea s-a făcut, dar reîncărcarea a eșuat: '+err.message,true)}
+ setAuctionChoice(selected.value);
 };
-setInterval(()=>{if(user&&!$('auctions').hidden)loadAuctions().catch(e=>console.error(e))},15000);async function enter(){let {data}=await db.auth.getUser();user=data.user;$('login').hidden=!!user;$('app').hidden=!user;if(!user)return;try{let p=await req(db.from('profiles').select('role').eq('user_id',user.id));if(p[0]?.role!=='super_admin')throw Error('Acest cont nu are rol Super Admin.');await load();await window.pontDishUI?.refresh()}catch(e){$('app').hidden=true;$('login').hidden=false;$('error').textContent=e.message}}
-$('auth').onsubmit=async e=>{e.preventDefault();let {error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error)$('error').textContent=error.message;else await enter()};$('logout').onclick=async()=>{await db.auth.signOut();await enter()};
+$('auctionChoiceRemove').onclick = () => setAuctionChoice('none');
+$('saveAuctionPayments').onclick = async () => {
+ if (!auctionEdits.size || auctionSaving) return;
+ const month = loadedAuctionMonth + '-01', items = [...auctionEdits];
+ const paid = items.filter(([,mode]) => mode === 'paid').length;
+ const authorized = items.filter(([,mode]) => mode === 'authorization').length;
+ const summary = paid + ' plătite, ' + authorized + ' autorizate, ' + (items.length - paid - authorized) + ' retrase';
+ if (!confirm('Salvezi ' + items.length + ' modificări pentru ' + loadedAuctionMonth + '? ' + summary + '. Se înregistrează doar confirmările.')) return;
+ auctionSaving = true;
+ refreshAuctionSave();
+ let completed = 0;
+ const failed = [];
+ for (const [restaurantId, mode] of items) {
+  const offer = auctionOffers.find(item => item.restaurant_id === restaurantId);
+  const approval = db.from('pont_manual_payment_approvals');
+  try {
+   if (mode === 'paid' && offer) {
+    await req(db.from('auction_offers').update({payment_status:'paid', paid_at:new Date().toISOString()}).eq('id', offer.id));
+    await req(approval.delete().eq('restaurant_id', restaurantId).eq('campaign_month', month));
+   } else {
+    if (mode === 'none') await req(approval.delete().eq('restaurant_id', restaurantId).eq('campaign_month', month));
+    else await req(approval.upsert({restaurant_id:restaurantId, campaign_month:month, approval_type:mode}, {onConflict:'restaurant_id,campaign_month'}));
+    if (offer?.payment_status === 'paid') await req(db.from('auction_offers').update({payment_status:'pending', paid_at:null}).eq('id', offer.id));
+   }
+   manualPaidApprovals = manualPaidApprovals.filter(row => row.restaurant_id !== restaurantId);
+   if (mode === 'authorization' || (mode === 'paid' && !offer)) manualPaidApprovals.push({restaurant_id:restaurantId, approval_type:mode});
+   if (offer) offer.payment_status = mode === 'paid' ? 'paid' : 'pending';
+   auctionEdits.delete(restaurantId);
+   completed++;
+  } catch (error) {
+   failed.push(restaurantName(restaurantId) + ' · ' + error.message);
+  }
+ }
+ auctionSaving = false;
+ renderAuctionRows();
+ if (failed.length) {
+  showMessage('auctionFeedback', 'Salvate ' + completed + ' din ' + items.length + '. De reîncercat pentru ' + failed.join(', '), true);
+  return;
+ }
+ showMessage('auctionFeedback', countLabel(completed, 'modificare salvată', 'modificări salvate') + '.');
+ await loadAuctions();
+};
+setInterval(() => {
+ if (!$('app').hidden && !$('auctions').hidden && !$('auctionRows').contains(document.activeElement)) loadAuctions();
+}, 15000);
+
 const platformTabs = [...document.querySelectorAll('.admin-nav button[data-tab]')];
-for (const button of platformTabs) button.onclick = () => {
+const panelLoaders = {
+ auctions:loadAuctions,
+ dishLibrary:() => window.pontDishUI?.refresh().catch(error => status(error.message, true)),
+ analytics:loadAnalytics,
+ customers:loadCustomers
+};
+function selectPlatformPanel(id, remember = true) {
+ const button = platformTabs.find(tab => tab.dataset.tab === id) || platformTabs[0];
  for (const tab of platformTabs) {
   const active = tab === button;
   $(tab.dataset.tab).hidden = !active;
   tab.setAttribute('aria-pressed', String(active));
  }
- if (button.dataset.tab === 'auctions') loadAuctions().catch(e => status(e.message, true));
- if (button.dataset.tab === 'dishLibrary') window.pontDishUI?.refresh().catch(e => status(e.message, true));
- if (button.dataset.tab === 'analytics') loadAnalytics().catch(e => { $('analyticsStatus').textContent = e.message; });
- if (button.dataset.tab === 'customers') loadCustomers().catch(e => { $('customersStatus').textContent = e.message; });
+ status('');
+ if (remember) history.replaceState(null, '', '#' + button.dataset.tab);
+ panelLoaders[button.dataset.tab]?.();
+}
+for (const button of platformTabs) button.onclick = () => selectPlatformPanel(button.dataset.tab);
+window.addEventListener('hashchange', () => {
+ if (!$('app').hidden) selectPlatformPanel(location.hash.slice(1), false);
+});
+
+async function enter() {
+ $('app').hidden = true;
+ $('error').textContent = '';
+ try {
+  const {data} = await db.auth.getUser();
+  const user = data?.user;
+  $('login').hidden = Boolean(user);
+  if (!user) return;
+  const profiles = await req(db.from('profiles').select('role').eq('user_id',user.id));
+  if (profiles[0]?.role !== 'super_admin') throw Error('Acest cont nu are rol Super Admin.');
+  await load();
+  $('app').hidden = false;
+  const panel = location.hash.slice(1);
+  selectPlatformPanel(panel, false);
+  if (panel !== 'dishLibrary') window.pontDishUI?.refresh().catch(error => {
+   $('pontDailyError').textContent = error.message;
+  });
+ } catch (error) {
+  $('login').hidden = false;
+  $('error').textContent = error.message;
+ }
+}
+$('auth').onsubmit = async event => {
+ event.preventDefault();
+ const {error} = await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});
+ if (error) $('error').textContent = error.message;
+ else await enter();
 };
-$('date').value=new Date().toLocaleDateString('en-CA');
+$('logout').onclick = async () => {
+ if (auctionSaving || (auctionEdits.size && !confirm('Te deconectezi cu modificări nesalvate?'))) return;
+ const {error} = await db.auth.signOut();
+ if (error) {
+  status(error.message,true);
+  return;
+ }
+ auctionEdits.clear();
+ refreshAuctionSave();
+ await enter();
+};
+$('date').value = todayRO();
+
 function menuFormError(message,field){
  const panel=$('menuFormFeedback');panel.hidden=false;panel.textContent=message;
  if(field){field.classList.add('pont-invalid-field');field.scrollIntoView({behavior:'smooth',block:'center'});try{field.focus({preventScroll:true})}catch(e){field.focus()}}
@@ -245,15 +789,250 @@ $('menuForm').onsubmit=async e=>{
  }
  const savedDate=$('date').value,wasPublished=$('published').value==='true',button=$('menuSubmitButton');
  button.disabled=true;button.textContent=wasPublished?'Se publică…':'Se salvează…';
- try{await req($('editingMenu').value?db.from('menus').update({restaurant_id:$('restaurant').value,service_date:$('date').value,title:$('title').value.trim(),price:$('price').value===''?null:Number($('price').value),description:$('description').value.trim(),published:$('published').value==='true',first_course:$('firstCourse').value.trim(),second_course:$('secondCourse').value.trim(),first_price:Number($('firstPrice').value),second_price:Number($('secondPrice').value),dessert:$('dessert').value.trim()}).eq('id',$('editingMenu').value):db.from('menus').insert({restaurant_id:$('restaurant').value,service_date:$('date').value,title:$('title').value.trim(),price:$('price').value===''?null:Number($('price').value),description:$('description').value.trim(),published:$('published').value==='true',first_course:$('firstCourse').value.trim(),second_course:$('secondCourse').value.trim(),first_price:Number($('firstPrice').value),second_price:Number($('secondPrice').value),dessert:$('dessert').value.trim()}));e.target.reset();$('editingMenu').value='';$('menuMode').hidden=true;updateMenuSubmitLabel();await load();setMenuFormOpen(false);showMenuSaveSuccess(savedDate,wasPublished);status('Meniu salvat')}catch(err){menuFormError('Meniul nu a fost salvat: '+(err?.message||'Eroare necunoscută.'));status(err?.message||'Eroare la salvare',true)}finally{button.disabled=false;updateMenuSubmitLabel()}};
+ try{await req($('editingMenu').value?db.from('menus').update({restaurant_id:$('restaurant').value,service_date:$('date').value,title:$('title').value.trim(),price:$('price').value===''?null:Number($('price').value),description:$('description').value.trim(),published:$('published').value==='true',first_course:$('firstCourse').value.trim(),second_course:$('secondCourse').value.trim(),first_price:Number($('firstPrice').value),second_price:Number($('secondPrice').value),dessert:$('dessert').value.trim()}).eq('id',$('editingMenu').value):db.from('menus').insert({restaurant_id:$('restaurant').value,service_date:$('date').value,title:$('title').value.trim(),price:$('price').value===''?null:Number($('price').value),description:$('description').value.trim(),published:$('published').value==='true',first_course:$('firstCourse').value.trim(),second_course:$('secondCourse').value.trim(),first_price:Number($('firstPrice').value),second_price:Number($('secondPrice').value),dessert:$('dessert').value.trim()}));resetClassicMenu();await load();setMenuFormOpen(false);showMenuSaveSuccess(savedDate,wasPublished)}catch(err){menuFormError('Meniul nu a fost salvat: '+(err?.message||'Eroare necunoscută.'));status(err?.message||'Eroare la salvare',true)}finally{button.disabled=false;updateMenuSubmitLabel()}};
 function uniqueSlug(name,existing){const base=name.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'restaurant';const used=new Set(existing.map(r=>r.slug));let candidate=base,n=2;while(used.has(candidate))candidate=base+'-'+n++;return candidate}
-$('restaurantForm').onsubmit=async e=>{e.preventDefault();try{await req($('editingRestaurant').value?db.from('restaurants').update({name:$('name').value.trim(),accepts_card:$('restaurantAcceptsCard').checked}).eq('id',$('editingRestaurant').value):db.from('restaurants').insert({name:$('name').value.trim(),slug:uniqueSlug($('name').value.trim(),restaurants),accepts_card:$('restaurantAcceptsCard').checked}));e.target.reset();$('editingRestaurant').value='';$('restaurantMode').hidden=true;$('restaurantPasswordBox').hidden=true;$('saveRestaurantButton').textContent='Adaugă restaurant';await load();status('Restaurant salvat')}catch(e){status(e.message,true)}};
-$('memberForm').onsubmit=async e=>{e.preventDefault();let createdRestaurant=null;try{const restaurantName=$('memberRestaurantName').value.trim();if(!restaurantName)throw Error('Introdu numele restaurantului.');if(restaurants.some(r=>r.name.toLocaleLowerCase('ro')===restaurantName.toLocaleLowerCase('ro')))throw Error('Acest restaurant există deja. Folosește secțiunea Restaurante pentru a-l administra.');const {data:{session}}=await db.auth.getSession();if(!session)throw Error('Sesiune expirată');const {data:created,error:createError}=await db.from('restaurants').insert({name:restaurantName,slug:uniqueSlug(restaurantName,restaurants)}).select('id,name').single();if(createError)throw createError;createdRestaurant=created;const response=await fetch(c.url+'/functions/v1/pont-restaurant-accounts',{method:'POST',headers:{'Content-Type':'application/json',apikey:c.anonKey,Authorization:'Bearer '+session.access_token},body:JSON.stringify({action:'create',username:$('uid').value.trim(),password:$('memberPassword').value,restaurant_id:created.id})});const result=await response.json();if(!response.ok)throw Error(result.error||'Nu s-a putut crea contul');e.target.reset();delete $('uid').dataset.userEdited;await load();status('Restaurantul '+restaurantName+' și administratorul '+result.username+' au fost create.')}catch(err){await load().catch(()=>{});status(createdRestaurant?'Restaurantul '+createdRestaurant.name+' a fost creat, dar administratorul NU a fost creat: '+err.message+' Verifică restaurantul în secțiunea Restaurante.':err.message,true)}};
-$('cancelMenu').onclick=()=>{$('menuForm').reset();$('editingMenu').value='';$('menuMode').hidden=true};
-$('menuRows').onclick=async e=>{let b=e.target.closest('button');if(!b)return;let m=menus.find(x=>x.id===(b.dataset.edit||b.dataset.copy||b.dataset.remove));if(!m)return;try{if(b.dataset.edit){$('editingMenu').value=m.id;$('restaurant').value=m.restaurant_id;$('date').value=m.service_date;$('title').value=m.title;$('price').value=m.price??'';$('description').value=m.description;$('firstCourse').value=m.first_course||'';$('secondCourse').value=m.second_course||'';$('firstPrice').value=m.first_price??'';$('secondPrice').value=m.second_price??'';$('dessert').value=m.dessert||'';$('published').value=String(m.published);$('menuMode').hidden=false;updateMenuSubmitLabel();setMenuFormOpen(true);$('menuForm').scrollIntoView({behavior:'smooth'});return}if(b.dataset.copy){await req(db.from('menus').insert({restaurant_id:m.restaurant_id,title:m.title,description:m.description,price:m.price,first_course:m.first_course,second_course:m.second_course,first_price:m.first_price,second_price:m.second_price,dessert:m.dessert,service_date:new Date().toLocaleDateString('en-CA'),published:false}));}else if(confirm('Ștergi meniul?'))await req(db.from('menus').delete().eq('id',m.id));await load()}catch(e){status(e.message,true)}};
-$('cancelRestaurant').onclick=()=>{$('restaurantPasswordBox').hidden=true;$('restaurantForm').reset();$('editingRestaurant').value='';$('restaurantMode').hidden=true;$('saveRestaurantButton').textContent='Adaugă restaurant'};$('memberRestaurantName').addEventListener('input',()=>{const name=$('memberRestaurantName').value.trim();const proposed=name?('Restaurant '+name.replace(/^restaurant\s+/i,'')):'';const input=$('uid');if(!input.dataset.userEdited)input.value=proposed.slice(0,64);});
-$('uid').addEventListener('input',()=>{$('uid').dataset.userEdited=$('uid').value?'true':''});
-$('memberPasswordToggle').onclick=()=>{const field=$('memberPassword');field.type=field.type==='password'?'text':'password';$('memberPasswordToggle').textContent=field.type==='password'?'Arată':'Ascunde'};
+function resetClassicMenu() {
+ $('menuForm').reset();
+ $('editingMenu').value = '';
+ $('menuMode').hidden = true;
+ $('date').value = todayRO();
+ $('menuFormFeedback').hidden = true;
+ updateMenuSubmitLabel();
+}
+$('cancelMenu').onclick = () => {
+ resetClassicMenu();
+ setMenuFormOpen(false);
+ $('toggleMenuForm').focus();
+};
+$('menuRows').onclick = async event => {
+ const button = event.target.closest('button');
+ if (!button) return;
+ const menu = menus.find(item => item.id === (button.dataset.edit || button.dataset.copy || button.dataset.remove));
+ if (!menu) return;
+ if (button.dataset.edit || button.dataset.copy) {
+  const copy = Boolean(button.dataset.copy);
+  $('menuFormFeedback').hidden = true;
+  $('editingMenu').value = copy ? '' : menu.id;
+  $('restaurant').value = menu.restaurant_id;
+  $('date').value = copy ? todayRO() : menu.service_date;
+  $('title').value = menu.title;
+  $('price').value = menu.price ?? '';
+  $('description').value = menu.description ?? '';
+  $('firstCourse').value = menu.first_course ?? '';
+  $('secondCourse').value = menu.second_course ?? '';
+  $('firstPrice').value = menu.first_price ?? '';
+  $('secondPrice').value = menu.second_price ?? '';
+  $('dessert').value = menu.dessert ?? '';
+  $('published').value = String(!copy && menu.published);
+  $('menuMode').hidden = copy;
+  $('pontDailyBuilder').hidden = true;
+  $('menuForm').hidden = false;
+  updateMenuSubmitLabel();
+  setMenuFormOpen(true);
+  $(copy ? 'date' : 'title').focus();
+  return;
+ }
+ if (!confirm('Ștergi meniul „' + menu.title + '”?')) return;
+ button.disabled = true;
+ try {
+  await req(db.from('menus').delete().eq('id', menu.id));
+  await load();
+  status('Meniul a fost șters.');
+ } catch (error) {
+  button.disabled = false;
+  status(error.message, true);
+ }
+};
+
+function closeRestaurantEditor() {
+ $('restaurantForm').reset();
+ $('restaurantForm').hidden = true;
+ $('editingRestaurant').value = '';
+ $('restaurantAccess').open = false;
+ $('restaurantAccess').hidden = true;
+ $('restaurantPasswordBox').hidden = true;
+ $('restaurantNewPassword').value = '';
+ $('restaurantConfirmPassword').value = '';
+ $('addRestaurantOnly').setAttribute('aria-expanded', 'false');
+ showMessage('restaurantFormStatus', '');
+}
+function openRestaurantEditor(restaurant = null) {
+ closeRestaurantEditor();
+ $('restaurantForm').hidden = false;
+ $('addRestaurantOnly').setAttribute('aria-expanded', 'true');
+ $('editingRestaurant').value = restaurant?.id ?? '';
+ $('name').value = restaurant?.name ?? '';
+ $('restaurantAcceptsCard').checked = Boolean(restaurant?.accepts_card);
+ $('restaurantFormTitle').textContent = restaurant ? 'Editează restaurantul' : 'Adaugă restaurant fără cont';
+ $('saveRestaurantButton').textContent = restaurant ? 'Salvează modificările' : 'Adaugă restaurant';
+ $('restaurantAccess').hidden = !restaurant || !hasMember(restaurant.id);
+ $('name').focus();
+}
+$('addRestaurantOnly').onclick = () => {
+ if ($('restaurantForm').hidden || $('editingRestaurant').value) openRestaurantEditor();
+ else $('name').focus();
+};
+$('cancelRestaurant').onclick = () => {
+ closeRestaurantEditor();
+ $('addRestaurantOnly').focus();
+};
+$('restaurantAccess').addEventListener('toggle', () => {
+ const id = $('editingRestaurant').value;
+ if ($('restaurantAccess').open && id) showRestaurantPasswordBox(id);
+});
+$('restaurantForm').onsubmit = async event => {
+ event.preventDefault();
+ const button = $('saveRestaurantButton');
+ if (button.disabled) return;
+ const id = $('editingRestaurant').value, name = $('name').value.trim();
+ if (!name) {
+  showMessage('restaurantFormStatus', 'Introdu numele restaurantului.', true);
+  $('name').focus();
+  return;
+ }
+ const values = {name, accepts_card:$('restaurantAcceptsCard').checked};
+ button.disabled = true;
+ try {
+  await req(id ? db.from('restaurants').update(values).eq('id', id) :
+   db.from('restaurants').insert({...values, slug:uniqueSlug(name,restaurants)}));
+  closeRestaurantEditor();
+  await load();
+  status('Restaurantul a fost salvat.');
+ } catch (error) {
+  if ($('restaurantForm').hidden) status('Restaurantul a fost salvat. Reîncarcă pagina pentru a actualiza lista.', true);
+  else showMessage('restaurantFormStatus', error.message, true);
+ } finally {
+  button.disabled = false;
+ }
+};
+$('restaurantRows').onclick = async event => {
+ const button = event.target.closest('button');
+ if (!button) return;
+ const {toggle,editRestaurant,deleteRestaurant,createAccess} = button.dataset;
+ const restaurant = restaurants.find(item => item.id === (toggle || editRestaurant || deleteRestaurant || createAccess));
+ if (!restaurant) return;
+ if (editRestaurant) {
+  openRestaurantEditor(restaurant);
+  return;
+ }
+ if (createAccess) {
+  openMemberEditor(restaurant);
+  return;
+ }
+ if (deleteRestaurant && !confirm('Ștergi definitiv restaurantul ' + restaurant.name + ' și toate meniurile sale?')) return;
+ button.disabled = true;
+ try {
+  await req(deleteRestaurant ? db.from('restaurants').delete().eq('id', restaurant.id) :
+   db.from('restaurants').update({enabled:!restaurant.enabled}).eq('id', restaurant.id));
+  await load();
+  status(deleteRestaurant ? 'Restaurantul a fost șters.' : (restaurant.enabled ? 'Restaurantul a fost suspendat.' : 'Restaurantul a fost activat.'));
+ } catch (error) {
+  button.disabled = false;
+  status(error.message, true);
+ }
+};
+
+let accountRestaurantId = '';
+function suggestUsername() {
+ const field = $('uid');
+ if (field.dataset.userEdited) return;
+ const name = $('memberRestaurantName').value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/[^a-zA-Z0-9_. -]/g, ' ').replace(/\s+/g, ' ').trim();
+ field.value = name ? ('Restaurant ' + name.replace(/^restaurant\s+/i, '')).slice(0,64).trim() : '';
+}
+function setMemberTarget(restaurant = null) {
+ const name = $('memberRestaurantName');
+ accountRestaurantId = restaurant?.id ?? '';
+ name.readOnly = Boolean(restaurant);
+ name.value = restaurant?.name ?? '';
+ $('memberFormTitle').textContent = restaurant ? 'Creează acces pentru restaurant' : 'Restaurant și cont nou';
+ $('memberFormHint').textContent = restaurant ? 'Restaurantul există deja. Completează datele contului.' : 'Numele de utilizator se completează automat. Îl poți modifica.';
+ $('saveMember').textContent = restaurant ? 'Creează contul' : 'Creează restaurant și cont';
+ suggestUsername();
+}
+function closeMemberEditor() {
+ $('memberForm').reset();
+ $('memberForm').hidden = true;
+ delete $('uid').dataset.userEdited;
+ $('memberPassword').type = 'password';
+ $('memberPasswordToggle').textContent = 'Arată';
+ $('newMember').setAttribute('aria-expanded','false');
+ setMemberTarget();
+ showMessage('memberFormStatus', '');
+}
+function openMemberEditor(restaurant = null) {
+ selectPlatformPanel('members');
+ if ($('saveMember').disabled) return;
+ if ($('memberForm').hidden || accountRestaurantId !== (restaurant?.id ?? '')) {
+  closeMemberEditor();
+  setMemberTarget(restaurant);
+  $('memberForm').hidden = false;
+  $('newMember').setAttribute('aria-expanded','true');
+ }
+ $(restaurant ? 'uid' : 'memberRestaurantName').focus();
+}
+$('addRestaurantAccount').onclick = () => openMemberEditor();
+$('newMember').onclick = () => openMemberEditor();
+$('cancelMember').onclick = () => {
+ closeMemberEditor();
+ $('newMember').focus();
+};
+$('memberRestaurantName').addEventListener('input', suggestUsername);
+$('uid').addEventListener('input', () => {
+ $('uid').dataset.userEdited = $('uid').value ? 'true' : '';
+});
+$('memberPasswordToggle').onclick = () => {
+ const field = $('memberPassword');
+ field.type = field.type === 'password' ? 'text' : 'password';
+ $('memberPasswordToggle').textContent = field.type === 'password' ? 'Arată' : 'Ascunde';
+};
+$('memberForm').onsubmit = async event => {
+ event.preventDefault();
+ const button = $('saveMember'), name = $('memberRestaurantName').value.trim();
+ if (button.disabled) return;
+ let target = restaurants.find(restaurant => restaurant.id === accountRestaurantId);
+ const username = $('uid').value.trim(), password = $('memberPassword').value;
+ if (!name || !/^[a-zA-Z0-9_. -]{3,64}$/.test(username)) {
+  showMessage('memberFormStatus','Completează numele restaurantului și un nume de utilizator valid, fără diacritice.',true);
+  return;
+ }
+ button.disabled = true;
+ $('cancelMember').disabled = true;
+ showMessage('memberFormStatus','Se creează accesul…');
+ try {
+  if (!target && restaurants.some(restaurant => searchText(restaurant.name) === searchText(name))) throw Error('Restaurantul există deja. Caută-l în Restaurante și alege „Creează acces”.');
+  if (!target) {
+   const {data:{session}} = await db.auth.getSession();
+   if (!session) throw Error('Sesiunea a expirat. Reconectează-te.');
+   const {data,error} = await db.from('restaurants').insert({name, slug:uniqueSlug(name,restaurants)}).select('id,name').single();
+   if (error) throw error;
+   target = data;
+  }
+  await restaurantAccountAction('create', {username, password, restaurant_id:target.id});
+  closeMemberEditor();
+  await load();
+  status('Accesul a fost creat pentru ' + name + '.');
+ } catch (error) {
+  if ($('memberForm').hidden) {
+   status('Contul a fost creat, dar lista nu s-a putut actualiza. Reîncarcă pagina.', true);
+   return;
+  }
+  if (target) {
+   await load().catch(() => {});
+   if (hasMember(target.id)) {
+    closeMemberEditor();
+    status('Restaurantul are deja un cont atribuit. Verifică lista de conturi.');
+    return;
+   }
+   setMemberTarget(target);
+  }
+  showMessage('memberFormStatus', (target ? 'Restaurantul este salvat. Poți reîncerca doar crearea contului. ' : '') + error.message, true);
+ } finally {
+  button.disabled = false;
+  $('cancelMember').disabled = false;
+ }
+};
+
 $('restaurantPasswordAccount').addEventListener('change',()=>{$('restaurantUsernameNew').value=$('restaurantPasswordAccount').value.replace(/\b\w/g,ch=>ch.toUpperCase());});
 $('restaurantRenameUsername').onclick=async()=>{
  const oldName=$('restaurantPasswordAccount').value,newName=$('restaurantUsernameNew').value.trim().replace(/\s+/g,' ');
@@ -284,10 +1063,9 @@ $('restaurantChangePassword').onclick=async()=>{
   notice.textContent='Parola contului '+username+' a fost schimbată. Comunică noua parolă printr-un canal sigur.';
  }catch(e){notice.textContent=e.message}finally{btn.disabled=false}
 };
-$('restaurantRows').onclick=async e=>{let b=e.target.closest('button');if(!b)return;let r=restaurants.find(x=>x.id===(b.dataset.toggle||b.dataset.editRestaurant||b.dataset.deleteRestaurant));if(!r)return;try{if(b.dataset.editRestaurant){$('editingRestaurant').value=r.id;showRestaurantPasswordBox(r.id);$('name').value=r.name;$('restaurantAcceptsCard').checked=!!r.accepts_card;$('restaurantMode').hidden=false;$('saveRestaurantButton').textContent='Salvează modificările';$('restaurantForm').scrollIntoView({behavior:'smooth'});return}if(b.dataset.deleteRestaurant){if(!confirm('Ștergi definitiv restaurantul '+r.name+' și TOATE meniurile sale?'))return;await req(db.from('restaurants').delete().eq('id',r.id))}else await req(db.from('restaurants').update({enabled:!r.enabled}).eq('id',r.id));await load()}catch(e){status(e.message,true)}};
 $('memberRows').onclick=async e=>{let b=e.target.closest('[data-revoke]');if(!b||!confirm('Revoci accesul?'))return;try{await req(db.from('restaurant_members').delete().eq('user_id',b.dataset.revoke).eq('restaurant_id',b.dataset.restaurant));await load()}catch(e){status(e.message,true)}};
 window.pontAllMenus=()=>menus;
-const {initPontDishEditor}=await import('../dish-editor.js?v=2');
+const {initPontDishEditor}=await import('../dish-editor.js?v=4');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 await enter()}
