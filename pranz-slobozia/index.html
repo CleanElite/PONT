@@ -118,23 +118,18 @@ button{font:inherit}
   display:none;position:absolute;inset:0;
   background:#000 var(--art) center / contain no-repeat;
 }
-.pont-intro__panel.left{clip-path:inset(0 50% 0 0);--side:-1}
-.pont-intro__panel.right{clip-path:inset(0 0 0 50%);--side:1}
+.pont-intro__panel.left{clip-path:inset(0 50% 0 0);--curtain-motion:pont-curtain-left}
+.pont-intro__panel.right{clip-path:inset(0 0 0 50%);--curtain-motion:pont-curtain-right}
 .pont-intro.is-splitting .pont-intro__art{visibility:hidden}
 .pont-intro.is-splitting .pont-intro__panel{
-  display:block;animation:pont-curtain .86s cubic-bezier(.44,0,.22,1) both;
+  display:block;animation:var(--curtain-motion) 1.32s linear both;
 }
 .pont-intro.is-matching .pont-intro__panel::before{
   content:"";position:absolute;left:var(--well-left);top:var(--well-top);
   width:var(--well-width);height:var(--well-height);
   background:#000;box-shadow:0 0 12px 7px #000;
 }
-.pont-intro__panel::after{
-  content:"";position:absolute;top:0;bottom:0;left:calc(50% - 1px);width:2px;
-  background:linear-gradient(transparent,#e3e9ee 30%,#fff 50%,#e3e9ee 70%,transparent);
-  box-shadow:0 0 13px 2px #dde5ed7a;animation:pont-edge .86s ease-out both;
-}
-.pont-intro__flight{display:none;position:absolute;inset:0 auto auto 0;transform-origin:0 0}
+.pont-intro__flight{display:none;position:absolute;inset:0 auto auto 0;transform-origin:0 0;filter:url(#pont-logo-alpha);mix-blend-mode:normal}
 .pont-intro.is-matching .pont-intro__flight{display:block}
 .entry.intro-playing .entry-mark{visibility:hidden}
 .pont-intro__light{
@@ -159,18 +154,54 @@ button{font:inherit}
 html.pont-intro-active{overflow:hidden}
 .entry.intro-reveal{overflow-x:clip}
 .entry.intro-reveal .choice-card{
-  animation:pont-choice-in .54s .68s cubic-bezier(.2,.7,.25,1) both;
+  animation:pont-choice-in .62s .86s cubic-bezier(.32,0,.24,1) both;
 }
-.entry.intro-reveal .day{--card-start:-26vw}
-.entry.intro-reveal .night{--card-start:26vw}
+.entry.intro-reveal .day{--card-start:-18vw}
+.entry.intro-reveal .night{--card-start:18vw}
 @keyframes pont-silver-in{
   from{transform:translateX(var(--from)) scaleX(var(--mirror));opacity:0}
   32%{opacity:.8}
   84%{transform:translateX(0) scaleX(var(--mirror));opacity:1}
   to{transform:translateX(0) scaleX(var(--mirror));opacity:0}
 }
-@keyframes pont-curtain{to{transform:translateX(calc(var(--side) * 50.1%))}}
-@keyframes pont-edge{from{opacity:.8}to{opacity:0}}
+@keyframes pont-curtain-left{
+  0%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,50.00% 80%,50.00% 90%,50.00% 100%,0% 100%)}
+  6.25%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,50.00% 80%,49.96% 90%,49.44% 100%,0% 100%)}
+  12.5%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,49.83% 80%,49.05% 90%,47.85% 100%,0% 100%)}
+  18.75%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,49.58% 70%,48.51% 80%,47.06% 90%,45.39% 100%,0% 100%)}
+  25%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,49.94% 50%,49.17% 60%,47.79% 70%,46.06% 80%,44.16% 90%,42.19% 100%,0% 100%)}
+  31.25%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,49.74% 40%,48.56% 50%,46.83% 60%,44.82% 70%,42.68% 80%,40.52% 90%,38.40% 100%,0% 100%)}
+  37.5%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,49.33% 30%,47.70% 40%,45.59% 50%,43.27% 60%,40.89% 70%,38.55% 80%,36.31% 90%,34.18% 100%,0% 100%)}
+  43.75%{clip-path:polygon(0% 0%,50.00% 0%,49.91% 10%,48.64% 20%,46.50% 30%,43.98% 40%,41.34% 50%,38.74% 60%,36.24% 70%,33.89% 80%,31.69% 90%,29.66% 100%,0% 100%)}
+  50%{clip-path:polygon(0% 0%,49.54% 0%,47.57% 10%,44.86% 20%,41.91% 30%,38.97% 40%,36.16% 50%,33.53% 60%,31.10% 70%,28.88% 80%,26.85% 90%,25.00% 100%,0% 100%)}
+  56.25%{clip-path:polygon(0% 0%,45.96% 0%,42.65% 10%,39.27% 20%,36.05% 30%,33.07% 40%,30.35% 50%,27.90% 60%,25.70% 70%,23.72% 80%,21.94% 90%,20.34% 100%,0% 100%)}
+  62.5%{clip-path:polygon(0% 0%,39.67% 0%,35.91% 10%,32.47% 20%,29.39% 30%,26.67% 40%,24.26% 50%,22.14% 60%,20.27% 70%,18.61% 80%,17.13% 90%,15.82% 100%,0% 100%)}
+  68.75%{clip-path:polygon(0% 0%,31.65% 0%,28.11% 10%,25.06% 20%,22.43% 30%,20.17% 40%,18.21% 50%,16.52% 60%,15.04% 70%,13.74% 80%,12.60% 90%,11.60% 100%,0% 100%)}
+  75%{clip-path:polygon(0% 0%,22.88% 0%,20.03% 10%,17.65% 20%,15.65% 30%,13.96% 40%,12.53% 50%,11.30% 60%,10.24% 70%,9.32% 80%,8.52% 90%,7.81% 100%,0% 100%)}
+  81.25%{clip-path:polygon(0% 0%,14.35% 0%,12.41% 10%,10.83% 20%,9.53% 30%,8.45% 40%,7.54% 50%,6.77% 60%,6.11% 70%,5.54% 80%,5.04% 90%,4.61% 100%,0% 100%)}
+  87.5%{clip-path:polygon(0% 0%,7.03% 0%,6.02% 10%,5.22% 20%,4.56% 30%,4.02% 40%,3.57% 50%,3.19% 60%,2.87% 70%,2.59% 80%,2.35% 90%,2.15% 100%,0% 100%)}
+  93.75%{clip-path:polygon(0% 0%,1.92% 0%,1.63% 10%,1.40% 20%,1.22% 30%,1.07% 40%,0.95% 50%,0.84% 60%,0.76% 70%,0.68% 80%,0.62% 90%,0.56% 100%,0% 100%)}
+  100%{clip-path:polygon(0% 0%,0.00% 0%,0.00% 10%,0.00% 20%,0.00% 30%,0.00% 40%,0.00% 50%,0.00% 60%,0.00% 70%,0.00% 80%,0.00% 90%,0.00% 100%,0% 100%)}
+}
+@keyframes pont-curtain-right{
+  0%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,50.00% 80%,50.00% 90%,50.00% 100%,100% 100%)}
+  6.25%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,50.00% 80%,50.04% 90%,50.56% 100%,100% 100%)}
+  12.5%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,50.17% 80%,50.95% 90%,52.15% 100%,100% 100%)}
+  18.75%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.42% 70%,51.49% 80%,52.94% 90%,54.61% 100%,100% 100%)}
+  25%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.06% 50%,50.83% 60%,52.21% 70%,53.94% 80%,55.84% 90%,57.81% 100%,100% 100%)}
+  31.25%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.26% 40%,51.44% 50%,53.17% 60%,55.18% 70%,57.32% 80%,59.48% 90%,61.60% 100%,100% 100%)}
+  37.5%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.67% 30%,52.30% 40%,54.41% 50%,56.73% 60%,59.11% 70%,61.45% 80%,63.69% 90%,65.82% 100%,100% 100%)}
+  43.75%{clip-path:polygon(100% 0%,50.00% 0%,50.09% 10%,51.36% 20%,53.50% 30%,56.02% 40%,58.66% 50%,61.26% 60%,63.76% 70%,66.11% 80%,68.31% 90%,70.34% 100%,100% 100%)}
+  50%{clip-path:polygon(100% 0%,50.46% 0%,52.43% 10%,55.14% 20%,58.09% 30%,61.03% 40%,63.84% 50%,66.47% 60%,68.90% 70%,71.12% 80%,73.15% 90%,75.00% 100%,100% 100%)}
+  56.25%{clip-path:polygon(100% 0%,54.04% 0%,57.35% 10%,60.73% 20%,63.95% 30%,66.93% 40%,69.65% 50%,72.10% 60%,74.30% 70%,76.28% 80%,78.06% 90%,79.66% 100%,100% 100%)}
+  62.5%{clip-path:polygon(100% 0%,60.33% 0%,64.09% 10%,67.53% 20%,70.61% 30%,73.33% 40%,75.74% 50%,77.86% 60%,79.73% 70%,81.39% 80%,82.87% 90%,84.18% 100%,100% 100%)}
+  68.75%{clip-path:polygon(100% 0%,68.35% 0%,71.89% 10%,74.94% 20%,77.57% 30%,79.83% 40%,81.79% 50%,83.48% 60%,84.96% 70%,86.26% 80%,87.40% 90%,88.40% 100%,100% 100%)}
+  75%{clip-path:polygon(100% 0%,77.12% 0%,79.97% 10%,82.35% 20%,84.35% 30%,86.04% 40%,87.47% 50%,88.70% 60%,89.76% 70%,90.68% 80%,91.48% 90%,92.19% 100%,100% 100%)}
+  81.25%{clip-path:polygon(100% 0%,85.65% 0%,87.59% 10%,89.17% 20%,90.47% 30%,91.55% 40%,92.46% 50%,93.23% 60%,93.89% 70%,94.46% 80%,94.96% 90%,95.39% 100%,100% 100%)}
+  87.5%{clip-path:polygon(100% 0%,92.97% 0%,93.98% 10%,94.78% 20%,95.44% 30%,95.98% 40%,96.43% 50%,96.81% 60%,97.13% 70%,97.41% 80%,97.65% 90%,97.85% 100%,100% 100%)}
+  93.75%{clip-path:polygon(100% 0%,98.08% 0%,98.37% 10%,98.60% 20%,98.78% 30%,98.93% 40%,99.05% 50%,99.16% 60%,99.24% 70%,99.32% 80%,99.38% 90%,99.44% 100%,100% 100%)}
+  100%{clip-path:polygon(100% 0%,100.00% 0%,100.00% 10%,100.00% 20%,100.00% 30%,100.00% 40%,100.00% 50%,100.00% 60%,100.00% 70%,100.00% 80%,100.00% 90%,100.00% 100%,100% 100%)}
+}
 @keyframes pont-choice-in{
   from{transform:translateX(var(--card-start));opacity:0}
   to{transform:translateX(0);opacity:1}
@@ -253,6 +284,11 @@ html.pont-intro-active{overflow:hidden}
     <form method="dialog"><button class="install-button">Am înțeles</button></form>
   </dialog>
 </div>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="pont-logo-alpha" color-interpolation-filters="sRGB">
+    <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  .55 1.8 .65 0 -.025"/>
+  </filter>
+</svg>
 <div class="pont-intro" id="pont-intro" hidden>
   <div class="pont-intro__art" aria-hidden="true">
     <img src="./assets/pont-intro.jpg" alt="" width="1024" height="1536" fetchpriority="high">
@@ -277,8 +313,8 @@ html.pont-intro-active{overflow:hidden}
   const skip = intro.querySelector('button');
   const root = document.documentElement;
   const gatherDuration = 480;
-  const liftDuration = 650;
-  const revealDuration = 1220;
+  const liftDuration = 850;
+  const revealDuration = 1480;
   let readyTimer, holdTimer, gatherTimer, finishTimer, flightMotion;
   let started = false, leaving = false, finished = false;
 
@@ -336,7 +372,7 @@ html.pont-intro-active{overflow:hidden}
     flightMotion = flight.animate([
       { transform:'translate(' + left + 'px,' + top + 'px) scale(' + (sourceWidth / target.width) + ')' },
       { transform:'translate(' + target.left + 'px,' + target.top + 'px) scale(1)' },
-    ], { duration:liftDuration, easing:'cubic-bezier(.42,0,.23,1)', fill:'both' });
+    ], { duration:liftDuration, easing:'cubic-bezier(.42,0,.26,1)', fill:'both' });
     intro.classList.add('is-matching');
     page.classList.add('intro-playing');
   }
