@@ -53,6 +53,53 @@ body #order::backdrop{background:#031c1a}
 #order .pont-dish-group:not([open]) .pont-group-arrow{transform:rotate(180deg)}
 #order .pont-dish-group__content{padding-left:6px}
 #order .quantity{display:flex!important;justify-content:initial!important;gap:9px!important;min-height:41px;padding:4px 0!important;border:0!important;color:#f5fbf7;align-items:center!important}
+/* Compact course layout in the QUANTITY SELECTION area (not the header). */
+#order .pont-dish-group__content{
+  min-width:0;
+  padding:3px 0 9px 4px;
+  scrollbar-color:#378f80 transparent;
+  scrollbar-width:thin;
+  -webkit-overflow-scrolling:touch;
+}
+#order .pont-dish-group:has(.pont-choice-dish) .pont-dish-group__content{overflow-x:auto;overscroll-behavior-x:contain}
+#order .pont-dish-group:has(.pont-choice-dish) .pont-choice-dish{
+  box-sizing:border-box;min-width:0;
+  padding:8px 9px!important;
+  border:1px solid rgba(91,191,169,.30)!important;
+  border-radius:12px;
+  background:linear-gradient(115deg,rgba(13,65,57,.62),rgba(7,41,38,.36));
+}
+#order .pont-dish-group:has(.pont-choice-dish) .pont-dish-group__content{
+  display:flex;
+  flex-wrap:nowrap;
+  gap:8px;
+}
+#order .pont-dish-group:has(.pont-choice-dish) .pont-choice-dish{
+  flex:0 0 clamp(235px,45%,330px);
+}
+#order .pont-dish-group:has(.pont-choice-dish):nth-of-type(2) .pont-dish-group__content{
+  display:grid;
+  grid-auto-flow:column;
+  grid-template-rows:repeat(2,minmax(0,auto));
+  grid-auto-columns:clamp(235px,45%,330px);
+  align-items:stretch;
+  gap:8px;
+}
+#order .pont-dish-group:has(.pont-choice-dish):nth-of-type(2) .pont-choice-dish{
+  width:100%;
+}
+@media(max-width:530px){
+  #order .pont-dish-group:has(.pont-choice-dish) .pont-choice-dish{
+    flex-basis:min(86vw,300px);
+    gap:6px!important;
+    padding:8px 7px!important;
+  }
+  #order .pont-dish-group:has(.pont-choice-dish):nth-of-type(2) .pont-dish-group__content{
+    grid-auto-columns:min(86vw,300px);
+  }
+  #order .pont-dish-group:has(.pont-choice-dish) .pont-choice-photo{width:30px;height:30px}
+  #order .pont-dish-group:has(.pont-choice-dish) .pont-dish-price{min-width:0;font-size:11px}
+}
 #order .pont-pick{flex:none!important;display:block!important;width:24px;min-width:24px;height:24px;margin:0!important;position:relative;cursor:pointer}
 #order .pont-pick input{position:absolute;inset:0;width:100%!important;height:100%!important;margin:0!important;opacity:0;cursor:pointer}
 #order .pont-pick span{display:grid;place-items:center;width:22px;height:22px;border:1.5px solid #d9ead8;border-radius:5px;background:transparent}
