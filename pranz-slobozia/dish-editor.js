@@ -8,7 +8,7 @@ const priceRO = new Intl.NumberFormat('ro-RO', {minimumFractionDigits:2, maximum
 const host = $('toggleMenuForm'), wrap = $('menuFormWrap'), old = $('menuForm'), catalog = $('dishLibrary');
 if (!host || !wrap || !old || !catalog) return;
 
-let dishes = [], selected = new Map(), category = 'second', dailyCategory = 'first';
+let dishes = [], selected = new Map(), category = 'first', dailyCategory = 'first';
 let editingDish = null, editingMenu = null, loadedRid = '', loadVersion = 0, saving = false, previewURL = '';
 const icon = name => '<svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#' + name + '"></use></svg>';
 
@@ -17,9 +17,10 @@ catalog.innerHTML = `
     <aside class="card">
       <div class="admin-panel-head"><h2>Categorii</h2></div>
       <div class="admin-categories" id="pontDishTabs" aria-label="Categorii de preparate"></div>
+      <p class="admin-category-help">Alege o categorie pentru a vedea preparatele salvate.</p>
     </aside>
     <section class="card admin-dish-editor">
-      <div class="admin-panel-head"><h2>${icon('fork-knife')}<span id="pontDishFormTitle">Adaugă preparat</span></h2></div>
+      <div class="admin-panel-head"><h2>${icon('chef-hat')}<span id="pontDishFormTitle">Adaugă preparat</span></h2></div>
       <label>Restaurant<select id="pontDishRestaurant" required></select></label>
       <form id="pontDishForm">
         <div class="admin-dish-editor-fields">
@@ -33,24 +34,24 @@ catalog.innerHTML = `
             <small id="pontDishPhotoHelp">JPG, PNG sau WebP · maximum 2 MB</small>
           </div>
           <div class="admin-dish-details">
-            <label>Nume preparat <span class="admin-required" aria-hidden="true">*</span><input id="pontDishName" required minlength="2" maxlength="120"></label>
+            <label>Nume preparat<input id="pontDishName" required minlength="2" maxlength="120"></label>
             <label>Descriere (opțional)<textarea id="pontDishDescription" maxlength="500" rows="3"></textarea></label>
           </div>
         </div>
         <div class="pont-dish-grid">
-          <label>Preț (lei) <span class="admin-required" aria-hidden="true">*</span><input id="pontDishPrice" type="number" min="0" max="10000" step=".01" required></label>
-          <label>Categorie <span class="admin-required" aria-hidden="true">*</span><select id="pontDishCategory" required>${groups.map(([key, name]) => '<option value="' + key + '"' + (key === category ? ' selected' : '') + '>' + name + '</option>').join('')}</select></label>
+          <label>Preț (lei)<input id="pontDishPrice" type="number" min="0" max="10000" step=".01" required></label>
+          <label>Categorie<select id="pontDishCategory">${groups.map(([key, name]) => '<option value="' + key + '">' + name + '</option>').join('')}</select></label>
         </div>
         <div class="pont-dish-actions">
           <button id="pontDishCancel" type="button" hidden>Anulează editarea</button>
-          <button id="pontDishSave" type="submit" class="primary">${icon('plus')}Adaugă preparat</button>
+          <button id="pontDishSave" type="submit" class="primary">Adaugă preparat</button>
         </div>
       </form>
       <p id="pontDishMessage" role="status"></p>
     </section>
   </div>
-  <section class="card admin-dish-list-card">
-    <div class="admin-panel-head admin-dish-list-head">
+  <section class="card">
+    <div class="admin-panel-head">
       <h2 id="pontDishListTitle">Preparate salvate</h2>
       <button id="pontDishNew" type="button" class="primary">${icon('plus')}Adaugă preparat</button>
     </div>
@@ -136,8 +137,8 @@ function library() {
     library();
   });
   const list = dishes.filter(d => d.category === category);
-  const categoryName = groups.find(([key]) => key === category)[1];
-  $('pontDishListTitle').textContent = 'Preparatele din categoria „' + categoryName + '” (' + list.length + ')';
+  const count = list.length === 1 ? '1 preparat' : list.length + ' preparate';
+  $('pontDishListTitle').textContent = groups.find(([key]) => key === category)[1] + ' · ' + count;
   $('pontDishList').innerHTML = list.length ? list.map(dish =>
     '<div class="pont-dish-line">' + pic(dish) +
       '<span class="name"><strong>' + esc(dish.name) + '</strong>' +
@@ -195,7 +196,7 @@ function resetDish() {
   $('pontDishForm').reset();
   $('pontDishCategory').value = category;
   $('pontDishFormTitle').textContent = 'Adaugă preparat';
-  $('pontDishSave').innerHTML = icon('plus') + 'Adaugă preparat';
+  $('pontDishSave').textContent = 'Adaugă preparat';
   $('pontDishCancel').hidden = true;
   $('pontDishMessage').textContent = '';
   renderDishPhoto();
@@ -304,7 +305,7 @@ $('pontDishList').onclick = async event => {
     $('pontDishDescription').value = dish.description || '';
     $('pontDishCategory').value = dish.category;
     $('pontDishFormTitle').textContent = 'Editare preparat';
-    $('pontDishSave').innerHTML = icon('check') + 'Salvează modificările';
+    $('pontDishSave').textContent = 'Salvează modificările';
     $('pontDishCancel').hidden = false;
     renderDishPhoto();
     $('pontDishName').focus();
