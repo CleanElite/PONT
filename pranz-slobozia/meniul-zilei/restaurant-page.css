@@ -33,7 +33,36 @@ body #order::backdrop{background:#031c1a}
 #order .pont-menu-tag span{padding:8px 17px;border:1px solid #2cceb4;border-radius:999px;box-shadow:0 0 13px #00e2cc39;color:#f5fffb;font-size:14px}
 #order .pont-menu-tag strong{padding:8px 15px;background:linear-gradient(120deg,#ffe8a1,#e6b74b);color:#171b16;border-radius:999px;white-space:nowrap;font-size:19px;box-shadow:0 0 16px #e8bc4a43}
 #order #checkout{max-width:930px;margin:auto;padding:0 20px 30px!important}
-#order .order-menu-preview{display:none!important}
+#order .order-menu-preview{
+ display:block!important;grid-template-columns:none!important;
+ max-width:930px;margin:4px auto 14px!important;padding:11px 15px!important;
+ background:linear-gradient(125deg,#073a32,#052925)!important;
+ border:1px solid #50c8ae99!important;border-radius:17px!important;
+ box-shadow:0 0 14px #06c5a724!important;text-align:left!important;
+}
+#order .order-menu-preview>.pont-menu-icon,#order .order-menu-preview>#combo-price{display:none!important}
+#order #menuPreview{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:7px!important}
+#order .pont-preview-group{display:grid;grid-template-columns:65px minmax(0,1fr);align-items:center;gap:9px;min-width:0}
+#order .pont-preview-title{font:750 12px/1.3 system-ui,sans-serif;color:#ffdf8a}
+#order .pont-preview-items{display:flex;align-items:center;gap:7px;min-width:0}
+#order .pont-preview-item{flex:none;padding:5px 8px;border:1px solid #3c9d8a69;border-radius:8px;color:#eaf8f2;font:500 11px/1.25 system-ui,sans-serif;white-space:nowrap}
+#order .pont-preview-item.is-unavailable{opacity:.55;text-decoration:line-through}
+#order .pont-preview-first .pont-preview-items,#order .pont-preview-dessert .pont-preview-items{
+ overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:#3e9685 transparent;
+}
+#order .pont-preview-second .pont-preview-items{
+ display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,minmax(0,auto));grid-auto-columns:max-content;
+ gap:5px 7px;overflow-x:auto;scrollbar-width:thin;scrollbar-color:#3e9685 transparent;
+}
+#order .pont-preview-second .pont-preview-item{max-width:220px;overflow:hidden;text-overflow:ellipsis}
+@media(max-width:530px){
+ #order .order-menu-preview{margin:0 12px 12px!important;padding:9px 10px!important}
+ #order .pont-preview-group{grid-template-columns:53px minmax(0,1fr);gap:6px}
+ #order .pont-preview-title{font-size:11px}
+ #order .pont-preview-item{font-size:10px;padding:5px 7px}
+ #order .pont-preview-second .pont-preview-item{max-width:175px}
+}
+
 #order .order-contact{margin:3px 0 12px!important}
 #order .order-contact .call-now{display:block;width:100%;padding:11px 15px!important;background:linear-gradient(90deg,#082b28,#0a3430)!important;border:1px solid #ddc37a!important;box-shadow:0 0 0 1px #13c2a62a,inset 0 0 20px #15a48c12;color:#fff7e3!important;text-align:center;font-size:15px!important;font-weight:700;border-radius:999px}
 #order .order-contact .call-now[hidden]{display:none!important}
