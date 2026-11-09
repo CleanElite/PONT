@@ -458,8 +458,7 @@ body.lunch .pont-footer-links a{display:inline-flex!important;width:auto!importa
 body.lunch .pont-footer-links a:hover{text-decoration:underline!important;color:white!important}
 body.lunch .pont-footer-simple>small{font-size:11px!important;color:#84aaa2!important}
 @media(max-width:500px){body.lunch .pont-footer-simple{margin-top:29px!important;padding:24px 16px 30px!important}body.lunch .pont-footer-links{gap:6px 15px!important}body.lunch .pont-footer-links a{font-size:11px!important}}
-body.lunch .pont-sal-pictogram{display:flex!important;width:250px!important;height:50px!important;margin:8px auto 20px!important;padding:0!important;border:0!important;background:white!important;border-radius:4px!important;align-items:center;justify-content:center;overflow:hidden}body.lunch .pont-sal-pictogram img{display:block!important;width:250px!important;height:50px!important;max-width:none!important;object-fit:contain!important}body.lunch .pont-sal-pictogram:hover{outline:2px solid #92e8d9;outline-offset:3px}</style><link rel="stylesheet" href="../super-admin/dashboard.css?v=1">
-<body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" id="back" href="../admin-v2/">← Înapoi la panou</a></header><main><section class="hero" aria-labelledby="lunchTitle"><span class="pont-hero-eyebrow" id="promotionEyebrow"><span class="pont-eyebrow-line" aria-hidden="true"></span>MENIUL ZILEI <span class="pont-hero-city">· SLOBOZIA</span></span><h1 id="lunchTitle">Ce mâncăm <em>azi?</em></h1><p id="promotionDescription">Alege restaurantul și comandă.</p><span class="pont-hero-scroll" aria-hidden="true"><span></span> DESCOPERĂ RESTAURANTELE</span></section><section id="customer"><div class="row pont-restaurants-heading"><h2 id="promotionListTitle">Restaurante</h2><span id="date"></span></div><div id="list" class="grid" aria-label="Poziții de promovare"><p>Se încarcă ofertele…</p></div><p class="muted" id="auctionHint">Atinge orice poziție pentru a vedea oferta și a licita.</p></section></main><dialog id="auctionDialog" class="auction-modal" aria-labelledby="auctionModalTitle"><div class="auction-modal-inner"><button type="button" class="auction-modal-close" id="auctionClose" aria-label="Închide">×</button><div class="modal-kicker" id="auctionModalPosition">LICITAȚIE PONT</div><h2 id="auctionModalTitle">Licitează pentru vizibilitate</h2><p class="modal-explainer" id="promotionModalExplainer">Ofertele se clasează automat după sumă. Licitezi pentru promovare, nu cumperi o poziție fixă.</p><div class="modal-current" id="auctionModalCurrent"></div><form id="bidForm"><label for="bidAmount">Oferta ta totală (lei)</label><input id="bidAmount" type="number" min="50" step="1" inputmode="numeric" required placeholder="Minimum 50 lei"><button class="primary-bid" type="submit" id="bidSubmit">Confirmă oferta</button></form><p class="modal-status" id="bidMessage" role="status" aria-live="polite"></p><p class="modal-note" id="auctionModalNote">Oferta minimă este 50 lei. Fiecare majorare trebuie să fie de cel puțin 10 lei. Plata este verificată separat.</p></div></dialog><footer>✳ PONT Slobozia · Promovare &amp; vizibilitate pentru restaurante partenere.</footer><script src="../super-admin/config.js"></script><script type="module">
+body.lunch .pont-sal-pictogram{display:flex!important;width:250px!important;height:50px!important;margin:8px auto 20px!important;padding:0!important;border:0!important;background:white!important;border-radius:4px!important;align-items:center;justify-content:center;overflow:hidden}body.lunch .pont-sal-pictogram img{display:block!important;width:250px!important;height:50px!important;max-width:none!important;object-fit:contain!important}body.lunch .pont-sal-pictogram:hover{outline:2px solid #92e8d9;outline-offset:3px}</style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" id="back" href="../admin-v2/">← Înapoi la panou</a></header><main><section class="hero" aria-labelledby="lunchTitle"><span class="pont-hero-eyebrow"><span class="pont-eyebrow-line" aria-hidden="true"></span>MENIUL ZILEI <span class="pont-hero-city">· SLOBOZIA</span></span><h1 id="lunchTitle">Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul și comandă.</p><span class="pont-hero-scroll" aria-hidden="true"><span></span> DESCOPERĂ RESTAURANTELE</span></section><section id="customer"><div class="row pont-restaurants-heading"><h2>Restaurante</h2><span id="date"></span></div><div id="list" class="grid" aria-label="Poziții de promovare"><p>Se încarcă ofertele…</p></div><p class="muted" id="auctionHint">Atinge orice poziție pentru a vedea oferta și a licita.</p></section></main><dialog id="auctionDialog" class="auction-modal" aria-labelledby="auctionModalTitle"><div class="auction-modal-inner"><button type="button" class="auction-modal-close" id="auctionClose" aria-label="Închide">×</button><div class="modal-kicker" id="auctionModalPosition">LICITAȚIE PONT</div><h2 id="auctionModalTitle">Licitează pentru vizibilitate</h2><p class="modal-explainer">Ofertele se clasează automat după sumă. Licitezi pentru promovare, nu cumperi o poziție fixă.</p><div class="modal-current" id="auctionModalCurrent"></div><form id="bidForm"><label for="bidAmount">Oferta ta totală (lei)</label><input id="bidAmount" type="number" min="50" step="1" inputmode="numeric" required placeholder="Minimum 50 lei"><button class="primary-bid" type="submit" id="bidSubmit">Confirmă oferta</button></form><p class="modal-status" id="bidMessage" role="status" aria-live="polite"></p><p class="modal-note" id="auctionModalNote">Oferta minimă este 50 lei. Fiecare majorare trebuie să fie de cel puțin 10 lei. Plata este verificată separat.</p></div></dialog><footer>✳ PONT Slobozia · Promovare &amp; vizibilitate pentru restaurante partenere.</footer><script src="../super-admin/config.js"></script><script type="module">
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
 const localDate=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
@@ -475,14 +474,12 @@ function render(){
  const sorted=orderedOffers(),count=Math.max(6,sorted.length);
  $('list').innerHTML=Array.from({length:count},(_,i)=>{
   const o=sorted[i],name=o?(names[o.restaurant_id]||'Restaurant'):'Loc disponibil';
-  if(role==='super_admin'){
-   return '<button type="button" class="dashboard-rank-entry" data-slot="'+i+'"><span class="dashboard-rank-number">'+String(i+1).padStart(2,'0')+
-    '</span><strong>'+esc(name)+'</strong><span class="dashboard-rank-price">'+(o?money(o.amount):'Fără ofertă')+
-    '</span><span class="dashboard-rank-action">Detalii</span></button>';
-  }
-  return '<article class="restaurant'+(i===0?' featured':'')+'"><button type="button" class="restaurant-open auction-open" data-slot="'+i+'" aria-label="Poziția '+(i+1)+', '+esc(name)+'. Deschide licitația"><span class="auction-position">POZIȚIA '+String(i+1).padStart(2,'0')+'</span><span class="restaurant-content"><span class="restaurant-name">'+esc(name)+'</span></span><span class="auction-price">'+(o?money(o.amount):'De la 50 lei')+'</span><span class="auction-action">Licitează</span></button></article>';
+  const action=role==='super_admin'?'Vezi oferta':'Deschide licitația';
+  return '<article class="restaurant'+(i===0?' featured':'')+'"><button type="button" class="restaurant-open auction-open" data-slot="'+i+
+   '" aria-label="Poziția '+(i+1)+', '+esc(name)+'. '+action+'"><span class="restaurant-content"><span class="restaurant-name">'+
+   esc(name)+'</span></span><span class="auction-price">'+(o?money(o.amount):'De la 50 lei')+'</span></button></article>';
  }).join('');
- $('auctionHint').textContent=role==='super_admin'?'Deschide o poziție pentru a vedea oferta. Confirmările se gestionează în Licitații.':auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':'Licitația este momentan închisă. Poți consulta ofertele și următoarele date: 22–23, 26–27 și 29.';
+ $('auctionHint').textContent=role==='super_admin'?'Apasă un card pentru a vedea oferta. Confirmările se gestionează în Licitații.':auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':'Licitația este momentan închisă. Poți consulta ofertele și următoarele date: 22–23, 26–27 și 29.';
  if($('auctionDialog').open)updateModal();
 }
 function updateModal(){
@@ -517,20 +514,13 @@ async function start(){
   if(error)throw error;role=data?.role;
   if(!['restaurant','super_admin'].includes(role))throw Error('Acces neautorizat');
   if(role==='super_admin'){
-   document.body.classList.replace('lunch','pont-super-promotion');
    $('back').href='../super-admin/?month='+month.slice(0,7)+'#auctions';
-   $('back').textContent='← Licitații în Super Admin';
-   $('promotionEyebrow').textContent='PONT · SUPER ADMIN';
-   $('lunchTitle').textContent='Promovare';
-   $('promotionDescription').textContent='Consultă pozițiile și ofertele pentru luna următoare.';
-   $('promotionListTitle').textContent='Clasamentul ofertelor';
-   $('promotionModalExplainer').textContent='Poziția este calculată după valoarea ofertei.';
    $('bidForm').hidden=true;
   }
   if(role==='restaurant'){const access=await db.rpc('my_restaurant_access');if(access.error)throw access.error;me=access.data?.[0]?.restaurant_id;if(!me)throw Error('Restaurant neatribuit')}
   await load();
   setInterval(()=>{
-   if(role!=='super_admin'||!$('list').contains(document.activeElement)||$('auctionDialog').open)load().catch(e=>console.error('Actualizare licitații:',e));
+   if(!$('list').contains(document.activeElement)||$('auctionDialog').open)load().catch(e=>console.error('Actualizare licitații:',e));
   },15000);
  }catch(e){$('list').textContent='Nu se pot încărca licitațiile: '+e.message}
 }

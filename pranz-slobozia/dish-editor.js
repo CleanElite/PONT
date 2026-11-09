@@ -5,10 +5,12 @@ const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const groups = [['first','Felul 1','bowl-food'], ['second','Felul 2','fork-knife'], ['dessert','Desert','cake']];
 const todayRO = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Bucharest', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date());
 const priceRO = new Intl.NumberFormat('ro-RO', {minimumFractionDigits:2, maximumFractionDigits:2});
-const host = $('toggleMenuForm'), wrap = $('menuFormWrap'), old = $('menuForm'), catalog = $('dishLibrary');
-if (!host || !wrap || !old || !catalog) return;
+const host = $('toggleMenuForm'), wrap = $('menuFormWrap'), catalog = $('dishLibrary');
+if (!host || !wrap || !catalog) return;
 
-let dishes = [], selected = new Map(), category = 'first', dailyCategory = 'first';
+const selected = new Map(), savedChoices = new Map();
+let dishes = [], category = 'first', dailyCategory = 'first';
+let draftVersion = 0, menuDescription = '', pendingMenu = null;
 let editingDish = null, editingMenu = null, loadedRid = '', loadVersion = 0, saving = false, previewURL = '';
 const icon = name => '<svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#' + name + '"></use></svg>';
 
@@ -39,7 +41,7 @@ catalog.innerHTML = `
           </div>
         </div>
         <div class="pont-dish-grid">
-          <label>Preț (lei)<input id="pontDishPrice" type="number" min="0" max="10000" step=".01" required></label>
+          <label id="pontDishPriceField">Preț (lei)<input id="pontDishPrice" type="number" min="0" max="10000" step=".01" required></label>
           <label>Categorie<select id="pontDishCategory">${groups.map(([key, name]) => '<option value="' + key + '">' + name + '</option>').join('')}</select></label>
         </div>
         <div class="pont-dish-actions">
@@ -75,13 +77,13 @@ const dishEditor = catalog.querySelector('.admin-dish-editor');
 const dishFormMessage = $('pontDishMessage');
 let dishListMessage = dishFormMessage;
 if (!isRestaurantAdmin) {
-  const library = $('pontDishList').closest('section');
+  const libraryCard = $('pontDishList').closest('section');
   const filters = catalog.querySelector('.admin-library-grid aside');
   const layout = filters.parentElement;
   const results = document.createElement('div');
   results.className = 'dashboard-catalog-main';
   filters.querySelector('.admin-panel-head').after($('pontDishRestaurant').closest('label'));
-  results.append(dishEditor, library);
+  results.append(dishEditor, libraryCard);
   layout.append(results);
   catalog.insertAdjacentHTML('afterbegin', '<div class="dashboard-heading"><div><h2>Preparate</h2><p>Alege restaurantul și categoria pentru a-i vedea biblioteca.</p></div></div>');
   dishEditor.hidden = true;
@@ -94,32 +96,29 @@ if (!isRestaurantAdmin) {
 const form = document.createElement('form');
 form.id = 'pontDailyBuilder';
 form.innerHTML = `
-  <div class="pont-dish-grid">
-    <label>Restaurant<select id="pontDailyRestaurant" required></select></label>
+  <div class="pont-daily-fields">
+    <label id="pontDailyRestaurantField">Restaurant<select id="pontDailyRestaurant" required></select></label>
     <label>Data<input id="pontDailyDate" type="date" required></label>
-    <label>Titlu<input id="pontDailyTitle" maxlength="120" value="Meniul zilei" required></label>
-    <label>Preț meniu complet (lei)<input id="pontDailyCombo" type="number" min="0" step=".01" value="0" required></label>
-    <label>Stare<select id="pontDailyState"><option value="true">Publică</option><option value="false">Salvează ciorna</option></select></label>
+    <label>Preț (lei)<input id="pontDailyCombo" type="number" min="0" step=".01" inputmode="decimal" placeholder="0,00" required></label>
+    <label>Stare<select id="pontDailyState"><option value="true">Publică</option><option value="false">Ciornă</option></select></label>
   </div>
   <div class="admin-daily-grid">
-    <div>
+    <div class="admin-daily-categories">
       <h4>Categorii</h4>
       <div id="pontDailyTabs" class="admin-categories" aria-label="Categorii din meniul zilei"></div>
     </div>
     <div class="admin-daily-selection">
-      <h4>Preparate pentru meniul zilei</h4>
+      <h4>Preparate</h4>
       <div id="pontDailyDishes"></div>
     </div>
   </div>
-  <p>Activează preparatele dorite. Prețurile ajustate aici se aplică doar meniului acestei zile.</p>
   <p id="pontDailyError" class="pont-dish-error" role="alert"></p>
   <div class="pont-dish-actions">
+    <button id="pontDailyCancel" type="button" hidden>Anulează</button>
     <button id="pontDailyNext" type="submit" class="primary">Publică</button>
-    <button id="pontDailyClassic" type="button">Formular clasic</button>
   </div>
 `;
-wrap.insertBefore(form, old);
-old.hidden = true;
+wrap.append(form);
 
 const dialog = document.createElement('dialog');
 dialog.id = 'pontDishConfirm';
@@ -127,32 +126,31 @@ dialog.setAttribute('aria-labelledby', 'pontDishConfirmTitle');
 dialog.innerHTML = '<h3 id="pontDishConfirmTitle">Verifică meniul</h3><div id="pontDishRecap"></div><p id="pontDishConfirmError" class="pont-dish-error" role="alert"></p><div class="pont-dish-actions"><button type="button" id="pontDishBack">Înapoi</button><button type="button" class="primary" id="pontDishPublish">Publică</button></div>';
 document.body.append(dialog);
 
-const rid = () => $('pontDailyRestaurant').value || $('restaurant').value;
+const rid = () => $('pontDailyRestaurant').value;
 const photoUrl = dish => dish?.photo_path ? db.storage.from('pont-dish-images').getPublicUrl(dish.photo_path).data.publicUrl : '';
-function pic(dish) {
-  const url = photoUrl(dish);
-  return url ? '<img loading="lazy" alt="" src="' + esc(url) + '">' : '<span class="pont-dish-placeholder">' + icon('camera') + '</span>';
-}
+
 function options() {
   const restaurants = getRestaurants() || [];
   const before = rid();
-  const value = restaurants.some(r => r.id === before) ? before : restaurants[0]?.id || '';
+  const value = restaurants.some(restaurant => restaurant.id === before) ? before : restaurants[0]?.id || '';
+  const markup = restaurants.map(restaurant => '<option value="' + esc(restaurant.id) + '">' + esc(restaurant.name) + '</option>').join('');
   for (const picker of [$('pontDailyRestaurant'), $('pontDishRestaurant')]) {
-    picker.innerHTML = restaurants.map(r => '<option value="' + esc(r.id) + '">' + esc(r.name) + '</option>').join('');
+    picker.innerHTML = markup;
     picker.value = value;
-    picker.disabled = restaurants.length <= 1;
+    picker.disabled = restaurants.length === 1;
     picker.closest('label').hidden = isRestaurantAdmin && restaurants.length === 1;
   }
   if (before !== value) {
-    selected.clear();
+    resetDaily();
     resetDish();
   }
 }
-function tabs(id, active, onSelect) {
+
+function tabs(id, active, onSelect, items = dishes, showIcons = true) {
   $(id).innerHTML = groups.map(([key, name, glyph]) =>
     '<button type="button" data-category="' + key + '" aria-pressed="' + (key === active) + '">' +
-    icon(glyph) + '<span>' + name + '</span><span class="admin-category-count">' +
-    dishes.filter(d => d.category === key).length + '</span></button>'
+    (showIcons ? icon(glyph) : '') + '<span>' + name + '</span><span class="admin-category-count" aria-hidden="true">' +
+    items.filter(dish => dish.category === key).length + '</span></button>'
   ).join('');
   $(id).onclick = event => {
     const button = event.target.closest('[data-category]');
@@ -162,38 +160,53 @@ function tabs(id, active, onSelect) {
     }
   };
 }
+
 function library() {
   tabs('pontDishTabs', category, next => {
     category = next;
-    if (!editingDish) $('pontDishCategory').value = next;
+    if (!editingDish) {
+      $('pontDishCategory').value = next;
+      syncDishPrice();
+    }
     library();
   });
-  const list = dishes.filter(d => d.category === category);
+  const list = dishes.filter(dish => dish.category === category);
   const count = list.length === 1 ? '1 preparat' : list.length + ' preparate';
   $('pontDishListTitle').textContent = groups.find(([key]) => key === category)[1] + ' · ' + count;
-  $('pontDishList').innerHTML = list.length ? list.map(dish =>
-    '<div class="pont-dish-line">' + pic(dish) +
+  $('pontDishList').innerHTML = list.length ? list.map(dish => {
+    const photo = photoUrl(dish);
+    return '<div class="pont-dish-line pont-library-row"><div class="pont-dish-summary">' +
+      (photo ? '<img loading="lazy" alt="" src="' + esc(photo) + '">' : '') +
       '<span class="name"><strong>' + esc(dish.name) + '</strong>' +
-      (dish.description ? '<small>' + esc(dish.description) + '</small>' : '') + '</span>' +
-      '<span class="pont-dish-price">' + priceRO.format(dish.price) + ' lei</span>' +
+      (dish.description ? '<small>' + esc(dish.description) + '</small>' : '') + '</span></div>' +
+      '<span class="pont-dish-price">' + (dish.category === 'dessert' ? 'Inclus' : priceRO.format(dish.price) + ' lei') + '</span>' +
       '<div class="pont-availability" role="group" aria-label="Disponibilitate ' + esc(dish.name) + '">' +
       '<button type="button" class="pont-availability-btn available' + (dish.available !== false ? ' is-selected' : '') + '" data-availability="' + esc(dish.id) + '" data-available="true" aria-pressed="' + String(dish.available !== false) + '">Disponibil</button>' +
       '<button type="button" class="pont-availability-btn sold-out' + (dish.available === false ? ' is-selected' : '') + '" data-availability="' + esc(dish.id) + '" data-available="false" aria-pressed="' + String(dish.available === false) + '">Epuizat</button></div>' +
       '<div class="admin-row-actions"><button type="button" data-edit-dish="' + esc(dish.id) + '" aria-label="Editează ' + esc(dish.name) + '" title="Editează">' + icon('pencil-simple') + '</button>' +
-      '<button type="button" class="admin-danger" data-delete-dish="' + esc(dish.id) + '" aria-label="Șterge ' + esc(dish.name) + '" title="Șterge">' + icon('trash') + '</button></div></div>'
-  ).join('') : '<p>Nu există preparate salvate în această categorie.</p>';
+      '<button type="button" class="admin-danger" data-delete-dish="' + esc(dish.id) + '" aria-label="Șterge ' + esc(dish.name) + '" title="Șterge">' + icon('trash') + '</button></div></div>';
+  }).join('') : '<p>Nu există preparate salvate în această categorie.</p>';
+}
+
+function menuChoices() {
+  return [...dishes.filter(dish => !savedChoices.has(dish.id)).map(dish => [dish.id, dish]), ...savedChoices];
 }
 function choices() {
-  tabs('pontDailyTabs', dailyCategory, next => { dailyCategory = next; choices(); });
-  const list = dishes.filter(d => d.category === dailyCategory);
-  $('pontDailyDishes').innerHTML = list.length ? list.map(dish => {
-    const chosen = selected.get(dish.id);
-    return '<div class="pont-dish-line">' + pic(dish) + '<span class="name"><strong>' + esc(dish.name) + '</strong>' +
-      (dish.description ? '<small>' + esc(dish.description) + '</small>' : '') + '</span>' +
-      '<input type="checkbox" role="switch" aria-label="Include ' + esc(dish.name) + ' în meniul zilei" data-select="' + esc(dish.id) + '" ' + (chosen ? 'checked' : '') + '>' +
-      '<input type="number" aria-label="Preț ' + esc(dish.name) + '" data-price="' + esc(dish.id) + '" min="0" step=".01" value="' + esc(chosen?.price ?? dish.price) + '"></div>';
-  }).join('') : '<p>Adaugă preparate din această categorie în bibliotecă.</p>';
+  const entries = menuChoices();
+  tabs('pontDailyTabs', dailyCategory, next => { dailyCategory = next; choices(); }, entries.map(([,dish]) => dish), false);
+  const list = entries.filter(([,dish]) => dish.category === dailyCategory);
+  $('pontDailyDishes').innerHTML = list.length ? list.map(([key,dish]) => {
+    const chosen = selected.get(key);
+    const price = dish.category === 'dessert' ? '<span class="pont-daily-price">Inclus</span>' :
+      chosen ? '<div class="pont-daily-price"><input type="number" aria-label="Preț ' + esc(dish.name) + '" data-price="' + esc(key) +
+        '" inputmode="decimal" min="0" max="10000" step=".01" value="' + esc(Number.isFinite(chosen.price) ? chosen.price : '') + '"><span>lei</span></div>' :
+        '<span class="pont-daily-price">' + priceRO.format(dish.price) + ' lei</span>';
+    return '<div class="pont-daily-dish"><div class="pont-daily-dish-info"><strong>' + esc(dish.name) + '</strong>' + price +
+      '</div><label class="pont-daily-switch"><input type="checkbox" role="switch" aria-label="Include ' + esc(dish.name) +
+      ' în meniul zilei" data-select="' + esc(key) + '"' + (chosen ? ' checked' : '') + '></label></div>';
+  }).join('') : '<p class="pont-daily-empty">Niciun preparat în această categorie.</p>';
 }
+
 async function load() {
   const version = ++loadVersion;
   const restaurant = rid();
@@ -226,10 +239,19 @@ function renderDishPhoto() {
   $('pontDishPhotoEmpty').hidden = !!url;
   $('pontDishPhotoEdit').hidden = !url;
 }
+function syncDishPrice() {
+  const dessert = $('pontDishCategory').value === 'dessert';
+  const input = $('pontDishPrice');
+  $('pontDishPriceField').hidden = dessert;
+  input.disabled = dessert;
+  input.required = !dessert;
+}
+
 function resetDish() {
   editingDish = null;
   $('pontDishForm').reset();
   $('pontDishCategory').value = category;
+  syncDishPrice();
   $('pontDishFormTitle').textContent = 'Adaugă preparat';
   $('pontDishSave').textContent = 'Adaugă preparat';
   $('pontDishCancel').hidden = isRestaurantAdmin;
@@ -237,46 +259,213 @@ function resetDish() {
   dishFormMessage.textContent = '';
   renderDishPhoto();
 }
-async function activate(menu = null) {
-  const before = rid();
-  options();
-  editingMenu = menu?.id || null;
-  selected.clear();
-  if (menu) {
-    $('pontDailyRestaurant').value = menu.restaurant_id;
-    $('pontDishRestaurant').value = menu.restaurant_id;
-    $('pontDailyDate').value = menu.service_date;
-    $('pontDailyTitle').value = menu.title;
-    $('pontDailyCombo').value = menu.price ?? 0;
-    $('pontDailyState').value = String(menu.published);
-    for (const dish of menu.dish_selection || []) {
-      if (dish.id) selected.set(dish.id, {...dish});
-    }
-  } else {
-    $('pontDailyDate').value = todayRO();
-    $('pontDailyTitle').value = 'Meniul zilei';
-    $('pontDailyCombo').value = '0';
-    $('pontDailyState').value = 'true';
-  }
-  if (before !== rid()) resetDish();
-  $('pontDailyError').textContent = '';
-  form.hidden = false;
-  old.hidden = true;
-  await load();
+function updateDailyButton() {
   $('pontDailyNext').textContent = $('pontDailyState').value === 'true' ? 'Publică' : 'Salvează ciorna';
+}
+function resetDaily() {
+  draftVersion++;
+  editingMenu = null;
+  menuDescription = '';
+  savedChoices.clear();
+  selected.clear();
+  dailyCategory = 'first';
+  $('pontDailyDate').value = todayRO();
+  $('pontDailyCombo').value = '';
+  $('pontDailyState').value = 'true';
+  $('pontDailyCancel').hidden = true;
+  $('pontDailyError').textContent = '';
+  updateDailyButton();
+}
+function setEditorOpen(open) {
+  wrap.hidden = !open;
+  host.setAttribute('aria-expanded', String(open));
+}
+function restoreMenuDishes(menu) {
+  const stored = Array.isArray(menu.dish_selection) ? menu.dish_selection.filter(dish =>
+    dish?.name && groups.some(([key]) => key === dish.category)) : [];
+  const items = stored.length ? stored : [
+    {name:menu.first_course, category:'first', price:menu.first_price ?? menu.price},
+    {name:menu.second_course, category:'second', price:menu.second_price ?? menu.price},
+    {name:menu.dessert, category:'dessert', price:0}
+  ].filter(dish => dish.name?.trim());
+  for (const [index,dish] of items.entries()) {
+    const match = dishes.find(candidate => dish.id ? candidate.id === dish.id :
+      candidate.category === dish.category && candidate.name === dish.name);
+    const id = dish.id || match?.id;
+    const key = id || 'saved-' + index;
+    const item = {
+      ...(id ? {id} : {}), name:dish.name, category:dish.category,
+      available:(match?.available ?? dish.available) !== false,
+      price:dish.category === 'dessert' ? 0 : Number(dish.price ?? match?.price ?? 0),
+      description:dish.description ?? match?.description ?? '',
+      photo_url:dish.photo_url ?? photoUrl(match)
+    };
+    savedChoices.set(key, item);
+    selected.set(key, {...item});
+  }
+}
+async function open(menu, copy = false) {
+  options();
+  resetDaily();
+  const version = draftVersion;
+  if (menu) {
+    editingMenu = copy ? null : menu.id;
+    menuDescription = menu.description ?? '';
+    if (rid() !== menu.restaurant_id) {
+      $('pontDailyRestaurant').value = menu.restaurant_id;
+      $('pontDishRestaurant').value = menu.restaurant_id;
+      resetDish();
+    }
+    $('pontDailyDate').value = copy ? todayRO() : menu.service_date;
+    $('pontDailyCombo').value = menu.price ?? 0;
+    $('pontDailyState').value = String(!copy && menu.published);
+    $('pontDailyCancel').hidden = false;
+  }
+  updateDailyButton();
+  setEditorOpen(true);
+  if (menu) $('pontDailyDate').focus();
+  await load();
+  if (menu && version === draftVersion) {
+    restoreMenuDishes(menu);
+    choices();
+  }
+}
+async function refresh() {
+  options();
+  await load();
 }
 function changeRestaurant(event, message) {
   const value = event.target.value;
   $('pontDailyRestaurant').value = value;
   $('pontDishRestaurant').value = value;
+  draftVersion++;
+  savedChoices.clear();
   selected.clear();
   resetDish();
   $(message).textContent = '';
   load().catch(error => { $(message).textContent = error.message; });
 }
+host.onclick = () => {
+  const open = wrap.hidden;
+  setEditorOpen(open);
+  if (open) refresh().catch(error => { $('pontDailyError').textContent = error.message; });
+};
+$('pontDailyCancel').onclick = () => {
+  resetDaily();
+  choices();
+  setEditorOpen(false);
+  host.focus();
+};
+$('pontDailyState').onchange = updateDailyButton;
+$('pontDailyDishes').onchange = event => {
+  const checkbox = event.target.closest('[data-select]');
+  if (!checkbox) return;
+  const key = checkbox.dataset.select;
+  const dish = menuChoices().find(([candidate]) => candidate === key)?.[1];
+  if (!dish) return;
+  if (checkbox.checked) selected.set(key, {
+    ...(dish.id ? {id:dish.id} : {}), category:dish.category, name:dish.name, description:dish.description || '', available:dish.available !== false,
+    price:dish.category === 'dessert' ? 0 : Number(dish.price),
+    photo_url:dish.photo_url ?? photoUrl(dish)
+  });
+  else selected.delete(key);
+  choices();
+  [...$('pontDailyDishes').querySelectorAll('[data-select]')].find(input => input.dataset.select === key)?.focus({preventScroll:true});
+};
+$('pontDailyDishes').oninput = event => {
+  const input = event.target.closest('[data-price]');
+  const dish = input && selected.get(input.dataset.price);
+  if (dish) dish.price = input.valueAsNumber;
+};
+
+form.onsubmit = event => {
+  event.preventDefault();
+  const items = [...selected.values()];
+  const restaurant = rid(), date = $('pontDailyDate').value;
+  const published = $('pontDailyState').value === 'true';
+  const price = $('pontDailyCombo').valueAsNumber;
+  $('pontDailyError').textContent = '';
+  if (!restaurant || !items.length) {
+    $('pontDailyError').textContent = restaurant ? 'Selectează cel puțin un preparat.' : 'Alege un restaurant.';
+    return;
+  }
+  if (items.some(item => !Number.isFinite(item.price) || item.price < 0 || item.price > 10000 || Math.abs(item.price * 100 - Math.round(item.price * 100)) > .00001)) {
+    $('pontDailyError').textContent = 'Verifică prețurile preparatelor selectate.';
+    return;
+  }
+  pendingMenu = {
+    id:editingMenu, restaurant, date, price, published, items,
+    description:menuDescription
+  };
+  $('pontDishConfirmTitle').textContent = published ? 'Confirmă publicarea' : 'Confirmă ciorna';
+  const restaurantName = getRestaurants().find(item => item.id === restaurant)?.name ?? '';
+  $('pontDishRecap').innerHTML = '<p><strong>Meniul zilei</strong> · ' + esc(date.split('-').reverse().join('.')) + '</p>' +
+    (restaurantName ? '<p>' + esc(restaurantName) + '</p>' : '') +
+    groups.map(([key,name]) => {
+      const chosen = items.filter(item => item.category === key);
+      return chosen.length ? '<div class="pont-dish-recap"><strong>' + name + '</strong>' + chosen.map(item =>
+        '<div>' + esc(item.name) + ' · ' + (key === 'dessert' ? 'inclus' : priceRO.format(item.price) + ' lei') + '</div>').join('') + '</div>' : '';
+    }).join('') + '<p>Preț meniu complet · ' + priceRO.format(price) + ' lei</p>';
+  $('pontDishConfirmError').textContent = '';
+  $('pontDishPublish').textContent = published ? 'Publică' : 'Salvează ciorna';
+  dialog.showModal();
+};
+$('pontDishBack').onclick = () => dialog.close();
+dialog.addEventListener('cancel', event => { if (saving) event.preventDefault(); });
+$('pontDishPublish').onclick = async () => {
+  if (saving || !pendingMenu) return;
+  const {id, restaurant, date, price, published, items, description} = pendingMenu;
+  const button = $('pontDishPublish');
+  saving = true;
+  button.disabled = true;
+  $('pontDishBack').disabled = true;
+  button.textContent = 'Se salvează…';
+  $('pontDishConfirmError').textContent = '';
+  try {
+    if (published) {
+      const {data,error} = await db.rpc('pont_restaurant_month_paid', {p_restaurant_id:restaurant, p_service_date:date});
+      if (error) throw error;
+      if (!data) throw Error('Restaurantul nu este autorizat pentru luna selectată. Poți salva meniul ca ciornă.');
+    }
+    const first = items.find(item => item.category === 'first');
+    const second = items.find(item => item.category === 'second');
+    const dessert = items.find(item => item.category === 'dessert');
+    const values = {
+      restaurant_id:restaurant, service_date:date, title:'Meniul zilei', price, description, published,
+      first_course:first?.name || '', first_price:first?.price ?? null,
+      second_course:second?.name || '', second_price:second?.price ?? null,
+      dessert:dessert?.name || '', dish_selection:items.map(item => ({...item, available:(dishes.find(dish => dish.id === item.id)?.available ?? item.available) !== false}))
+    };
+    const {error} = await (id ? db.from('menus').update(values).eq('id', id) : db.from('menus').insert(values));
+    if (error?.code === '23505') throw Error('Există deja un meniu publicat pentru această zi. Editează meniul existent sau salvează o ciornă.');
+    if (error) throw error;
+    pendingMenu = null;
+    dialog.close();
+    resetDaily();
+    choices();
+    setEditorOpen(false);
+    const message = published ? 'Meniul zilei a fost publicat pentru ' : 'Ciorna a fost salvată pentru ';
+    $('menuSuccessMessage').textContent = message + date.split('-').reverse().join('.') + '.';
+    try {
+      await refreshMenus();
+    } catch {
+      $('menuSuccessMessage').textContent += ' Reîncarcă pagina pentru a actualiza lista.';
+    }
+    $('menuSuccessDialog').showModal();
+  } catch (error) {
+    $('pontDishConfirmError').textContent = error.message;
+  } finally {
+    saving = false;
+    button.disabled = false;
+    $('pontDishBack').disabled = false;
+    button.textContent = published ? 'Publică' : 'Salvează ciorna';
+  }
+};
+
 $('pontDishRestaurant').onchange = event => changeRestaurant(event, 'pontDishMessage');
 $('pontDailyRestaurant').onchange = event => changeRestaurant(event, 'pontDailyError');
 $('pontDishPhoto').onchange = renderDishPhoto;
+$('pontDishCategory').onchange = syncDishPrice;
 $('pontDishCancel').onclick = () => {
   resetDish();
   if (!isRestaurantAdmin) {
@@ -295,12 +484,13 @@ $('pontDishForm').onsubmit = async event => {
   const button = $('pontDishSave');
   if (button.disabled) return;
   const file = $('pontDishPhoto').files[0], draft = editingDish;
+  const dishCategory = $('pontDishCategory').value;
   const values = {
     restaurant_id: rid(),
-    category: $('pontDishCategory').value,
+    category: dishCategory,
     name: $('pontDishName').value.trim(),
     description: $('pontDishDescription').value.trim(),
-    price: Number($('pontDishPrice').value),
+    price: dishCategory === 'dessert' ? 0 : $('pontDishPrice').valueAsNumber,
     photo_path: draft?.photo_path || null
   };
   if (!values.restaurant_id) {
@@ -368,9 +558,10 @@ $('pontDishList').onclick = async event => {
     resetDish();
     editingDish = dish;
     $('pontDishName').value = dish.name;
-    $('pontDishPrice').value = dish.price;
+    $('pontDishPrice').value = dish.category === 'dessert' ? '' : dish.price;
     $('pontDishDescription').value = dish.description || '';
     $('pontDishCategory').value = dish.category;
+    syncDishPrice();
     $('pontDishFormTitle').textContent = 'Editare preparat';
     $('pontDishSave').textContent = 'Salvează modificările';
     $('pontDishCancel').hidden = false;
@@ -395,26 +586,6 @@ $('pontDishList').onclick = async event => {
     }
   }
 };
-$('pontDailyDishes').onchange=e=>{const checkbox=e.target.closest('[data-select]'),price=e.target.closest('[data-price]');if(checkbox){const d=dishes.find(d=>d.id===checkbox.dataset.select);if(!d)return;if(checkbox.checked){selected.set(d.id,{id:d.id,category:d.category,name:d.name,description:d.description||'',price:Number($('pontDailyDishes').querySelector('[data-price="'+d.id+'"]').value),available:d.available !== false,photo_url:d.photo_path?db.storage.from('pont-dish-images').getPublicUrl(d.photo_path).data.publicUrl:''})}else selected.delete(d.id)}if(price&&selected.has(price.dataset.price)){selected.get(price.dataset.price).price=Number(price.value)}};
-$('pontDailyState').onchange=()=>{$('pontDailyNext').textContent=$('pontDailyState').value==='true'?'Publică':'Salvează ciorna'};
-const libraryButton = document.createElement('button');
-libraryButton.type = 'button';
-libraryButton.textContent = 'Alege din biblioteca de preparate';
-libraryButton.onclick = () => { old.hidden = true; form.hidden = false; };
-old.prepend(libraryButton);
-$('pontDailyClassic').onclick = () => { form.hidden = true; old.hidden = false; };
-document.addEventListener('click',e=>{const b=e.target.closest('[data-edit],[data-copy]');if(!b||!b.closest('#menus,#menuRows'))return;const item=(window.pontAllMenus?.()||[]).find(m=>m.id===(b.dataset.edit||b.dataset.copy));if(!item)return;if(item.dish_selection?.length){e.stopImmediatePropagation();e.preventDefault();if(isRestaurantAdmin)$('showAdd')?.click();const copy=b.dataset.copy?{...item,id:null,service_date:todayRO(),published:false}:item;activate(copy).catch(err=>$('pontDailyError').textContent=err.message);wrap.hidden=false;host.setAttribute('aria-expanded','true');wrap.scrollIntoView({behavior:'smooth'})}else if(b.dataset.edit){form.hidden=true;old.hidden=false}},true);
-form.onsubmit=e=>{e.preventDefault();const items=[...selected.values()];try{if(!items.length)throw Error('Activează cel puțin un preparat.');if(!form.reportValidity())return;if(items.some(i=>!Number.isFinite(i.price)||i.price<0||i.price>10000))throw Error('Verifică prețurile preparatelor.');const date=$('pontDailyDate').value.split('-').reverse().join('.');$('pontDishConfirmTitle').textContent=$('pontDailyState').value==='true'?'Confirmă publicarea':'Confirmă ciorna';$('pontDishRecap').innerHTML='<p><strong>'+esc($('pontDailyTitle').value)+'</strong> · '+esc(date)+'</p>'+groups.map(([cat,n])=>{const x=items.filter(i=>i.category===cat);return x.length?'<div class="pont-dish-recap"><strong>'+n+'</strong>'+x.map(i=>'<div>'+esc(i.name)+' — '+esc(i.price)+' lei</div>').join('')+'</div>':''}).join('')+'<p>Preț meniu complet: '+esc($('pontDailyCombo').value)+' lei</p>';$('pontDishConfirmError').textContent='';$('pontDishPublish').textContent=$('pontDailyState').value==='true'?'Publică':'Salvează ciorna';dialog.showModal()}catch(err){$('pontDailyError').textContent=err.message}};
-$('pontDishBack').onclick=()=>dialog.close();
-$('pontDishPublish').onclick=async()=>{if(saving)return;saving=true;const button=$('pontDishPublish');button.disabled=true;button.textContent='Se salvează…';try{const items=[...selected.values()].map(item=>({...item,available:dishes.find(d=>d.id===item.id)?.available !== false})),restaurant_id=rid(),date=$('pontDailyDate').value,published=$('pontDailyState').value==='true';if(published){const {data,error}=await db.rpc('pont_restaurant_month_paid',{p_restaurant_id:restaurant_id,p_service_date:date});if(error)throw error;if(!data)throw Error('Restaurantul nu este autorizat PONT pentru această lună. Poți salva meniul ca ciornă.')}const first=items.find(i=>i.category==='first'),second=items.find(i=>i.category==='second'),dessert=items.find(i=>i.category==='dessert');const values={restaurant_id,service_date:date,title:$('pontDailyTitle').value.trim(),price:Number($('pontDailyCombo').value),description:'',published,first_course:first?.name||'',first_price:first?.price??null,second_course:second?.name||'',second_price:second?.price??null,dessert:dessert?.name||'',dish_selection:items};const {error}=editingMenu?await db.from('menus').update(values).eq('id',editingMenu):await db.from('menus').insert(values);if(error){if(error.code==='23505')throw Error('Există deja un meniu publicat pentru această zi. Editează meniul existent sau salvează o ciornă.');throw error;}dialog.close();editingMenu=null;selected.clear();
-if(!isRestaurantAdmin){
- $('pontDailyDate').value=todayRO();
- $('pontDailyTitle').value='Meniul zilei';
- $('pontDailyCombo').value='0';
- $('pontDailyState').value='true';
- choices();
-}
-await refreshMenus();wrap.hidden=true;host.setAttribute('aria-expanded','false');$('menuSuccessMessage').textContent=published?'Felicitări! Meniul zilei din data de '+date.split('-').reverse().join('.')+' a fost postat!':'Ciorna meniului zilei din data de '+date.split('-').reverse().join('.')+' a fost salvată!';$('menuSuccessDialog').showModal()}catch(err){$('pontDishConfirmError').textContent=err.message}finally{saving=false;button.disabled=false;button.textContent=$('pontDailyState').value==='true'?'Publică':'Salvează ciorna'}};
-// Authentication / restaurant list is loaded asynchronously by the parent app.
-return {refresh:async()=>{options();if(!$('pontDailyDate').value){$('pontDailyDate').value=todayRO();$('pontDailyTitle').value='Meniul zilei';$('pontDailyCombo').value='0'}await load()},activate};
+resetDaily();
+return {refresh, open, activate:open};
 }
