@@ -66,8 +66,7 @@ async function loadCustomers(){
  $('customersStatus').textContent='Se încarcă…';
  const month=$('customersMonth').value;
  if(!/^\d{4}-\d{2}$/.test(month))throw Error('Alege o lună validă.');
- const [year,mon]=month.split('-').map(Number),next=new Date(Date.UTC(year,mon,1)).toISOString().slice(0,10);
- customerLeads=await req(db.from('pont_customer_order_leads').select('id,restaurant_id,customer_name,customer_phone,order_reference,menus_count,portions_count,started_at').gte('started_at',month+'-01T00:00:00+02:00').lt('started_at',next+'T00:00:00+02:00').order('started_at',{ascending:false}).limit(1000));
+ customerLeads=await req(db.rpc('pont_admin_customer_leads_month',{p_month:month+'-01'}));
  renderCustomers();$('customersStatus').textContent='Luna '+month+' · '+customerLeads.length+' solicitări înregistrate cu acordul clientului'+(customerLeads.length===1000?' (limită 1.000).':'.');
 }
 $('customersMonth').value=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit'}).format(new Date());
