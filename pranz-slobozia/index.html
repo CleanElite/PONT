@@ -308,6 +308,14 @@ html.pont-intro-active{overflow:hidden}
   .entry-footer{flex-wrap:nowrap}
   .pont-admin-entry svg{width:13px}
 }
+
+@media(max-width:520px) and (min-height:680px){
+  .entry{display:flex;flex-direction:column}
+  .entry-header{padding-top:clamp(38px,6.5svh,60px)}
+  .entry-content{flex:1;display:flex;flex-direction:column;justify-content:space-around}
+  .choice-card,.choice-card.night{min-height:clamp(135px,21svh,192px)}
+  .entry-footer{padding-bottom:max(22px,3svh,env(safe-area-inset-bottom))}
+}
 </style>
 </head>
 <body class="entry-page">
