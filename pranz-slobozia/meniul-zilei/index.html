@@ -640,13 +640,22 @@ function update(){
   $('#total').textContent=lei(subtotal(items));
   const combos=items.filter(item=>item.short==='meniuri complete').reduce((n,item)=>n+item.qty,0);
   const singles=items.filter(item=>item.short!=='meniuri complete');
-  const comboText=combos?combos+' '+(combos===1?'meniu complet':'meniuri complete'):'';
-  const restText=singles.map(item=>item.qty+' × '+item.short).join(' și ');
-  $('#pontSelectionText').textContent=comboText||restText?(comboText&&restText?comboText+' și '+restText:comboText||restText):'Nu ai selectat încă preparate.';
-  const breakdownParts=[...(combos?[combos+' × '+(combos===1?'meniu complet':'meniuri complete')]:[]),...singles.map(item=>item.qty+' × '+item.short)];
-  if(delivery)breakdownParts.push('Livrarea se confirmă separat');
-  if(!hasMinimumMenu())breakdownParts.push('Min. '+(current?.min_full_menus||1)+' meniu complet');
-  $('#breakdown').textContent=breakdownParts.join(' · ');
+  const singleCounts=new Map();
+  singles.forEach(item=>singleCounts.set(item.short,(singleCounts.get(item.short)||0)+item.qty));
+  const summaryParts=[
+    ...(combos?[combos+'× '+(combos===1?'meniu complet':'meniuri complete')]:[]),
+    ...[...singleCounts].map(([label,count])=>count+'× '+label)
+  ];
+  const formattedSummary=summaryParts.length
+    ?summaryParts.map(part=>'<strong class="pont-summary-piece">'+esc(part)+'</strong>').join('<span class="pont-summary-divider" aria-hidden="true">|</span>')
+    :'<span class="pont-summary-empty">Nu ai selectat încă preparate.</span>';
+  $('#pontSelectionText').innerHTML=formattedSummary;
+  const bottomNotes=[
+    ...(delivery?['Livrarea se confirmă separat']:[]),
+    ...(!hasMinimumMenu()?['Min. '+(current?.min_full_menus||1)+' meniu complet']:[])
+  ];
+  $('#breakdown').innerHTML='<div class="pont-summary-pieces">'+formattedSummary+'</div>'+
+    (bottomNotes.length?'<div class="pont-summary-notes">'+bottomNotes.map(note=>esc(note)).join(' · ')+'</div>':'');
   $('#send').disabled=items.length===0||!hasMinimumMenu()||!orderOpen(current)||!current?.phone||form.elements.full_name.value.trim().length<3||!phoneValid||(delivery&&!form.elements.address.value.trim());form.querySelectorAll('[data-method]').forEach(b=>{const active=b.dataset.method===form.elements.method.value;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active))});
 }
 let returnFocus;
