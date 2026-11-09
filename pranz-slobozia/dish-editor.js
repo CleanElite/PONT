@@ -99,7 +99,7 @@ form.innerHTML = `
   <div class="pont-daily-fields">
     <label id="pontDailyRestaurantField">Restaurant<select id="pontDailyRestaurant" required></select></label>
     <label>Data<input id="pontDailyDate" type="date" required></label>
-    <label>Preț (lei)<input id="pontDailyCombo" type="number" min="0" step=".01" inputmode="decimal" placeholder="0,00" required></label>
+    <div class="pont-daily-standard-price"><span>Preț standard meniu complet</span><strong id="pontDailyComboDisplay">Neconfigurat</strong><small>Se modifică din Setări restaurant.</small><input id="pontDailyCombo" type="hidden"></div>
     <label>Stare<select id="pontDailyState"><option value="true">Publică</option><option value="false">Ciornă</option></select></label>
   </div>
   <div class="admin-daily-grid">
@@ -120,6 +120,11 @@ form.innerHTML = `
 `;
 wrap.append(form);
 
+const standardPriceStyles=document.createElement('style');
+standardPriceStyles.textContent='.pont-daily-standard-price{display:flex;flex-direction:column;justify-content:center;gap:4px;min-height:72px;padding:10px 13px;border:1px solid #447b78;border-radius:13px;background:linear-gradient(130deg,#0c3e40,#092d35)}.pont-daily-standard-price span{font-size:12px;color:#bfddd7}.pont-daily-standard-price strong{font-size:20px;color:#ffe5a0}.pont-daily-standard-price strong.is-missing{color:#ffb6a5}.pont-daily-standard-price small{font-size:11px;color:#afc8c7}';
+document.head.append(standardPriceStyles);
+
+
 const dialog = document.createElement('dialog');
 dialog.id = 'pontDishConfirm';
 dialog.setAttribute('aria-labelledby', 'pontDishConfirmTitle');
@@ -127,6 +132,15 @@ dialog.innerHTML = '<h3 id="pontDishConfirmTitle">Verifică meniul</h3><div id="
 document.body.append(dialog);
 
 const rid = () => $('pontDailyRestaurant').value;
+function syncStandardPrice(){
+  const configured = getRestaurants()?.find(restaurant => restaurant.id === rid())?.menu_price;
+  const value = Number(configured);
+  const valid = configured !== null && configured !== undefined && Number.isFinite(value) && value > 0;
+  $('pontDailyCombo').value = valid ? String(value) : '';
+  $('pontDailyComboDisplay').textContent = valid ? priceRO.format(value) + ' lei' : 'Neconfigurat';
+  $('pontDailyComboDisplay').classList.toggle('is-missing', !valid);
+}
+
 const photoUrl = dish => dish?.photo_path ? db.storage.from('pont-dish-images').getPublicUrl(dish.photo_path).data.publicUrl : '';
 
 function options() {
@@ -144,6 +158,7 @@ function options() {
     resetDaily();
     resetDish();
   }
+  syncStandardPrice();
 }
 
 function tabs(id, active, onSelect, items = dishes, showIcons = true) {
@@ -270,7 +285,7 @@ function resetDaily() {
   selected.clear();
   dailyCategory = 'first';
   $('pontDailyDate').value = todayRO();
-  $('pontDailyCombo').value = '';
+  syncStandardPrice();
   $('pontDailyState').value = 'true';
   $('pontDailyCancel').hidden = true;
   $('pontDailyError').textContent = '';
@@ -317,7 +332,7 @@ async function open(menu, copy = false) {
       resetDish();
     }
     $('pontDailyDate').value = copy ? todayRO() : menu.service_date;
-    $('pontDailyCombo').value = menu.price ?? 0;
+    syncStandardPrice();
     $('pontDailyState').value = String(!copy && menu.published);
     $('pontDailyCancel').hidden = false;
   }
@@ -338,6 +353,7 @@ function changeRestaurant(event, message) {
   const value = event.target.value;
   $('pontDailyRestaurant').value = value;
   $('pontDishRestaurant').value = value;
+  syncStandardPrice();
   draftVersion++;
   savedChoices.clear();
   selected.clear();
@@ -383,8 +399,13 @@ form.onsubmit = event => {
   const items = [...selected.values()];
   const restaurant = rid(), date = $('pontDailyDate').value;
   const published = $('pontDailyState').value === 'true';
-  const price = $('pontDailyCombo').valueAsNumber;
+  syncStandardPrice();
+  const price = Number($('pontDailyCombo').value);
   $('pontDailyError').textContent = '';
+  if (!Number.isFinite(price) || price <= 0 || price > 10000) {
+    $('pontDailyError').textContent = 'Configurează mai întâi prețul standard în Setări restaurant.';
+    return;
+  }
   if (!restaurant || !items.length) {
     $('pontDailyError').textContent = restaurant ? 'Selectează cel puțin un preparat.' : 'Alege un restaurant.';
     return;
