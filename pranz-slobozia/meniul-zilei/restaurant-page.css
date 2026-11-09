@@ -209,3 +209,51 @@ body #order::backdrop{background:#031c1a}
  #order .fulfillment-options button{flex:1}
 }
 @media(prefers-reduced-motion:reduce){#order *{scroll-behavior:auto!important}}
+
+
+/* Readable, bold order summaries, separated by a simple vertical bar. */
+#order #pontSelectionText{
+  display:flex!important;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:5px 9px;
+  min-width:0;
+  line-height:1.5!important;
+  font-size:13px!important;
+}
+#order .pont-summary-piece{
+  display:inline-block;
+  font-weight:800!important;
+  color:inherit!important;
+  font-size:inherit!important;
+  letter-spacing:0!important;
+  white-space:nowrap;
+}
+#order .pont-summary-divider{
+  display:inline-block;
+  color:#d6bb72!important;
+  font-weight:400;
+  opacity:.92;
+}
+#order .pont-summary-pieces{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:5px 9px;
+  font-size:13px;
+  line-height:1.5;
+  color:#173a30;
+}
+#order .pont-summary-notes{
+  margin-top:5px;
+  font-size:11px;
+  line-height:1.5;
+  color:#5d6b61;
+  text-align:center;
+}
+#order .pont-summary-empty{font-size:12px;font-weight:500}
+#order #breakdown{font-size:13px!important;color:#173a30!important}
+@media(max-width:530px){
+  #order #pontSelectionText,#order .pont-summary-pieces{font-size:12px!important;gap:4px 7px}
+}
