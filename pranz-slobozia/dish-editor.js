@@ -163,7 +163,7 @@ form.innerHTML = `
   <div class="pont-daily-fields">
     <label id="pontDailyRestaurantField">Restaurant<select id="pontDailyRestaurant" required></select></label>
     <label>Data<input id="pontDailyDate" type="date" required></label>
-    <div class="pont-daily-standard-price"><span>Preț standard meniu complet</span><strong id="pontDailyComboDisplay">Neconfigurat</strong><small>Se modifică din Setări restaurant.</small><input id="pontDailyCombo" type="hidden"></div>
+    <div class="pont-daily-standard-price" role="status"><strong id="pontDailyComboDisplay">Preț nesetat</strong><input id="pontDailyCombo" type="hidden"></div>
     <label>Stare<select id="pontDailyState"><option value="true">Publică</option><option value="false">Ciornă</option></select></label>
   </div>
   <div class="admin-daily-grid">
@@ -185,7 +185,7 @@ form.innerHTML = `
 wrap.append(form);
 
 const standardPriceStyles=document.createElement('style');
-standardPriceStyles.textContent='.pont-daily-standard-price{display:flex;flex-direction:column;justify-content:center;gap:4px;min-height:72px;padding:10px 13px;border:1px solid #447b78;border-radius:13px;background:linear-gradient(130deg,#0c3e40,#092d35)}.pont-daily-standard-price span{font-size:12px;color:#bfddd7}.pont-daily-standard-price strong{font-size:20px;color:#ffe5a0}.pont-daily-standard-price strong.is-missing{color:#ffb6a5}.pont-daily-standard-price small{font-size:11px;color:#afc8c7}';
+standardPriceStyles.textContent='.pont-daily-fields .pont-daily-standard-price{display:flex;align-items:center;justify-content:center;align-self:end;flex:0 1 132px;min-width:0;min-height:40px;height:40px;padding:6px 10px;border:1px solid #447b78;border-radius:9px;background:#0d3438;box-sizing:border-box}.pont-daily-standard-price strong{font-size:13px;line-height:1.2;font-weight:700;color:#ffe5a0;text-align:center;white-space:nowrap}.pont-daily-standard-price strong.is-missing{color:#ffb6a5}@media(max-width:620px){.pont-daily-fields .pont-daily-standard-price{width:100%;flex:auto;padding:6px 5px}.pont-daily-standard-price strong{font-size:12px}}';
 document.head.append(standardPriceStyles);
 
 
@@ -201,7 +201,7 @@ function syncStandardPrice(){
   const value = Number(configured);
   const valid = configured !== null && configured !== undefined && Number.isFinite(value) && value > 0;
   $('pontDailyCombo').value = valid ? String(value) : '';
-  $('pontDailyComboDisplay').textContent = valid ? priceRO.format(value) + ' lei' : 'Neconfigurat';
+  $('pontDailyComboDisplay').textContent = valid ? 'Preț setat ' + new Intl.NumberFormat('ro-RO',{maximumFractionDigits:2}).format(value) + ' lei' : 'Preț nesetat';
   $('pontDailyComboDisplay').classList.toggle('is-missing', !valid);
 }
 
