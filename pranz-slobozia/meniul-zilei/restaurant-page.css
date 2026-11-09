@@ -683,3 +683,167 @@ body #order::backdrop{background:#031c1a}
   background:rgba(3,26,24,.85);color:#fff;font-size:27px;
   cursor:pointer;
 }
+
+
+/* Premium restaurant hero, inspired by the approved visual. Scope ends before "Sună și comandă". */
+#order .pont-restaurant-hero{
+  box-sizing:border-box;
+  min-height:250px!important;
+  max-width:1060px!important;
+  padding:19px clamp(18px,4.6vw,42px) 13px!important;
+  margin:0 auto 4px!important;
+  overflow:hidden!important;
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse at 78% 45%,rgba(22,87,69,.20),transparent 44%),
+    linear-gradient(98deg,#021b19 0%,#03201c 49%,#06211d 100%)!important;
+}
+#order .pont-restaurant-hero__photo{
+  position:absolute!important;
+  z-index:-1!important;
+  top:43px!important;
+  right:0!important;
+  bottom:42px!important;
+  left:auto!important;
+  width:66%!important;
+  opacity:.96!important;
+  background-position:center center!important;
+  background-size:cover!important;
+  border-radius:0!important;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.40) 32%,#000 73%),linear-gradient(0deg,transparent 0%,#000 28%,#000 88%,transparent 100%)!important;
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.40) 32%,#000 73%),linear-gradient(0deg,transparent 0%,#000 28%,#000 88%,transparent 100%)!important;
+  -webkit-mask-composite:source-in;
+  mask-composite:intersect;
+}
+#order .pont-restaurant-hero::after{
+  z-index:-1!important;
+  background:
+    linear-gradient(0deg,#03231f 0%,rgba(3,30,27,.08) 42%,transparent 75%),
+    linear-gradient(90deg,#021a18 0%,rgba(2,26,24,.93) 26%,rgba(3,28,25,.15) 83%)!important;
+}
+#order .pont-restaurant-hero .pont-order-logo-image{
+  top:4px!important;
+  left:50%!important;
+  width:clamp(165px,26vw,225px)!important;
+  height:86px!important;
+  max-width:52vw!important;
+  transform:translateX(-50%)!important;
+  object-fit:contain!important;
+  z-index:2!important;
+  filter:drop-shadow(0 0 6px rgba(106,249,229,.20))!important;
+}
+#order .pont-restaurant-hero .pont-order-brand{
+  padding-top:88px!important;
+  align-items:flex-start!important;
+  gap:0!important;
+}
+#order .pont-restaurant-hero .pont-order-brand h2{
+  max-width:min(80%,590px)!important;
+  margin:1px 0 0!important;
+  font:600 clamp(34px,4.6vw,54px)/1.12 Georgia,'Times New Roman',serif!important;
+  letter-spacing:-.028em!important;
+  color:#fffdf7!important;
+  text-shadow:0 2px 14px rgba(0,12,11,.55)!important;
+  text-wrap:balance;
+}
+#order .pont-restaurant-hero .pont-order-brand .pont-hero-location{
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  margin:8px 0 0!important;
+  font:480 15px/1.2 system-ui,-apple-system,sans-serif!important;
+  color:#e0f0e8!important;
+  text-shadow:0 1px 8px rgba(0,17,15,.6);
+}
+#order .pont-hero-location svg{flex:none;color:#d6e6dd}
+#order .pont-restaurant-hero .pont-menu-tag{
+  width:100%!important;
+  max-width:100%!important;
+  gap:10px!important;
+  margin:17px 0 0!important;
+  padding:12px 0 0!important;
+  border-top:1px solid rgba(120,219,194,.26)!important;
+}
+#order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:9px!important;
+  min-height:38px!important;
+  padding:8px 16px!important;
+  border:1px solid rgba(30,221,186,.83)!important;
+  border-radius:999px!important;
+  background:rgba(2,42,38,.7)!important;
+  box-shadow:inset 0 1px rgba(228,255,244,.09),0 0 12px rgba(11,215,177,.1)!important;
+  color:#f5fff9!important;
+  font:670 13px/1.1 system-ui,-apple-system,sans-serif!important;
+  white-space:nowrap;
+}
+#order .pont-menu-tag__label svg{flex:none;color:#f6fffb}
+#order .pont-restaurant-hero .pont-menu-tag strong{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:42px!important;
+  padding:8px 17px!important;
+  border-radius:999px!important;
+  background:linear-gradient(110deg,#ffebb7,#f0c76e)!important;
+  border:1px solid rgba(255,243,200,.8)!important;
+  box-shadow:0 5px 20px rgba(234,187,90,.17),inset 0 1px rgba(255,255,255,.55)!important;
+  color:#181d16!important;
+  font:790 clamp(16px,2.3vw,21px)/1.1 system-ui,-apple-system,sans-serif!important;
+  letter-spacing:-.025em!important;
+  white-space:nowrap;
+}
+@media(max-width:530px){
+  #order .pont-restaurant-hero{
+    min-height:236px!important;
+    padding:12px 18px 12px!important;
+  }
+  #order .pont-restaurant-hero__photo{
+    top:47px!important;
+    bottom:51px!important;
+    width:73%!important;
+    background-position:56% center!important;
+  }
+  #order .pont-restaurant-hero .pont-order-logo-image{
+    top:2px!important;
+    width:clamp(160px,48vw,208px)!important;
+    height:80px!important;
+    max-width:55vw!important;
+  }
+  #order .pont-restaurant-hero .pont-order-brand{padding-top:86px!important}
+  #order .pont-restaurant-hero .pont-order-brand h2{
+    font-size:clamp(31px,8.4vw,42px)!important;
+    max-width:85%!important;
+  }
+  #order .pont-restaurant-hero .pont-order-brand .pont-hero-location{
+    margin-top:7px!important;
+    font-size:14px!important;
+  }
+  #order .pont-restaurant-hero .pont-menu-tag{
+    margin-top:14px!important;
+    padding-top:10px!important;
+  }
+  #order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{
+    min-height:36px!important;
+    padding:8px 12px!important;
+    font-size:12px!important;
+  }
+  #order .pont-restaurant-hero .pont-menu-tag strong{
+    min-height:39px!important;
+    padding:8px 13px!important;
+    font-size:clamp(15px,4.5vw,19px)!important;
+  }
+}
+@media(max-width:365px){
+  #order .pont-restaurant-hero{padding-inline:13px!important}
+  #order .pont-restaurant-hero .pont-order-brand h2{font-size:29px!important}
+  #order .pont-restaurant-hero .pont-menu-tag{gap:7px!important}
+  #order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{
+    gap:6px!important;padding-inline:9px!important;font-size:11px!important;
+  }
+  #order .pont-restaurant-hero .pont-menu-tag strong{
+    padding-inline:10px!important;font-size:15px!important;
+  }
+}
