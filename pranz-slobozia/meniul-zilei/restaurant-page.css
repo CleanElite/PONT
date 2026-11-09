@@ -77,7 +77,7 @@ body #order::backdrop{background:#031c1a}
 #order .pont-dish-group:has(.pont-choice-dish) .pont-choice-dish{
   flex:0 0 clamp(235px,45%,330px);
 }
-#order .pont-dish-group:has(.pont-choice-dish):nth-of-type(2) .pont-dish-group__content{
+#order .pont-dish-group--second .pont-dish-group__content{
   display:grid;
   grid-auto-flow:column;
   grid-template-rows:repeat(2,minmax(0,auto));
@@ -85,7 +85,7 @@ body #order::backdrop{background:#031c1a}
   align-items:stretch;
   gap:8px;
 }
-#order .pont-dish-group:has(.pont-choice-dish):nth-of-type(2) .pont-choice-dish{
+#order .pont-dish-group--second .pont-choice-dish{
   width:100%;
 }
 @media(max-width:530px){
@@ -94,7 +94,7 @@ body #order::backdrop{background:#031c1a}
     gap:6px!important;
     padding:8px 7px!important;
   }
-  #order .pont-dish-group:has(.pont-choice-dish):nth-of-type(2) .pont-dish-group__content{
+  #order .pont-dish-group--second .pont-dish-group__content{
     grid-auto-columns:min(86vw,300px);
   }
   #order .pont-dish-group:has(.pont-choice-dish) .pont-choice-photo{width:30px;height:30px}
