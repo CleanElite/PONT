@@ -52,6 +52,58 @@ body #order::backdrop{background:#031c1a}
 #order .pont-group-arrow{margin-left:auto;color:#ffdc83;font-size:21px;transition:transform .2s ease}
 #order .pont-dish-group:not([open]) .pont-group-arrow{transform:rotate(180deg)}
 #order .pont-dish-group__content{padding-left:6px}
+/* Layout of selectable dishes: Felul 1 = one row, Felul 2 = two rows, Desert = one row. */
+#order .pont-dish-group__content{
+  display:grid!important;
+  grid-auto-flow:column;
+  grid-auto-columns:min(80vw,345px);
+  grid-template-rows:minmax(0,auto);
+  column-gap:12px;
+  row-gap:3px;
+  overflow-x:auto;
+  overflow-y:hidden;
+  overscroll-behavior-x:contain;
+  scrollbar-width:thin;
+  scrollbar-color:#4db79f transparent;
+  padding:4px 5px 10px 6px;
+  scroll-snap-type:x proximity;
+}
+#order .pont-dish-group--second .pont-dish-group__content{
+  grid-template-rows:repeat(2,minmax(0,auto));
+  grid-auto-columns:min(80vw,345px);
+}
+#order .pont-dish-group__content>.pont-choice-dish{
+  width:100%;
+  min-width:0;
+  margin:0!important;
+  padding:6px 8px!important;
+  border:1px solid rgba(65,166,145,.22)!important;
+  border-radius:12px;
+  background:rgba(12,66,58,.28);
+  scroll-snap-align:start;
+}
+#order .pont-dish-group__content>.pont-choice-dish .pont-dish-name{
+  overflow:hidden;
+}
+#order .pont-dish-group__content>.pont-choice-dish .pont-dish-name strong{
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  line-clamp:2;
+  overflow:hidden;
+  overflow-wrap:anywhere;
+}
+@media(max-width:530px){
+ #order .pont-dish-group__content,
+ #order .pont-dish-group--second .pont-dish-group__content{
+   grid-auto-columns:min(86vw,315px);
+   column-gap:9px;
+ }
+ #order .pont-dish-group__content>.pont-choice-dish{padding:6px!important}
+ #order .pont-dish-group__content>.pont-choice-dish .pont-choice-photo{width:30px;height:30px}
+ #order .pont-dish-group__content>.pont-choice-dish .pont-dish-price{min-width:49px}
+}
+
 #order .quantity{display:flex!important;justify-content:initial!important;gap:9px!important;min-height:41px;padding:4px 0!important;border:0!important;color:#f5fbf7;align-items:center!important}
 /* Compact course layout in the QUANTITY SELECTION area (not the header). */
 #order .pont-dish-group__content{
