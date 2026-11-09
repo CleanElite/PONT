@@ -249,5 +249,8 @@ $('restaurantChangePassword').onclick=async()=>{
 };
 $('restaurantRows').onclick=async e=>{let b=e.target.closest('button');if(!b)return;let r=restaurants.find(x=>x.id===(b.dataset.toggle||b.dataset.editRestaurant||b.dataset.deleteRestaurant));if(!r)return;try{if(b.dataset.editRestaurant){$('editingRestaurant').value=r.id;showRestaurantPasswordBox(r.id);$('name').value=r.name;$('restaurantAcceptsCard').checked=!!r.accepts_card;$('restaurantMode').hidden=false;$('saveRestaurantButton').textContent='Salvează modificările';$('restaurantForm').scrollIntoView({behavior:'smooth'});return}if(b.dataset.deleteRestaurant){if(!confirm('Ștergi definitiv restaurantul '+r.name+' și TOATE meniurile sale?'))return;await req(db.from('restaurants').delete().eq('id',r.id))}else await req(db.from('restaurants').update({enabled:!r.enabled}).eq('id',r.id));await load()}catch(e){status(e.message,true)}};
 $('memberRows').onclick=async e=>{let b=e.target.closest('[data-revoke]');if(!b||!confirm('Revoci accesul?'))return;try{await req(db.from('restaurant_members').delete().eq('user_id',b.dataset.revoke).eq('restaurant_id',b.dataset.restaurant));await load()}catch(e){status(e.message,true)}};
-await enter()}
+window.pontAllMenus=()=>menus;
+const {initPontDishEditor}=await import('../dish-editor.js');
+const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
+await enter();if(user)await pontDishUI.refresh()}
 </script></html>
