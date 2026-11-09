@@ -425,10 +425,10 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
 <main class="menu-main">
   <section class="menu-heading" aria-labelledby="lunchTitle">
     <h1 id="lunchTitle"><span class="menu-icon menu-icon--utensils" aria-hidden="true"></span>Meniul zilei</h1>
-    <p>Vezi ce se gătește azi în Slobozia.</p>
+    <p>Alege un restaurant pentru prânzul de azi.</p>
   </section>
   <section id="customer" aria-label="Restaurante cu meniul zilei">
-    <p id="menuPreviewLabel" class="menu-preview-label" hidden>Previzualizare · meniuri de test</p>
+    <p id="menuPreviewLabel" class="menu-preview-label" hidden>Exemple de meniuri · comenzile sunt dezactivate</p>
     <div id="list" aria-live="polite"><p class="menu-empty">Încărcăm meniurile…</p></div>
     <p id="menuPhotoNote" class="menu-photo-note" hidden>Unele fotografii sunt ilustrative.</p>
   </section>
@@ -492,7 +492,7 @@ function render(){
         <span class="menu-card-price">${price}</span>
       </button>
     </article>`;
-  }).join('') : '<p class="menu-empty">Momentan, nu sunt meniuri disponibile pentru azi.</p>';
+  }).join('') : '<p class="menu-empty">Nu sunt meniuri disponibile pentru azi.</p>';
   $('#menuPhotoNote').hidden = !usesIllustration;
 }
 $('#list').addEventListener('error', event => {
