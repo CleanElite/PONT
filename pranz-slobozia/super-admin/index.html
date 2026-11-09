@@ -84,6 +84,7 @@
     <h3 id="restaurantFormTitle">Adaugă restaurant</h3>
     <div class="dashboard-fields">
       <label for="name">Numele restaurantului<input id="name" required></label>
+      <label for="restaurantContactPhone">Telefon contact clienți<input id="restaurantContactPhone" type="tel" inputmode="tel" placeholder="+407XXXXXXXX" maxlength="24"></label>
       <label class="restaurant-card-toggle">
         <input id="restaurantAcceptsCard" type="checkbox" role="switch">
         <span><strong>Acceptă plata cu cardul</strong><small>Clientul poate alege numerar sau card.</small></span>
@@ -128,6 +129,7 @@
     <p id="memberFormHint">Numele de utilizator se completează automat. Îl poți modifica.</p>
     <div class="dashboard-fields">
       <label for="memberRestaurantName">Numele restaurantului<input id="memberRestaurantName" required maxlength="120" autocomplete="organization"></label>
+      <label for="memberRestaurantPhone">Telefon contact clienți (apel și WhatsApp)<input id="memberRestaurantPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+407XXXXXXXX" required maxlength="24"></label>
       <label for="uid">Nume de utilizator<input id="uid" required minlength="3" maxlength="64" autocomplete="off"></label>
       <div class="dashboard-wide">
         <label for="memberPassword">Parolă inițială (minimum 12 caractere)</label>
@@ -333,7 +335,7 @@ function renderRestaurants() {
   const id = esc(restaurant.id), enabled = restaurant.enabled;
   const access = hasMember(restaurant.id);
   return '<div class="restaurant-admin-item"><div class="restaurant-admin-heading"><strong>' + esc(restaurant.name) + '</strong>' +
-   '<div class="dashboard-badges"><span class="dashboard-badge" data-state="' + (enabled ? 'enabled' : 'disabled') + '">' +
+   '<small>' + esc(restaurant.phone||'Telefon neconfigurat') + '</small><div class="dashboard-badges"><span class="dashboard-badge" data-state="' + (enabled ? 'enabled' : 'disabled') + '">' +
    (enabled ? 'Activ' : 'Suspendat') + '</span>' +
    (restaurant.accepts_card ? '<span class="dashboard-badge">Acceptă card</span>' : '') +
    (access ? '' : '<span class="dashboard-badge">Fără cont</span>') +
@@ -863,6 +865,7 @@ function openRestaurantEditor(restaurant = null) {
  $('addRestaurantOnly').setAttribute('aria-expanded', 'true');
  $('editingRestaurant').value = restaurant?.id ?? '';
  $('name').value = restaurant?.name ?? '';
+ $('restaurantContactPhone').value=restaurant?.phone??'';
  $('restaurantAcceptsCard').checked = Boolean(restaurant?.accepts_card);
  $('restaurantFormTitle').textContent = restaurant ? 'Editează restaurantul' : 'Adaugă restaurant fără cont';
  $('saveRestaurantButton').textContent = restaurant ? 'Salvează modificările' : 'Adaugă restaurant';
@@ -891,7 +894,9 @@ $('restaurantForm').onsubmit = async event => {
   $('name').focus();
   return;
  }
- const values = {name, accepts_card:$('restaurantAcceptsCard').checked};
+ const phone=$('restaurantContactPhone').value.trim();
+ if(phone&&!/^\+?[0-9 ()-]{8,24}$/.test(phone)){showMessage('restaurantFormStatus','Introdu un număr de telefon valid.',true);return}
+ const values = {name,phone:phone||null, accepts_card:$('restaurantAcceptsCard').checked};
  button.disabled = true;
  try {
   await req(id ? db.from('restaurants').update(values).eq('id', id) :
@@ -946,6 +951,7 @@ function setMemberTarget(restaurant = null) {
  accountRestaurantId = restaurant?.id ?? '';
  name.readOnly = Boolean(restaurant);
  name.value = restaurant?.name ?? '';
+ $('memberRestaurantPhone').value = restaurant?.phone ?? '';
  $('memberFormTitle').textContent = restaurant ? 'Creează acces pentru restaurant' : 'Restaurant și cont nou';
  $('memberFormHint').textContent = restaurant ? 'Restaurantul există deja. Completează datele contului.' : 'Numele de utilizator se completează automat. Îl poți modifica.';
  $('saveMember').textContent = restaurant ? 'Creează contul' : 'Creează restaurant și cont';
@@ -992,7 +998,8 @@ $('memberForm').onsubmit = async event => {
  const button = $('saveMember'), name = $('memberRestaurantName').value.trim();
  if (button.disabled) return;
  let target = restaurants.find(restaurant => restaurant.id === accountRestaurantId);
- const username = $('uid').value.trim(), password = $('memberPassword').value;
+ const username = $('uid').value.trim(), password = $('memberPassword').value, phone=$('memberRestaurantPhone').value.trim();
+ if(!/^\+?[0-9 ()-]{8,24}$/.test(phone)){showMessage('memberFormStatus','Introdu un număr de telefon valid pentru contactul cu clienții.',true);return}
  if (!name || !/^[a-zA-Z0-9_. -]{3,64}$/.test(username)) {
   showMessage('memberFormStatus','Completează numele restaurantului și un nume de utilizator valid, fără diacritice.',true);
   return;
@@ -1005,10 +1012,11 @@ $('memberForm').onsubmit = async event => {
   if (!target) {
    const {data:{session}} = await db.auth.getSession();
    if (!session) throw Error('Sesiunea a expirat. Reconectează-te.');
-   const {data,error} = await db.from('restaurants').insert({name, slug:uniqueSlug(name,restaurants)}).select('id,name').single();
+   const {data,error} = await db.from('restaurants').insert({name,phone, slug:uniqueSlug(name,restaurants)}).select('id,name,phone').single();
    if (error) throw error;
    target = data;
   }
+  if(target.phone!==phone){const {error:phoneError}=await db.from('restaurants').update({phone}).eq('id',target.id);if(phoneError)throw phoneError;}
   await restaurantAccountAction('create', {username, password, restaurant_id:target.id});
   closeMemberEditor();
   await load();
