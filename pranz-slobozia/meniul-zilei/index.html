@@ -428,89 +428,107 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
     <p>Alege un restaurant pentru prânzul de azi.</p>
   </section>
 <style>
-/* PONT · sponsor strip: editorial typography, hairline accents, seamless motion */
+/* PONT · compact integrated Glovo promotion, still edge-to-edge */
 .pont-sponsor{
-  --sponsor-ink:#071c20;
-  --sponsor-gold:#ffe36b;
   position:relative;
   width:100vw;width:100dvw;
   margin:clamp(12px,2vw,18px) 0 clamp(19px,3vw,27px) calc(50% - 50vw);
   margin-left:calc(50% - 50dvw);
-  height:45px;
   overflow:hidden;
   isolation:isolate;
-  background:linear-gradient(180deg,#123239 0%,#092329 51%,#071e25 100%);
-  border-top:1px solid rgba(255,237,150,.45);
-  border-bottom:1px solid rgba(255,237,150,.28);
-  box-shadow:0 7px 21px rgba(3,19,23,.15),inset 0 1px 0 rgba(255,255,255,.035);
+  background:#071f24;
+  border-top:1px solid rgba(255,233,141,.34);
+  border-bottom:1px solid rgba(255,233,141,.28);
+  box-shadow:0 7px 21px rgba(3,19,23,.12);
 }
-.pont-sponsor::before{
+.pont-sponsor__headline{
+  position:relative;z-index:2;
+  height:29px;min-height:29px;
+  display:flex;justify-content:center;align-items:center;
+  background:linear-gradient(90deg,#0b272a,#15383a 50%,#0b272a);
+  border-bottom:1px solid rgba(255,255,255,.095);
+}
+.pont-sponsor__link{
+  display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  max-width:100%;min-width:0;padding:2px 10px;
+  color:#eaf4f0;text-decoration:none;
+  font:500 11px/1.12 system-ui,-apple-system,sans-serif;
+  letter-spacing:.01em;
+}
+.pont-sponsor__link strong{font-weight:700;color:#fff}
+.pont-sponsor__brand{
+  display:inline-flex;align-items:center;justify-content:center;
+  height:23px;min-width:58px;padding:2px 7px;
+  border-radius:6px;background:#ffc244;flex:none;
+  box-shadow:inset 0 1px rgba(255,255,255,.16);
+}
+.pont-sponsor__logo{display:block;width:51px;height:17px;object-fit:contain}
+.pont-sponsor__link:focus-visible{outline:2px solid #ffe48c;outline-offset:0;border-radius:5px}
+.pont-sponsor__marquee{
+  position:relative;
+  height:38px;
+  overflow:hidden;
+  background:linear-gradient(180deg,#102f34 0%,#082128 100%);
+}
+.pont-sponsor__marquee::before{
   content:"";position:absolute;inset:0;pointer-events:none;z-index:1;
-  background:linear-gradient(90deg,rgba(7,28,32,.75),transparent 5%,transparent 86%,rgba(7,28,32,.68));
-}
-.pont-sponsor::after{
-  content:"";position:absolute;left:0;right:0;top:0;height:1px;z-index:2;
-  pointer-events:none;background:linear-gradient(90deg,transparent,rgba(255,234,137,.45) 50%,transparent);
+  background:linear-gradient(90deg,rgba(7,28,32,.7),transparent 5%,transparent 94%,rgba(7,28,32,.7));
 }
 .pont-sponsor__track{
   height:100%;display:flex;align-items:center;width:max-content;
-  animation:pont-sponsor-marquee 38s linear infinite;
-  will-change:transform;
+  animation:pont-sponsor-marquee 38s linear infinite;will-change:transform;
 }
 .pont-sponsor__group{flex:none;display:flex;align-items:center;justify-content:space-around;min-width:100dvw;height:100%}
-.pont-sponsor__item{display:inline-flex;flex:none;align-items:center;gap:16px;padding:0 28px;white-space:nowrap}
-.pont-sponsor__wordmark{
-  font:850 italic 24px/1 system-ui,-apple-system,sans-serif;
-  letter-spacing:-.085em;color:var(--sponsor-gold);
-  text-shadow:0 1px 0 rgba(0,0,0,.2),0 0 18px rgba(255,227,107,.13);
-}
+.pont-sponsor__item{display:inline-flex;flex:none;align-items:center;gap:15px;padding:0 27px;white-space:nowrap}
+.pont-sponsor__wordmark{font:850 italic 22px/1 system-ui,-apple-system,sans-serif;letter-spacing:-.085em;color:#ffe36b;text-shadow:0 1px 0 rgba(0,0,0,.2),0 0 18px rgba(255,227,107,.1)}
 .pont-sponsor__period{color:#96e1d0}
-.pont-sponsor__separator{
-  flex:none;width:4px;height:4px;background:#e3c87e;
-  transform:rotate(45deg);opacity:.8;box-shadow:0 0 0 3px rgba(227,200,126,.06);
-}
-.pont-sponsor__message{font:500 10px/1.3 system-ui,-apple-system,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#cbded8}
-.pont-sponsor__disclosure{
-  position:absolute;z-index:3;right:0;top:0;bottom:0;
-  display:flex;align-items:center;padding:0 14px 0 24px;
-  font:700 8px/1.15 system-ui,sans-serif;letter-spacing:.09em;
-  color:#dfd0a7;background:linear-gradient(90deg,transparent 0%,rgba(5,24,29,.90) 26%,#071c20 100%);
-  pointer-events:none;
-}
+.pont-sponsor__separator{flex:none;width:4px;height:4px;background:#e3c87e;transform:rotate(45deg);opacity:.7}
+.pont-sponsor__message{font:500 10px/1.3 system-ui,-apple-system,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#cbded8}
 @keyframes pont-sponsor-marquee{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
 @media(max-width:520px){
-  .pont-sponsor{height:39px;margin-top:10px;margin-bottom:18px}
-  .pont-sponsor__wordmark{font-size:21px}
-  .pont-sponsor__item{gap:12px;padding:0 20px}
-  .pont-sponsor__message{font-size:9px;letter-spacing:.12em}
-  .pont-sponsor__disclosure{font-size:7px;padding-right:8px;padding-left:20px}
+ .pont-sponsor{margin-top:10px;margin-bottom:17px}
+ .pont-sponsor__headline{height:27px;min-height:27px}
+ .pont-sponsor__link{font-size:10px;gap:5px;padding:1px 5px}
+ .pont-sponsor__brand{height:22px;min-width:51px;padding:2px 5px}
+ .pont-sponsor__logo{width:47px;height:16px}
+ .pont-sponsor__marquee{height:34px}
+ .pont-sponsor__wordmark{font-size:20px}
+ .pont-sponsor__item{gap:12px;padding:0 20px}
+ .pont-sponsor__message{font-size:9px;letter-spacing:.12em}
 }
 @media(prefers-reduced-motion:reduce){.pont-sponsor__track{animation:none;transform:translateX(-50%)}}
 </style>
-  <section class="pont-sponsor" aria-label="Spațiu publicitar demonstrativ pentru Glovo; nu există un parteneriat confirmat">
-    <div class="pont-sponsor__track" aria-hidden="true">
-      <div class="pont-sponsor__group">
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-      </div>
-      <div class="pont-sponsor__group">
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
-        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+  <section class="pont-sponsor" aria-label="Descoperă Glovo">
+    <div class="pont-sponsor__headline">
+      <a class="pont-sponsor__link" href="https://glovoapp.com/ro/ro/slobozia" target="_blank" rel="noopener noreferrer" aria-label="Meniul zilei nu este de ajuns? Încearcă Glovo. Se deschide site-ul Glovo pentru Slobozia.">
+        <span>Meniul zilei nu este de ajuns? <strong>Încearcă</strong></span>
+        <span class="pont-sponsor__brand"><img class="pont-sponsor__logo" src="https://commons.wikimedia.org/wiki/Special:Redirect/file/Glovo_Logo.svg" alt="Glovo" loading="lazy"></span>
+      </a>
+    </div>
+    <div class="pont-sponsor__marquee">
+      <div class="pont-sponsor__track" aria-hidden="true">
+        <div class="pont-sponsor__group">
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+        </div>
+        <div class="pont-sponsor__group">
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+          <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__separator" aria-hidden="true"></span><span class="pont-sponsor__message">O pauză cu gust</span></span>
+        </div>
       </div>
     </div>
-    <span class="pont-sponsor__disclosure">PUBLICITATE · DEMO</span>
   </section>
   <section id="customer" aria-label="Restaurante cu meniul zilei">
     <p id="menuPreviewLabel" class="menu-preview-label" hidden>Exemple de meniuri · comenzile sunt dezactivate</p>
