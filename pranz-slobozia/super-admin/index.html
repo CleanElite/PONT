@@ -32,6 +32,7 @@
 #auctions .pont-auction-ranking-footer button{flex:none;min-height:36px;padding:8px 11px;border-radius:11px;font-size:12px;background:#16453e;color:#e9f8ef;border:1px solid #4c8072}
 @media(max-width:530px){#auctions .pont-auction-ranking-trigger{width:100%}#auctions .pont-auction-ranking-head{padding:19px 16px 12px}#auctions .pont-auction-ranking-rows{padding:6px 8px 10px}#auctions .pont-auction-ranking-row{gap:8px;grid-template-columns:30px minmax(0,1fr) auto;padding:10px 5px}#auctions .pont-auction-ranking-value{font-size:13px}#auctions .pont-auction-ranking-footer{padding:12px 15px 17px;gap:8px}}
 
+#auctions .pont-auction-ranking-month-label{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin:10px 0 0;color:#b8d8ce;font-size:11px;font-weight:650}#auctions .pont-auction-ranking-month-label input{box-sizing:border-box;max-width:185px;min-height:36px;padding:6px 10px;border:1px solid #5b8b7c;border-radius:10px;background:#123d37;color:#f6fffa;font-size:14px;color-scheme:dark}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><body class="pont-admin pont-admin--platform">
@@ -188,7 +189,7 @@
   <div id="auctionRows"></div>
   <dialog id="auctionRankingDialog" class="pont-auction-ranking-dialog" aria-labelledby="auctionRankingTitle">
     <div class="pont-auction-ranking-head">
-      <div><span class="pont-auction-ranking-kicker">CLASAMENT</span><h3 id="auctionRankingTitle">Rezumat licitații</h3><p id="auctionRankingMonth"></p></div>
+      <div><span class="pont-auction-ranking-kicker">CLASAMENT</span><h3 id="auctionRankingTitle">Rezumat licitații</h3><label class="pont-auction-ranking-month-label" for="auctionRankingMonth">Luna licitației<input type="month" id="auctionRankingMonth"></label></div>
       <button type="button" id="closeAuctionRanking" class="pont-auction-ranking-close" aria-label="Închide rezumatul">×</button>
     </div>
     <p id="auctionRankingInfo" class="pont-auction-ranking-info" role="status" aria-live="polite"></p>
@@ -560,9 +561,8 @@ function rankedAuctionOffers(offers){
   (restaurantName(a.restaurant_id)||'').localeCompare(restaurantName(b.restaurant_id)||'','ro'));
 }
 async function renderAuctionRanking(){
- const month=$('auctionMonth').value;
+ const month=$('auctionRankingMonth').value;
  const request=++auctionRankingRequest;
- $('auctionRankingMonth').textContent=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'-01T00:00:00Z'));
  $('auctionRankingInfo').textContent='Se încarcă ofertele…';
  $('auctionRankingRows').innerHTML='';
  try{
@@ -583,9 +583,11 @@ async function renderAuctionRanking(){
  }
 }
 $('showAuctionRanking').onclick=()=>{
+ $('auctionRankingMonth').value=nextAuctionMonth().slice(0,7);
  auctionRankingDialog.showModal();
  void renderAuctionRanking();
 };
+$('auctionRankingMonth').addEventListener('change',()=>void renderAuctionRanking());
 $('refreshAuctionRanking').onclick=()=>void renderAuctionRanking();
 $('closeAuctionRanking').onclick=()=>auctionRankingDialog.close();
 auctionRankingDialog.addEventListener('click',event=>{if(event.target===auctionRankingDialog)auctionRankingDialog.close()});
