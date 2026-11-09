@@ -1,12 +1,12 @@
 <!doctype html>
 <html lang="ro">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#080b0e"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/svg+xml" href="./pont.svg">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#030405"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/svg+xml" href="./pont.svg">
 <link rel="manifest" href="./manifest.webmanifest"><link rel="apple-touch-icon" sizes="180x180" href="./pont-180.png?v=4"><script src="./install.js?v=safari-4" defer></script>
 <link rel="preload" as="image" href="./assets/pont-intro.jpg">
 <style>
 :root {
   color-scheme:dark;
-  --night:#080b0e;
+  --night:#030405;
   --text:#f4f4f1;
   --muted:#bbc3c9;
   --line:rgba(210,228,239,.17);
@@ -25,7 +25,7 @@ button{font:inherit}
 :where(a,button):focus-visible{outline:2px solid var(--ice);outline-offset:4px}
 .entry{
   min-height:100svh;
-  background:radial-gradient(ellipse at 50% 0,rgba(36,96,124,.16),transparent 39rem),var(--night);
+  background:var(--night);
 }
 .entry-header,.entry-content,.entry-footer{width:min(100% - 36px,1040px);margin-inline:auto}
 .entry-header{
@@ -111,12 +111,12 @@ button{font:inherit}
 #install-help button{padding:8px 14px;border:1px solid var(--line);border-radius:8px}
 
 .pont-intro{position:fixed;inset:0;z-index:20;overflow:hidden;overscroll-behavior:none}
-.pont-intro__art{position:absolute;inset:0;background:#000}
+.pont-intro__art{position:absolute;inset:0;background:var(--night)}
 .pont-intro__art img{display:block;width:100%;height:100%;object-fit:contain}
 
 .pont-intro__panel{
   display:none;position:absolute;inset:0;
-  background:#000 var(--art) center / contain no-repeat;
+  background:var(--night) var(--art) center / contain no-repeat;
 }
 .pont-intro__panel.left{clip-path:inset(0 50% 0 0);--curtain-motion:pont-curtain-left}
 .pont-intro__panel.right{clip-path:inset(0 0 0 50%);--curtain-motion:pont-curtain-right}
