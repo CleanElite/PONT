@@ -60,7 +60,7 @@ function renderCustomers(){
  const orders=customerLeads.filter(l=>(l.customer_name+' '+l.customer_phone+' '+(restaurants.find(r=>r.id===l.restaurant_id)?.name||'')).toLowerCase().includes(needle));
  $('customerOrderRows').innerHTML=orders.length?orders.map(l=>{
   const name=restaurants.find(r=>r.id===l.restaurant_id)?.name||'Restaurant';
-  return '<tr><td>'+esc(l.customer_name)+'</td><td>'+esc(name)+'</td><td>'+esc(l.order_reference)+'</td><td>'+n(l.menus_count)+'</td><td class="'+(l.confirmed_at?'pont-customer-confirmed':'pont-customer-pending')+'">'+(l.confirmed_at?'Confirmată':'Neconfirmată')+'</td><td><button type="button" data-customer-order="'+l.id+'" data-confirmed="'+(l.confirmed_at?'true':'false')+'">'+(l.confirmed_at?'Retrage':'Confirmă')+'</button></td></tr>'
+  return '<tr><td>'+esc(l.customer_name)+'</td><td>'+esc(name)+'</td><td>'+esc(l.order_reference)+'</td><td>'+n(l.menus_count)+'</td><td class="'+(l.confirmed_at?'pont-customer-confirmed':'pont-customer-pending')+'">'+(l.confirmed_at?'Confirmată':'Neconfirmată')+'</td><td><button type="button" data-customer-order="'+l.id+'" data-confirmed="'+(l.confirmed_at?'true':'false')+'">'+(l.confirmed_at?'Retrage':'Confirmă')+'</button> <button type="button" data-delete-customer-order="'+l.id+'" title="Șterge datele acestei solicitări">Șterge</button></td></tr>'
  }).join(''):'<tr><td colspan="6">Nu există solicitări înregistrate.</td></tr>';
 }
 async function loadCustomers(){
@@ -72,6 +72,14 @@ async function loadCustomers(){
 $('customersSearch').addEventListener('input',renderCustomers);
 $('customersRefresh').onclick=()=>loadCustomers().catch(e=>$('customersStatus').textContent=e.message);
 $('customerOrderRows').onclick=async e=>{
+ const deleteButton=e.target.closest('[data-delete-customer-order]');
+ if(deleteButton){
+  const id=Number(deleteButton.dataset.deleteCustomerOrder),l=customerLeads.find(x=>x.id===id);
+  if(!l||!confirm('Ștergi definitiv această solicitare și datele clientului '+l.customer_name+'?'))return;
+  deleteButton.disabled=true;
+  try{await req(db.rpc('pont_admin_delete_whatsapp_lead',{p_id:id}));await loadCustomers();$('customersStatus').textContent='Solicitarea a fost ștearsă.'}catch(err){deleteButton.disabled=false;$('customersStatus').textContent=err.message}
+  return;
+ }
  const button=e.target.closest('[data-customer-order]');if(!button)return;
  const id=Number(button.dataset.customerOrder),wasConfirmed=button.dataset.confirmed==='true',record=customerLeads.find(l=>l.id===id);if(!record)return;
  if(!confirm((wasConfirmed?'Retragi confirmarea':'Ai verificat la restaurant că această comandă a fost acceptată? Confirmi')+' pentru '+record.customer_name+' ('+record.order_reference+')?'))return;
