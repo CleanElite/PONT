@@ -12,18 +12,18 @@
 }
 
 .menu-art { position: absolute; inset: 0; pointer-events: none; }
-.menu-art::before, .menu-art::after {
+.menu-art::after {
   content: '';
   position: absolute;
   z-index: -1;
   pointer-events: none;
+  right: 0;
+  bottom: 0;
   width: min(35vw, 410px);
   aspect-ratio: 337 / 187;
   background: url('./showcase/arc.webp?v=2') left top / contain no-repeat;
+  transform: rotate(180deg);
 }
-
-.menu-art::before { top: 0; left: 0; }
-.menu-art::after { right: 0; bottom: 0; transform: rotate(180deg); }
 
 body.lunch.menu-showcase > .menu-header,
 body.lunch.menu-showcase > .menu-main {
@@ -35,9 +35,11 @@ body.lunch.menu-showcase > .menu-main {
 
 body.lunch.menu-showcase > .menu-header {
   display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   position: relative;
   justify-content: stretch;
   justify-items: center;
+  align-items: center;
   gap: 0;
   min-height: 0;
   padding-block: clamp(16px, 2vw, 22px) 0;
@@ -69,7 +71,7 @@ body.lunch.menu-showcase > .menu-header {
 }
 .menu-city::after { transform: scaleX(-1); }
 
-.menu-back, .menu-card-action {
+.menu-card-action {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -81,16 +83,22 @@ body.lunch.menu-showcase > .menu-header {
   text-decoration: none;
 }
 .menu-back {
-  position: absolute;
-  top: clamp(20px, 4.3vw, 44px);
-  right: 0;
-  padding: .6em .95em;
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: .45em;
   min-height: 44px;
-  font-size: clamp(13px, 2.2vw, 22px);
-  background: #04191cdb;
-  box-shadow: inset 0 0 12px #43c8c948, 0 0 14px #3bffec15;
+  color: #c6d9d9;
+  font-size: clamp(13px, 1.55vw, 15px);
+  font-weight: 550;
+  text-decoration: none;
+  white-space: nowrap;
 }
-.menu-back:hover { background-color: #0c3a3e; }
+.menu-back:hover {
+  color: #f8ffff;
+  text-decoration: underline;
+  text-underline-offset: .22em;
+}
 
 .menu-icon {
   display: inline-block;
@@ -278,14 +286,14 @@ body.lunch.menu-showcase #customer #list {
 }
 
 @media (max-width: 700px) {
-  body.lunch.menu-showcase > .menu-header { padding-top: 9px; }
-  .menu-back { position: static; grid-row: 1; justify-self: end; }
-  .menu-wordmark { width: clamp(145px, 40vw, 225px); }
+  body.lunch.menu-showcase > .menu-header { padding-top: 13px; }
+  .menu-wordmark { width: clamp(130px, 40vw, 225px); }
   .menu-tile:nth-child(-n+2) .menu-card-copy { width: 49%; }
 }
 
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .menu-card, .menu-back { transition: border-color .22s, background-color .22s, box-shadow .22s; }
+  .menu-back { transition: color .22s; }
+  .menu-card { transition: border-color .22s, background-color .22s, box-shadow .22s; }
   .menu-card-photo { transition: transform .5s cubic-bezier(.2,.75,.35,1); }
   .menu-card:hover .menu-card-photo { transform: scale(1.035); }
 }

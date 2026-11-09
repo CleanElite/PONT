@@ -412,28 +412,28 @@ body.lunch .pont-footer-links a{display:inline-flex!important;width:auto!importa
 body.lunch .pont-footer-links a:hover{text-decoration:underline!important;color:white!important}
 body.lunch .pont-footer-simple>small{font-size:11px!important;color:#84aaa2!important}
 @media(max-width:500px){body.lunch .pont-footer-simple{margin-top:29px!important;padding:24px 16px 30px!important}body.lunch .pont-footer-links{gap:6px 15px!important}body.lunch .pont-footer-links a{font-size:11px!important}}
-body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;height:17px!important;margin:8px auto 20px!important;padding:0!important;border:0!important;background:white!important;border-radius:4px!important;align-items:center;justify-content:center;overflow:hidden}body.lunch .pont-sal-pictogram img{display:block!important;width:68px!important;height:17px!important;max-width:none!important;object-fit:contain!important}body.lunch .pont-sal-pictogram:hover{outline:2px solid #92e8d9;outline-offset:3px}</style><link rel="stylesheet" href="./menu-showcase.css?v=3">
+body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;height:17px!important;margin:8px auto 20px!important;padding:0!important;border:0!important;background:white!important;border-radius:4px!important;align-items:center;justify-content:center;overflow:hidden}body.lunch .pont-sal-pictogram img{display:block!important;width:68px!important;height:17px!important;max-width:none!important;object-fit:contain!important}body.lunch .pont-sal-pictogram:hover{outline:2px solid #92e8d9;outline-offset:3px}</style><link rel="stylesheet" href="./menu-showcase.css?v=4">
 <body class="lunch menu-showcase">
 <div class="menu-art" aria-hidden="true"></div>
 <header class="menu-header">
-  <a class="menu-lockup" href="../" aria-label="PONT Slobozia, pagina de intrare">
+  <a class="menu-back" href="../"><span class="menu-icon menu-icon--arrow" aria-hidden="true"></span>Acasă</a>
+  <a class="menu-lockup" href="../" aria-label="PONT Slobozia, pagina principală">
     <span class="menu-wordmark" aria-hidden="true"></span>
     <span class="menu-city" aria-hidden="true">SLOBOZIA</span>
   </a>
-  <a class="menu-back" href="../"><span class="menu-icon menu-icon--arrow" aria-hidden="true"></span>Înapoi la intrare</a>
 </header>
 <main class="menu-main">
   <section class="menu-heading" aria-labelledby="lunchTitle">
     <h1 id="lunchTitle"><span class="menu-icon menu-icon--utensils" aria-hidden="true"></span>Meniul zilei</h1>
-    <p>Alege restaurantul și vezi meniul de azi.</p>
+    <p>Vezi ce se gătește azi în Slobozia.</p>
   </section>
   <section id="customer" aria-label="Restaurante cu meniul zilei">
-    <p id="menuPreviewLabel" class="menu-preview-label" hidden>Previzualizare · restaurante de test</p>
-    <div id="list" aria-live="polite"><p class="menu-empty">Se încarcă meniurile de azi…</p></div>
+    <p id="menuPreviewLabel" class="menu-preview-label" hidden>Previzualizare · meniuri de test</p>
+    <div id="list" aria-live="polite"><p class="menu-empty">Încărcăm meniurile…</p></div>
     <p id="menuPhotoNote" class="menu-photo-note" hidden>Unele fotografii sunt ilustrative.</p>
   </section>
 </main>
-<footer class="pont-footer-simple"><div class="pont-footer-brand"><span class="pont-footer-mark">PONT</span><span class="pont-footer-city">SLOBOZIA</span></div><p>Comenzile se confirmă direct cu restaurantul.</p><nav class="pont-footer-links" aria-label="Informații și documente legale"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate</a><a href="../cookies.html">Cookies</a><a href="https://anpc.ro/" target="_blank" rel="noopener noreferrer">ANPC</a></nav><a class="pont-sal-pictogram" href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" aria-label="ANPC – Soluționarea Alternativă a Litigiilor"><img src="../sal-pont.svg" width="68" height="17" loading="lazy" alt="ANPC – Soluționarea Alternativă a Litigiilor"></a><small>© PONT · Platformă de prezentare a restaurantelor</small></footer>
+<footer class="pont-footer-simple"><div class="pont-footer-brand"><span class="pont-footer-mark">PONT</span><span class="pont-footer-city">SLOBOZIA</span></div><p>Pentru comenzile pe WhatsApp, așteaptă confirmarea restaurantului.</p><nav class="pont-footer-links" aria-label="Informații și documente legale"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate</a><a href="../cookies.html">Cookies</a><a href="https://anpc.ro/" target="_blank" rel="noopener noreferrer">ANPC</a></nav><a class="pont-sal-pictogram" href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" aria-label="ANPC – Soluționarea Alternativă a Litigiilor"><img src="../sal-pont.svg" width="68" height="17" loading="lazy" alt="ANPC – Soluționarea Alternativă a Litigiilor"></a><small>© PONT · Platformă de prezentare a restaurantelor</small></footer>
 <dialog id="order" aria-labelledby="orderTitle">
 <div class="order-topbar"><button type="button" id="close" class="secondary" autofocus>← Restaurante</button></div>
 <div class="pont-order-brand"><span class="pont-order-logo">P<span>◠</span>NT</span><h2 id="orderTitle"></h2><p>Meniul zilei</p></div>
@@ -492,7 +492,7 @@ function render(){
         <span class="menu-card-price">${price}</span>
       </button>
     </article>`;
-  }).join('') : '<p class="menu-empty">Nu există meniuri disponibile momentan.</p>';
+  }).join('') : '<p class="menu-empty">Momentan, nu sunt meniuri disponibile pentru azi.</p>';
   $('#menuPhotoNote').hidden = !usesIllustration;
 }
 $('#list').addEventListener('error', event => {
@@ -631,7 +631,7 @@ if(waPhone){
 }else $('#orderMsg').textContent='Număr WhatsApp indisponibil.';
 submittingOrder=false;
 };
-async function refreshLiveMenus(){try{const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Conexiune neconfigurată');const params=new URLSearchParams({select:'id,restaurant_id,title,price,description,first_course,second_course,first_price,second_price,dessert,dish_selection,restaurants!inner(name,enabled,phone,accepts_card)',published:'eq.true',service_date:'eq.'+day(),'restaurants.enabled':'eq.true',order:'created_at.desc'});const response=await fetch(cfg.url+'/rest/v1/menus?'+params,{headers:{apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();liveMenus=data.map(m=>({id:m.id,restaurantId:m.restaurant_id,dishes:Array.isArray(m.dish_selection)?m.dish_selection.filter(d=>d&&['first','second','dessert'].includes(d.category)&&typeof d.name==='string').slice(0,60):[],name:m.restaurants.name,first:m.first_course||m.title,second:m.second_course||m.description||'Detalii la restaurant',p1:Number(m.first_price??m.price??0),p2:Number(m.second_price??m.price??0),full:Number(m.price??0),dessert:m.dessert||'',card:!!m.restaurants.accepts_card,delivery:true,phone:m.restaurants.phone||''}));render()}catch(err){console.error('PONT menus',err);$('#list').innerHTML='<p class="menu-empty">Nu am putut încărca meniurile. Reîncearcă în câteva momente.</p>';$('#menuPhotoNote').hidden=true}}
+async function refreshLiveMenus(){try{const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Conexiune neconfigurată');const params=new URLSearchParams({select:'id,restaurant_id,title,price,description,first_course,second_course,first_price,second_price,dessert,dish_selection,restaurants!inner(name,enabled,phone,accepts_card)',published:'eq.true',service_date:'eq.'+day(),'restaurants.enabled':'eq.true',order:'created_at.desc'});const response=await fetch(cfg.url+'/rest/v1/menus?'+params,{headers:{apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();liveMenus=data.map(m=>({id:m.id,restaurantId:m.restaurant_id,dishes:Array.isArray(m.dish_selection)?m.dish_selection.filter(d=>d&&['first','second','dessert'].includes(d.category)&&typeof d.name==='string').slice(0,60):[],name:m.restaurants.name,first:m.first_course||m.title,second:m.second_course||m.description||'Detalii la restaurant',p1:Number(m.first_price??m.price??0),p2:Number(m.second_price??m.price??0),full:Number(m.price??0),dessert:m.dessert||'',card:!!m.restaurants.accepts_card,delivery:true,phone:m.restaurants.phone||''}));render()}catch(err){console.error('PONT menus',err);$('#list').innerHTML='<p class="menu-empty">Meniurile nu s-au încărcat. Reîncarcă pagina.</p>';$('#menuPhotoNote').hidden=true}}
 if (isMenuPreview) {
   $('#menuPreviewLabel').hidden = false;
   render();
