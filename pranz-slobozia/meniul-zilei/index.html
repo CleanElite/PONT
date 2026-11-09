@@ -520,7 +520,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-page.css?v=20261109b">
+<link rel="stylesheet" href="./restaurant-page.css?v=20261109a">
 <dialog id="order" aria-labelledby="orderTitle">
 <div class="order-topbar"><button type="button" id="close" class="secondary" autofocus>← Restaurante</button></div>
 <div class="pont-restaurant-hero"><div class="pont-restaurant-hero__photo" id="restaurantHeroPhoto" aria-hidden="true"></div>
@@ -669,19 +669,7 @@ function openOrder(m,trigger){
  trackPontMetric('restaurant_view',m);
   current=m;draft=null;orderNoticeAccepted=true;returnFocus=trigger;form.reset();phoneTouched=false;
   $('#orderTitle').textContent=m.name;
-  const previewItems=m.dishes?.length?m.dishes:[
-    {category:'first',name:m.first},{category:'second',name:m.second},
-    ...(m.dessert?[{category:'dessert',name:m.dessert}]:[])
-  ];
-  const previewGroup=(category,label)=> {
-    const items=previewItems.filter(d=>d.category===category);
-    if(!items.length)return '';
-    return '<div class="pont-preview-group pont-preview-'+category+'">'+
-      '<strong class="pont-preview-title">'+label+'</strong>'+
-      '<div class="pont-preview-items">'+items.map(d=>'<span class="pont-preview-item'+(d.available===false?' is-unavailable':'')+'">'+esc(d.name)+(d.available===false?' · Epuizat':'')+'</span>').join('')+'</div></div>';
-  };
-  $('#menuPreview').innerHTML=previewGroup('first','Felul 1')+previewGroup('second','Felul 2')+previewGroup('dessert','Desert');
-  $('#combo-price').innerHTML=m.full>0?'<small>Meniu complet</small><strong>'+lei(m.full)+'</strong>':'';
+  $('#menuPreview').innerHTML=m.dishes?.length?m.dishes.map(d=>'<div class="preview-course"><span>'+(d.category==='first'?'F1':d.category==='second'?'F2':'D')+'</span><strong>'+esc(d.name)+(d.available===false?' · Epuizat acest preparat':'')+'</strong></div>').join(''):'<div class="preview-course"><span>F1</span><strong>'+esc(m.first)+'</strong></div><div class="preview-course"><span>F2</span><strong>'+esc(m.second)+'</strong></div>'+(m.dessert?'<div class="preview-course"><span>D</span><strong>'+esc(m.dessert)+'</strong></div>':'');$('#combo-price').innerHTML=m.full>0?'<small>Meniu complet</small><strong>'+lei(m.full)+'</strong>':'';
   const optionDishes=m.dishes?.length?m.dishes.map(d=>({id:d.id,name:d.name,price:Number(d.price)||0,category:d.category,photo_url:d.photo_url||'',available:d.available!==false})):titles().map((name,i)=>({name,price:prices()[i],category:i?'second':'first',available:true}));
   const categoryLabels={first:['♨','Felul 1'],second:['♧','Felul 2'],dessert:['♢','Desert']};
   let dishIndex=0;
