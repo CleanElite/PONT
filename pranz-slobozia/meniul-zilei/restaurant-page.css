@@ -461,3 +461,30 @@ body #order::backdrop{background:#031c1a}
  #order .pont-contact-or{text-align:center!important}
  #order .pont-contact-whatsapp{text-align:center!important}
 }
+
+
+/* Shared PONT brand asset, identical to the logo used across the admin pages. */
+#order .pont-restaurant-hero .pont-order-logo-image{
+  position:absolute!important;
+  top:9px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  display:block!important;
+  width:clamp(145px,26vw,210px)!important;
+  height:74px!important;
+  max-width:52vw!important;
+  object-fit:contain!important;
+  border:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  padding:0!important;
+  margin:0!important;
+}
+@media(max-width:530px){
+ #order .pont-restaurant-hero .pont-order-logo-image{
+   top:9px!important;
+   width:clamp(142px,43vw,185px)!important;
+   height:67px!important;
+   max-width:52vw!important;
+ }
+}
