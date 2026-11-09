@@ -428,33 +428,65 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
     <p>Alege un restaurant pentru prânzul de azi.</p>
   </section>
 <style>
-/* PONT · premium sponsor ticker / demo campaign */
-.pont-sponsor{position:relative;margin:clamp(12px,3vw,24px) 0 clamp(19px,4vw,32px);padding:10px 15px 9px;overflow:hidden;border:1px solid rgba(253,224,83,.29);border-radius:18px;background:linear-gradient(115deg,#0b292b 0%,#112f32 42%,#062125 100%);box-shadow:0 9px 34px rgba(0,0,0,.14),inset 0 1px rgba(255,255,255,.08);isolation:isolate}
-.pont-sponsor::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 18% 50%,rgba(255,211,48,.10),transparent 43%),linear-gradient(90deg,transparent 0%,rgba(85,217,203,.045) 50%,transparent 100%);z-index:-1}
-.pont-sponsor__top{display:flex;justify-content:space-between;gap:12px;align-items:center;color:#c3d7d2;font:700 9px/1.4 system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase}
-.pont-sponsor__top span:last-child{color:#aeb9af;font-size:8px;letter-spacing:.13em}
-.pont-sponsor__stage{height:clamp(65px,12vw,94px);position:relative;overflow:hidden;display:flex;align-items:center;-webkit-mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent);mask-image:linear-gradient(90deg,transparent,#000 9%,#000 91%,transparent)}
-.pont-sponsor__rider{position:absolute;left:0;display:flex;align-items:center;gap:clamp(12px,3vw,27px);width:max-content;white-space:nowrap;animation:pont-sponsor-slide 13s linear infinite;will-change:transform}
-.pont-sponsor__wordmark{font:900 italic clamp(34px,7vw,58px)/1 system-ui,sans-serif;letter-spacing:-.08em;color:#f9d948;text-shadow:0 0 22px rgba(251,226,64,.11)}
-.pont-sponsor__period{color:#72d4c8}
-.pont-sponsor__tagline{font:500 clamp(12px,2.3vw,18px)/1.2 system-ui,sans-serif;letter-spacing:.01em;color:#f4f7ed}
-.pont-sponsor__spark{color:#f9d948;font-size:13px;opacity:.7}
-.pont-sponsor__note{margin:0;text-align:right;color:#93a9a7;font:400 9px/1.3 system-ui,sans-serif}
-@keyframes pont-sponsor-slide{from{transform:translateX(calc(-100% - 24px))}to{transform:translateX(calc(100vw + 100%))}}
-@media(max-width:520px){.pont-sponsor{padding:9px 11px 8px;border-radius:15px}.pont-sponsor__rider{gap:12px;animation-duration:10s}.pont-sponsor__top{font-size:8px}.pont-sponsor__tagline{font-size:12px}.pont-sponsor__note{font-size:8px}}
-@media(prefers-reduced-motion:reduce){.pont-sponsor__rider{animation:none;left:50%;transform:translateX(-50%)}}
+/* PONT · full-bleed, seamless sponsor marquee; two identical halves */
+.pont-sponsor{
+  position:relative;
+  width:100vw;
+  width:100dvw;
+  margin:clamp(12px,2vw,18px) 0 clamp(20px,3vw,30px) calc(50% - 50vw);
+  margin-left:calc(50% - 50dvw);
+  height:47px;
+  overflow:hidden;
+  background:linear-gradient(110deg,#092a2b 0%,#0f3735 50%,#092a2b 100%);
+  border-block:1px solid rgba(241,211,73,.38);
+  isolation:isolate;
+}
+.pont-sponsor__track{
+  display:flex;align-items:center;
+  height:100%;width:max-content;
+  animation:pont-sponsor-marquee 32s linear infinite;
+  will-change:transform;
+}
+.pont-sponsor__group{
+  display:flex;align-items:center;justify-content:space-around;
+  flex:none;min-width:100dvw;height:100%;
+}
+.pont-sponsor__item{display:inline-flex;flex:none;align-items:center;justify-content:center;gap:8px;padding:0 26px;white-space:nowrap}
+.pont-sponsor__wordmark{font:900 italic 25px/1 system-ui,sans-serif;letter-spacing:-.075em;color:#f9dd45;text-shadow:0 0 14px rgba(249,221,69,.1)}
+.pont-sponsor__period{color:#77d9cb}
+.pont-sponsor__demo{font:700 8px/1 system-ui,sans-serif;letter-spacing:.13em;color:#a7bdb7}
+@keyframes pont-sponsor-marquee{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+@media(max-width:520px){
+  .pont-sponsor{height:39px;margin-top:10px;margin-bottom:18px}
+  .pont-sponsor__wordmark{font-size:22px}
+  .pont-sponsor__item{padding:0 18px}
+  .pont-sponsor__track{animation-duration:30s}
+}
+@media(prefers-reduced-motion:reduce){.pont-sponsor__track{animation:none;transform:translateX(-50%)}}
 </style>
-  <section class="pont-sponsor" aria-label="Spațiu publicitar demonstrativ">
-    <div class="pont-sponsor__top"><span>PARTENERUL MOMENTULUI</span><span>PUBLICITATE · DEMO</span></div>
-    <div class="pont-sponsor__stage">
-      <div class="pont-sponsor__rider" aria-hidden="true">
-        <span class="pont-sponsor__spark">✦</span>
-        <span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span>
-        <span class="pont-sponsor__tagline">Pofta vine când vrei tu.</span>
-        <span class="pont-sponsor__spark">✦</span>
+  <section class="pont-sponsor" aria-label="Reclamă demonstrativă Glovo; nu există parteneriat confirmat">
+    <div class="pont-sponsor__track" aria-hidden="true">
+      <div class="pont-sponsor__group">
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+      </div>
+      <div class="pont-sponsor__group">
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
+        <span class="pont-sponsor__item"><span class="pont-sponsor__wordmark">glovo<span class="pont-sponsor__period">.</span></span><span class="pont-sponsor__demo">DEMO</span></span>
       </div>
     </div>
-    <p class="pont-sponsor__note">Concept vizual demonstrativ. Glovo nu este confirmat ca sponsor PONT.</p>
   </section>
   <section id="customer" aria-label="Restaurante cu meniul zilei">
     <p id="menuPreviewLabel" class="menu-preview-label" hidden>Exemple de meniuri · comenzile sunt dezactivate</p>
