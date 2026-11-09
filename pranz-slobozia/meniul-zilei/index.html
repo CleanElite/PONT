@@ -643,7 +643,10 @@ function update(){
   const comboText=combos?combos+' '+(combos===1?'meniu complet':'meniuri complete'):'';
   const restText=singles.map(item=>item.qty+' × '+item.short).join(' și ');
   $('#pontSelectionText').textContent=comboText||restText?(comboText&&restText?comboText+' și '+restText:comboText||restText):'Nu ai selectat încă preparate.';
-  $('#breakdown').textContent=items.map(item=>item.qty+' × '+item.short).join(' · ')+(delivery?' · Livrarea se confirmă separat':'')+(!hasMinimumMenu()?' · Min. '+(current?.min_full_menus||1)+' meniu complet':'');
+  const breakdownParts=[...(combos?[combos+' × '+(combos===1?'meniu complet':'meniuri complete')]:[]),...singles.map(item=>item.qty+' × '+item.short)];
+  if(delivery)breakdownParts.push('Livrarea se confirmă separat');
+  if(!hasMinimumMenu())breakdownParts.push('Min. '+(current?.min_full_menus||1)+' meniu complet');
+  $('#breakdown').textContent=breakdownParts.join(' · ');
   $('#send').disabled=items.length===0||!hasMinimumMenu()||!orderOpen(current)||!current?.phone||form.elements.full_name.value.trim().length<3||!phoneValid||(delivery&&!form.elements.address.value.trim());form.querySelectorAll('[data-method]').forEach(b=>{const active=b.dataset.method===form.elements.method.value;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active))});
 }
 let returnFocus;
