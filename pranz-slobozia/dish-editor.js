@@ -59,6 +59,18 @@ catalog.innerHTML = `
   </section>
 `;
 
+const availabilityStyle = document.createElement('style');
+availabilityStyle.textContent = `
+.pont-availability { display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap; }
+.pont-availability-btn { min-height:34px; padding:7px 11px; border:1px solid rgba(170,195,201,.35); border-radius:9px; background:rgba(80,104,113,.10); color:#c3cdd1; font:600 12px/1.2 system-ui,sans-serif; cursor:pointer; transition:background .15s ease,border-color .15s ease,color .15s ease; }
+.pont-availability-btn.available.is-selected { background:#146c43; border-color:#41d48a; color:#fff; }
+.pont-availability-btn.sold-out.is-selected { background:#a42935; border-color:#fa727d; color:#fff; }
+.pont-availability-btn:not(.is-selected):hover { border-color:#97c0c9; color:#f5ffff; }
+.pont-availability-btn:focus-visible { outline:2px solid #cbf7ff;outline-offset:3px; }
+.pont-availability-btn:disabled { opacity:.7;cursor:wait; }
+@media(max-width:560px){.pont-availability {width:100%;}.pont-availability-btn{flex:1;}}
+`;
+catalog.prepend(availabilityStyle);
 const dishEditor = catalog.querySelector('.admin-dish-editor');
 const dishFormMessage = $('pontDishMessage');
 let dishListMessage = dishFormMessage;
@@ -164,7 +176,9 @@ function library() {
       '<span class="name"><strong>' + esc(dish.name) + '</strong>' +
       (dish.description ? '<small>' + esc(dish.description) + '</small>' : '') + '</span>' +
       '<span class="pont-dish-price">' + priceRO.format(dish.price) + ' lei</span>' +
-      '<button type="button" data-availability="' + esc(dish.id) + '" aria-pressed="' + String(dish.available !== false) + '" title="Modifică disponibilitatea">' + (dish.available === false ? 'Epuizat · Reactivează' : 'Disponibil · Marchează epuizat') + '</button>' +
+      '<div class="pont-availability" role="group" aria-label="Disponibilitate ' + esc(dish.name) + '">' +
+      '<button type="button" class="pont-availability-btn available' + (dish.available !== false ? ' is-selected' : '') + '" data-availability="' + esc(dish.id) + '" data-available="true" aria-pressed="' + String(dish.available !== false) + '">Disponibil</button>' +
+      '<button type="button" class="pont-availability-btn sold-out' + (dish.available === false ? ' is-selected' : '') + '" data-availability="' + esc(dish.id) + '" data-available="false" aria-pressed="' + String(dish.available === false) + '">Epuizat</button></div>' +
       '<div class="admin-row-actions"><button type="button" data-edit-dish="' + esc(dish.id) + '" aria-label="Editează ' + esc(dish.name) + '" title="Editează">' + icon('pencil-simple') + '</button>' +
       '<button type="button" class="admin-danger" data-delete-dish="' + esc(dish.id) + '" aria-label="Șterge ' + esc(dish.name) + '" title="Șterge">' + icon('trash') + '</button></div></div>'
   ).join('') : '<p>Nu există preparate salvate în această categorie.</p>';
@@ -331,9 +345,19 @@ $('pontDishList').onclick = async event => {
   if (toggle) {
     const item = dishes.find(d => d.id === toggle.dataset.availability);
     if (!item || toggle.disabled) return;
-    toggle.disabled = true;
-    try {const {error} = await db.from('pont_dishes').update({available:item.available === false}).eq('id',item.id).eq('restaurant_id',item.restaurant_id); if(error)throw error; await load(); dishListMessage.textContent='Disponibilitatea a fost actualizată și în meniurile publicate.';}
-    catch(err){dishListMessage.textContent=err.message;toggle.disabled=false;}
+    const desired = toggle.dataset.available === 'true';
+    if ((item.available !== false) === desired) return;
+    const group = toggle.closest('.pont-availability');
+    group.querySelectorAll('button').forEach(button => {button.disabled = true});
+    try {
+      const {error} = await db.from('pont_dishes').update({available:desired}).eq('id',item.id).eq('restaurant_id',item.restaurant_id);
+      if(error)throw error;
+      await load();
+      dishListMessage.textContent = desired ? 'Preparatul este disponibil pentru comandă.' : 'Preparatul este epuizat și nu mai poate fi comandat.';
+    } catch(err) {
+      dishListMessage.textContent = err.message;
+      group.querySelectorAll('button').forEach(button => {button.disabled = false});
+    }
     return;
   }
   const edit = event.target.closest('[data-edit-dish]');
