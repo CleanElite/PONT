@@ -488,3 +488,35 @@ body #order::backdrop{background:#031c1a}
    max-width:52vw!important;
  }
 }
+
+
+/* Dish photos belong next to their dishes, never in restaurant covers. */
+#order .pont-dish-group__content .pont-choice-photo{
+  display:block!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  flex:0 0 34px!important;
+  border-radius:8px!important;
+  object-fit:cover!important;
+  border:1px solid rgba(183,228,211,.3);
+  background:#103e35;
+}
+#order .pont-dessert-included .pont-choice-photo{
+  width:34px!important;height:34px!important;
+}
+@media(max-width:530px){
+ #order .pont-dish-group__content .pont-choice-photo{
+   width:29px!important;height:29px!important;
+   min-width:29px!important;flex-basis:29px!important;
+   border-radius:6px!important;
+ }
+ #order .pont-dish-group__content .pont-choice-dish{gap:5px!important}
+ #order .pont-dish-group__content .pont-dish-price{width:48px!important;font-size:10px!important}
+}
+@media(max-width:365px){
+ #order .pont-dish-group__content .pont-choice-photo{
+   width:25px!important;height:25px!important;
+   min-width:25px!important;flex-basis:25px!important;
+ }
+}
