@@ -1,0 +1,437 @@
+.pont-admin {
+  --admin-ink: #f1faf6;
+  --admin-muted: #b4cdc5;
+  --admin-gold: #f3d184;
+  --admin-mint: #87f2c6;
+  --admin-line: #376657;
+  --admin-field: #0a2922;
+  --admin-surface: linear-gradient(150deg, #18483b, #092822 78%);
+  --admin-accent: linear-gradient(155deg, #a1ffe1, #64e7b4 55%, #38ce98);
+  --admin-gutter: clamp(14px, 3.2vw, 30px);
+  --admin-bar-height: 78px;
+  min-height: 100vh;
+  background: radial-gradient(ellipse at 74% 0%, #0d4237, transparent 42%),
+    radial-gradient(ellipse at 0% 55%, #0b2d25, transparent 52%), #051916;
+  color: var(--admin-ink);
+  color-scheme: dark;
+}
+
+.pont-admin [hidden] { display: none !important; }
+.pont-admin > main {
+  position: relative;
+  max-width: 1180px;
+  padding: 0 var(--admin-gutter) 52px;
+}
+.pont-admin .admin-topbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  min-height: var(--admin-bar-height);
+  gap: 10px;
+  padding: 0;
+  border-bottom: 1px solid #4d7b6a75;
+}
+.admin-brand {
+  display: block;
+  width: clamp(118px, 15vw, 152px);
+  height: auto;
+}
+.admin-back, .pont-admin .admin-logout {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 44px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 0 8px;
+  background: transparent;
+  color: var(--admin-muted);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+}
+.admin-back { justify-self: start; }
+.pont-admin .admin-logout {
+  position: absolute;
+  top: calc((var(--admin-bar-height) - 44px) / 2);
+  right: var(--admin-gutter);
+}
+.admin-back:hover, .pont-admin .admin-logout:hover {
+  border-color: var(--admin-line);
+  background: #194439;
+  color: var(--admin-ink);
+}
+.admin-icon {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex: none;
+  fill: currentColor;
+  color: var(--admin-gold);
+  vertical-align: middle;
+}
+.admin-back .admin-icon, .admin-logout .admin-icon { color: currentColor; }
+.admin-hero {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2.3vw, 22px);
+  margin: clamp(19px, 3.7vw, 36px) 0 20px;
+}
+.admin-hero > .admin-icon { width: clamp(42px, 6.4vw, 66px); height: auto; aspect-ratio: 1; }
+.admin-hero-copy { flex: 1; min-width: 0; }
+.pont-admin h1 {
+  margin: 0;
+  color: var(--admin-ink);
+  font: 600 clamp(30px, 4.4vw, 48px)/1.06 Georgia, 'Times New Roman', serif;
+  letter-spacing: -.035em;
+}
+.admin-hero p { margin: 7px 0 0; font-size: clamp(14px, 1.85vw, 19px); }
+.pont-admin p, .pont-admin small { color: var(--admin-muted); }
+.admin-context {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(35%, 320px);
+  padding: 10px 15px;
+  border: 1px solid #658b7c;
+  border-radius: 16px;
+  background: #0b3028;
+  color: var(--admin-ink);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.pont-admin .admin-nav {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 5px;
+  margin: 0 0 18px;
+  padding: 5px;
+  border: 1px solid var(--admin-line);
+  border-radius: 20px;
+  background: #0b2c24;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #48786a transparent;
+}
+.pont-admin .admin-nav > :is(button, a) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 0 auto;
+  gap: 7px;
+  min-width: 0;
+  min-height: clamp(44px, 5.4vw, 56px);
+  padding: 8px 12px;
+  border: 1px solid transparent;
+  border-radius: 15px;
+  background: transparent;
+  color: var(--admin-ink);
+  font: 650 clamp(13px, 1.55vw, 16px)/1.2 system-ui, sans-serif;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.pont-admin .admin-nav > :is(button, a):hover { background: #164337; }
+.pont-admin .admin-nav > button[aria-pressed='true'],
+.pont-admin .admin-categories button[aria-pressed='true'] {
+  border-color: #9bf9d2;
+  background: var(--admin-accent);
+  color: #092920;
+}
+.pont-admin :is(.admin-nav, .admin-categories) button[aria-pressed='true'] .admin-icon { color: currentColor; }
+.pont-admin .admin-nav .admin-icon { width: 18px; height: 18px; }
+.pont-admin--platform .admin-nav > :is(button, a) { font-size: clamp(13px, 1.35vw, 15px); }
+.pont-admin .admin-nav > :focus-visible { outline-offset: -2px; }
+
+.pont-admin .card {
+  min-width: 0;
+  padding: clamp(14px, 2.1vw, 24px);
+  border: 1px solid var(--admin-line);
+  border-radius: clamp(16px, 2.2vw, 24px);
+  background: var(--admin-surface);
+  box-shadow: inset 0 1px #a3f3d413, 0 14px 36px #010b092e;
+}
+.pont-admin #login, .pont-admin #setup { max-width: 510px; margin: 32px auto; }
+.pont-admin #login h1, .pont-admin #setup h1 { font-size: clamp(28px, 4.4vw, 38px); }
+.pont-admin h2 { margin: 0 0 10px; font-size: clamp(19px, 2.4vw, 25px); line-height: 1.18; }
+.pont-admin h3 { color: var(--admin-ink); }
+.pont-admin .admin-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #65948355;
+}
+.admin-panel-head :is(h2, h3) {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  min-width: 0;
+}
+.admin-panel-head .admin-icon { width: 1.55rem; height: 1.55rem; }
+.pont-admin .admin-stats {
+  gap: clamp(7px, 1.6vw, 13px);
+  margin-bottom: 17px;
+}
+.pont-admin .stat {
+  min-width: 0;
+  padding: clamp(10px, 1.6vw, 16px);
+  border: 1px solid #427562;
+  border-radius: 14px;
+  background: #10372d;
+  color: var(--admin-muted);
+}
+.pont-admin .stat strong { color: var(--admin-ink); font-size: clamp(21px, 3vw, 28px); }
+.pont-admin .admin-stats .stat strong { margin-top: 3px; }
+.pont-admin .grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 185px), 1fr)); }
+.pont-admin .admin-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.pont-admin button {
+  min-height: 40px;
+  border-color: #527d6d;
+  background: #123c32;
+  color: var(--admin-ink);
+}
+.pont-admin button:hover:not(:disabled) { border-color: #92b8a8; }
+.pont-admin button.primary {
+  min-height: 44px;
+  border-color: #9bf9d2;
+  border-radius: 999px;
+  background: var(--admin-accent);
+  color: #092920;
+  box-shadow: inset 0 1px #e1ffef71;
+}
+.pont-admin button.primary:hover:not(:disabled) { filter: brightness(1.06); }
+.pont-admin button.primary .admin-icon { color: currentColor; }
+.pont-admin button:disabled { cursor: default; opacity: .55; }
+.pont-admin :is(input:not([type='checkbox'], [type='radio'], [type='file']), select, textarea) {
+  min-width: 0;
+  min-height: 44px;
+  border-color: #648d7e;
+  background: var(--admin-field);
+  color: var(--admin-ink);
+}
+.pont-admin textarea { resize: vertical; }
+.pont-admin ::placeholder { color: #a3beb4; }
+.pont-admin :is(a, button, input, textarea, select, summary):focus-visible {
+  outline: 2px solid var(--admin-gold);
+  outline-offset: 3px;
+}
+.pont-admin :is(input[type='checkbox'], input[type='radio']) { accent-color: var(--admin-mint); }
+.pont-admin :is(.error, .pont-dish-error) { color: #ffc0ad; }
+.pont-admin :is(.menu-group, .contact-phone-view, .contact-card-settings, .auction-entry, .restaurant-admin-item, .restaurant-password-box, .auction-save-bar, .pont-analytics-table-wrap, .pont-customers-orders) {
+  border-color: #497a69;
+  background: #0d3027;
+}
+.pont-admin .contact-card-settings {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid #497a69;
+  border-radius: 14px;
+}
+.pont-admin .contact-card-settings h3 { margin: 0 0 8px; }
+.pont-admin .admin-workspace + .menu-log { margin-top: 17px; }
+.pont-admin .pont-menu-toggle {
+  background: #123c31;
+  border-color: #6ba893;
+  color: var(--admin-ink);
+}
+.pont-menu-toggle > span:first-child { display: inline-flex; align-items: center; gap: 8px; }
+.pont-menu-toggle .pont-toggle-chevron { width: 18px; height: 18px; }
+.pont-admin :is(.pont-menu-dialog, .auction-choice-dialog, #pontDishConfirm) {
+  width: min(calc(100% - 30px), 470px);
+  max-height: min(85vh, 720px);
+  overflow: auto;
+  border: 1px solid #709a88;
+  border-radius: 22px;
+  background: var(--admin-surface);
+  color: var(--admin-ink);
+  padding: clamp(16px, 3.2vw, 24px);
+  box-shadow: 0 22px 68px #0008;
+}
+.pont-admin dialog::backdrop { background: #021510d9; }
+
+.admin-library-grid, .admin-daily-grid {
+  display: grid;
+  grid-template-columns: minmax(185px, .95fr) minmax(0, 2.2fr);
+  gap: clamp(12px, 1.8vw, 18px);
+  align-items: start;
+}
+.admin-library-grid { align-items: stretch; }
+.pont-admin .admin-library-grid > .card { margin: 0; }
+.pont-admin .admin-categories { display: grid; gap: 8px; }
+.pont-admin .admin-categories button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: clamp(44px, 5vw, 54px);
+  padding: 8px 10px;
+  border-color: #497765;
+  text-align: left;
+}
+.admin-category-count {
+  display: grid;
+  place-items: center;
+  min-width: 23px;
+  min-height: 23px;
+  margin-inline-start: auto;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: #a0edcb28;
+  font-size: 12px;
+}
+.admin-categories button[aria-pressed='true'] .admin-category-count { background: #0b5b442e; }
+.admin-category-help { margin: 14px 0 0; font-size: 13px; }
+.admin-dish-editor-fields {
+  display: grid;
+  grid-template-columns: minmax(125px, .82fr) minmax(0, 1.35fr);
+  gap: 14px;
+  align-items: start;
+}
+.admin-dish-details { display: grid; gap: 9px; min-width: 0; }
+.pont-admin :is(.admin-dish-details, .pont-dish-grid, .admin-dish-photo-field) label { margin: 0; }
+.pont-admin :is(.admin-dish-details, .pont-dish-grid) label :is(input, textarea, select) { margin-top: 5px; }
+.admin-dish-photo-field { min-width: 0; }
+.pont-admin .admin-dish-photo {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1.12;
+  min-height: 115px;
+  overflow: hidden;
+  border: 1px solid #638d7c;
+  border-radius: 16px;
+  background: #0b2e26;
+  cursor: pointer;
+}
+.admin-dish-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.admin-dish-photo input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+.admin-dish-photo:focus-within { outline: 2px solid var(--admin-gold); outline-offset: 3px; }
+.admin-dish-photo-empty { display: grid; justify-items: center; gap: 8px; text-align: center; color: var(--admin-muted); font-size: 12px; }
+.admin-dish-photo-empty .admin-icon { width: 34px; height: 34px; }
+.admin-dish-photo-edit {
+  position: absolute;
+  inset: auto 9px 9px auto;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid #9ac2ac;
+  border-radius: 50%;
+  background: #0a3228e8;
+}
+.admin-dish-photo-field > small { display: block; margin-top: 7px; line-height: 1.35; }
+.pont-dish-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.admin-dish-editor-fields + .pont-dish-grid { margin-top: 14px; padding-top: 13px; border-top: 1px solid #5c927d63; }
+.pont-dish-grid .wide { grid-column: 1 / -1; }
+.pont-dish-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 13px; }
+.pont-dish-actions button, .admin-panel-head .primary { display: inline-flex; align-items: center; justify-content: center; gap: 7px; }
+.pont-dish-actions .primary { min-width: min(100%, 165px); }
+.admin-dish-editor .pont-dish-actions button { flex: 1 1 125px; }
+.admin-dish-editor .pont-dish-actions .primary { flex: 1.7 1 165px; }
+.pont-admin :is(#pontDishMessage, #pontDailyError, #pontDishConfirmError, #status):empty { display: none; }
+.pont-admin #status:not(:empty) { padding: 11px 14px; border: 1px solid var(--admin-line); border-radius: 12px; background: #0d3027; }
+
+.pont-dish-line {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: clamp(7px, 1.5vw, 15px);
+  min-width: 0;
+  padding: 10px 0;
+  border-bottom: 1px solid #5c927d63;
+}
+.pont-dish-line:last-child { border-bottom: 0; }
+.pont-dish-line :is(img, .pont-dish-placeholder) {
+  width: clamp(48px, 9vw, 84px);
+  aspect-ratio: 1.35;
+  height: auto;
+  object-fit: cover;
+  border: 1px solid #71927d;
+  border-radius: 11px;
+  background: #1b4235;
+}
+.pont-dish-placeholder { display: grid; place-items: center; }
+.pont-dish-line .name { min-width: 0; overflow-wrap: anywhere; }
+.pont-dish-line .name small { display: block; margin-top: 3px; }
+#pontDishList .pont-dish-line :is(img, .pont-dish-placeholder) { width: clamp(53px, 13vw, 132px); aspect-ratio: 1.48; }
+#pontDishList .name strong { font-size: clamp(15px, 1.75vw, 18px); }
+.pont-dish-price { font-size: clamp(13px, 1.65vw, 17px); font-weight: 750; white-space: nowrap; }
+.admin-row-actions { display: flex; gap: 6px; }
+.pont-admin .admin-row-actions button {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  min-height: 40px;
+  padding: 0;
+}
+.pont-admin .admin-row-actions .admin-danger { border-color: #9c6c60; background: #392a29; }
+.admin-danger .admin-icon { color: #ffa091; }
+
+.admin-daily-grid { margin-top: 17px; grid-template-columns: minmax(146px, .78fr) minmax(0, 2.4fr); }
+.admin-daily-grid h4 { margin: 0 0 9px; }
+.admin-daily-selection { min-width: 0; padding: 0 0 0 14px; border-left: 1px solid #5c927d63; }
+.pont-admin #pontDailyDishes .pont-dish-line { margin: 0; }
+.pont-admin #pontDailyDishes .pont-dish-line > input[type='number'] { width: clamp(65px, 8vw, 100px); padding: 8px; }
+.pont-admin :is(#pontDailyDishes input[type='checkbox'], #acceptsCard, #restaurantAcceptsCard) {
+  appearance: none;
+  display: inline-grid;
+  align-items: center;
+  width: 38px;
+  height: 22px;
+  flex: none;
+  margin: 0;
+  padding: 2px;
+  border: 1px solid #7ca695;
+  border-radius: 999px;
+  background: #17473a;
+  cursor: pointer;
+}
+.pont-admin :is(#pontDailyDishes input[type='checkbox'], #acceptsCard, #restaurantAcceptsCard)::before {
+  content: '';
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #e9fff4;
+}
+.pont-admin :is(#pontDailyDishes input[type='checkbox'], #acceptsCard, #restaurantAcceptsCard):checked { background: #38c894; border-color: #94ffd4; }
+.pont-admin :is(#pontDailyDishes input[type='checkbox'], #acceptsCard, #restaurantAcceptsCard):checked::before { justify-self: end; }
+.pont-dish-recap { margin: 8px 0; padding: 10px 13px; border: 1px solid var(--admin-line); border-radius: 12px; }
+.pont-dish-recap div { padding: 4px 0; }
+
+@media (max-width: 700px) {
+  .admin-hero { flex-wrap: wrap; gap: 10px 13px; }
+  .admin-hero-copy { flex: 1 1 calc(100% - 70px); }
+  .admin-context { max-width: calc(100% - 55px); margin-left: 55px; padding: 7px 10px; font-size: 13px; }
+  .admin-context .admin-icon { width: 17px; height: 17px; }
+  .admin-library-grid, .admin-daily-grid { grid-template-columns: minmax(0, 1fr); }
+  .admin-daily-selection { padding: 12px 0 0; border-left: 0; border-top: 1px solid #5c927d63; }
+  .pont-admin .admin-categories { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+  .pont-admin .admin-categories button { justify-content: center; padding: 7px 5px; font-size: 12px; gap: 4px; }
+  .admin-categories .admin-icon { width: 17px; height: 17px; }
+  .admin-category-count { min-width: 18px; min-height: 18px; margin-inline-start: 0; font-size: 11px; }
+}
+
+@media (max-width: 460px) {
+  .pont-admin { --admin-bar-height: 61px; }
+  .admin-topbar :is(.admin-back, .admin-logout), .pont-admin .admin-logout { width: 44px; padding-inline: 0; }
+  :is(.admin-back, .admin-logout) .admin-control-text { display: none; }
+  .admin-dish-editor-fields { grid-template-columns: minmax(0, 1fr); }
+  .pont-admin .admin-nav > :is(button, a) { min-height: 44px; }
+  .pont-admin .admin-dish-photo { aspect-ratio: 1.8; }
+  .pont-dish-line { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .admin-row-actions { grid-column: 2 / -1; justify-self: end; }
+  .pont-admin #pontDailyDishes .pont-dish-line { grid-template-columns: auto minmax(0, 1fr) auto auto; }
+  .pont-admin .admin-stats .stat { font-size: 12px; }
+}
