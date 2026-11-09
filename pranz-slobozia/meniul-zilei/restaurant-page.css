@@ -333,3 +333,11 @@ body #order::backdrop{background:#031c1a}
 }
 #order .pont-send-hint[hidden]{display:none!important}
 #order #send:disabled{opacity:.55;cursor:not-allowed}
+
+/* Direct phone ordering and WhatsApp alternative. */
+#order .order-contact{display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0 10px!important}
+#order .order-contact .call-now{display:flex!important;align-items:center;justify-content:center;text-decoration:none;min-height:44px;font-weight:800!important}
+#order .order-contact .call-now[hidden]{display:none!important}
+#order .pont-contact-or{font-size:12px;font-weight:650;color:#d7bc7b;text-transform:lowercase}
+#order .pont-contact-or[hidden]{display:none!important}
+#order .pont-contact-whatsapp{margin:0!important;padding:0 10px;font-size:12px!important;line-height:1.45;color:#d4e8e2!important;font-weight:500!important;text-align:center}
