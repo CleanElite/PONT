@@ -5,8 +5,8 @@
   position: relative;
   isolation: isolate;
   min-height: 100vh;
-  background: radial-gradient(ellipse at 100% 22%, #064047 0, transparent 43%),
-    radial-gradient(ellipse at 0% 80%, #063235 0, transparent 48%), #02191c !important;
+  background: radial-gradient(ellipse at 100% 22%, #043439 0, transparent 43%),
+    radial-gradient(ellipse at 0% 80%, #052d31 0, transparent 48%), #02191c !important;
   color: #f8fcfb;
   font-family: system-ui, sans-serif;
 }
@@ -17,11 +17,9 @@
   position: absolute;
   z-index: -1;
   pointer-events: none;
-  width: min(43vw, 450px);
+  width: min(35vw, 410px);
   aspect-ratio: 337 / 187;
-  background: url('./showcase/arc.webp') left top / contain no-repeat;
-  mix-blend-mode: screen;
-  mask-image: radial-gradient(ellipse at top left, #000 50%, transparent 96%);
+  background: url('./showcase/arc.webp?v=2') left top / contain no-repeat;
 }
 
 .menu-art::before { top: 0; left: 0; }
@@ -42,7 +40,7 @@ body.lunch.menu-showcase > .menu-header {
   justify-items: center;
   gap: 0;
   min-height: 0;
-  padding-block: clamp(18px, 3vw, 28px) 0;
+  padding-block: clamp(16px, 2vw, 22px) 0;
   border: 0;
   background: none;
   box-shadow: none;
@@ -50,10 +48,9 @@ body.lunch.menu-showcase > .menu-header {
 
 .menu-lockup { display: grid; justify-items: center; color: #f0f7f7; text-decoration: none; }
 .menu-wordmark {
-  width: clamp(156px, 29vw, 310px);
+  width: clamp(156px, 28vw, 282px);
   aspect-ratio: 12 / 5;
-  background: url('../assets/pont-intro.jpg') 52.6786% 45.5247% / 177.7778% auto no-repeat;
-  mix-blend-mode: screen;
+  background: url('./showcase/pont-wordmark.webp') center / contain no-repeat;
 }
 .menu-city {
   display: flex;
@@ -111,6 +108,7 @@ body.lunch.menu-showcase > .menu-header {
 
 body.lunch.menu-showcase > .menu-main { padding-block: 0; }
 .menu-heading {
+  margin: 0;
   padding-block: clamp(14px, 2.7vw, 25px) clamp(15px, 2.2vw, 22px);
   text-align: center;
 }
@@ -176,7 +174,7 @@ body.lunch.menu-showcase #customer #list {
 .menu-tile:nth-child(-n+2) .menu-card {
   justify-content: center;
   min-height: clamp(154px, 28.8vw, 294px);
-  padding: clamp(15px, 4.1vw, 52px);
+  padding: clamp(15px, 2.65vw, 28px) clamp(15px, 5.4vw, 55px);
   border-color: #a1e1dd;
 }
 .menu-card-photo, .menu-card::after {
@@ -220,6 +218,7 @@ body.lunch.menu-showcase #customer #list {
   align-items: center;
   gap: .36em;
   font-size: clamp(11px, 2.3vw, 23px);
+  font-weight: 450;
   color: #d1e1e1;
   line-height: 1.15;
 }
