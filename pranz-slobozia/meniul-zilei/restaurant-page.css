@@ -382,3 +382,82 @@ body #order::backdrop{background:#031c1a}
   #order .order-topbar{min-height:48px;padding:6px 14px!important}
   #order .order-topbar #close{min-height:34px;font-size:12px!important;padding:6px 12px!important}
 }
+
+
+/* Compact ordering entry: phone CTA + WhatsApp alternative + rules. */
+#order .order-contact{
+  display:grid!important;
+  grid-template-columns:minmax(145px, .85fr) auto minmax(0, 1.15fr)!important;
+  gap:clamp(8px,1.4vw,18px)!important;
+  align-items:center!important;
+  width:100%!important;
+  max-width:760px!important;
+  margin:2px auto 5px!important;
+  padding:0!important;
+  text-align:left!important;
+}
+#order .order-contact .call-now{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-height:44px!important;
+  height:44px!important;
+  margin:0!important;
+  padding:0 11px!important;
+  border:1px solid rgba(226,197,119,.85)!important;
+  border-radius:999px!important;
+  font:750 clamp(12px,1.6vw,15px)/1.15 system-ui,-apple-system,sans-serif!important;
+  white-space:nowrap!important;
+  box-shadow:inset 0 0 12px rgba(38,182,155,.08)!important;
+  background:linear-gradient(115deg,#0b3732,#0b2827)!important;
+}
+#order .order-contact .call-now[hidden]{display:none!important}
+#order .pont-contact-or{
+  margin:0!important;padding:0!important;
+  color:#d6bd86!important;
+  font:650 11px/1.2 system-ui,-apple-system,sans-serif!important;
+  white-space:nowrap!important;
+}
+#order .pont-contact-or[hidden]{display:none!important}
+#order .pont-contact-whatsapp{
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:left!important;
+  color:#d6e9e2!important;
+  font:500 clamp(11px,1.4vw,13px)/1.35 system-ui,-apple-system,sans-serif!important;
+}
+#order #pontOrderRules{
+  max-width:760px!important;
+  margin:3px auto 11px!important;
+  padding:7px 11px!important;
+  border-top:1px solid rgba(99,197,174,.22)!important;
+  color:#bedbd1!important;
+  text-align:center!important;
+  font:550 11px/1.35 system-ui,-apple-system,sans-serif!important;
+}
+@media(max-width:530px){
+ #order .order-contact{
+   grid-template-columns:minmax(140px, .9fr) 22px minmax(0,1.1fr)!important;
+   gap:6px!important;
+   margin:1px auto 5px!important;
+ }
+ #order .order-contact .call-now{
+   min-height:42px!important;height:42px!important;
+   padding:0 8px!important;
+   font-size:12px!important;
+ }
+ #order .pont-contact-or{font-size:10px!important;text-align:center!important}
+ #order .pont-contact-whatsapp{font-size:11px!important;line-height:1.3!important}
+ #order #pontOrderRules{
+   font-size:10px!important;
+   margin:3px auto 9px!important;
+   padding:7px 4px!important;
+ }
+}
+@media(max-width:350px){
+ #order .order-contact{grid-template-columns:1fr!important;row-gap:4px!important}
+ #order .pont-contact-or{text-align:center!important}
+ #order .pont-contact-whatsapp{text-align:center!important}
+}
