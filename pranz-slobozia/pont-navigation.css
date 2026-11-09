@@ -1,0 +1,87 @@
+/* Unified PONT navigation: subtle compact pill across public and admin views. */
+.pont-nav-action{
+  box-sizing:border-box!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  min-height:34px!important;
+  height:34px!important;
+  max-width:max-content!important;
+  padding:0 11px!important;
+  margin:0!important;
+  background:rgba(8,42,40,.63)!important;
+  color:#e9fff8!important;
+  border:1px solid rgba(140,216,197,.28)!important;
+  border-radius:999px!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  font:650 12px/1 system-ui,-apple-system,sans-serif!important;
+  letter-spacing:.01em!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+  cursor:pointer;
+  flex:none!important;
+  -webkit-tap-highlight-color:transparent;
+}
+.pont-nav-action:hover,.pont-nav-action:focus-visible{
+  background:rgba(18,88,76,.85)!important;
+  border-color:rgba(168,233,206,.68)!important;
+  color:#fff!important;
+}
+.pont-nav-action:focus-visible{outline:2px solid #a4efdb!important;outline-offset:2px!important}
+.pont-nav-action__icon{display:inline-grid;place-items:center;flex:none;width:16px;height:16px;font-size:18px;line-height:1}
+.pont-nav-action__icon svg{width:16px;height:16px;display:block}
+.pont-nav-action__label{display:inline}
+@media(max-width:540px){
+  .pont-nav-action{
+    width:34px!important;min-width:34px!important;max-width:34px!important;
+    padding:0!important;gap:0!important;
+  }
+  .pont-nav-action__label{display:none!important}
+}
+/* Landing page: action already belongs in the upper right, with no added header height. */
+.entry-header .pont-admin-entry.pont-nav-action{justify-self:end!important}
+/* Restaurant gallery: preserve logo centering and existing heading. */
+.menu-header .pont-nav-action{position:relative;z-index:3;align-self:center}
+/* Restaurant detail: free the 48px toolbar strip; the button floats at hero's upper left. */
+#order .order-topbar{
+  position:absolute!important;
+  z-index:8!important;
+  top:13px!important;
+  left:clamp(12px,2.2vw,24px)!important;
+  right:auto!important;
+  width:auto!important;
+  min-height:0!important;
+  height:auto!important;
+  display:block!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  border:0!important;
+}
+#order .order-topbar #close.pont-nav-action{
+  width:auto!important;min-width:34px!important;min-height:34px!important;height:34px!important;
+  padding:0 11px!important;font-size:12px!important;
+}
+@media(max-width:540px){
+ #order .order-topbar{top:12px!important;left:12px!important}
+ #order .order-topbar #close.pont-nav-action{width:34px!important;max-width:34px!important;padding:0!important}
+}
+/* Admin screens retain the slim header grid, but share the same treatment. */
+.pont-admin .admin-topbar .admin-back.pont-nav-action{
+  justify-self:start!important;
+  border-color:rgba(140,216,197,.28)!important;
+  padding:0 11px!important;
+  min-height:34px!important;
+  height:34px!important;
+}
+@media(max-width:540px){
+  .pont-admin .admin-topbar .admin-back.pont-nav-action{
+    width:34px!important;min-width:34px!important;padding:0!important;
+  }
+}
+/* Sign-in: place back action in the existing card without an extra bar. */
+main.pont-login-surface{position:relative;padding-top:max(60px,clamp(60px,7vw,68px))}
+.pont-login-surface .links .pont-nav-action{position:absolute;top:14px;left:clamp(15px,4vw,28px)}
