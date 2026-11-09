@@ -113,47 +113,68 @@ button{font:inherit}
 .pont-intro{position:fixed;inset:0;z-index:20;overflow:hidden;overscroll-behavior:none}
 .pont-intro__art{position:absolute;inset:0;background:#000}
 .pont-intro__art img{display:block;width:100%;height:100%;object-fit:contain}
-.pont-intro__well{
-  display:none;position:absolute;
-  background:#000;border-radius:6px;box-shadow:0 0 12px 7px #000;
+
+.pont-intro__panel{
+  display:none;position:absolute;inset:0;
+  background:#000 var(--art) center / contain no-repeat;
+}
+.pont-intro__panel.left{clip-path:inset(0 50% 0 0);--side:-1}
+.pont-intro__panel.right{clip-path:inset(0 0 0 50%);--side:1}
+.pont-intro.is-splitting .pont-intro__art{visibility:hidden}
+.pont-intro.is-splitting .pont-intro__panel{
+  display:block;animation:pont-curtain .86s cubic-bezier(.44,0,.22,1) both;
+}
+.pont-intro.is-matching .pont-intro__panel::before{
+  content:"";position:absolute;left:var(--well-left);top:var(--well-top);
+  width:var(--well-width);height:var(--well-height);
+  background:#000;box-shadow:0 0 12px 7px #000;
+}
+.pont-intro__panel::after{
+  content:"";position:absolute;top:0;bottom:0;left:calc(50% - 1px);width:2px;
+  background:linear-gradient(transparent,#e3e9ee 30%,#fff 50%,#e3e9ee 70%,transparent);
+  box-shadow:0 0 13px 2px #dde5ed7a;animation:pont-edge .86s ease-out both;
 }
 .pont-intro__flight{display:none;position:absolute;inset:0 auto auto 0;transform-origin:0 0}
-.pont-intro.is-matching :is(.pont-intro__well,.pont-intro__flight){display:block}
+.pont-intro.is-matching .pont-intro__flight{display:block}
 .entry.intro-playing .entry-mark{visibility:hidden}
 .pont-intro__light{
-  display:none;position:absolute;top:-32%;left:0;width:6rem;height:164%;pointer-events:none;
-  background:linear-gradient(90deg,transparent,#b4eeff36 50%,transparent);
+  display:none;position:absolute;inset:0;pointer-events:none;
 }
-.pont-intro.is-leaving .pont-intro__art{
-  -webkit-mask-image:linear-gradient(105deg,transparent 31%,#000 54%);
-  mask-image:linear-gradient(105deg,transparent 31%,#000 54%);
-  -webkit-mask-size:440% 160%;mask-size:440% 160%;
-  -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;
-  animation:pont-unveil 1.03s cubic-bezier(.26,.70,.28,1) both;
+.pont-intro.is-gathering .pont-intro__light{display:block}
+.pont-intro__light::before,.pont-intro__light::after{
+  content:"";position:absolute;top:50%;width:50%;height:2px;
+  background:linear-gradient(90deg,transparent 28%,#b7c5d591 82%,#fff);
+  box-shadow:0 0 16px 1px #d8e4f05c;
+  animation:pont-silver-in .48s cubic-bezier(.27,.64,.3,1) both;
 }
-.pont-intro.is-leaving .pont-intro__light{
-  display:block;animation:pont-gleam 1.03s cubic-bezier(.26,.70,.28,1) both;
-}
+.pont-intro__light::before{left:0;--from:-100%;--mirror:1}
+.pont-intro__light::after{right:0;--from:100%;--mirror:-1}
 .pont-intro__skip{
   position:absolute;right:max(15px,env(safe-area-inset-right));
   bottom:calc(13px + env(safe-area-inset-bottom,0px));
   min-height:44px;padding:8px 13px;border:1px solid #eefaff3c;border-radius:999px;
   color:#eff4f7;background:#060a0ccf;font-size:.70rem;cursor:pointer;
 }
-.pont-intro.is-leaving .pont-intro__skip:not(:focus-visible){opacity:0;transition:opacity .2s}
+.pont-intro.is-splitting .pont-intro__skip:not(:focus-visible){opacity:0;transition:opacity .2s}
 html.pont-intro-active{overflow:hidden}
-@keyframes pont-unveil{
-  from{-webkit-mask-position:100% 50%;mask-position:100% 50%;opacity:1}
-  74%{opacity:1}
-  to{-webkit-mask-position:0 50%;mask-position:0 50%;opacity:0}
+.entry.intro-reveal{overflow-x:clip}
+.entry.intro-reveal .choice-card{
+  animation:pont-choice-in .54s .68s cubic-bezier(.2,.7,.25,1) both;
 }
-@keyframes pont-gleam{
-  0%{transform:translateX(-22vw) rotate(15deg);opacity:0}
-  26%{opacity:.48}
-  76%{opacity:.33}
-  100%{transform:translateX(112vw) rotate(15deg);opacity:0}
+.entry.intro-reveal .day{--card-start:-26vw}
+.entry.intro-reveal .night{--card-start:26vw}
+@keyframes pont-silver-in{
+  from{transform:translateX(var(--from)) scaleX(var(--mirror));opacity:0}
+  32%{opacity:.8}
+  84%{transform:translateX(0) scaleX(var(--mirror));opacity:1}
+  to{transform:translateX(0) scaleX(var(--mirror));opacity:0}
 }
-
+@keyframes pont-curtain{to{transform:translateX(calc(var(--side) * 50.1%))}}
+@keyframes pont-edge{from{opacity:.8}to{opacity:0}}
+@keyframes pont-choice-in{
+  from{transform:translateX(var(--card-start));opacity:0}
+  to{transform:translateX(0);opacity:1}
+}
 @media(max-width:520px){
   .entry-header,.entry-content,.entry-footer{width:calc(100% - 26px)}
   .entry-header{min-height:66px}
@@ -235,8 +256,9 @@ html.pont-intro-active{overflow:hidden}
 <div class="pont-intro" id="pont-intro" hidden>
   <div class="pont-intro__art" aria-hidden="true">
     <img src="./assets/pont-intro.jpg" alt="" width="1024" height="1536" fetchpriority="high">
-    <span class="pont-intro__well"></span>
   </div>
+  <div class="pont-intro__panel left" aria-hidden="true"></div>
+  <div class="pont-intro__panel right" aria-hidden="true"></div>
   <span class="pont-intro__light" aria-hidden="true"></span>
   <span class="entry-mark pont-intro__flight" aria-hidden="true"></span>
   <button class="pont-intro__skip" type="button">Sari peste intro</button>
@@ -252,11 +274,12 @@ html.pont-intro-active{overflow:hidden}
   const image = art.querySelector('img');
   const logo = page.querySelector('.entry-mark');
   const flight = intro.querySelector('.pont-intro__flight');
-  const well = intro.querySelector('.pont-intro__well');
   const skip = intro.querySelector('button');
   const root = document.documentElement;
-  const revealDuration = 1030;
-  let readyTimer, holdTimer, finishTimer, flightMotion;
+  const gatherDuration = 480;
+  const liftDuration = 650;
+  const revealDuration = 1220;
+  let readyTimer, holdTimer, gatherTimer, finishTimer, flightMotion;
   let started = false, leaving = false, finished = false;
 
   function finish() {
@@ -265,9 +288,10 @@ html.pont-intro-active{overflow:hidden}
     const restoreFocus = document.activeElement === skip;
     clearTimeout(readyTimer);
     clearTimeout(holdTimer);
+    clearTimeout(gatherTimer);
     clearTimeout(finishTimer);
     intro.hidden = true;
-    page.classList.remove('intro-playing');
+    page.classList.remove('intro-playing', 'intro-reveal');
     root.classList.remove('pont-intro-active');
     page.inert = false;
     flightMotion?.cancel();
@@ -304,24 +328,33 @@ html.pont-intro-active{overflow:hidden}
     const sourceHeight = 240 * scale;
     if (!target.width || !sourceWidth || target.bottom <= 0) return;
 
-    Object.assign(well.style, {
-      left:left + 'px', top:top + 'px', width:sourceWidth + 'px', height:sourceHeight + 'px',
-    });
+    intro.style.setProperty('--well-left', left + 'px');
+    intro.style.setProperty('--well-top', top + 'px');
+    intro.style.setProperty('--well-width', sourceWidth + 'px');
+    intro.style.setProperty('--well-height', sourceHeight + 'px');
     flight.style.width = target.width + 'px';
     flightMotion = flight.animate([
       { transform:'translate(' + left + 'px,' + top + 'px) scale(' + (sourceWidth / target.width) + ')' },
       { transform:'translate(' + target.left + 'px,' + target.top + 'px) scale(1)' },
-    ], { duration:revealDuration, easing:'cubic-bezier(.26,.70,.28,1)', fill:'both' });
+    ], { duration:liftDuration, easing:'cubic-bezier(.42,0,.23,1)', fill:'both' });
     intro.classList.add('is-matching');
     page.classList.add('intro-playing');
+  }
+
+  function splitCurtain() {
+    if (finished) return;
+    try { matchLogo(); } catch {}
+    intro.classList.remove('is-gathering');
+    intro.classList.add('is-splitting');
+    page.classList.add('intro-reveal');
+    finishTimer = setTimeout(finish, revealDuration);
   }
 
   function reveal() {
     if (finished || leaving) return;
     leaving = true;
-    try { matchLogo(); } catch {}
-    intro.classList.add('is-leaving');
-    finishTimer = setTimeout(finish, revealDuration + 60);
+    intro.classList.add('is-gathering');
+    gatherTimer = setTimeout(splitCurtain, gatherDuration);
   }
 
   function ready() {
@@ -329,14 +362,13 @@ html.pont-intro-active{overflow:hidden}
     if (!image.naturalWidth) { finish(); return; }
     started = true;
     clearTimeout(readyTimer);
-    holdTimer = setTimeout(reveal, 1220);
+    holdTimer = setTimeout(reveal, 950);
   }
 
   intro.hidden = false;
   page.inert = true;
   root.classList.add('pont-intro-active');
   skip.addEventListener('click', finish, { once:true });
-  art.addEventListener('animationend', finish, { once:true });
   window.addEventListener('pagehide', finish);
   window.addEventListener('resize', onResize);
   document.addEventListener('keydown', onKey);
