@@ -15,29 +15,32 @@ body{margin:0;overflow-x:hidden;background:radial-gradient(ellipse at 5% 50%,#07
 a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
 :focus-visible{outline:2px solid #b7ffe2;outline-offset:3px}
 .evening-shell{min-height:100svh;position:relative;isolation:isolate;overflow:hidden;padding-bottom:50px}
-.evening-shell::before{content:"";position:absolute;z-index:-2;inset:0 0 auto;height:700px;pointer-events:none;background:linear-gradient(180deg,rgba(0,14,14,.12),rgba(0,25,21,.83) 75%,#001b18),url("../assets/pont-evening.webp") right top/cover no-repeat;opacity:.62}
+.evening-shell::before{content:"";position:absolute;z-index:-2;inset:0 0 auto;height:clamp(320px,43vw,490px);pointer-events:none;background:linear-gradient(180deg,transparent 70%,#001b18),url("./ambient.webp") center top/cover no-repeat}
 .evening-shell::after{content:"";pointer-events:none;position:absolute;z-index:-1;bottom:-112px;left:-15%;width:130%;height:250px;border-top:2px solid rgba(117,255,229,.69);border-radius:50% 50% 0 0;transform:rotate(-3deg);background:radial-gradient(ellipse at 50% 0,rgba(5,204,178,.26),transparent 60%);box-shadow:0 -18px 60px rgba(13,227,200,.27)}
-.evening-wrap{width:min(100% - 36px,1040px);margin-inline:auto}
-.evening-header{height:126px;display:grid;grid-template-columns:1fr auto 1fr;align-items:start;padding-top:10px;position:relative;z-index:2}
-.evening-logo{grid-column:2;display:flex;align-items:center;justify-content:center;flex-direction:column;width:clamp(185px,32vw,260px);min-height:103px}
-.evening-logo img{display:block;width:100%;height:auto;max-height:103px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(66,235,220,.19))}
+.evening-wrap{width:min(92%,1040px);margin-inline:auto}
+.evening-header{height:clamp(126px,17vw,185px);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:start;padding-top:10px;position:relative;z-index:2}
+.evening-logo{grid-column:2;display:flex;align-items:center;justify-content:center;flex-direction:column;width:clamp(185px,32vw,295px);min-height:103px}
+.evening-logo img{display:block;width:100%;height:auto;max-height:132px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(66,235,220,.19))}
+.evening-logo-city{display:flex;align-items:center;gap:.85em;margin-top:-.15em;color:#f3faf6;font-size:clamp(8px,1.5vw,16px);letter-spacing:.4em;padding-left:.4em}
+.evening-logo-city::before,.evening-logo-city::after{content:"";width:clamp(20px,8vw,90px);height:1px;background:linear-gradient(90deg,transparent,#dfefeb)}
+.evening-logo-city::after{transform:scaleX(-1)}
 .evening-back{justify-self:end;grid-column:3;margin-top:20px;display:inline-flex;align-items:center;gap:10px;min-height:45px;border-radius:999px;padding:0 17px;border:1px solid rgba(154,244,219,.73);background:linear-gradient(135deg,rgba(7,75,66,.83),rgba(0,42,40,.56));box-shadow:inset 0 1px rgba(255,255,255,.16),0 0 18px rgba(23,202,185,.12);font-size:13px;font-weight:650;white-space:nowrap;transition:background .2s,transform .2s}
 .evening-back:hover{background:#105a4c;transform:translateY(-1px)}
 .evening-back svg{width:19px;height:19px;flex:none}
-.evening-intro{position:relative;z-index:1;padding:2px 0 35px}
+.evening-intro{position:relative;z-index:1;padding:2px 0 clamp(27px,4.3vw,46px);padding-inline:clamp(0px,8%,84px)}
 .evening-intro h1{display:flex;align-items:center;justify-content:center;gap:19px;margin:5px 0 14px;font:italic 600 clamp(39px,7.1vw,72px)/1.05 Georgia,"Times New Roman",serif;letter-spacing:-.035em;color:#fffdf8;text-align:center;text-shadow:0 5px 23px #00110fe8}
 .evening-intro h1 svg{width:clamp(48px,8vw,76px);height:clamp(48px,8vw,76px);flex:none;color:#f4c56c;filter:drop-shadow(0 0 11px #ffd26a40)}
 .evening-title-glow{display:block;width:min(350px,59vw);height:2px;margin:10px auto 21px;background:linear-gradient(90deg,transparent,var(--gold),transparent);box-shadow:0 0 17px #f9ce77b0}
-.evening-intro p{max-width:660px;margin:0 auto;color:#e2eee8;text-align:center;font-size:clamp(14px,2.3vw,18px);line-height:1.5;text-wrap:balance;text-shadow:0 2px 12px #001812}
+.evening-intro p{max-width:min(67%,660px);margin:0;color:#f2faf7;text-align:left;font-size:clamp(15px,2.55vw,26px);line-height:1.5;text-wrap:balance;text-shadow:0 2px 12px #001812}
 .venues{display:grid;gap:18px;padding:0 0 38px;position:relative;z-index:1}
-.venue{position:relative;isolation:isolate;display:flex;align-items:center;overflow:hidden;min-height:235px;border:1.5px solid rgba(154,247,222,.7);border-radius:30px;background:#03221e;box-shadow:inset 0 1px 0 #ffffff4d,0 9px 32px rgba(0,8,9,.35),0 0 17px rgba(37,230,207,.12);transition:transform .24s ease,border-color .24s ease}
+.venue{position:relative;isolation:isolate;display:flex;align-items:center;overflow:hidden;min-height:clamp(210px,26.5vw,300px);border:2px solid transparent;border-radius:clamp(22px,4.1vw,44px);background:linear-gradient(#03221e,#03221e) padding-box,linear-gradient(130deg,#fff0bc,#4ca49b 26%,#72c2b5 74%,#fff1cb) border-box;box-shadow:inset 0 1px 0 #ffffff4d,0 9px 32px rgba(0,8,9,.35),0 0 17px rgba(37,230,207,.12);transition:transform .24s ease,border-color .24s ease}
 .venue:hover{transform:translateY(-3px);border-color:#bbffe7}
-.venue-image{position:absolute;z-index:-2;inset:0 0 0 30%;width:70%;height:100%;background-position:center;background-size:cover;background-repeat:no-repeat}
-.venue::before{content:"";pointer-events:none;position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,#001915 0%,rgba(0,22,19,.96) 19%,rgba(0,24,21,.72) 42%,rgba(1,27,21,.04) 76%),linear-gradient(0deg,rgba(1,23,20,.26),transparent 48%)}
-.venue::after{content:"";position:absolute;left:28px;top:25px;bottom:25px;width:4px;border-radius:3px;background:linear-gradient(#ffefaa,#d39e3b);box-shadow:0 0 15px #efc16d7d}
-.venue-copy{padding:22px 20px 23px clamp(54px,7.3vw,85px);width:min(73%,630px);min-width:0}
-.venue-title{margin:0 0 14px;font:500 clamp(36px,6vw,60px)/.98 Georgia,"Times New Roman",serif;letter-spacing:-.034em;color:#fffefa;text-shadow:0 3px 15px rgba(0,9,9,.7)}
-.venue-subtitle{display:block;font-size:clamp(18px,3.2vw,29px);line-height:1.08;margin-top:2px;letter-spacing:-.02em}
+.venue-image{position:absolute;z-index:-2;inset:0;width:100%;height:100%;background-position:right center;background-size:cover;background-repeat:no-repeat}
+.venue::before{content:"";pointer-events:none;position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,#00131152,transparent 64%)}
+.venue::after{content:"";position:absolute;left:28px;top:21%;height:41%;width:5px;border-radius:3px;background:linear-gradient(#fff6d4,#d39e3b 60%,transparent);box-shadow:0 0 15px #efc16d7d}
+.venue-copy{padding:22px 20px 23px clamp(54px,6.5vw,76px);width:min(73%,630px);min-width:0}
+.venue-title{margin:0 0 14px;font:500 clamp(36px,7vw,74px)/.98 Georgia,"Times New Roman",serif;letter-spacing:-.034em;color:#fffefa;text-shadow:0 3px 15px rgba(0,9,9,.7)}
+.venue-subtitle{display:block;font-size:clamp(18px,3.2vw,35px);line-height:1.08;margin-top:2px;letter-spacing:-.02em}
 .venue-meta{display:flex;align-items:center;gap:14px;flex-wrap:wrap;color:#fbfffd;font-size:15px;text-shadow:0 2px 10px #001b19}
 .venue-place{display:inline-flex;align-items:center;gap:7px}
 .venue-place svg{width:18px;height:18px;flex:none}
@@ -45,9 +48,9 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
 .venue-action{display:inline-flex;gap:11px;align-items:center;justify-content:center;margin-top:19px;padding:10px 18px;min-height:43px;border:1px solid #77ffe2;border-radius:999px;background:linear-gradient(120deg,rgba(2,85,73,.98),rgba(0,56,51,.87));color:#fff;font-weight:700;font-size:14px;box-shadow:inset 0 1px rgba(235,255,247,.17),0 0 15px rgba(35,244,202,.29);cursor:pointer;transition:background .2s}
 .venue-action:hover{background:#10755f}
 .venue-action svg{width:18px;height:18px}
-.venue--hambar .venue-image{background-image:url("../meniul-zilei/showcase/friptura.webp")}
-.venue--vista .venue-image{background-image:url("../meniul-zilei/showcase/paste.webp")}
-.venue--noa .venue-image{background-image:url("../assets/choice-evening.webp")}
+.venue--hambar .venue-image{background-image:url("./hambar.webp")}
+.venue--vista .venue-image{background-image:url("./vista.webp")}
+.venue--noa .venue-image{background-image:url("./noa.webp")}
 .evening-bottom{height:55px}
 .evening-footer{position:relative;background:#001714;padding:14px 18px 45px;border-top:1px solid rgba(151,223,199,.2);color:#a8c6bc;font-size:12px}
 .evening-footer .footer-brand{max-width:1040px;margin:0 auto;font-size:13px;letter-spacing:.24em;color:#e9ede2}
@@ -69,21 +72,21 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
 .venue-dialog-close{position:absolute;z-index:2;top:13px;right:13px;width:37px;height:37px;display:grid;place-items:center;border:1px solid #ffffff90;border-radius:50%;background:#00231fcb;color:#fff;font-size:23px}
 @media(max-width:600px){
  .evening-wrap{width:calc(100% - 26px)}
- .evening-header{height:128px;padding-top:5px;grid-template-columns:1fr auto 1fr}
+ .evening-header{height:128px;padding-top:5px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
  .evening-logo{width:clamp(147px,43vw,205px);min-height:90px}
  .evening-logo img{max-height:88px}
  .evening-back{margin-top:15px;min-height:38px;padding:0 10px;font-size:11px;gap:5px}
  .evening-back svg{width:16px;height:16px}
- .evening-intro{padding:0 0 25px}
+ .evening-intro{padding:0 10px 25px}
  .evening-intro h1{font-size:clamp(34px,9vw,47px);gap:9px;margin-top:0}
  .evening-intro h1 svg{width:42px;height:42px}
  .evening-title-glow{margin:8px auto 17px}
- .evening-intro p{font-size:14px;max-width:340px}
+ .evening-intro p{font-size:14px;max-width:78%}
  .venues{gap:14px}
  .venue{min-height:196px;border-radius:24px}
- .venue-image{left:auto;right:0;inset:0 0 0 auto;width:76%;background-position:center}
- .venue::before{background:linear-gradient(90deg,#001915 0%,rgba(0,23,20,.95) 21%,rgba(0,22,19,.74) 47%,rgba(0,24,21,.04) 90%)}
- .venue::after{left:14px;top:23px;bottom:23px;width:3px}
+ .venue-image{background-position:84% center}
+ .venue::before{background:linear-gradient(90deg,#001311c9 5%,#00131180 42%,transparent 84%)}
+ .venue::after{left:14px;width:3px}
  .venue-copy{padding:17px 10px 17px 30px;width:76%}
  .venue-title{font-size:clamp(34px,10vw,48px);margin-bottom:10px}
  .venue-subtitle{font-size:clamp(17px,5vw,23px)}
@@ -93,6 +96,7 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
  .venue-action{margin-top:16px;padding:8px 13px;min-height:39px;font-size:12px}
  .venue-action svg{width:16px;height:16px}
 }
+@media(max-width:540px){.evening-back .back-text{display:none}.evening-back{width:42px;min-height:42px;justify-content:center;padding:0}}
 @media(max-width:380px){.evening-header{height:110px}.evening-logo{width:143px}.evening-back .back-text{display:none}.evening-back{width:38px;justify-content:center;padding:0}.venue-copy{width:82%}.venue-title{font-size:33px}.venue--noa .venue-title{font-size:31px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.venue,.venue-action,.evening-back{transition:none}}
 </style>
@@ -100,14 +104,14 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
 <body class="evening-page">
 <div class="evening-shell">
   <header class="evening-header evening-wrap">
-    <a class="evening-logo" href="../" aria-label="PONT Slobozia — Acasă"><img src="../meniul-zilei/showcase/pont-wordmark.webp" alt="PONT Slobozia" width="576" height="240"></a>
-    <a class="evening-back" href="../"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4m0 0 7-7m-7 7 7 7"/></svg><span class="back-text">Înapoi la intrare</span></a>
+    <a class="evening-logo" href="../" aria-label="PONT Slobozia — Acasă"><img src="../meniul-zilei/showcase/pont-wordmark.webp" alt="PONT Slobozia" width="576" height="240"><span class="evening-logo-city" aria-hidden="true">SLOBOZIA</span></a>
+    <a class="evening-back" href="../" aria-label="Înapoi la intrare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4m0 0 7-7m-7 7 7 7"/></svg><span class="back-text">Înapoi la intrare</span></a>
   </header>
   <main class="evening-wrap">
     <section class="evening-intro" aria-labelledby="evening-title">
       <h1 id="evening-title"><svg viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linejoin="round" stroke-linecap="round" aria-hidden="true"><path d="M11 8h24l-1 18c-.4 7-5 12-11 12s-10.6-5-11-12L11 8ZM23 38v17m-12 0h24M43 8h24l-1 18c-.4 7-5 12-11 12s-10.6-5-11-12L43 8ZM55 38v17m-12 0h24" transform="rotate(-13 23 32)"/><path d="M14 23h19M46 23h19" opacity=".8"/></svg><span>Ieșire în oraș</span></h1>
       <span class="evening-title-glow" aria-hidden="true"></span>
-      <p>Descoperă locuri pentru cine speciale, seri relaxate și momente petrecute cu cei dragi.</p>
+      <p>De la o cină în doi la o seară cu prietenii. Alege locul care ți se potrivește în Slobozia.</p>
     </section>
     <section class="venues" aria-label="Restaurante și localuri din Slobozia"><article class="venue venue--hambar"><div class="venue-image" role="img" aria-label="Imagine ilustrativă pentru Hambar"></div><div class="venue-copy"><h2 class="venue-title">Hambar</h2><div class="venue-meta"><span class="venue-place"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a8.1 8.1 0 0 0-8 8.2C4 16 12 22 12 22s8-6 8-11.8A8.1 8.1 0 0 0 12 2Zm0 11.2a3.1 3.1 0 1 1 0-6.2 3.1 3.1 0 0 1 0 6.2Z"/></svg> Slobozia</span><span class="venue-vibe">Relaxat</span></div><button class="venue-action" type="button" data-venue="hambar" aria-label="Vezi detalii despre Hambar">Vezi detalii <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16m0 0-7-7m7 7-7 7"/></svg></button></div></article>
 <article class="venue venue--vista"><div class="venue-image" role="img" aria-label="Imagine ilustrativă pentru Vista"></div><div class="venue-copy"><h2 class="venue-title">Vista</h2><div class="venue-meta"><span class="venue-place"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a8.1 8.1 0 0 0-8 8.2C4 16 12 22 12 22s8-6 8-11.8A8.1 8.1 0 0 0 12 2Zm0 11.2a3.1 3.1 0 1 1 0-6.2 3.1 3.1 0 0 1 0 6.2Z"/></svg> Slobozia</span><span class="venue-vibe">Elegant</span></div><button class="venue-action" type="button" data-venue="vista" aria-label="Vezi detalii despre Vista">Vezi detalii <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h16m0 0-7-7m7 7-7 7"/></svg></button></div></article>
@@ -129,9 +133,9 @@ a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
 <footer class="evening-footer"><div class="footer-brand">PONT · SLOBOZIA</div><section class="pont-legal-footer" aria-label="Informații juridice" style="max-width:1120px;margin:32px auto 0;padding:22px;border-top:1px solid #9b9b8b55;font:13px/1.7 system-ui"><strong>Operator PONT</strong><p>NEGRĂU GEORGIANA-NICOLETA PERSOANĂ FIZICĂ AUTORIZATĂ · CUI 54519245 · Registrul Comerțului F2026020830003 · EUID ROONRC.F2026020830003<br>Sediu: Aleea Bujorului nr. 5, bl. B2, sc. C, et. 3, ap. 55, Slobozia, Ialomița · <a href="mailto:clean.slobozia@gmail.com">clean.slobozia@gmail.com</a></p><p>Versiune de test. PONT facilitează contactul; restaurantul confirmă comenzile și încasează direct.</p><nav style="display:flex;gap:14px;flex-wrap:wrap"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate</a><a href="../cookies.html">Cookies</a><a href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer">SAL – ANPC</a></nav></section></footer>
 <script>
 const venueData={
- hambar:{name:'Hambar',vibe:'Relaxat',description:'O alegere pentru o masă tihnită și o ieșire cu prietenii sau familia.',photo:'../meniul-zilei/showcase/friptura.webp',query:'Hambar Slobozia'},
- vista:{name:'Vista',vibe:'Elegant',description:'Un cadru potrivit pentru întâlniri speciale și o seară în oraș.',photo:'../meniul-zilei/showcase/paste.webp',query:'Vista Slobozia restaurant'},
- noa:{name:'NOA Restaurant & Lounge',vibe:'Lounge',description:'O atmosferă de seară pentru socializare, conversații și momente relaxante.',photo:'../assets/choice-evening.webp',query:'NOA Restaurant Lounge Slobozia'}
+ hambar:{name:'Hambar',vibe:'Relaxat',description:'O alegere pentru o masă tihnită și o ieșire cu prietenii sau familia.',photo:'./hambar.webp',query:'Hambar Slobozia'},
+ vista:{name:'Vista',vibe:'Elegant',description:'Un cadru potrivit pentru întâlniri speciale și o seară în oraș.',photo:'./vista.webp',query:'Vista Slobozia restaurant'},
+ noa:{name:'NOA Restaurant & Lounge',vibe:'Lounge',description:'O atmosferă de seară pentru socializare, conversații și momente relaxante.',photo:'./noa.webp',query:'NOA Restaurant Lounge Slobozia'}
 };
 const dlg=document.getElementById('venueDialog');
 document.querySelectorAll('[data-venue]').forEach(button=>button.addEventListener('click',()=>{
