@@ -493,7 +493,20 @@ function update(){
   $('#send').disabled=items.length===0||!current?.phone||form.elements.full_name.value.trim().length<3||!phoneValid||(delivery&&!form.elements.address.value.trim());form.querySelectorAll('[data-method]').forEach(b=>{const active=b.dataset.method===form.elements.method.value;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active))});
 }
 let returnFocus;
+const pontMetricsVisited=new Set();
+function trackPontMetric(type,menu,menusCount=0,portionsCount=0){
+ const rid=menu?.restaurantId,config=window.PONT_CONFIG;
+ if(!rid||!config?.url||!config?.anonKey)return;
+ if(type==='restaurant_view'){
+  const key='pont_visit_'+rid+'_'+day();
+  try{if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,'1')}catch(err){if(pontMetricsVisited.has(key))return;pontMetricsVisited.add(key)}
+ }
+ const url=config.url+'/rest/v1/rpc/pont_track_restaurant_event';
+ const payload=JSON.stringify({p_restaurant_id:rid,p_event_type:type,p_menus_count:menusCount,p_portions_count:portionsCount});
+ fetch(url,{method:'POST',headers:{'Content-Type':'application/json',apikey:config.anonKey,Authorization:'Bearer '+config.anonKey},body:payload,keepalive:true,cache:'no-store'}).catch(()=>{});
+}
 function openOrder(m,trigger){
+ trackPontMetric('restaurant_view',m);
   current=m;draft=null;orderNoticeAccepted=false;returnFocus=trigger;form.reset();phoneTouched=false;
   $('#orderTitle').textContent=m.name;
   $('#menuPreview').innerHTML='<div class="preview-course"><span>F1</span><strong>'+esc(m.first)+'</strong></div><div class="preview-course"><span>F2</span><strong>'+esc(m.second)+'</strong></div>'+(m.dessert?'<div class="preview-course"><span>D</span><strong>'+esc(m.dessert)+'</strong></div>':'');$('#combo-price').innerHTML='<small>Meniu complet</small><strong>'+lei(m.full)+'</strong>';
@@ -505,6 +518,7 @@ function openOrder(m,trigger){
 }
 $('#list').onclick=e=>{const trigger=e.target.closest('[data-menu]');if(trigger){const m=menus().find(m=>m.id===trigger.dataset.menu);if(m)openOrder(m,trigger)}};
 $('#close').onclick=()=>$('#order').close();
+$('#callNow').addEventListener('click',()=>{if(current&&$('#callNow').href)trackPontMetric('call_click',current)});
 $('#order').addEventListener('close',()=>returnFocus?.focus());
 form.oninput=update;form.elements.phone.addEventListener('blur',()=>{phoneTouched=true;update()});form.querySelectorAll('[data-method]').forEach(b=>b.addEventListener('click',()=>{form.elements.method.value=b.dataset.method;update()}));
 $('#choices').onclick=e=>{
@@ -531,9 +545,9 @@ const itemName=item=>item.short==='meniuri complete'?'Meniul zilei':item.short==
 const msg=[id,'',...items.map((item,i)=>(i+1)+'. '+item.qty+'x '+itemName(item)),'','• Nume: '+details.full_name,'• Număr telefon: '+details.phone,'• Adresă: '+(details.method==='Ridicare'?'Ridicare de la restaurant':details.address),'• Metoda de plată: '+details.payment,'• Total: '+lei(subtotal(items))].join('\n');
 const waPhone=cleanWhatsAppPhone(current.phone);const url=waPhone?'https://wa.me/'+waPhone+'?text='+encodeURIComponent(msg):null;
 returnFocus=$('#list').querySelector('[data-menu="'+current.id+'"]');
-if(waPhone){$('#orderMsg').textContent='Se deschide WhatsApp. Comanda '+id+'. Trimite mesajul pentru confirmare.';window.location.href=url}else $('#orderMsg').textContent='Număr WhatsApp indisponibil.';submittingOrder=false;
+if(waPhone){trackPontMetric('whatsapp_open',current,items.find(item=>item.short==='meniuri complete')?.qty||0,items.reduce((sum,item)=>sum+item.qty,0));$('#orderMsg').textContent='Se deschide WhatsApp. Comanda '+id+'. Trimite mesajul pentru confirmare.';window.location.href=url}else $('#orderMsg').textContent='Număr WhatsApp indisponibil.';submittingOrder=false;
 };
 render();
-async function refreshLiveMenus(){try{const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Conexiune neconfigurată');const params=new URLSearchParams({select:'id,restaurant_id,title,price,description,first_course,second_course,first_price,second_price,dessert,restaurants!inner(name,enabled,phone,accepts_card)',published:'eq.true',service_date:'eq.'+day(),'restaurants.enabled':'eq.true',order:'created_at.desc'});const response=await fetch(cfg.url+'/rest/v1/menus?'+params,{headers:{apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();liveMenus=data.map(m=>({id:m.id,name:m.restaurants.name,first:m.first_course||m.title,second:m.second_course||m.description||'Detalii la restaurant',p1:Number(m.first_price??m.price??0),p2:Number(m.second_price??m.price??0),full:Number(m.price??0),dessert:m.dessert||'',card:!!m.restaurants.accepts_card,delivery:true,phone:m.restaurants.phone||''}));render()}catch(err){console.error('PONT menus',err);$('#list').innerHTML='<p class="pont-empty">Nu am putut încărca meniurile. Reîncearcă în câteva momente.</p>'}}
+async function refreshLiveMenus(){try{const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Conexiune neconfigurată');const params=new URLSearchParams({select:'id,restaurant_id,title,price,description,first_course,second_course,first_price,second_price,dessert,restaurants!inner(name,enabled,phone,accepts_card)',published:'eq.true',service_date:'eq.'+day(),'restaurants.enabled':'eq.true',order:'created_at.desc'});const response=await fetch(cfg.url+'/rest/v1/menus?'+params,{headers:{apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();liveMenus=data.map(m=>({id:m.id,restaurantId:m.restaurant_id,name:m.restaurants.name,first:m.first_course||m.title,second:m.second_course||m.description||'Detalii la restaurant',p1:Number(m.first_price??m.price??0),p2:Number(m.second_price??m.price??0),full:Number(m.price??0),dessert:m.dessert||'',card:!!m.restaurants.accepts_card,delivery:true,phone:m.restaurants.phone||''}));render()}catch(err){console.error('PONT menus',err);$('#list').innerHTML='<p class="pont-empty">Nu am putut încărca meniurile. Reîncearcă în câteva momente.</p>'}}
 refreshLiveMenus();document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshLiveMenus()});setInterval(refreshLiveMenus,60000);
 </script></html>
