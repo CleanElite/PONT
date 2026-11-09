@@ -187,7 +187,7 @@ $('saveAuctionPayments').onclick=async()=>{
  if(failed.length){status('Salvate: '+completed+'. Eșuate: '+failed.join('; '),true);refreshAuctionSave();return}
  try{await loadAuctions();status('Modificările au fost salvate pentru '+completed+' '+(completed===1?'restaurant':'restaurante')+'.')}catch(err){status('Salvarea s-a făcut, dar reîncărcarea a eșuat: '+err.message,true)}
 };
-setInterval(()=>{if(user&&!$('auctions').hidden)loadAuctions().catch(e=>console.error(e))},15000);async function enter(){let {data}=await db.auth.getUser();user=data.user;$('login').hidden=!!user;$('app').hidden=!user;if(!user)return;try{let p=await req(db.from('profiles').select('role').eq('user_id',user.id));if(p[0]?.role!=='super_admin')throw Error('Acest cont nu are rol Super Admin.');await load()}catch(e){$('app').hidden=true;$('login').hidden=false;$('error').textContent=e.message}}
+setInterval(()=>{if(user&&!$('auctions').hidden)loadAuctions().catch(e=>console.error(e))},15000);async function enter(){let {data}=await db.auth.getUser();user=data.user;$('login').hidden=!!user;$('app').hidden=!user;if(!user)return;try{let p=await req(db.from('profiles').select('role').eq('user_id',user.id));if(p[0]?.role!=='super_admin')throw Error('Acest cont nu are rol Super Admin.');await load();await window.pontDishUI?.refresh()}catch(e){$('app').hidden=true;$('login').hidden=false;$('error').textContent=e.message}}
 $('auth').onsubmit=async e=>{e.preventDefault();let {error}=await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error)$('error').textContent=error.message;else await enter()};$('logout').onclick=async()=>{await db.auth.signOut();await enter()};document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['menus','restaurants','members','auctions','analytics','customers'].forEach(x=>$(x).hidden=x!==b.dataset.tab);if(b.dataset.tab==='auctions')loadAuctions().catch(e=>status(e.message,true));if(b.dataset.tab==='analytics')loadAnalytics().catch(e=>{$('analyticsStatus').textContent=e.message});if(b.dataset.tab==='customers')loadCustomers().catch(e=>{$('customersStatus').textContent=e.message})});$('date').value=new Date().toLocaleDateString('en-CA');
 function menuFormError(message,field){
  const panel=$('menuFormFeedback');panel.hidden=false;panel.textContent=message;
@@ -252,5 +252,6 @@ $('memberRows').onclick=async e=>{let b=e.target.closest('[data-revoke]');if(!b|
 window.pontAllMenus=()=>menus;
 const {initPontDishEditor}=await import('../dish-editor.js');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
+window.pontDishUI=pontDishUI;
 await enter();if(user)await pontDishUI.refresh()}
 </script></html>
