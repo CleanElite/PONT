@@ -131,6 +131,10 @@
   <div class="dashboard-heading">
     <div><h2 id="auctionsTitle">Licitații și încasări</h2><p>Alege luna în care restaurantul va putea publica meniuri.</p></div>
   </div>
+  <div class="dashboard-heading">
+    <div><strong>Licitația pentru luna următoare</strong><p id="auctionControlStatus" role="status">Se verifică starea licitației…</p></div>
+    <button type="button" id="toggleAuctionControl" class="primary" disabled>Pornește licitația</button>
+  </div>
   <div class="auction-summary dashboard-stats">
     <div class="stat">Total licitat<strong id="auctionTotal">—</strong></div>
     <div class="stat">Încasat din oferte<strong id="auctionPaid">—</strong></div>
@@ -675,13 +679,69 @@ $('saveAuctionPayments').onclick = async () => {
  showMessage('auctionFeedback', countLabel(completed, 'modificare salvată', 'modificări salvate') + '.');
  await loadAuctions();
 };
+const auctionControlButton = $('toggleAuctionControl');
+let auctionControl = null;
+let auctionControlBusy = false;
+let auctionControlRequest = 0;
+
+function nextAuctionMonth() {
+ const [year, month] = todayRO().split('-').map(Number);
+ return new Date(Date.UTC(year, month, 1)).toISOString().slice(0, 10);
+}
+
+function displayAuctionControl(month, isOpen) {
+ auctionControl = {month, isOpen};
+ const label = new Intl.DateTimeFormat('ro-RO', {month:'long', year:'numeric', timeZone:'UTC'}).format(new Date(month));
+ showMessage('auctionControlStatus', label + ' · ' + (isOpen ? 'Deschisă' : 'Închisă'));
+ auctionControlButton.textContent = isOpen ? 'Închide licitația' : 'Pornește licitația';
+ auctionControlButton.disabled = auctionControlBusy;
+}
+
+async function loadAuctionControl() {
+ if (auctionControlBusy) return;
+ const request = ++auctionControlRequest, month = nextAuctionMonth();
+ try {
+  const {data, error} = await db.from('pont_auction_control').select('is_open').eq('campaign_month', month).maybeSingle();
+  if (error) throw error;
+  if (request === auctionControlRequest) displayAuctionControl(month, data?.is_open === true);
+ } catch (error) {
+  if (request !== auctionControlRequest) return;
+  auctionControl = null;
+  auctionControlButton.disabled = true;
+  showMessage('auctionControlStatus', 'Nu s-a putut verifica starea licitației.', true);
+ }
+}
+
+auctionControlButton.onclick = async () => {
+ if (!auctionControl || auctionControlBusy) return;
+ const {month, isOpen} = auctionControl;
+ if (month !== nextAuctionMonth()) { await loadAuctionControl(); return; }
+ auctionControlBusy = true;
+ ++auctionControlRequest;
+ auctionControlButton.disabled = true;
+ try {
+  const {data, error} = await db.from('pont_auction_control')
+   .upsert({campaign_month:month, is_open:!isOpen}, {onConflict:'campaign_month'}).select('is_open').single();
+  if (error) throw error;
+  displayAuctionControl(month, data.is_open);
+ } catch (error) {
+  showMessage('auctionControlStatus', 'Starea licitației nu a putut fi actualizată. ' + error.message, true);
+ } finally {
+  auctionControlBusy = false;
+  auctionControlButton.disabled = !auctionControl;
+ }
+};
+
 setInterval(() => {
- if (!$('app').hidden && !$('auctions').hidden && !$('auctionRows').contains(document.activeElement)) loadAuctions();
+ if (!$('app').hidden && !$('auctions').hidden) {
+  loadAuctionControl();
+  if (!$('auctionRows').contains(document.activeElement)) loadAuctions();
+ }
 }, 15000);
 
 const platformTabs = [...document.querySelectorAll('.admin-nav button[data-tab]')];
 const panelLoaders = {
- auctions:loadAuctions,
+ auctions:() => { loadAuctions(); loadAuctionControl(); },
  dishLibrary:() => window.pontDishUI?.refresh().catch(error => status(error.message, true)),
  analytics:loadAnalytics,
  customers:loadCustomers

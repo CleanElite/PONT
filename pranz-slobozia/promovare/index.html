@@ -61,8 +61,8 @@ const nextMonth=()=>{const [y,m]=localDate().split('-').map(Number);return new D
 const money=v=>Number(v).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
 const month=nextMonth();let db,me,role,offers=[],names={},selectedSlot=0,busy=false;
 const minimumBid=50;
-const openDays=[22,23,26,27,29];
-const auctionIsOpen=()=>openDays.includes(Number(localDate().slice(8)));
+let biddingOpen=false;
+const auctionIsOpen=()=>biddingOpen && nextMonth()===month;
 $('date').textContent=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month));
 function orderedOffers(){return [...offers].sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at))}
 function ownOffer(){return offers.find(o=>o.restaurant_id===me)}
@@ -75,7 +75,9 @@ function render(){
    '" aria-label="Poziția '+(i+1)+', '+esc(name)+'. '+action+'"><span class="menu-card-copy"><span class="menu-card-name">'+
    esc(name)+'</span></span><span class="menu-card-price">'+(o?money(o.amount):'De la '+money(minimumBid))+'</span></button></article>';
  }).join('');
- $('auctionHint').textContent=role==='super_admin'?'Apasă un card pentru a vedea oferta. Confirmările se gestionează în Licitații.':auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':'Licitația este momentan închisă. Poți consulta ofertele și următoarele date: 22–23, 26–27 și 29.';
+}
+function renderAuctionStatus(){
+ $('auctionHint').textContent=role==='super_admin'?'Apasă un card pentru a vedea oferta. Confirmările se gestionează în Licitații.':auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':'Licitația este închisă. Poți consulta ofertele existente.';
  if($('auctionDialog').open)updateModal();
 }
 function updateModal(){
@@ -89,15 +91,20 @@ function updateModal(){
  $('bidAmount').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
  $('bidSubmit').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
  $('bidSubmit').textContent=busy?'Se salvează…':isAdmin?'Mod vizualizare':own?.payment_status==='paid'?'Oferta ta este achitată':open?'Confirmă oferta':'Licitația este închisă';
- $('auctionModalNote').textContent=isAdmin?'Contul Super Admin poate consulta licitațiile, fără să liciteze.':!open?'Licitații: 22–23, 26–27 și 29. Încasări: 24, 28 și 30.':own?.payment_status==='paid'?'Oferta este deja confirmată ca plătită.':'Oferta minimă din acest formular este '+money(minimum)+'. Dacă altcineva licitează mai mult, poziția ta se modifică. Plata se confirmă separat.';
+ $('auctionModalNote').textContent=isAdmin?'Contul Super Admin poate consulta licitațiile, fără să liciteze.':!open?'Vei putea licita când Super Admin deschide licitația.':own?.payment_status==='paid'?'Oferta este deja confirmată ca plătită.':'Oferta minimă din acest formular este '+money(minimum)+'. Dacă altcineva licitează mai mult, poziția ta se modifică. Plata se confirmă separat.';
 }
 $('list').addEventListener('click',e=>{const button=e.target.closest('[data-slot]');if(!button)return;selectedSlot=Number(button.dataset.slot);$('bidMessage').textContent='';$('bidAmount').value='';updateModal();$('auctionDialog').showModal()});
 $('auctionClose').onclick=()=>$('auctionDialog').close();
 $('auctionDialog').addEventListener('click',e=>{if(e.target===$('auctionDialog'))$('auctionDialog').close()});
 async function load(){
- const [a,b]=await Promise.all([db.from('auction_offers').select('*').eq('campaign_month',month).order('amount',{ascending:false}),db.from('restaurants').select('id,name')]);
+ const [a,b,control]=await Promise.all([db.from('auction_offers').select('*').eq('campaign_month',month).order('amount',{ascending:false}),db.from('restaurants').select('id,name'),db.from('pont_auction_control').select('is_open').eq('campaign_month',month).maybeSingle()]);
  if(a.error)throw a.error;if(b.error)throw b.error;
- offers=a.data||[];names=Object.fromEntries((b.data||[]).map(r=>[r.id,r.name]));render();
+ biddingOpen=!control.error && control.data?.is_open===true;
+ offers=a.data||[];names=Object.fromEntries((b.data||[]).map(r=>[r.id,r.name]));
+ const focusedSlot = $('list').contains(document.activeElement) ? document.activeElement.dataset.slot : undefined;
+ render();
+ if (focusedSlot !== undefined) $('list').querySelector('[data-slot="' + focusedSlot + '"]')?.focus({preventScroll:true});
+ renderAuctionStatus();
 }
 async function start(){
  try{
@@ -116,7 +123,7 @@ async function start(){
   if(role==='restaurant'){const access=await db.rpc('my_restaurant_access');if(access.error)throw access.error;me=access.data?.[0]?.restaurant_id;if(!me)throw Error('Restaurant neatribuit')}
   await load();
   setInterval(()=>{
-   if(!$('list').contains(document.activeElement)||$('auctionDialog').open)load().catch(e=>console.error('Actualizare licitații:',e));
+   load().catch(e=>{biddingOpen=false;renderAuctionStatus();console.error('Actualizare licitații:',e)});
   },15000);
  }catch(e){$('list').textContent='Nu se pot încărca licitațiile: '+e.message}
 }
