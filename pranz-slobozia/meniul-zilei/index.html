@@ -701,12 +701,12 @@ function openOrder(m,trigger){
     if(!dishes.length)return '';
     return '<details class="pont-dish-group" open><summary><span class="pont-group-symbol">'+symbol+'</span><strong>'+title+'</strong><small>('+dishes.length+' preparate)</small><span class="pont-group-arrow">⌃</span></summary><div class="pont-dish-group__content">'+dishes.map(d=>{
       const index=optionDishes.indexOf(d);
-      if(d.category==='dessert')return '<div class="quantity pont-choice-dish pont-dessert-included'++(d.available===false?' is-soldout':'')+'">'+
+      if(d.category==='dessert')return '<div class="quantity pont-choice-dish pont-dessert-included'+(d.available===false?' is-soldout':'')+'">'+
         '<span class="pont-dessert-mark" aria-hidden="true">✦</span>'+ 
         '<span class="pont-dish-name"><strong>'+esc(d.name)+'</strong></span>'+
         '<span class="pont-dessert-label">'+(d.available===false?'Epuizat':'Inclus')+'</span></div>';
       const priceText=d.available===false?'Epuizat':lei(d.price);
-      return '<div class="quantity pont-choice-dish'++(d.available===false?' is-soldout':'')+'">'+
+      return '<div class="quantity pont-choice-dish'+(d.available===false?' is-soldout':'')+'">'+
         '<label class="pont-pick" for="qty-'+index+'" aria-label="Selectează '+esc(d.name)+'"><input type="checkbox" data-pick="'+index+'" '+(d.available===false?'disabled':'')+'><span aria-hidden="true"></span></label>'+
         
         '<label class="pont-dish-name" for="qty-'+index+'"><strong>'+esc(d.name)+'</strong></label>'+
