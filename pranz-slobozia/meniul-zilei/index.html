@@ -1,4 +1,4 @@
-<!doctype html><html lang="ro"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>PONT Slobozia</title><link rel="stylesheet" href="./lunch.css?v=fildes"><link rel="icon" type="image/svg+xml" href="./pont-app-icon.svg"><link rel="apple-touch-icon" sizes="180x180" href="../pont-180.png?v=4"><meta name="apple-mobile-web-app-title" content="PONT"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#063d41"><link rel="manifest" href="./manifest.webmanifest">
+<!doctype html><html lang="ro"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Meniul zilei · PONT Slobozia</title><link rel="stylesheet" href="./lunch.css?v=fildes"><link rel="icon" type="image/svg+xml" href="./pont-app-icon.svg"><link rel="apple-touch-icon" sizes="180x180" href="../pont-180.png?v=4"><meta name="apple-mobile-web-app-title" content="PONT"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="theme-color" content="#02191c"><link rel="manifest" href="./manifest.webmanifest">
 <style>
 *{box-sizing:border-box}body{margin:0;background:#f8f5ed;color:#252720;font:16px system-ui}header,main,footer{max-width:1120px;margin:auto;padding:22px}header{display:flex;justify-content:space-between;align-items:center;gap:8px}button,input,select,textarea{font:inherit}button{cursor:pointer;border:0;border-radius:12px;padding:12px 16px;background:#214a39;color:white;font-weight:650}button.secondary{background:#e9e9dc;color:#214a39}button:disabled{opacity:.5;cursor:default}.hero{background:#214a39;color:#fff8e7;border-radius:30px;padding:clamp(25px,6vw,65px);position:relative;overflow:hidden}.hero:after{content:'✳';position:absolute;right:4%;top:-30%;font-size:clamp(100px,32vw,350px);color:#ffffff0b;pointer-events:none}h1{font:700 clamp(42px,8vw,90px)/.96 Georgia;margin:18px 0}h2,h3{font-family:Georgia}.tag{display:inline-block;border-radius:30px;background:#e2eddc;color:#214a39;padding:6px 11px;font-size:13px;font-weight:bold}.gold{background:#ffe4a3;color:#623f12}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:16px}.card,form,.history{background:#fffdf7;border:1px solid #e6e0d3;border-radius:22px;padding:22px}.card p{min-height:48px}.card .bottom,.row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.card h3{font-size:27px;margin-bottom:6px}.muted,small{color:#56594c}label{display:block;margin:10px 0}input,textarea,select{padding:10px;border:1px solid #bfbeb1;border-radius:9px;background:white;max-width:100%}label input:not([type=checkbox]),label select,label textarea{display:block;width:100%;margin-top:4px}dialog{border:0;border-radius:24px;background:#fffdf7;color:inherit;width:min(560px,94vw);max-height:88vh;padding:24px}dialog::backdrop{background:#14261db0}section{margin-bottom:26px}fieldset{border:1px solid #e6e0d3;border-radius:12px;margin:12px 0}footer{border-top:1px solid #e6e0d3}
 [hidden]{display:none!important}nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:20px}nav a{text-align:center;align-content:center;min-height:48px;padding-inline:6px}nav a,.search-link{display:inline-block;color:#214a39;font-weight:700;padding:10px 14px;border-radius:12px;background:#e9e9dc;text-decoration:none}nav a[aria-current=page]{background:#214a39;color:white}nav a:hover,.search-link:hover{text-decoration:underline}.evening{background:#29251f;color:#fff4df;border-radius:26px;padding:clamp(20px,4vw,42px);margin-top:30px}.evening h2{font-size:clamp(30px,5vw,53px);margin:12px 0}.evening .card{color:#252720}.evening .card p{min-height:0}.eyebrow{font-size:12px;letter-spacing:.16em;font-weight:700}.evening .grid{margin-top:22px}html{scroll-padding-top:16px}
@@ -412,9 +412,26 @@ body.lunch .pont-footer-links a{display:inline-flex!important;width:auto!importa
 body.lunch .pont-footer-links a:hover{text-decoration:underline!important;color:white!important}
 body.lunch .pont-footer-simple>small{font-size:11px!important;color:#84aaa2!important}
 @media(max-width:500px){body.lunch .pont-footer-simple{margin-top:29px!important;padding:24px 16px 30px!important}body.lunch .pont-footer-links{gap:6px 15px!important}body.lunch .pont-footer-links a{font-size:11px!important}}
-body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;height:17px!important;margin:8px auto 20px!important;padding:0!important;border:0!important;background:white!important;border-radius:4px!important;align-items:center;justify-content:center;overflow:hidden}body.lunch .pont-sal-pictogram img{display:block!important;width:68px!important;height:17px!important;max-width:none!important;object-fit:contain!important}body.lunch .pont-sal-pictogram:hover{outline:2px solid #92e8d9;outline-offset:3px}</style><body class="lunch"><header><a href="../" aria-label="PONT Slobozia, pagina de intrare"><img src="../pont.svg" width="160" height="46" alt="PONT Slobozia"></a><a class="search-link" href="../">← Înapoi la intrare</a></header>
-<main><section class="hero" aria-labelledby="lunchTitle"><span class="pont-hero-eyebrow"><span class="pont-eyebrow-line" aria-hidden="true"></span>MENIUL ZILEI <span class="pont-hero-city">· SLOBOZIA</span></span><h1 id="lunchTitle">Ce mâncăm <em>azi?</em></h1><p>Alege restaurantul și comandă.</p><span class="pont-hero-scroll" aria-hidden="true"><span></span> DESCOPERĂ RESTAURANTELE</span></section>
-<section id="customer"><div class="row pont-restaurants-heading"><h2>Restaurante</h2><span id="date"></span></div><div id="list" class="grid" aria-live="polite"></div></section>
+body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;height:17px!important;margin:8px auto 20px!important;padding:0!important;border:0!important;background:white!important;border-radius:4px!important;align-items:center;justify-content:center;overflow:hidden}body.lunch .pont-sal-pictogram img{display:block!important;width:68px!important;height:17px!important;max-width:none!important;object-fit:contain!important}body.lunch .pont-sal-pictogram:hover{outline:2px solid #92e8d9;outline-offset:3px}</style><link rel="stylesheet" href="./menu-showcase.css">
+<body class="lunch menu-showcase">
+<div class="menu-art" aria-hidden="true"></div>
+<header class="menu-header">
+  <a class="menu-lockup" href="../" aria-label="PONT Slobozia, pagina de intrare">
+    <span class="menu-wordmark" aria-hidden="true"></span>
+    <span class="menu-city" aria-hidden="true">SLOBOZIA</span>
+  </a>
+  <a class="menu-back" href="../"><span class="menu-icon menu-icon--arrow" aria-hidden="true"></span>Înapoi la intrare</a>
+</header>
+<main class="menu-main">
+  <section class="menu-heading" aria-labelledby="lunchTitle">
+    <h1 id="lunchTitle"><span class="menu-icon menu-icon--utensils" aria-hidden="true"></span>Meniul zilei</h1>
+    <p>Alege restaurantul și vezi meniul de azi.</p>
+  </section>
+  <section id="customer" aria-label="Restaurante cu meniul zilei">
+    <p id="menuPreviewLabel" class="menu-preview-label" hidden>Previzualizare · restaurante de test</p>
+    <div id="list" aria-live="polite"><p class="menu-empty">Se încarcă meniurile de azi…</p></div>
+    <p id="menuPhotoNote" class="menu-photo-note" hidden>Unele fotografii sunt ilustrative.</p>
+  </section>
 </main>
 <footer class="pont-footer-simple"><div class="pont-footer-brand"><span class="pont-footer-mark">PONT</span><span class="pont-footer-city">SLOBOZIA</span></div><p>Comenzile se confirmă direct cu restaurantul.</p><nav class="pont-footer-links" aria-label="Informații și documente legale"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate</a><a href="../cookies.html">Cookies</a><a href="https://anpc.ro/" target="_blank" rel="noopener noreferrer">ANPC</a></nav><a class="pont-sal-pictogram" href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" aria-label="ANPC – Soluționarea Alternativă a Litigiilor"><img src="../sal-pont.svg" width="68" height="17" loading="lazy" alt="ANPC – Soluționarea Alternativă a Litigiilor"></a><small>© PONT · Platformă de prezentare a restaurantelor</small></footer>
 <dialog id="order" aria-labelledby="orderTitle">
@@ -433,14 +450,14 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
 const $=s=>document.querySelector(s), day=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest'}).format(new Date()), lei=n=>new Intl.NumberFormat('ro-RO',{style:'currency',currency:'RON'}).format(n);
 const read=(k,f)=>JSON.parse(localStorage.getItem(k)??JSON.stringify(f)), write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const pontPhotos=['https://images.unsplash.com/photo-1547592180-85f173990554?w=700&q=85','https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=700&q=85','https://images.unsplash.com/photo-1473093295043-cdd812d0e601?w=700&q=85','https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=700&q=85','https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=700&q=85','https://images.unsplash.com/photo-1569718212165-3a8278d5f624?w=700&q=85'];
+const pontPhotos=['somon','pizza','supa','paste','burger','friptura'];
 const samples=[
 {id:'a',mark:'BA',name:'Bucătăria de Acasă',first:'Ciorbă de perișoare',second:'Șnițel de pui cu piure',p1:14,p2:24,full:32,card:true,top:true,delivery:true},
 {id:'b',mark:'BC',name:'Bistro Central',first:'Supă cremă de legume',second:'Pui la grătar cu orez',p1:13,p2:25,full:34,card:true,delivery:true},
-{id:'c',mark:'PB',name:'Prânzul Bun',first:'Ciorbă de fasole',second:'Tocăniță cu mămăligă',p1:14,p2:23,full:31},
-{id:'d',mark:'MV',name:'Masa Verde',first:'Supă cremă de linte',second:'Orez cu ciuperci și legume',p1:15,p2:24,full:33,card:true,delivery:true},
-{id:'e',mark:'CV',name:'Cuptorul Vechi',first:'Ciorbă de pui',second:'Friptură de porc cu cartofi copți',p1:15,p2:29,full:38,card:true},
-{id:'f',mark:'AS',name:'Atelierul de Sare',first:'Supă de roșii coapte',second:'Paste cu pui și parmezan',p1:15,p2:27,full:36,card:true}];
+{id:'c',name:'Resto Urban',first:'Supă cremă de legume',second:'Pui la grătar cu orez',p1:14,p2:23,full:31},
+{id:'d',name:'Green Bistro',first:'Supă cremă de linte',second:'Penne cu roșii și busuioc',p1:13,p2:24,full:30},
+{id:'e',name:'La Terasă',first:'Ciorbă de pui',second:'Burger cu cartofi',p1:15,p2:26,full:33},
+{id:'f',name:'City Food',first:'Supă de roșii coapte',second:'Friptură cu cartofi copți',p1:12,p2:23,full:29}];
 const ornaments=[
 'M28 60V44a32 32 0 0 1 64 0v16M36 68h48',
 'M60 17 96 50 60 83 24 50Z',
@@ -449,19 +466,42 @@ const ornaments=[
 'M27 74V31h66v43H27Zm-6 6h78',
 'M18 50Q60 3 102 50Q60 97 18 50Z'
 ];
-let liveMenus=[];const menus=()=>liveMenus;
+const isMenuPreview = new URLSearchParams(location.search).get('preview') === '1';
+let liveMenus=[];const menus=()=>isMenuPreview?samples:liveMenus;
 // Cardurile sunt afisate direct, fara filtre.
 let current, draft;
 function render(){
-$('#date').textContent=new Intl.DateTimeFormat('ro-RO',{dateStyle:'full',timeZone:'Europe/Bucharest'}).format(new Date());
-const visible=menus();
-$('#list').innerHTML=visible.length?visible.map((m,index)=>{
-  
-  const badge='';
-  return '<article class="restaurant'+(m.top?' featured':'')+'" style="--delay:'+index*60+'ms"><button class="restaurant-open" data-menu="'+esc(m.id)+'" aria-label="Vezi meniul '+esc(m.name)+'">'+badge+'<img class="pont-photo" src="'+pontPhotos[index%pontPhotos.length]+'" alt="Fotografie ilustrativă" loading="lazy"><span class="restaurant-content"><span class="restaurant-name">'+esc(m.name)+'</span></span><span class="restaurant-price">'+lei(m.full)+'</span><p class="pont-dishes">'+(m.dishes?.length?m.dishes.slice(0,4).map(d=>esc(d.name)).join('<br>')+(m.dishes.length>4?'<br>+ '+(m.dishes.length-4)+' alte preparate':''):esc(m.first)+'<br>'+esc(m.second)+(m.dessert?'<br><strong>Desert:</strong> '+esc(m.dessert):''))+'</p><span class="pont-cta">Vezi meniul →</span><span class="restaurant-arrow" aria-hidden="true">↗</span></button></article>';
-}).join(''):'<p class="pont-empty">Nu există meniuri disponibile momentan.</p>';
-
+  const visible = menus();
+  let usesIllustration = false;
+  $('#list').innerHTML = visible.length ? visible.map((menu, index) => {
+    const fallback = './showcase/' + pontPhotos[index % pontPhotos.length] + '.webp';
+    const dishes = menu.dishes || [];
+    const hasPhoto = dish => typeof dish.photo_url === 'string' && /^https:\/\//i.test(dish.photo_url);
+    const photo = dishes.find(dish => dish.category === 'second' && hasPhoto(dish)) || dishes.find(hasPhoto);
+    if (!photo) usesIllustration = true;
+    const name = esc(menu.name);
+    const price = lei(menu.full);
+    return `<article class="menu-tile">
+      <button class="menu-card" type="button" aria-haspopup="dialog" data-menu="${esc(menu.id)}" aria-label="Vezi meniul de la ${name}, ${price}">
+        <img class="menu-card-photo" src="${photo ? esc(photo.photo_url) : fallback}" ${photo ? `data-fallback="${fallback}"` : ''} alt="" ${index >= 2 ? 'loading="lazy"' : ''} decoding="async">
+        <span class="menu-card-copy">
+          <span class="menu-card-name">${name}</span>
+          <span class="menu-card-location"><span class="menu-icon menu-icon--pin" aria-hidden="true"></span>Slobozia</span>
+          <span class="menu-card-action" aria-hidden="true">Vezi meniul<span class="menu-icon menu-icon--arrow"></span></span>
+        </span>
+        <span class="menu-card-price">${price}</span>
+      </button>
+    </article>`;
+  }).join('') : '<p class="menu-empty">Nu există meniuri disponibile momentan.</p>';
+  $('#menuPhotoNote').hidden = !usesIllustration;
 }
+$('#list').addEventListener('error', event => {
+  const photo = event.target;
+  if (!photo.dataset.fallback) return;
+  photo.src = photo.dataset.fallback;
+  delete photo.dataset.fallback;
+  $('#menuPhotoNote').hidden = false;
+}, true);
 const form=$('#checkout'), qty=()=>[...form.querySelectorAll('[data-qty]')].map(x=>Number(x.value));
 const prices=()=>[current.p1,current.p2];
 const titles=()=>[current.first,current.second];
@@ -591,7 +631,13 @@ if(waPhone){
 }else $('#orderMsg').textContent='Număr WhatsApp indisponibil.';
 submittingOrder=false;
 };
-render();
-async function refreshLiveMenus(){try{const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Conexiune neconfigurată');const params=new URLSearchParams({select:'id,restaurant_id,title,price,description,first_course,second_course,first_price,second_price,dessert,dish_selection,restaurants!inner(name,enabled,phone,accepts_card)',published:'eq.true',service_date:'eq.'+day(),'restaurants.enabled':'eq.true',order:'created_at.desc'});const response=await fetch(cfg.url+'/rest/v1/menus?'+params,{headers:{apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();liveMenus=data.map(m=>({id:m.id,restaurantId:m.restaurant_id,dishes:Array.isArray(m.dish_selection)?m.dish_selection.filter(d=>d&&['first','second','dessert'].includes(d.category)&&typeof d.name==='string').slice(0,60):[],name:m.restaurants.name,first:m.first_course||m.title,second:m.second_course||m.description||'Detalii la restaurant',p1:Number(m.first_price??m.price??0),p2:Number(m.second_price??m.price??0),full:Number(m.price??0),dessert:m.dessert||'',card:!!m.restaurants.accepts_card,delivery:true,phone:m.restaurants.phone||''}));render()}catch(err){console.error('PONT menus',err);$('#list').innerHTML='<p class="pont-empty">Nu am putut încărca meniurile. Reîncearcă în câteva momente.</p>'}}
-refreshLiveMenus();document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshLiveMenus()});setInterval(refreshLiveMenus,60000);
+async function refreshLiveMenus(){try{const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Conexiune neconfigurată');const params=new URLSearchParams({select:'id,restaurant_id,title,price,description,first_course,second_course,first_price,second_price,dessert,dish_selection,restaurants!inner(name,enabled,phone,accepts_card)',published:'eq.true',service_date:'eq.'+day(),'restaurants.enabled':'eq.true',order:'created_at.desc'});const response=await fetch(cfg.url+'/rest/v1/menus?'+params,{headers:{apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();liveMenus=data.map(m=>({id:m.id,restaurantId:m.restaurant_id,dishes:Array.isArray(m.dish_selection)?m.dish_selection.filter(d=>d&&['first','second','dessert'].includes(d.category)&&typeof d.name==='string').slice(0,60):[],name:m.restaurants.name,first:m.first_course||m.title,second:m.second_course||m.description||'Detalii la restaurant',p1:Number(m.first_price??m.price??0),p2:Number(m.second_price??m.price??0),full:Number(m.price??0),dessert:m.dessert||'',card:!!m.restaurants.accepts_card,delivery:true,phone:m.restaurants.phone||''}));render()}catch(err){console.error('PONT menus',err);$('#list').innerHTML='<p class="menu-empty">Nu am putut încărca meniurile. Reîncearcă în câteva momente.</p>';$('#menuPhotoNote').hidden=true}}
+if (isMenuPreview) {
+  $('#menuPreviewLabel').hidden = false;
+  render();
+} else {
+  refreshLiveMenus();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshLiveMenus(); });
+  setInterval(refreshLiveMenus, 60000);
+}
 </script></html>
