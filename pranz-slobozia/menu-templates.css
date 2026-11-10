@@ -378,3 +378,19 @@
 .pont-model-saved .pont-model-chevron{flex:none;width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .2s ease;margin-right:5px}
 .pont-model-saved[open] .pont-model-chevron{transform:rotate(225deg)}
 .pont-model-saved-body{padding:0 13px 13px}
+
+
+/* C18 — one continuous page scroll on touch-sized screens.
+   The three dish categories must not intercept vertical swipes while publishing. */
+@media (max-width: 767px) {
+  .pont-admin #pontDailyDishes .pont-daily-scroll-list,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--second .pont-daily-scroll-list {
+    max-height: none !important;
+    height: auto !important;
+    overflow-y: visible !important;
+    overflow-x: visible !important;
+    overscroll-behavior: auto !important;
+    -webkit-overflow-scrolling: auto !important;
+    touch-action: pan-y !important;
+  }
+}
