@@ -250,3 +250,63 @@
     font-size:13px!important;
   }
 }
+
+
+/* Daily menu layout: first course and dessert above, full-width second course below. */
+.pont-admin #pontDailyDishes{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-areas:"first dessert" "second second"!important;
+  column-gap:12px!important;
+  row-gap:14px!important;
+  align-items:stretch!important;
+}
+.pont-admin #pontDailyDishes .pont-daily-fieldset{
+  box-sizing:border-box!important;
+  min-width:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+}
+.pont-admin #pontDailyDishes .pont-daily-fieldset--first{grid-area:first!important}
+.pont-admin #pontDailyDishes .pont-daily-fieldset--second{grid-area:second!important}
+.pont-admin #pontDailyDishes .pont-daily-fieldset--dessert{grid-area:dessert!important}
+/* In narrower half-width cards, keep names and tick visible; price occupies a short second line. */
+@media(max-width:720px){
+  .pont-admin #pontDailyDishes{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px 9px!important}
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-choice,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-choice{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 23px!important;
+    grid-template-areas:"dish-name dish-check" "dish-price dish-check"!important;
+    align-items:center!important;
+    gap:2px 4px!important;
+    min-height:55px!important;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-choice-name,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-choice-name{
+    grid-area:dish-name!important;
+    font-size:12px!important;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-choice>.pont-checklist-price,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-choice>.pont-checklist-price{
+    grid-area:dish-price!important;
+    justify-self:start!important;
+    max-width:100%!important;
+    font-size:11px!important;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-choice>input[type="checkbox"],
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-choice>input[type="checkbox"]{
+    grid-area:dish-check!important;
+    justify-self:end!important;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-course-counter,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-course-counter{
+    justify-content:center!important;
+    flex-wrap:wrap!important;
+    font-size:10px!important;
+    gap:0!important;
+    white-space:normal!important;
+    text-align:center!important;
+  }
+}
