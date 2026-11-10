@@ -1,5 +1,5 @@
 // PONT: library of reusable restaurant dishes and daily menu selector.
-import {renderDishChecklist} from './menu-templates.js?v=3';
+import {renderDishChecklist} from './menu-templates.js?v=4';
 export function initPontDishEditor({db, getRestaurants, refreshMenus, isRestaurantAdmin = false}) {
 const $ = id => document.getElementById(id);
 const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -264,6 +264,7 @@ function menuChoices() {
   return [...dishes.filter(dish => !savedChoices.has(dish.id)).map(dish => [dish.id, dish]), ...savedChoices];
 }
 function choices() {
+  const scrollPositions = new Map([...$('pontDailyDishes').querySelectorAll('.pont-daily-scroll-list')].map(list => [list.dataset.course, list.scrollTop]));
   $('pontDailyDishes').innerHTML = renderDishChecklist(menuChoices(), selected, {
     daily: true,
     renderDetails(key, dish, checked) {
@@ -274,6 +275,9 @@ function choices() {
         '" data-price="' + esc(key) + '" inputmode="decimal" min="0" max="10000" step=".01" value="' +
         esc(Number.isFinite(price) ? price : '') + '"><span>lei</span></div>';
     }
+  });
+  $('pontDailyDishes').querySelectorAll('.pont-daily-scroll-list').forEach(list => {
+    list.scrollTop = scrollPositions.get(list.dataset.course) || 0;
   });
 }
 
