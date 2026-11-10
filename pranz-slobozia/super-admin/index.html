@@ -975,6 +975,16 @@ async function renderAuctionRanking(){
   if(request!==auctionRankingRequest||!auctionRankingDialog.open)return;
   const ranked=rankedAuctionOffers(offers);
   rankingOffers=new Map(ranked.map(offer=>[offer.restaurant_id,offer]));
+  // The public auction summary is bid-only: never use the manually edited final ranking.
+  // Bids are ordered by amount, then earliest bid at an equal amount.
+  if(!rankingEditor){
+   $('auctionRankingInfo').textContent=ranked.length
+    ?'Au licitat '+ranked.length+' '+(ranked.length===1?'restaurant':'restaurante')+' · Total oferte: '+auctionMoney(ranked.reduce((sum,offer)=>sum+Number(offer.amount||0),0))
+    :'Nu există oferte depuse pentru luna selectată.';
+   $('auctionRankingNote').textContent='Locurile sunt calculate exclusiv din sumele licitate: oferta cea mai mare ocupă locul 1. La egalitate, are prioritate oferta depusă mai devreme. Adăugările și repoziționările manuale nu sunt incluse.';
+   showRankingRows(ranked.map(offer=>offer.restaurant_id),false);
+   return;
+  }
   const final=control.data&&!control.data.is_open&&Array.isArray(control.data.final_ranking)
    ?control.data.final_ranking:null;
   rankingOriginal=final;
