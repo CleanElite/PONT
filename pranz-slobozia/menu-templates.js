@@ -26,7 +26,7 @@ export function renderDishChecklist(entries, selected, {daily = false, renderDet
       </div>`;
     }).join('');
     const counter = daily ? `<div class="pont-daily-course-counter" aria-live="polite"><span>${totalCount} preparate</span><span aria-hidden="true"> · </span><span>${selectedCount} selectate</span></div>` : '';
-    return `<fieldset><legend>${label}</legend><div class="${daily ? 'pont-daily-scroll-list' : 'pont-standard-dish-list'}" data-course="${category}">${options || '<small>Niciun preparat.</small>'}</div>${counter}</fieldset>`;
+    return `<fieldset${daily ? ' class="pont-daily-fieldset pont-daily-fieldset--' + category + '"' : ''}><legend>${label}</legend><div class="${daily ? 'pont-daily-scroll-list' : 'pont-standard-dish-list'}" data-course="${category}">${options || '<small>Niciun preparat.</small>'}</div>${counter}</fieldset>`;
   }).join('');
 }
 
