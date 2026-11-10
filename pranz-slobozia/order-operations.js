@@ -109,7 +109,7 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    const days=['Luni','Marți','Miercuri','Joi','Vineri','Sâmbătă','Duminică'];
    $('pontOpDays').innerHTML=days.map((name,i)=>{
      const date=dateAt(start,i),menu=menus.find(m=>m.restaurant_id===activeRestaurant&&m.service_date===date);
-     const label=menu?(menu.published?'Programat / publicat':'Ciornă'):'Fără meniu';
+     const label=menu?'Programat / publicat':'Fără meniu';
      return '<div class="pont-op-day"><div><strong>'+name+' · '+date.split('-').reverse().join('.')+'</strong><small>'+label+'</small></div><button type="button" class="pont-op-button" data-week-date="'+date+'">'+(menu?'Editează meniul':'Creează meniul')+'</button></div>';
    }).join('');
  }
