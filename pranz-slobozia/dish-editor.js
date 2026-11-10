@@ -1,5 +1,5 @@
 // PONT: library of reusable restaurant dishes and daily menu selector.
-import {renderDishChecklist} from './menu-templates.js?v=5';
+import {renderDishChecklist} from './menu-templates.js?v=6';
 export function initPontDishEditor({db, getRestaurants, refreshMenus, isRestaurantAdmin = false}) {
 const $ = id => document.getElementById(id);
 const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
