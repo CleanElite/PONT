@@ -145,7 +145,7 @@ $('menus').onclick = async event => {
   status(error.message,true);
  }
 };
-const {initPontDishEditor}=await import('../dish-editor.js?v=17');
+const {initPontDishEditor}=await import('../dish-editor.js?v=18');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:true});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
