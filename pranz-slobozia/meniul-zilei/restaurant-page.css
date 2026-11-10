@@ -885,3 +885,72 @@ body #order::backdrop{background:#031c1a}
   #order .pont-hero-actions #callNow{min-height:44px;font-size:clamp(11px,2.95vw,14px)}
   #order .pont-restaurant-hero__identity{grid-template-columns:minmax(0,70%)}
 }
+
+/* The supplied Aromas artwork defines the geometry. Live controls sit over it. */
+#order .pont-restaurant-hero.pont-aromas-reference{
+  aspect-ratio:1672 / 800;
+  padding:0;
+  container-type:inline-size;
+  background:#031315 url("./showcase/aromas-reference.jpg") center / 100% 100% no-repeat;
+}
+#order .pont-aromas-reference::before,
+#order .pont-aromas-reference::after,
+#order .pont-aromas-reference .pont-restaurant-hero__photo,
+#order .pont-aromas-reference .pont-restaurant-hero__identity::after{display:none}
+#order .pont-aromas-reference .pont-restaurant-hero__content,
+#order .pont-aromas-reference .pont-restaurant-hero__identity,
+#order .pont-aromas-reference .pont-hero-actions,
+#order .pont-aromas-reference .pont-menu-tag{display:contents}
+#order .pont-aromas-reference .pont-order-logo-image,
+#order .pont-aromas-reference .pont-order-brand,
+#order .pont-aromas-reference .pont-menu-tag__label,
+#order .pont-aromas-reference #heroMenuPrice{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+#order .pont-aromas-reference .order-topbar{
+  inset:8.25% auto auto 3.59%!important;
+  width:6.34%;
+  height:11.88%;
+}
+#order .pont-aromas-reference .order-topbar #close{
+  width:100%;
+  height:100%;
+  min-width:44px;
+  border:0!important;
+  background:transparent!important;
+  backdrop-filter:none;
+}
+#order .pont-aromas-reference #close svg,
+#order .pont-aromas-reference #callNow svg,
+#order .pont-aromas-reference #callNow span{opacity:0}
+#order .pont-aromas-reference .pont-hero-actions #callNow{
+  position:absolute;
+  inset:69.75% 3.29% auto 44.98%;
+  height:19%;
+  padding:0;
+  border:0;
+  background:transparent;
+  box-shadow:none;
+}
+#order .pont-aromas-reference .pont-hero-actions #callNow:hover{background:#baffef14}
+#order .pont-aromas-reference.pont-reference-live-price #heroMenuPrice{
+  inset:76.05% 58% auto 28.54%;
+  width:auto!important;
+  height:6.5%!important;
+  clip-path:none;
+  background:linear-gradient(105deg,#d9ae68,#e8c27d 55%,#e6bb75);
+  border-radius:0 1.5cqw 1.5cqw 0;
+  color:#0c0a05;
+  font-size:2.4cqw;
+}
+@media(max-width:480px){
+  #order .pont-aromas-reference .order-topbar{inset-block-start:3%!important}
+  #order .pont-aromas-reference .pont-hero-actions #callNow{inset-block-start:66%}
+}
