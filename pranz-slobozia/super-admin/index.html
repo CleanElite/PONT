@@ -569,7 +569,7 @@
   <dialog id="auctionRankingDialog" class="pont-auction-ranking-dialog" aria-labelledby="auctionRankingTitle">
     <div class="pont-auction-ranking-head">
       <div><span class="pont-auction-ranking-kicker">CLASAMENT</span><h3 id="auctionRankingTitle">Rezumat licitații</h3><label class="pont-auction-ranking-month-label" for="auctionRankingMonth">Luna licitației<input type="month" id="auctionRankingMonth"></label></div>
-      <button type="button" id="closeAuctionRanking" class="pont-auction-ranking-close" aria-label="Închide rezumatul">×</button>
+      <button type="button" id="closeAuctionRanking" class="pont-auction-ranking-close" aria-label="Închide rezumatul" autofocus>×</button>
     </div>
     <p id="auctionRankingInfo" class="pont-auction-ranking-info" role="status" aria-live="polite"></p>
     <div id="auctionRankingRows" class="pont-auction-ranking-rows"></div>
@@ -1124,6 +1124,8 @@ function openRanking(edit){
  $('saveAuctionRanking').hidden=!edit;
  $('auctionRankingMonth').value=edit?$('auctionMonth').value:nextAuctionMonth().slice(0,7);
  auctionRankingDialog.showModal();
+ // Avoid focusing the month input when the dialog opens (iOS can open its native picker).
+ $('closeAuctionRanking').focus({preventScroll:true});
  void renderAuctionRanking();
 }
 $('showAuctionRanking').onclick=()=>openRanking(false);
