@@ -8,6 +8,7 @@ const priceRO = new Intl.NumberFormat('ro-RO', {minimumFractionDigits:2, maximum
 const host = $('toggleMenuForm'), wrap = $('menuFormWrap'), catalog = $('dishLibrary');
 if (!host || !wrap || !catalog) return;
 
+const photoValidationMessage = 'Fotografia trebuie să fie JPG, PNG sau WebP, maximum 2 MB.';
 const selected = new Map(), savedChoices = new Map();
 let dishes = [], category = 'first', dailyCategory = 'first';
 let draftVersion = 0, menuDescription = '', pendingMenu = null;
@@ -34,6 +35,7 @@ catalog.innerHTML = `
               <input type="file" id="pontDishPhoto" aria-label="Fotografie preparat" aria-describedby="pontDishPhotoHelp" accept="image/jpeg,image/png,image/webp">
             </label>
             <small id="pontDishPhotoHelp">JPG, PNG sau WebP · max. 2 MB</small>
+            <button type="button" id="pontDishRemovePhoto" hidden>Elimină poza</button>
           </div>
           <div class="pont-dish-grid">
             <label id="pontDishPriceField">Preț (lei)<input id="pontDishPrice" type="number" min="0" max="10000" step=".01" required></label>
@@ -317,6 +319,7 @@ function renderDishPhoto() {
   image.hidden = !url;
   $('pontDishPhotoEmpty').hidden = !!url;
   $('pontDishPhotoEdit').hidden = !url;
+  $('pontDishRemovePhoto').hidden = !file || !!editingDish;
 }
 function syncDishPrice() {
   const dessert = $('pontDishCategory').value === 'dessert';
@@ -550,6 +553,13 @@ $('pontDishPublish').onclick = async () => {
 $('pontDishRestaurant').onchange = event => changeRestaurant(event, 'pontDishMessage');
 $('pontDailyRestaurant').onchange = event => changeRestaurant(event, 'pontDailyError');
 $('pontDishPhoto').onchange = renderDishPhoto;
+$('pontDishRemovePhoto').onclick = () => {
+  const input = $('pontDishPhoto');
+  input.value = '';
+  if (dishFormMessage.textContent === photoValidationMessage) dishFormMessage.textContent = '';
+  renderDishPhoto();
+  input.focus();
+};
 $('pontDishCategory').onchange = syncDishPrice;
 $('pontDishCancel').onclick = () => {
   resetDish();
@@ -584,10 +594,11 @@ $('pontDishForm').onsubmit = async event => {
   }
   if (!values.name || !Number.isFinite(values.price) || values.price < 0) return;
   if (file && (file.size > 2097152 || !['image/jpeg', 'image/png', 'image/webp'].includes(file.type))) {
-    $('pontDishMessage').textContent = 'Fotografia trebuie să fie JPG, PNG sau WebP, maximum 2 MB.';
+    $('pontDishMessage').textContent = photoValidationMessage;
     return;
   }
   button.disabled = true;
+  $('pontDishRemovePhoto').disabled = true;
   try {
     if (file) {
       const extension = {'image/png':'png', 'image/webp':'webp', 'image/jpeg':'jpg'}[file.type];
@@ -613,6 +624,7 @@ $('pontDishForm').onsubmit = async event => {
     $('pontDishMessage').textContent = error.message;
   } finally {
     button.disabled = false;
+    $('pontDishRemovePhoto').disabled = false;
   }
 };
 $('pontDishList').onclick = async event => {
