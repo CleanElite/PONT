@@ -710,11 +710,11 @@ document.querySelectorAll('[data-analytics-period]').forEach(button=>button.addE
  analyticsPeriod=button.dataset.analyticsPeriod;
  document.querySelectorAll('[data-analytics-period]').forEach(b=>{const selected=b===button;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected))});
  $('pontCustomPeriod').hidden=analyticsPeriod!=='custom';
- if(analyticsPeriod!=='custom')loadAnalytics();
+ loadAnalytics();
 }));
 $('analyticsFrom').onchange=()=>{if(analyticsPeriod==='custom')loadAnalytics()};
 $('analyticsTo').onchange=()=>{if(analyticsPeriod==='custom')loadAnalytics()};
-$('analyticsMonth').onchange=()=>{const [y,m]=$('analyticsMonth').value.split('-').map(Number);if(!y||!m)return;analyticsPeriod='custom';$('analyticsFrom').value=$('analyticsMonth').value+'-01';$('analyticsTo').value=new Date(Date.UTC(y,m,0)).toISOString().slice(0,10);document.querySelector('[data-analytics-period="custom"]').click();loadAnalytics()};
+$('analyticsMonth').onchange=()=>{const [y,m]=$('analyticsMonth').value.split('-').map(Number);if(!y||!m)return;analyticsPeriod='custom';$('analyticsFrom').value=$('analyticsMonth').value+'-01';$('analyticsTo').value=new Date(Date.UTC(y,m,0)).toISOString().slice(0,10);document.querySelector('[data-analytics-period="custom"]').click()};
 $('analyticsRefresh').onclick=async()=>{await loadAnalytics();if(!$('app').hidden)try{await load()}catch(e){console.warn('Meniuri statistici',e)}};
 setInterval(()=>{if(!$('app').hidden&&!$('analytics').hidden&&!document.hidden){loadAnalytics();load().catch(e=>console.warn('Actualizare meniuri:',e.message))}},20000);
 
