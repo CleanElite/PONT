@@ -93,10 +93,15 @@ const nextMonth=()=>{const [y,m]=localDate().split('-').map(Number);return new D
 const money=v=>Number(v).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
 const month=nextMonth();let db,me,role,offers=[],names={},selectedSlot=0,busy=false;
 const minimumBid=50;
-let biddingOpen=false;
+let biddingOpen=false, finalRanking=null;
 const auctionIsOpen=()=>biddingOpen && nextMonth()===month;
 $('date').textContent=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month));
-function orderedOffers(){return [...offers].sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at))}
+function orderedOffers(){
+ if(!auctionIsOpen()&&finalRanking!==null){
+  const byRestaurant=new Map(offers.map(offer=>[offer.restaurant_id,offer]));
+  return finalRanking.map(id=>byRestaurant.get(id)).filter(Boolean);
+ }
+ return [...offers].sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at))}
 function ownOffer(){return offers.find(o=>o.restaurant_id===me)}
 function restaurantCardStyle(id) {
  let hash=0;
@@ -121,7 +126,7 @@ function render(){
  if(focusedSlot!==undefined)list.querySelector('[data-slot="'+focusedSlot+'"]')?.focus({preventScroll:true});
 }
 function renderAuctionStatus(){
- $('auctionHint').textContent=role==='super_admin'?'Apasă un card pentru a vedea oferta. Confirmările se gestionează în Licitații.':auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':'Licitația este închisă. Poți consulta ofertele existente.';
+ $('auctionHint').textContent=role==='super_admin'?'Apasă un card pentru a vedea oferta. Confirmările se gestionează în Licitații.':auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':(finalRanking!==null?'Licitația este închisă. Poți consulta clasamentul final.':'Licitația este închisă. Poți consulta ofertele existente.');
  if($('auctionDialog').open)updateModal();
 }
 function updateModal(){
@@ -141,9 +146,11 @@ $('list').addEventListener('click',e=>{const button=e.target.closest('[data-slot
 $('auctionClose').onclick=()=>$('auctionDialog').close();
 $('auctionDialog').addEventListener('click',e=>{if(e.target===$('auctionDialog'))$('auctionDialog').close()});
 async function load(){
- const [a,b,control]=await Promise.all([db.from('auction_offers').select('*').eq('campaign_month',month).order('amount',{ascending:false}),db.from('restaurants').select('id,name'),db.from('pont_auction_control').select('is_open').eq('campaign_month',month).maybeSingle()]);
+ const [a,b,control]=await Promise.all([db.from('auction_offers').select('*').eq('campaign_month',month).order('amount',{ascending:false}),db.from('restaurants').select('id,name'),db.from('pont_auction_control').select('is_open,final_ranking').eq('campaign_month',month).maybeSingle()]);
  if(a.error)throw a.error;if(b.error)throw b.error;
- biddingOpen=!control.error && control.data?.is_open===true;
+ if(control.error)throw control.error;
+ biddingOpen=control.data?.is_open===true;
+ finalRanking=Array.isArray(control.data?.final_ranking)?control.data.final_ranking:null;
  offers=a.data||[];names=Object.fromEntries((b.data||[]).map(r=>[r.id,r.name]));
  render();
  renderAuctionStatus();
