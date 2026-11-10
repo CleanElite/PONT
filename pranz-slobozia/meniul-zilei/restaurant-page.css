@@ -888,12 +888,12 @@ body #order::backdrop{background:#031c1a}
 
 /* The supplied Aromas artwork defines the geometry. Live controls sit over it. */
 #order .pont-restaurant-hero.pont-menu-reference{
-  aspect-ratio:864 / 426;
+  aspect-ratio:864 / 392;
   max-width:660px;
   padding:0;
   container-type:inline-size;
-  --reference-art:url("./showcase/portrait-reference.jpg");
-  background:linear-gradient(90deg,transparent,#b98e4d 16%,#fff0c1 35%,#ae814c 54%,transparent 72%) center 81.2% / 92% 1px no-repeat,
+  --reference-art:url("./showcase/c1-reference.jpg");
+  background:linear-gradient(90deg,transparent,#b98e4d 16%,#fff0c1 35%,#ae814c 54%,transparent 72%) center 77% / 92% 1px no-repeat,
     radial-gradient(ellipse at 76% 75%,#103536,#031517 74%);
 }
 #order .pont-menu-reference .pont-restaurant-hero__identity::after{display:none}
@@ -910,9 +910,9 @@ body #order::backdrop{background:#031c1a}
   white-space:nowrap;
 }
 #order .pont-menu-reference .order-topbar{
-  inset:9.35% auto auto 3.95%!important;
+  inset:9% auto auto 3.95%!important;
   width:9.25%;
-  height:13%;
+  height:15.5%;
 }
 #order .pont-menu-reference .order-topbar #close{
   width:100%;
@@ -926,7 +926,7 @@ body #order::backdrop{background:#031c1a}
 #order #orderTitle:focus{outline:none}
 @media(max-width:480px){
   #order .pont-menu-reference .order-topbar{
-    inset:calc(17.8% - 22px) auto auto calc(8.55% - 22px)!important;
+    inset:calc(16.6% - 22px) auto auto calc(8.55% - 22px)!important;
     width:44px;
     height:44px;
   }
@@ -940,7 +940,7 @@ body #order::backdrop{background:#031c1a}
   z-index:0;
   transform:none;
   opacity:1;
-  background:var(--reference-art) center top / 100% 360.56% no-repeat;
+  background:var(--reference-art) center -6.134cqw / 100% 391.84% no-repeat;
 }
 #order .pont-menu-reference::before{
   clip-path:polygon(0 0,62% 0,62% 27%,42% 27%,0 36%);
@@ -970,8 +970,8 @@ body #order::backdrop{background:#031c1a}
 #order .pont-menu-reference .pont-hero-location{font-size:3.7cqw!important}
 #order .pont-menu-reference.pont-aromas-reference::before{
   /* Keep the photo and divider, fading before the lettering baked into the artwork. */
-  clip-path:inset(0 0 12%);
-  mask-image:linear-gradient(#000 81.5%,transparent 88%);
+  clip-path:inset(0 0 20.5%);
+  mask-image:linear-gradient(#000 74%,transparent 80%);
 }
 #order .pont-aromas-reference .pont-restaurant-hero__photo{display:none}
 #order .pont-aromas-reference .pont-order-brand{
@@ -984,14 +984,15 @@ body #order::backdrop{background:#031c1a}
 
 #order .pont-menu-reference .pont-hero-actions{
   position:absolute;
-  inset:81.2% 0 0;
+  inset:77% 0 0;
   z-index:2;
-  gap:clamp(9px,3cqw,20px);
+  gap:clamp(11px,4cqw,24px);
   margin:0;
 }
 #order .pont-menu-reference .pont-menu-tag{
-  border-color:#ceaf72;
-  background:linear-gradient(115deg,#dcb46d,#f0d796);
+  border:0;
+  gap:clamp(7px,3cqw,20px);
+  background:none;
 }
 #order .pont-menu-reference .pont-menu-tag__label,
 #order .pont-menu-reference #heroMenuPrice{
@@ -999,7 +1000,18 @@ body #order::backdrop{background:#031c1a}
   padding:3px clamp(5px,1.5cqw,10px);
   font-size:clamp(10px,3cqw,16px);
 }
-#order .pont-menu-reference .pont-menu-tag__label svg{width:1em;height:1em}
+#order .pont-menu-reference .pont-menu-tag__label{
+  border:0;
+  background:none;
+  box-shadow:none;
+  margin:0;
+  padding-inline:0;
+}
+#order .pont-menu-reference #heroMenuPrice{
+  background:linear-gradient(110deg,#f9d27d,#f8dc9b);
+  padding-inline:clamp(8px,3cqw,21px);
+}
+#order .pont-menu-reference .pont-menu-tag__label svg{width:1.1em;height:1.1em;fill:#fff}
 #order .pont-menu-reference #pontOrderRules{
   display:grid;
   gap:1px;
@@ -1024,15 +1036,15 @@ body #order::backdrop{background:#031c1a}
 #order #checkout .order-contact:has(#callNow[hidden]){display:none!important}
 #order #checkout .order-contact #callNow{
   display:inline-flex!important;
-  width:min(100%,clamp(252px,70vw,290px))!important;
-  aspect-ratio:864 / 151;
+  width:min(100%,73vw,480px)!important;
+  aspect-ratio:629 / 97;
   min-height:44px!important;
   height:auto!important;
   padding:0!important;
   border:0!important;
   border-radius:999px!important;
-  background:#083334 url("./showcase/call-reference.jpg") 43.59% 49.81% / 104.51% 270.2% no-repeat!important;
-  box-shadow:0 0 8px #4fe8d23d,0 4px 11px #efcd6148!important;
+  background:#083334 url("./showcase/c1-reference.jpg") 49.79% 31.55% / 137.36% 1583.51% no-repeat!important;
+  box-shadow:0 0 12px #d5f5ff48,0 5px 14px #c5efff36!important;
 }
 #order #checkout .order-contact #callNow[hidden]{display:none!important}
 #order #checkout #callNow :is(svg,span){opacity:0}
@@ -1041,4 +1053,43 @@ body #order::backdrop{background:#031c1a}
 #order #checkout #callNow:focus-visible{outline:2px solid #a3fff1;outline-offset:3px}
 @media(min-width:760px){
   #order #checkout .pont-order-details{grid-row:1}
+}
+
+/* c1: match the framed course sections in the reference. */
+#order #choices{
+  padding:0!important;
+  overflow:hidden;
+  border-color:#70c5bc!important;
+  background:linear-gradient(150deg,#073a36,#041f20 70%)!important;
+  box-shadow:0 0 18px #40d9c32b,inset 0 0 17px #36c5bd30!important;
+}
+#order #choices .pont-dish-group{
+  padding:0 0 6px!important;
+  border-bottom:1px solid #93d5c88a;
+  border-radius:16px;
+  background:linear-gradient(175deg,#1c665846,#062b2b40 31%,#05222355 70%,#21877945);
+}
+#order #choices .pont-dish-group:last-child{border-bottom:0}
+#order #choices .pont-dish-group>summary{
+  margin:0 clamp(10px,4vw,22px);
+  padding:clamp(9px,2.8vw,16px) 3px!important;
+  border-bottom:1px solid #a5d2ca45;
+}
+#order #choices .pont-dish-group>summary strong{
+  font:700 clamp(17px,4.65vw,25px)/1.05 Georgia,serif!important;
+}
+#order #choices .pont-group-symbol{width:24px;height:24px;fill:#f5cf77;flex:none}
+#order #choices .pont-dish-group__content{padding:2px clamp(8px,3.6vw,20px) 3px}
+#order #choices .stepper{background:linear-gradient(170deg,#1b62534a,#09282a)!important;border-color:#d7b36d!important}
+#order #choices .pont-dessert-label{
+  padding:3px 10px;
+  border:1px solid #d1a85e;
+  border-radius:999px;
+  background:linear-gradient(110deg,#705424,#3c2e19);
+}
+#order .pont-menu-reference .pont-order-hours{display:flex;align-items:center;gap:4px}
+#order .pont-menu-reference .pont-order-hours svg{width:1.1em;height:1.1em;flex:none}
+#order #choices .pont-choice-dish:not(.pont-dessert-included){
+  min-height:33px!important;
+  padding-block:1px!important;
 }
