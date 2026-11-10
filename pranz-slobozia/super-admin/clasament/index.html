@@ -29,7 +29,7 @@ h1{font:600 clamp(26px,6vw,36px)/1.16 Georgia,serif;letter-spacing:-.02em;margin
 .dates{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .dates label,.sort-wrap label{display:grid;gap:5px;color:#b8d6cc;font:500 11px/1.25 system-ui}
 .dates input,.sort-wrap select{min-width:0;width:100%;min-height:38px;border:1px solid #7ab6a9;border-radius:10px;background:#0c4038;color:#fff;padding:8px 10px;font-size:12px}
-.toolbar{display:flex;align-items:end;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:14px}
+.toolbar{display:flex;align-items:end;justify-content:flex-end;flex-wrap:wrap;gap:10px;margin-top:14px}
 .sort-wrap{min-width:min(100%,210px)}
 .sort-wrap select{width:210px;max-width:100%}
 .refresh{min-height:37px;display:flex;gap:5px;align-items:center;justify-content:center;padding:8px 12px;background:#135045;border:1px solid #d8f6e5b0;border-radius:12px;color:#f6ffff;box-shadow:0 0 9px #b5fbe22c;font-size:12px;font-weight:650}
@@ -88,15 +88,6 @@ td.rate{color:#c9f6e7}
 </div>
 </div>
 <div class="toolbar">
-<div class="sort-wrap"><label for="sortMetric">Clasificare după
-<select id="sortMetric">
-<option value="whatsapp">Apăsări WhatsApp</option>
-<option value="menu_views">Vizualizări meniu</option>
-<option value="calls">Apăsări Sună</option>
-<option value="menus">Meniuri estimate</option>
-<option value="contact_rate">Rata de contact</option>
-</select>
-</label></div>
 <button type="button" id="refresh" class="refresh">↻ Actualizează</button>
 </div>
 <div class="summary"><h2>Rezultate restaurante</h2><small id="updated">—</small></div>
@@ -128,16 +119,14 @@ const format=n=>Number(n||0).toLocaleString('ro-RO');
 const dayRO=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 const minusDays=n=>{const date=new Date(dayRO()+'T12:00:00');date.setDate(date.getDate()-n);return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0')};
 let db,period='today',rows=[],requestId=0;
-const sort=el('sortMetric');
 function range(){const today=dayRO();return period==='today'?[today,today]:period==='7'?[minusDays(6),today]:period==='30'?[minusDays(29),today]:[el('startDate').value,el('endDate').value]}
-function score(row){const key=sort.value;return key==='contact_rate'?((Number(row.calls||0)+Number(row.whatsapp||0))/Math.max(1,Number(row.views||0)))*100:Number(row[key]||0)}
 function rate(row){return row.views>0?Math.round(1000*(Number(row.calls||0)+Number(row.whatsapp||0))/row.views)/10:0}
 function draw(){
- const sorted=[...rows].sort((a,b)=>score(b)-score(a)||Number(b.whatsapp||0)-Number(a.whatsapp||0)||String(a.name).localeCompare(String(b.name),'ro'));
+ const sorted=[...rows].sort((a,b)=>Number(b.whatsapp||0)-Number(a.whatsapp||0)||Number(b.menus||0)-Number(a.menus||0)||String(a.name).localeCompare(String(b.name),'ro'));
  el('rows').innerHTML=sorted.length?sorted.map((r,i)=>{
  const auction=r.auction_position?'Loc licitație: '+format(r.auction_position):'Fără poziție licitată';
  return '<tr><td><div class="restaurant"><div class="restaurant-top"><span class="rank">'+(i+1)+'</span><span class="restaurant-name">'+escapeHtml(r.name)+'</span></div><span class="auction-place">'+escapeHtml(auction)+'</span></div></td>'+
- '<td>'+format(r.menu_views)+'</td><td>'+format(r.calls)+'</td><td class="'+(sort.value==='whatsapp'?'emphasis':'')+'">'+format(r.whatsapp)+'</td><td>'+format(r.menus)+'</td><td class="rate">'+rate(r).toLocaleString('ro-RO',{maximumFractionDigits:1})+'%</td></tr>'
+ '<td>'+format(r.menu_views)+'</td><td>'+format(r.calls)+'</td><td class="emphasis">'+format(r.whatsapp)+'</td><td>'+format(r.menus)+'</td><td class="rate">'+rate(r).toLocaleString('ro-RO',{maximumFractionDigits:1})+'%</td></tr>'
  }).join(''):'<tr><td colspan="6">Nu există restaurante.</td></tr>';
 }
 async function load(){
@@ -172,7 +161,7 @@ document.querySelectorAll('[data-period]').forEach(button=>button.onclick=()=>{
 el('startDate').value=minusDays(29);el('endDate').value=dayRO();
 el('startDate').onchange=()=>{if(period==='custom')load()};
 el('endDate').onchange=()=>{if(period==='custom')load()};
-sort.onchange=draw;el('refresh').onclick=load;
+el('refresh').onclick=load;
 try{
  const cfg=window.PONT_CONFIG||{};
  if(!cfg.url||!cfg.anonKey)throw Error('Conexiunea Supabase nu este configurată.');
