@@ -12,7 +12,7 @@ const photoValidationMessage = 'Fotografia trebuie să fie JPG, PNG sau WebP, ma
 const selected = new Map(), savedChoices = new Map();
 let dishes = [], category = 'first', dailyCategory = 'first';
 let draftVersion = 0, menuDescription = '', pendingMenu = null;
-let editingDish = null, editingMenu = null, loadedRid = '', loadVersion = 0, saving = false, previewURL = '';
+let editingDish = null, editingMenu = null, loadedRid = '', loadVersion = 0, saving = false, previewURL = '', dishPhotoRemoved = false;
 const icon = name => '<svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#' + name + '"></use></svg>';
 
 catalog.innerHTML = `
@@ -312,14 +312,14 @@ function renderDishPhoto() {
   if (previewURL) URL.revokeObjectURL(previewURL);
   const file = $('pontDishPhoto').files[0];
   previewURL = file ? URL.createObjectURL(file) : '';
-  const url = previewURL || photoUrl(editingDish);
+  const url = previewURL || (dishPhotoRemoved ? '' : photoUrl(editingDish));
   const image = $('pontDishPreview');
   if (url) image.src = url;
   else image.removeAttribute('src');
   image.hidden = !url;
   $('pontDishPhotoEmpty').hidden = !!url;
   $('pontDishPhotoEdit').hidden = !url;
-  $('pontDishRemovePhoto').hidden = !file || !!editingDish;
+  $('pontDishRemovePhoto').hidden = !url;
 }
 function syncDishPrice() {
   const dessert = $('pontDishCategory').value === 'dessert';
@@ -331,6 +331,7 @@ function syncDishPrice() {
 
 function resetDish() {
   editingDish = null;
+  dishPhotoRemoved = false;
   $('pontDishForm').reset();
   $('pontDishCategory').value = category;
   syncDishPrice();
@@ -556,6 +557,7 @@ $('pontDishPhoto').onchange = renderDishPhoto;
 $('pontDishRemovePhoto').onclick = () => {
   const input = $('pontDishPhoto');
   input.value = '';
+  dishPhotoRemoved = true;
   if (dishFormMessage.textContent === photoValidationMessage) dishFormMessage.textContent = '';
   renderDishPhoto();
   input.focus();
@@ -586,7 +588,7 @@ $('pontDishForm').onsubmit = async event => {
     name: $('pontDishName').value.trim(),
     description: $('pontDishDescription').value.trim(),
     price: dishCategory === 'dessert' ? 0 : $('pontDishPrice').valueAsNumber,
-    photo_path: draft?.photo_path || null
+    photo_path: dishPhotoRemoved ? null : (draft?.photo_path || null)
   };
   if (!values.restaurant_id) {
     $('pontDishMessage').textContent = 'Alege un restaurant.';

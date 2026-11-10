@@ -194,38 +194,6 @@ body.pont-admin {
   .pont-admin #app .dashboard-fields { grid-template-columns: minmax(0, 1fr); }
 }
 
-/* The promotion view is reached from both workspaces. */
-body.lunch.menu-showcase.pont-compact-promotion > .menu-header { min-height: 42px; padding-block: 4px; }
-.pont-compact-promotion .menu-wordmark { width: 95px; }
-.pont-compact-promotion .menu-back { min-height: 32px; padding: 4px 7px; font-size: 12px; }
-.pont-compact-promotion .menu-heading { margin: 4px auto 8px; padding: 0; }
-.pont-compact-promotion .menu-heading h1 { font-size: 24px; gap: 6px; }
-.pont-compact-promotion .menu-heading .menu-icon--utensils { width: 17px; height: 17px; }
-.pont-compact-promotion .menu-heading p { margin: 3px 0; font-size: 13px; }
-.pont-compact-promotion .menu-heading::after { margin-top: 6px; }
-body.lunch.menu-showcase.pont-compact-promotion #customer #list { gap: 6px; }
-.pont-compact-promotion #list .menu-tile { grid-column: auto; }
-.pont-compact-promotion #list .menu-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 4px;
-  align-items: center;
-  min-height: 48px;
-  aspect-ratio: auto;
-  padding: 6px;
-  text-align: left;
-}
-.pont-compact-promotion #list .menu-card-copy { width: auto; gap: 3px; }
-.pont-compact-promotion #list .menu-card-name { max-width: none; font-size: 14px; overflow-wrap: anywhere; }
-.pont-compact-promotion #list .menu-card-price { position: static; padding: 2px 4px; font-size: 11px; }
-.pont-compact-promotion #list .promotion-action { padding: 2px 4px; margin: 0; font-size: 10px; }
-.pont-compact-promotion .promotion-footer { margin: 8px auto 0; padding: 5px; }
-.pont-compact-promotion .auction-modal-inner { padding: 12px; }
-.pont-compact-promotion .auction-modal h2 { font-size: 20px; margin-block: 5px; }
-.pont-compact-promotion .auction-modal .modal-current { margin: 6px 0; padding: 6px; }
-.pont-compact-promotion .auction-modal input { min-height: 32px; margin: 3px 0 6px; padding: 4px 6px; font-size: 16px; }
-.pont-compact-promotion .auction-modal button.primary-bid { width: auto; min-height: 32px; padding: 4px 8px; font-size: 13px; }
-
 .pont-admin #app .pont-ranking-buttons,
 .pont-admin #app .saved-menu-tools {
   display: flex;
