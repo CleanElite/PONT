@@ -78,218 +78,79 @@
 #restaurantForm .restaurant-menu-price{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:10px;width:fit-content;max-width:100%;font-size:13px;font-weight:600;margin:5px 0}
 #restaurantForm .restaurant-menu-price input{width:94px;max-width:94px;min-height:36px;height:36px;padding:6px 9px;text-align:center;font-size:14px;border-radius:9px}
 
-/* PONT premium analytics — scoped to Statistics only. Preserve main navigation. */
-#analytics.pont-insights{position:relative;overflow:hidden;background:radial-gradient(ellipse at 85% 0,rgba(0,142,132,.18),transparent 44%),linear-gradient(145deg,#052c29,#032522 70%,#062e29)!important;border:1px solid #8bbfb7b3!important;border-radius:22px!important;box-shadow:0 0 20px #40cbb51a,inset 0 1px 0 #c5f9ea25!important;color:#f3faf5!important;padding:clamp(13px,3vw,22px)!important}
-#analytics.pont-insights:before{content:"";position:absolute;pointer-events:none;top:0;left:18%;right:38%;height:2px;background:linear-gradient(90deg,transparent,#f4ffff,#d2ffff,transparent);box-shadow:0 0 13px 2px #e5ffff8c}
-#analytics .pont-insights-heading{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;flex-wrap:nowrap!important;margin:0 0 14px!important}
-#analytics .pont-insights-heading h2{font:600 clamp(27px,5vw,38px)/1.1 Georgia,serif!important;color:#fff!important;margin:0 0 4px!important}
-#analytics .pont-insights-heading p{font-size:clamp(11px,2.6vw,14px)!important;color:#a3c3bc!important;margin:0!important}
-#analytics .pont-insights-heading>div{min-width:0}
-#analytics #analyticsRefresh{flex:0 0 auto!important;border:1px solid #d8f5f1cc!important;border-radius:999px!important;min-height:39px!important;padding:8px 12px!important;background:linear-gradient(150deg,#184c47,#053731 75%)!important;box-shadow:0 0 10px #c5f5f35e,inset 0 1px 5px #bde8db44!important;font-size:clamp(11px,2.4vw,13px)!important;color:#fff!important;white-space:nowrap}
-#analytics #analyticsRefresh span{font-size:20px!important;vertical-align:middle}
-#analytics .pont-period-bar{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;border:1px solid #8addd0ba!important;border-radius:999px!important;gap:0!important;overflow:hidden!important;margin-bottom:15px!important;background:#063c34!important}
-#analytics .pont-period-bar button{min-width:0!important;min-height:40px!important;padding:8px 2px!important;border:none!important;border-radius:999px!important;background:transparent!important;color:#d8f1e8!important;font-size:clamp(11px,2.6vw,14px)!important;box-shadow:none!important}
-#analytics .pont-period-bar button.active{border:1px solid #e8fffc!important;background:linear-gradient(#0e8c7b,#064c43)!important;color:#fff!important;box-shadow:inset 0 0 8px #e0fffcb5,0 0 12px #bdf9ed9c!important}
-#analytics .pont-custom-period:not([hidden]){display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;padding:5px 0 9px!important}
-#analytics .pont-custom-period label{min-width:0!important;font-size:12px!important;margin:0!important;color:#e2f4ee!important}
-#analytics .pont-custom-period input{width:100%!important;min-width:0!important;padding:8px!important;font-size:13px!important;color-scheme:dark}
-#analytics .pont-insights-section-title{display:flex!important;align-items:baseline!important;justify-content:space-between!important;gap:7px!important;margin:11px 0 9px!important}
-#analytics .pont-insights-section-title h3{font:600 clamp(18px,4.1vw,24px)/1.25 Georgia,serif!important;margin:0!important;color:#fff!important}
-#analytics .pont-insights-section-title>small{font-size:10px!important;color:#a9cbc4!important;white-space:nowrap!important}
-#analytics .pont-insights-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important}
-#analytics .pont-insight{display:grid!important;grid-template-columns:30px minmax(0,1fr)!important;grid-template-rows:auto auto!important;align-items:center!important;column-gap:9px!important;row-gap:2px!important;min-height:85px!important;min-width:0!important;padding:12px 10px!important;border:1px solid #9bd9d4b3!important;border-radius:16px!important;background:radial-gradient(ellipse at 12% 0,#aef4df17,transparent 65%),linear-gradient(137deg,#0d4843,#06332e)!important;box-shadow:inset 0 1px 2px #e8ffff33,0 0 8px #53efe01a!important}
-#analytics .pont-insight>.pont-stat-symbol{grid-column:1;grid-row:1 / span 2;align-self:center!important;font-size:23px!important;line-height:1;color:#efcc81!important;text-align:center!important}
-#analytics .pont-insight>strong{grid-column:2;grid-row:1;display:block!important;font:750 clamp(20px,4.7vw,29px)/1.13 system-ui!important;color:#fff!important;margin:0!important;white-space:nowrap}
-#analytics .pont-insight>span:last-child{grid-column:2;grid-row:2;font-size:clamp(10px,2.6vw,13px)!important;line-height:1.2!important;color:#e4f4ec!important}
-#analytics .pont-insight .pont-status-numbers{grid-row:1;grid-column:2;display:flex!important;gap:12px!important;align-items:center!important}
-#analytics .pont-insight .pont-status-numbers>span{font-size:12px!important;color:#dceee9!important}
-#analytics .pont-insight .pont-status-numbers strong{display:inline!important;margin-left:3px!important;font:750 21px/1 system-ui!important;color:#fff!important}
-#analytics .pont-insight-wide{grid-column:1 / -1!important;display:grid!important;grid-template-columns:1fr 1fr!important;grid-template-rows:1fr!important;gap:0!important;padding:9px!important}
-#analytics .pont-insight-wide>div{display:grid!important;grid-template-columns:23px minmax(0,1fr)!important;grid-template-rows:auto auto!important;align-items:center!important;gap:1px 6px!important;min-width:0!important}
-#analytics .pont-insight-wide>div+div{border-left:1px solid #9dc5c18c!important;padding-left:10px!important}
-#analytics .pont-insight-wide .pont-stat-symbol{grid-column:1;grid-row:1/span 2;color:#efd18b!important;font-size:20px!important}
-#analytics .pont-insight-wide strong{grid-column:2;grid-row:1;font:750 clamp(16px,4.3vw,24px)/1.2 system-ui!important;margin:0!important;white-space:normal!important;color:#fff!important}
-#analytics .pont-insight-wide span:last-child{grid-column:2;grid-row:2;color:#d3e8dd!important;font-size:clamp(10px,2.4vw,12px)!important}
-#analytics .pont-insights-clarification{margin:9px 0 17px!important;font-size:11px!important;line-height:1.45!important;color:#a4c8bb!important}
-#analytics .pont-month-row{align-items:center!important;flex-wrap:wrap!important}
-#analytics .pont-month-row label{display:flex!important;align-items:center!important;gap:7px!important;color:#d9f5ec!important;margin:0!important;font-size:11px!important}
-#analytics .pont-month-row input{width:145px!important;max-width:50vw!important;padding:7px!important;font-size:12px!important;color-scheme:dark}
-#analytics .pont-restaurant-insights{display:grid!important;gap:9px!important;margin:8px 0 17px!important}
-#analytics .pont-insights-restaurant{border:1px solid #a4e6d7a6!important;background:linear-gradient(120deg,#08453e,#052f2b)!important;border-radius:16px!important;overflow:hidden!important;box-shadow:inset 0 1px 3px #e9ffff24,0 0 10px #7fffff18!important}
-#analytics .pont-insights-restaurant>summary{display:grid!important;grid-template-columns:1fr auto!important;grid-template-rows:auto auto!important;align-items:center!important;gap:4px!important;list-style:none!important;cursor:pointer!important;padding:12px 14px!important;color:#fff!important}
-#analytics .pont-insights-restaurant>summary::-webkit-details-marker{display:none}
-#analytics .pont-insights-restaurant-name{font:650 clamp(16px,3.7vw,21px)/1.2 Georgia,serif!important;color:#fff!important;grid-column:1!important}
-#analytics .pont-insights-restaurant-preview{grid-column:1!important;grid-row:2!important;font-size:11px!important;color:#b8d4cb!important}
-#analytics .pont-insights-chevron{grid-column:2!important;grid-row:1 / span 2!important;font:400 29px/1 system-ui!important;color:#e5cb8f!important;transition:transform .2s}
-#analytics .pont-insights-restaurant[open] .pont-insights-chevron{transform:rotate(90deg)}
-#analytics .pont-restaurant-metrics{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:1px!important;padding:10px 9px 13px!important;border-top:1px solid #69a99f70!important}
-#analytics .pont-restaurant-metrics>div{display:grid!important;gap:2px!important;align-content:start!important;padding:8px 4px!important;text-align:center!important;min-width:0!important}
-#analytics .pont-restaurant-metrics strong{font:750 clamp(13px,3.4vw,18px)/1.2 system-ui!important;color:#fff!important;overflow-wrap:anywhere}
-#analytics .pont-restaurant-metrics span{font-size:clamp(9px,2.5vw,12px)!important;color:#b7d4c7!important}
-#analytics .pont-insights-disclosure{border:1px solid #7dbcb4a6!important;border-radius:15px!important;background:linear-gradient(140deg,#0a443b,#06312d)!important;padding:0 12px!important;margin:10px 0!important}
-#analytics .pont-insights-disclosure>summary{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:5px!important;list-style:none!important;cursor:pointer!important;padding:13px 2px!important;font-weight:750!important;font-size:14px!important;color:#fff!important}
-#analytics .pont-insights-disclosure>summary::-webkit-details-marker{display:none}
-#analytics .pont-insights-disclosure>summary span{color:#b9d4c9!important;font-size:11px!important;font-weight:450!important}
-#analytics .pont-insights-disclosure>summary b{color:#e0c785;font-size:16px!important}
-#analytics .pont-insights-disclosure p{font-size:12px!important;line-height:1.4!important;color:#b5d8d0!important}
-#analytics .pont-insights-table-wrap{max-width:100%!important;overflow-x:auto!important}
-#analytics .pont-insights-table-wrap table{min-width:480px;width:100%!important;border-collapse:collapse;font-size:12px!important}
-#analytics .pont-insights-table-wrap th,#analytics .pont-insights-table-wrap td{padding:9px 6px!important;text-align:left!important;border-bottom:1px solid #9aced84d!important}
-#analytics .pont-revenue-summary{display:flex!important;justify-content:space-between!important;gap:10px!important;padding:12px 2px!important}
-#analytics .pont-revenue-summary strong{color:#f5d892!important}
-#analytics #analyticsStatus:empty{display:none!important}
-#analytics #analyticsStatus{font-size:11px!important;margin:0 0 7px!important}
-@media(max-width:420px){#analytics.pont-insights{padding:12px!important}#analytics .pont-insight{padding:10px 7px!important;grid-template-columns:24px minmax(0,1fr)!important;column-gap:5px!important}#analytics .pont-insight>.pont-stat-symbol{font-size:19px!important}#analytics .pont-insights-restaurant>summary{padding:11px!important}#analytics .pont-insights-section-title h3{font-size:18px!important}}
-#analytics #nt[hidden]{display:none!important}
-#analytics .pont-insight[hidden],#analytics .pont-custom-period[hidden]{display:none!important}
-#analytics .pont-insights-table-wrap table{min-width:710px!important}
-#analytics .pont-insights-table-wrap td{white-space:nowrap!important}
-
-/* Two immediately visible performance rankings; scoped to Statistics only. */
-#analytics .pont-ranking-heading{align-items:center!important;flex-wrap:wrap!important}
-#analytics .pont-ranking-heading label{display:flex!important;align-items:center!important;gap:7px!important;margin:0!important;font-size:11px!important;color:#c9e5dd!important}
-#analytics .pont-ranking-heading select{min-width:0!important;width:160px!important;max-width:51vw!important;border-radius:10px!important;padding:8px 9px!important;font-size:12px!important;color:#f4fffb!important;background:#0b453d!important}
-#analytics .pont-ranking-list{display:grid!important;gap:7px!important;margin:8px 0 20px!important}
-#analytics .pont-ranking-entry{display:grid!important;grid-template-columns:29px minmax(0,1fr) auto!important;align-items:center!important;gap:9px!important;min-height:44px!important;padding:9px 11px!important;border:1px solid #93dfd3a6!important;border-radius:13px!important;background:linear-gradient(125deg,#104841,#052c29)!important;box-shadow:inset 0 1px 3px #d8ffff20!important}
-#analytics .pont-ranking-place{width:27px!important;height:27px!important;display:grid!important;place-items:center!important;border-radius:9px!important;border:1px solid #d8c38e!important;color:#f5d490!important;font-size:13px!important;font-weight:750!important;background:#18433b!important}
-#analytics .pont-ranking-entry:first-child .pont-ranking-place{background:linear-gradient(130deg,#fce6a5,#cfa752)!important;color:#193629!important}
-#analytics .pont-ranking-name{font-size:13px!important;font-weight:650!important;min-width:0!important;color:#f1fff9!important;overflow-wrap:anywhere}
-#analytics .pont-ranking-value{font:750 17px/1.2 system-ui!important;color:#ffdc96!important;white-space:nowrap!important}
-#analytics .pont-ranking-auction-list{margin-top:7px!important}
-#analytics .pont-auction-ranking-list .pont-ranking-entry{grid-template-columns:29px minmax(0,.85fr) minmax(0,1.3fr)!important}
-#analytics .pont-auction-ranking-list .pont-ranking-name{display:grid!important;gap:2px!important}
-#analytics .pont-auction-ranking-list .pont-ranking-name small{font-size:10px!important;color:#b2d2c6!important}
-#analytics .pont-ranking-auction-performance{display:flex!important;flex-wrap:wrap!important;gap:3px 9px!important;justify-content:flex-end!important;text-align:right!important;min-width:0!important;color:#e6f4eb!important;font-size:10px!important}
-#analytics .pont-ranking-empty{font-size:12px!important;margin:4px 0!important;color:#bedbd0!important}
-
-/* PONT Stats 2026-11: pixel-safe centered metric tiles (mobile + desktop).
-   Completely scoped to the analytics section. */
-#analytics .pont-insights-grid{
- display:grid!important;
- grid-template-columns:repeat(2,minmax(0,1fr))!important;
- gap:clamp(7px,2vw,12px)!important;
- align-items:stretch!important;
- width:100%!important;
- min-width:0!important;
-}
-#analytics .pont-insights-grid>.pont-insight.stat,
-#analytics .pont-insights-grid>.pont-insight.stat.pont-insight-wide{
- box-sizing:border-box!important;
- display:flex!important;
- flex-direction:column!important;
- align-items:center!important;
- justify-content:center!important;
- text-align:center!important;
- grid-column:auto!important;
- grid-row:auto!important;
- gap:clamp(3px,1.2vw,6px)!important;
- width:100%!important;
- min-width:0!important;
- min-height:100px!important;
- height:auto!important;
- margin:0!important;
- padding:clamp(11px,2.6vw,17px) clamp(6px,1.8vw,12px)!important;
- overflow:hidden!important;
- border:1px solid rgba(190,235,232,.68)!important;
- border-radius:15px!important;
- background:radial-gradient(ellipse at 40% -20%,rgba(165,248,228,.16),transparent 70%),linear-gradient(145deg,#104a44,#062f2d)!important;
- box-shadow:inset 0 1px 3px #ffffff20,0 0 10px #a5eae31d!important;
-}
-#analytics .pont-insights-grid>.pont-insight .pont-stat-symbol{
- display:block!important;
- position:static!important;
- flex:0 0 auto!important;
- width:23px!important;
- height:23px!important;
- min-width:0!important;
- margin:0 auto 1px!important;
- padding:0!important;
- color:#ebcf91!important;
- fill:none!important;
- stroke:currentColor!important;
- filter:drop-shadow(0 0 4px rgba(252,226,168,.22));
-}
-#analytics .pont-insights-grid>.pont-insight>strong,
-#analytics .pont-insights-grid>.pont-insight.stat>strong:not([hidden]){
- display:block!important;
- flex:0 0 auto!important;
- grid-column:auto!important;
- grid-row:auto!important;
- width:100%!important;
- max-width:100%!important;
- min-width:0!important;
- margin:0!important;
- padding:0!important;
- text-align:center!important;
- color:#f7fffc!important;
- font:750 clamp(18px,4.8vw,27px)/1.13 system-ui!important;
- letter-spacing:-.04em!important;
- white-space:normal!important;
- overflow-wrap:anywhere!important;
- word-break:normal!important;
- text-wrap:balance;
-}
-#analytics .pont-insights-grid>.pont-insight>.pont-stat-label{
- display:block!important;
- position:static!important;
- flex:0 0 auto!important;
- grid-column:auto!important;
- grid-row:auto!important;
- width:100%!important;
- min-width:0!important;
- max-width:100%!important;
- margin:0!important;
- padding:0!important;
- color:#dcf1ea!important;
- text-align:center!important;
- font:550 clamp(10px,2.55vw,12px)/1.28 system-ui!important;
- white-space:normal!important;
- overflow-wrap:anywhere!important;
- text-wrap:balance;
-}
-#analytics .pont-insights-grid>.pont-insight.pont-insight-status .pont-status-numbers{
- display:flex!important;
- align-items:center!important;
- justify-content:center!important;
- flex-wrap:wrap!important;
- gap:clamp(9px,3vw,18px)!important;
- grid-column:auto!important;
- grid-row:auto!important;
- width:100%!important;
- max-width:100%!important;
- min-width:0!important;
- margin:0!important;
- padding:0!important;
-}
-#analytics .pont-insights-grid>.pont-insight.pont-insight-status .pont-status-numbers>span{
- display:inline-flex!important;
- align-items:baseline!important;
- justify-content:center!important;
- gap:4px!important;
- margin:0!important;
- color:#dceee9!important;
- font:650 11px/1.15 system-ui!important;
- white-space:nowrap!important;
-}
-#analytics .pont-insights-grid>.pont-insight.pont-insight-status .pont-status-numbers strong{
- display:inline!important;
- font:750 clamp(18px,4.4vw,25px)/1.1 system-ui!important;
- margin:0!important;
- padding:0!important;
- color:#fff!important;
-}
+/* PONT Statistics visual system v3 – single source of truth, isolated from navigation */
+#analytics.pont-insights{--ps-bg:#062b28;--ps-border:rgba(155,222,215,.54);--ps-text:#f0faf5;--ps-muted:#bdd9cf;--ps-gold:#e3ca92;position:relative!important;overflow:hidden!important;max-width:100%!important;min-width:0!important;padding:clamp(12px,2.5vw,20px)!important;background:radial-gradient(ellipse at 70% -20%,rgba(43,145,128,.25),transparent 60%),linear-gradient(155deg,#072d2a,#042522)!important;border:1px solid var(--ps-border)!important;border-radius:21px!important;color:var(--ps-text)!important;box-shadow:0 0 14px rgba(125,230,221,.1),inset 0 1px 0 rgba(220,255,248,.12)!important}
+#analytics.pont-insights:before{content:"";position:absolute;top:0;left:22%;width:43%;height:1px;pointer-events:none;background:linear-gradient(90deg,transparent,#e5fffe,transparent);box-shadow:0 0 8px 1px rgba(230,255,255,.6)}
+#analytics.pont-insights *{box-sizing:border-box!important;min-width:0}
+#analytics .pont-insights-heading{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;margin:0 0 12px!important;flex-wrap:nowrap!important}
+#analytics .pont-insights-heading>div{flex:1 1 auto;min-width:0}
+#analytics .pont-insights-heading h2{font:600 clamp(26px,5vw,36px)/1.08 Georgia,serif!important;color:white!important;margin:0 0 4px!important}
+#analytics .pont-insights-heading p{font:400 clamp(11px,2.4vw,13px)/1.3 system-ui!important;color:var(--ps-muted)!important;margin:0!important}
+#analytics #analyticsRefresh{flex:0 0 auto!important;min-height:36px!important;max-width:45%!important;padding:6px 11px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;border-radius:999px!important;border:1px solid rgba(234,255,254,.75)!important;background:linear-gradient(#21534e,#0c3934)!important;color:#fff!important;font:650 clamp(11px,2.8vw,13px)/1.2 system-ui!important;box-shadow:inset 0 1px 3px #e6ffff39,0 0 10px #eeffff44!important}
+#analytics #analyticsRefresh span{font-size:20px!important;line-height:1!important}
+#analytics .pont-period-bar{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;margin:0 0 15px!important;min-height:37px!important;padding:2px!important;border-radius:999px!important;border:1px solid rgba(146,216,205,.75)!important;background:#073b35!important;overflow:hidden!important}
+#analytics .pont-period-bar button{height:35px!important;min-height:35px!important;min-width:0!important;padding:5px 1px!important;border:0!important;border-radius:999px!important;background:transparent!important;color:#e0f2ea!important;font:650 clamp(11px,2.8vw,13px)/1.2 system-ui!important;white-space:nowrap!important;box-shadow:none!important}
+#analytics .pont-period-bar button.active{background:linear-gradient(#218b7c,#07574d)!important;border:1px solid #c8fff7!important;box-shadow:inset 0 0 6px #c8fffb5e,0 0 8px #d4fffd63!important;color:#fff!important}
+#analytics .pont-custom-period:not([hidden]){display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important;margin:0 0 12px!important}
+#analytics .pont-custom-period[hidden]{display:none!important}
+#analytics .pont-custom-period label{font:500 11px/1.35 system-ui!important;color:var(--ps-muted)!important;margin:0!important}
+#analytics .pont-custom-period input{width:100%!important;padding:7px!important;min-height:38px!important;color-scheme:dark}
+#analytics .pont-insights-section-title{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:9px!important;flex-wrap:wrap!important;margin:15px 0 9px!important}
+#analytics .pont-insights-section-title h3{margin:0!important;color:#f5fff9!important;font:600 clamp(17px,4vw,22px)/1.25 Georgia,serif!important}
+#analytics .pont-insights-section-title small{font:400 10px/1.4 system-ui!important;color:var(--ps-muted)!important;text-align:right}
+#analytics .pont-insights-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;align-items:stretch!important;gap:8px!important;width:100%!important;margin:0!important}
+#analytics .pont-insights-grid>.pont-insight.stat{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:4px!important;grid-column:auto!important;grid-row:auto!important;position:relative!important;min-height:92px!important;height:auto!important;min-width:0!important;width:100%!important;margin:0!important;padding:9px 6px!important;border:1px solid rgba(183,237,229,.67)!important;border-radius:14px!important;background:radial-gradient(ellipse at 30% 0%,#b3faea15,transparent 72%),linear-gradient(145deg,#104a43,#063530)!important;box-shadow:inset 0 1px 2px #f3ffff1e,0 0 7px #aefff017!important;text-align:center!important;overflow:hidden!important}
+#analytics .pont-insights-grid>.pont-insight .pont-stat-symbol{position:static!important;display:block!important;flex:none!important;width:20px!important;height:20px!important;margin:0 auto!important;padding:0!important;color:var(--ps-gold)!important;fill:none!important;stroke:currentColor!important;filter:none!important}
+#analytics .pont-insights-grid>.pont-insight.stat>strong:not([hidden]){display:block!important;position:static!important;width:100%!important;max-width:100%!important;flex:none!important;margin:0!important;padding:0!important;color:#fff!important;text-align:center!important;font:750 clamp(18px,4.9vw,26px)/1.12 system-ui!important;letter-spacing:-.045em!important;white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important}
+#analytics .pont-insights-grid>.pont-insight>.pont-stat-label{display:block!important;position:static!important;flex:none!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important;color:#dfefe8!important;text-align:center!important;font:550 clamp(10px,2.55vw,12px)/1.3 system-ui!important;white-space:normal!important;overflow-wrap:break-word!important}
 #analytics .pont-insights-grid>.pont-insight [hidden]{display:none!important}
-@media(min-width:800px){
- #analytics .pont-insights-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important}
- #analytics .pont-insights-grid>.pont-insight.stat{min-height:113px!important}
-}
-@media(max-width:360px){
- #analytics .pont-insights-grid{gap:7px!important}
- #analytics .pont-insights-grid>.pont-insight.stat{min-height:96px!important;padding:10px 5px!important}
- #analytics .pont-insights-grid>.pont-insight .pont-stat-symbol{width:21px!important;height:21px!important}
- #analytics .pont-insights-grid>.pont-insight>strong{font-size:19px!important}
- #analytics .pont-insights-grid>.pont-insight>.pont-stat-label{font-size:10px!important}
-}
+#analytics .pont-insight-status .pont-status-numbers{display:flex!important;align-items:center!important;justify-content:center!important;flex-wrap:wrap!important;gap:6px 12px!important;width:100%!important;max-width:100%!important;margin:0!important;padding:0!important}
+#analytics .pont-insight-status .pont-status-numbers>span{display:inline-flex!important;align-items:baseline!important;gap:3px!important;color:#c7e1d7!important;font:600 10px/1.15 system-ui!important;white-space:nowrap!important}
+#analytics .pont-insight-status .pont-status-numbers strong{display:inline!important;margin:0!important;padding:0!important;color:#fff!important;font:750 clamp(17px,4.3vw,22px)/1.1 system-ui!important}
+#analytics .pont-insights-clarification{margin:8px 1px 12px!important;color:#a9cbc0!important;font:400 10px/1.4 system-ui!important}
+#analytics .pont-month-row label,#analytics .pont-ranking-heading label{display:flex!important;align-items:center!important;gap:6px!important;flex-wrap:wrap!important;margin:0!important;color:var(--ps-muted)!important;font:500 11px/1.3 system-ui!important}
+#analytics .pont-month-row input{width:145px!important;max-width:100%!important;min-height:36px!important;padding:6px 9px!important;font:500 12px system-ui!important;color-scheme:dark}
+#analytics .pont-ranking-heading select{width:152px!important;max-width:100%!important;min-height:36px!important;padding:6px!important;border-radius:9px!important;background:#10413a!important;color:#fff!important;font:500 12px system-ui!important}
+#analytics .pont-ranking-list,#analytics .pont-restaurant-insights{display:grid!important;gap:7px!important;margin:7px 0 16px!important}
+#analytics .pont-ranking-entry{display:grid!important;grid-template-columns:27px minmax(0,1fr) auto!important;align-items:center!important;gap:7px!important;min-height:42px!important;width:100%!important;padding:8px 9px!important;border:1px solid rgba(146,212,198,.55)!important;border-radius:12px!important;background:linear-gradient(140deg,#0d423b,#062f2a)!important;box-shadow:inset 0 1px 2px #d1ffff18!important}
+#analytics .pont-ranking-place{width:26px!important;height:26px!important;display:grid!important;place-items:center!important;flex:none!important;border-radius:8px!important;border:1px solid #d0b97f!important;color:#edcd87!important;font:750 12px system-ui!important}
+#analytics .pont-ranking-entry:first-child .pont-ranking-place{background:linear-gradient(130deg,#f6e5ac,#cda35c)!important;color:#18392c!important}
+#analytics .pont-ranking-name{min-width:0!important;margin:0!important;font:650 12px/1.35 system-ui!important;color:#f2fff8!important;overflow-wrap:anywhere!important}
+#analytics .pont-ranking-name strong{font:inherit!important}
+#analytics .pont-ranking-value{font:750 clamp(13px,3.7vw,17px)/1.15 system-ui!important;color:#eecf92!important;text-align:right!important;white-space:nowrap!important}
+#analytics .pont-ranking-empty{font:400 12px/1.4 system-ui!important;color:var(--ps-muted)!important}
+#analytics .pont-auction-ranking-list .pont-ranking-entry{grid-template-columns:27px minmax(0,1fr)!important;grid-template-areas:"number name" "stats stats"!important;gap:6px 9px!important}
+#analytics .pont-auction-ranking-list .pont-ranking-place{grid-area:number!important}
+#analytics .pont-auction-ranking-list .pont-ranking-name{grid-area:name!important;display:flex!important;align-items:baseline!important;justify-content:space-between!important;gap:8px!important}
+#analytics .pont-auction-ranking-list .pont-ranking-name small{font:400 10px/1.3 system-ui!important;color:var(--ps-muted)!important}
+#analytics .pont-ranking-auction-performance{grid-area:stats!important;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:3px!important;text-align:center!important;justify-content:stretch!important;color:#e0f5eb!important}
+#analytics .pont-ranking-auction-performance span{font:500 10px/1.3 system-ui!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#analytics .pont-insights-restaurant{border:1px solid rgba(147,208,199,.6)!important;border-radius:13px!important;background:linear-gradient(125deg,#0d4039,#062d28)!important;overflow:hidden!important}
+#analytics .pont-insights-restaurant>summary{display:grid!important;grid-template-columns:minmax(0,1fr) 18px!important;gap:4px 6px!important;padding:11px!important;list-style:none!important;cursor:pointer!important;align-items:center!important}
+#analytics .pont-insights-restaurant>summary::-webkit-details-marker{display:none}
+#analytics .pont-insights-restaurant-name{grid-column:1!important;font:600 17px/1.2 Georgia,serif!important;color:white!important;overflow-wrap:anywhere!important}
+#analytics .pont-insights-restaurant-preview{grid-column:1!important;grid-row:2!important;font:400 10px/1.4 system-ui!important;color:var(--ps-muted)!important;white-space:normal!important}
+#analytics .pont-insights-chevron{grid-column:2!important;grid-row:1/span 2!important;color:var(--ps-gold)!important;font-size:24px!important;line-height:1!important;transition:transform .15s}
+#analytics .pont-insights-restaurant[open] .pont-insights-chevron{transform:rotate(90deg)}
+#analytics .pont-restaurant-metrics{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:1px!important;padding:8px!important;border-top:1px solid #b4e3d14d!important}
+#analytics .pont-restaurant-metrics>div{display:flex!important;flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:3px!important;padding:7px 3px!important;text-align:center!important;overflow:hidden!important}
+#analytics .pont-restaurant-metrics strong{max-width:100%!important;font:750 clamp(15px,4.1vw,19px)/1.2 system-ui!important;color:#fff!important;overflow-wrap:anywhere!important}
+#analytics .pont-restaurant-metrics span{font:400 10px/1.3 system-ui!important;color:var(--ps-muted)!important;overflow-wrap:anywhere!important}
+#analytics .pont-insights-disclosure{margin:9px 0!important;padding:0 11px!important;border:1px solid rgba(148,208,195,.57)!important;border-radius:13px!important;background:linear-gradient(150deg,#0e413a,#072b27)!important}
+#analytics .pont-insights-disclosure>summary{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:7px!important;padding:12px 2px!important;cursor:pointer!important;list-style:none!important;color:#f0fff9!important;font:650 13px/1.3 system-ui!important}
+#analytics .pont-insights-disclosure>summary::-webkit-details-marker{display:none}
+#analytics .pont-insights-disclosure>summary span{color:var(--ps-muted)!important;font:400 10px/1.3 system-ui!important;text-align:right!important}
+#analytics .pont-insights-disclosure>summary b{color:var(--ps-gold)!important}
+#analytics .pont-insights-disclosure p{font:400 11px/1.45 system-ui!important;color:var(--ps-muted)!important}
+#analytics .pont-insights-table-wrap{width:100%!important;max-width:100%!important;overflow-x:auto!important}
+#analytics .pont-insights-table-wrap table{border-collapse:collapse!important;min-width:680px!important;font-size:11px!important}
+#analytics .pont-insights-table-wrap th,#analytics .pont-insights-table-wrap td{padding:8px 5px!important;text-align:left!important;border-bottom:1px solid #f3ffff2b!important;white-space:nowrap!important}
+#analytics .pont-revenue-summary{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;padding:10px 1px!important}
+#analytics .pont-revenue-summary strong{color:var(--ps-gold)!important}
+#analytics #analyticsStatus{font-size:11px!important;line-height:1.35!important;margin:4px 0!important}
+#analytics #analyticsStatus:empty{display:none!important}
+@media(min-width:720px){#analytics .pont-insights-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important}#analytics .pont-insights-grid>.pont-insight.stat{min-height:105px!important}#analytics .pont-restaurant-metrics{grid-template-columns:repeat(5,minmax(0,1fr))!important}#analytics .pont-auction-ranking-list .pont-ranking-entry{grid-template-columns:27px minmax(0,1fr) 2fr!important;grid-template-areas:"number name stats"!important}#analytics .pont-ranking-auction-performance{gap:9px!important}}
+@media(max-width:359px){#analytics.pont-insights{padding:10px!important}#analytics .pont-insights-grid{gap:6px!important}#analytics .pont-insights-grid>.pont-insight.stat{padding:8px 4px!important;min-height:89px!important}#analytics .pont-insights-grid>.pont-insight .pont-stat-symbol{width:18px!important;height:18px!important}#analytics .pont-insights-grid>.pont-insight.stat>strong:not([hidden]){font-size:18px!important}#analytics .pont-insights-grid>.pont-insight>.pont-stat-label{font-size:10px!important}#analytics .pont-insights-heading p{font-size:10px!important}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><body class="pont-admin pont-admin--platform">
