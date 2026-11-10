@@ -4,7 +4,8 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  const wrap=$('menuFormWrap'), parent=wrap?.parentElement;
  if(!parent)return {refresh:()=>{}};
  const esc=x=>String(x??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
- const settingsHost=isRestaurantAdmin ? $('contactView') : null;
+ const settingsHost=isRestaurantAdmin ? $('contactView') : $('restaurantOrderSettings');
+ const superAdminSettings = !isRestaurantAdmin && Boolean(settingsHost);
  const section=document.createElement('section');
  section.id='pontOperations';
  section.className='pont-operations';
@@ -60,6 +61,11 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    settings.className='pont-operations';
    settings.append($('pontHoursPanel'));
    settingsHost.append(settings);
+   if (superAdminSettings) {
+     settingsHost.hidden = true;
+     $('pontHoursPanel').open = true;
+     $('pontOpRestaurantWrap').hidden = true;
+   }
  }
  const formatDate=d=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
  const monday=date=>dateAt(date,-(new Date(date+'T12:00:00Z').getUTCDay()+6)%7);
@@ -69,13 +75,14 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  const restaurants=()=>getRestaurants()||[];
  const defaultStart='09:00', defaultEnd='15:00';
  let activeRestaurant='';
+ let editRestaurantId = null;
  function options(){
    const rs=restaurants(),selector=$('pontOpRestaurant');
-   const previous=activeRestaurant;
+   const previous=superAdminSettings && editRestaurantId ? editRestaurantId : activeRestaurant;
    selector.innerHTML=rs.map(r=>'<option value="'+esc(r.id)+'">'+esc(r.name)+'</option>').join('');
    if(rs.some(r=>r.id===previous))selector.value=previous;
    activeRestaurant=selector.value||'';
-   $('pontOpRestaurantWrap').hidden=rs.length<=1;
+   $('pontOpRestaurantWrap').hidden=superAdminSettings || rs.length<=1;
    const weekSelector=$('pontOpWeekRestaurant');
    if(weekSelector){
      weekSelector.innerHTML=selector.innerHTML;
@@ -84,14 +91,19 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    }
  }
  async function loadSettings(){
-   options();if(!activeRestaurant)return;
+   options();if(!activeRestaurant || (superAdminSettings && !editRestaurantId))return;
    const restaurantId=activeRestaurant;
+   const saveButton=$('pontOpSave');
+   saveButton.disabled=true;
+   $('pontOpStatus').textContent='Se încarcă setările…';
    const {data,error}=await db.from('pont_order_settings').select('opens_at,closes_at,min_full_menus').eq('restaurant_id',restaurantId).maybeSingle();
-   if(restaurantId!==activeRestaurant)return;
+   if(restaurantId!==activeRestaurant || (superAdminSettings && editRestaurantId!==restaurantId))return;
    if(error){$('pontOpStatus').textContent=error.message;return}
    $('pontOpStart').value=data?.opens_at?.slice(0,5)||defaultStart;
    $('pontOpEnd').value=data?.closes_at?.slice(0,5)||defaultEnd;
    $('pontOpMin').value=data?.min_full_menus||1;
+   $('pontOpStatus').textContent='';
+   saveButton.disabled=false;
  }
  for(const selector of [$('pontOpRestaurant'), $('pontOpWeekRestaurant')].filter(Boolean)){
    selector.addEventListener('change',()=>{activeRestaurant=selector.value;loadSettings();renderWeek()});
@@ -101,7 +113,11 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    if(Boolean(start)!==Boolean(end)){ $('pontOpStatus').textContent='Completează ambele ore sau lasă-le goale pentru programul implicit.';return}
    if(start&&start===end){$('pontOpStatus').textContent='Ora de început și ora de încheiere nu pot fi egale.';return}
    if(!Number.isInteger(min)||min<1||min>20){$('pontOpStatus').textContent='Minimum permis: între 1 și 20 meniuri complete.';return}
-   const restaurantId=activeRestaurant,button=$('pontOpSave');button.disabled=true;
+   const restaurantId=activeRestaurant,button=$('pontOpSave');
+   if(superAdminSettings && (!editRestaurantId || restaurantId!==editRestaurantId)){
+     $('pontOpStatus').textContent='Selectează un restaurant din Editează.';return;
+   }
+   button.disabled=true;
    try{const {error}=await db.from('pont_order_settings').upsert({restaurant_id:restaurantId,opens_at:start||defaultStart,closes_at:end||defaultEnd,min_full_menus:min,updated_at:new Date().toISOString()},{onConflict:'restaurant_id'});if(error)throw error;
      if(restaurantId===activeRestaurant&&!start&&!$('pontOpStart').value&&!$('pontOpEnd').value){
        $('pontOpStart').value=defaultStart;
@@ -156,5 +172,18 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
      $('pontOpWeekStatus').textContent='Completează și publică meniul pentru '+date+'. Va apărea automat în ziua respectivă.';
    }catch(e){$('pontOpWeekStatus').textContent=e.message}
  });
- return {refresh:async()=>{await loadSettings();renderWeek()},refreshWeek:renderWeek};
+ return {
+   refresh:async()=>{await loadSettings();renderWeek()},
+   refreshWeek:renderWeek,
+   editRestaurant:id=>{
+     if(!superAdminSettings)return;
+     editRestaurantId=id||null;
+     settingsHost.hidden=!editRestaurantId;
+     $('pontOpStatus').textContent='';
+     if(!editRestaurantId){$('pontOpSave').disabled=true;return}
+     activeRestaurant=editRestaurantId;
+     $('pontOpSave').disabled=true;
+     loadSettings().catch(error=>{$('pontOpStatus').textContent=error.message});
+   }
+ };
 }
