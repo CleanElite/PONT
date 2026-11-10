@@ -1142,3 +1142,24 @@ body #order::backdrop{background:#031c1a}
  #order #choices .pont-first-label>small{font-size:9px!important}
  #order #choices .pont-first-dessert{padding-left:7px}
 }
+
+/* WhatsApp checkout: customer data is shown only after the order button is pressed. */
+#order .pont-checkout-launch{display:grid;justify-items:center;gap:6px;margin:14px 12px 24px;padding:0;position:relative;z-index:1}
+#order #openCheckout{display:flex;align-items:center;justify-content:center;gap:10px;width:min(100%,460px);min-height:51px;border-radius:999px;border:1px solid #d6e5e6;background:linear-gradient(135deg,#143e3d,#082826);color:#f5f7f4;font-weight:760;font-size:clamp(13px,3.5vw,16px);box-shadow:0 0 0 1px #ffffff1a,0 7px 20px #0005,0 0 15px #bdd7de35;cursor:pointer;padding:12px 17px}
+#order #openCheckout span{font-size:23px;font-weight:400;line-height:1}
+#order #openCheckout:disabled{opacity:.55;cursor:not-allowed}
+#order #pontCheckoutLaunchHint:not([hidden]){font-size:12px;color:#d8c5a3;text-align:center;margin:0;max-width:350px}
+#order .pont-checkout-overlay:not([hidden]){display:flex!important;position:fixed!important;inset:0!important;z-index:2147483000!important;align-items:center;justify-content:center;padding:max(14px,env(safe-area-inset-top)) 12px max(14px,env(safe-area-inset-bottom));isolation:isolate}
+#order .pont-checkout-backdrop{position:absolute;inset:0;background:#001716d9;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);cursor:pointer}
+#order .pont-checkout-panel{position:relative;z-index:1;width:min(100%,510px);max-height:calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;border:1px solid #a4c7c3a0;border-radius:19px;background:linear-gradient(145deg,#123b38,#061f21 85%);box-shadow:0 20px 65px #000b,0 0 23px #77d1c433;padding:14px 16px 18px;color:#f7f9f5;scrollbar-width:thin}
+#order .pont-checkout-panel:focus{outline:none}
+#order .pont-checkout-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:3px 0 9px;border-bottom:1px solid #c8e1d33b}
+#order .pont-checkout-top h3{font:650 21px/1.25 Georgia,serif;margin:3px 0 0;color:#fffaf1}
+#order .pont-checkout-kicker{font-size:9px;letter-spacing:.14em;color:#b5d5d1;font-weight:700}
+#order #closeCheckout{flex:none;display:grid;place-items:center;width:36px;height:36px;min-width:36px;min-height:36px;border:1px solid #c7dddd65;border-radius:11px;padding:0;background:#092c2d;color:#f8ffff;font-size:26px;line-height:1}
+#order .pont-checkout-panel>.pont-order-details{margin:0!important;padding:5px 0 0!important;max-width:none!important;min-width:0!important;width:100%!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+#order .pont-checkout-panel .pont-order-details label{max-width:100%}
+#order .pont-checkout-panel .order-footer{margin-top:12px!important}
+#order .pont-checkout-panel #send{min-height:49px!important;border-radius:999px!important;background:linear-gradient(115deg,#0d6660,#124441)!important;border:1px solid #a0d9d0!important;color:#fff!important;font-weight:750!important}
+#order .pont-checkout-panel #send:disabled{opacity:.55}
+@media(max-width:480px){#order .pont-checkout-panel{padding:12px 13px 15px;border-radius:16px;max-height:calc(100dvh - 18px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}#order .pont-checkout-overlay:not([hidden]){padding:9px 8px}}
