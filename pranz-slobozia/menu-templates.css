@@ -45,3 +45,30 @@
 .pont-checklist-option + .pont-checklist-option { border-top: 1px solid var(--admin-line, #285451); }
 .pont-checklist-price { display: flex; align-items: center; gap: .25rem; font-size: .85em; white-space: nowrap; }
 .pont-dish-checklist .pont-checklist-price input { width: 5rem; margin: 0; }
+
+
+/* Compact daily publishing: show five dishes per category, keep all selectable. */
+.pont-admin #pontDailyDishes .pont-daily-scroll-list{
+  --pont-dish-row-height:50px;
+  max-height:calc(5 * var(--pont-dish-row-height));
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(134,214,190,.6) transparent;
+}
+.pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option{
+  box-sizing:border-box;
+  min-height:var(--pont-dish-row-height);
+  padding:6px 3px;
+}
+.pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option label{
+  min-width:0;
+  flex:1 1 auto;
+}
+.pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-price{flex:0 0 auto}
+@media(max-width:430px){
+  .pont-admin #pontDailyDishes .pont-daily-scroll-list{--pont-dish-row-height:54px}
+  .pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option{gap:5px}
+}
