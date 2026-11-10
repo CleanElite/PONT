@@ -108,6 +108,7 @@
         <span><strong>Acceptă plata cu cardul</strong><small>Clientul poate alege numerar sau card.</small></span>
       </label>
     </div>
+    <div id="restaurantOrderSettings" hidden></div>
     <div class="dashboard-actions">
       <button id="cancelRestaurant" type="button">Anulează</button>
       <button class="primary" id="saveRestaurantButton" type="submit">Adaugă restaurant</button>
@@ -1053,6 +1054,7 @@ function closeRestaurantEditor() {
  $('restaurantForm').reset();
  $('restaurantForm').hidden = true;
  $('editingRestaurant').value = '';
+ window.pontOperations?.editRestaurant(null);
  $('restaurantAccess').open = false;
  $('restaurantAccess').hidden = true;
  $('restaurantPasswordBox').hidden = true;
@@ -1072,6 +1074,7 @@ function openRestaurantEditor(restaurant = null) {
  $('restaurantFormTitle').textContent = restaurant ? 'Editează restaurantul' : 'Adaugă restaurant fără cont';
  $('saveRestaurantButton').textContent = restaurant ? 'Salvează modificările' : 'Adaugă restaurant';
  $('restaurantAccess').hidden = !restaurant || !hasMember(restaurant.id);
+ window.pontOperations?.editRestaurant(restaurant?.id || null);
  $('name').focus();
 }
 $('addRestaurantOnly').onclick = () => {
@@ -1303,7 +1306,7 @@ window.pontAllMenus=()=>menus;
 const {initMenuTemplates,renderMenuArchive}=await import('../menu-templates.js?v=8');
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=7');
+const {initPontOperations}=await import('../order-operations.js?v=8');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:false});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();
