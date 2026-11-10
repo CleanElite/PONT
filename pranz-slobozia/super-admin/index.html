@@ -201,6 +201,14 @@
 #analytics .pont-revenue-month-row>.pont-revenue-summary>strong{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;margin:0!important;padding:0!important;text-align:center!important;font:750 clamp(22px,5.8vw,30px)/1.15 system-ui!important;color:#ecd49b!important;white-space:normal!important;overflow-wrap:anywhere!important;word-break:normal!important}
 #analytics .pont-revenue-note{margin:8px 0 12px!important;line-height:1.5!important}
 @media(min-width:700px){#analytics .pont-analytics-time-controls{grid-template-columns:minmax(0,1fr) 172px!important;align-items:center!important;gap:9px!important}#analytics .pont-revenue-month-row{display:grid!important;grid-template-columns:minmax(0,220px) minmax(0,1fr)!important;gap:14px!important;align-items:stretch!important}#analytics .pont-revenue-month-row>label{align-self:center!important}}
+
+/* C6: Dashboard launch on Super Admin title row. */
+#app .admin-hero.dashboard-intro{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;min-width:0!important}
+#app .admin-hero.dashboard-intro>.admin-hero-copy{flex:1 1 auto!important;min-width:0!important}
+#app .admin-hero.dashboard-intro>.admin-hero-copy h1{overflow-wrap:normal!important}
+#app .pont-hero-dashboard{flex:0 0 auto!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:41px!important;max-width:42%!important;margin:0!important;padding:9px 14px!important;border:1px solid rgba(211,244,230,.82)!important;border-radius:12px!important;background:linear-gradient(150deg,#1d6559,#0c3b34)!important;color:#f4fffa!important;font:700 clamp(11px,3vw,14px)/1.2 system-ui!important;text-decoration:none!important;white-space:nowrap!important;box-shadow:inset 0 1px 3px #efffff3d,0 0 9px #d0ffec32!important}
+#app .pont-hero-dashboard[aria-pressed="true"]{border-color:#e9d9ae!important;color:#ffe8b2!important;box-shadow:inset 0 0 0 1px #ffe5aa35,0 0 13px #e9d39d30!important}
+@media(max-width:360px){#app .admin-hero.dashboard-intro{gap:6px!important}#app .pont-hero-dashboard{padding:8px 9px!important;min-height:37px!important}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><body class="pont-admin pont-admin--platform">
@@ -212,7 +220,7 @@
 <section id="setup" class="card" hidden><h1>Activare securizată</h1><p>Interfața este instalată. Pentru utilizare reală trebuie configurat Supabase și executat fișierul schema.sql în baza de date. Fără această configurare nu există acces la datele restaurantelor.</p></section><section id="login" class="card" hidden><h1>Conectare Super Admin</h1><form id="auth"><label for="email">Email</label><input id="email" type="email" required autocomplete="username"><label for="password">Parolă</label><input id="password" type="password" required autocomplete="current-password"><p><button class="primary">Conectare</button></p></form><p id="error" class="error"></p></section><section id="app" hidden><button type="button" id="logout" class="admin-logout" aria-label="Deconectare"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#sign-out"></use></svg><span class="admin-control-text">Deconectare</span></button>
 <div class="admin-hero dashboard-intro">
   <div class="admin-hero-copy"><h1>Super Admin</h1><p>Administrarea platformei PONT</p></div>
-  <svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#shield-check"></use></svg>
+  <button type="button" class="pont-hero-dashboard" data-tab="analytics" aria-controls="analytics" aria-pressed="true">Dashboard</button>
 </div>
 <nav class="admin-nav" aria-label="Secțiunile Super Admin">
   <button type="button" data-tab="menus" aria-controls="menus" aria-pressed="true"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Meniuri</button>
@@ -220,7 +228,6 @@
   <button type="button" data-tab="restaurants" aria-controls="restaurants" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#storefront"></use></svg>Restaurante</button>
   <button type="button" data-tab="members" aria-controls="members" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#users-three"></use></svg>Conturi</button>
   <button type="button" data-tab="auctions" aria-controls="auctions" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg>Licitații</button>
-  <button type="button" data-tab="analytics" aria-controls="analytics" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#chart-bar"></use></svg>Statistici</button>
   <button type="button" data-tab="customers" aria-controls="customers" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#list-bullets"></use></svg>Clienți</button>
   <a href="../promovare/?v=grila"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg>Promovare</a>
 </nav>
@@ -1186,7 +1193,7 @@ setInterval(() => {
  }
 }, 15000);
 
-const platformTabs = [...document.querySelectorAll('.admin-nav button[data-tab]')];
+const platformTabs = [...document.querySelectorAll('.admin-nav button[data-tab], .pont-hero-dashboard[data-tab]')];
 const panelLoaders = {
  menus:() => window.pontMenuModels?.refresh(),
  auctions:() => { loadAuctions(); loadAuctionControl(); },
@@ -1195,7 +1202,7 @@ const panelLoaders = {
  customers:loadCustomers
 };
 function selectPlatformPanel(id, remember = true) {
- const button = platformTabs.find(tab => tab.dataset.tab === id) || platformTabs[0];
+ const button = platformTabs.find(tab => tab.dataset.tab === id) || platformTabs.find(tab => tab.dataset.tab === 'analytics');
  for (const tab of platformTabs) {
   const active = tab === button;
   $(tab.dataset.tab).hidden = !active;
@@ -1223,9 +1230,10 @@ async function enter() {
   await load();
   await window.pontOperations?.refresh();
   $('app').hidden = false;
-  const panel = location.hash.slice(1);
-  selectPlatformPanel(panel, false);
-  if (panel !== 'dishLibrary') window.pontDishUI?.refresh().catch(error => {
+  // Dashboard is the default landing screen for every Super Admin login.
+  history.replaceState(null, '', '#analytics');
+  selectPlatformPanel('analytics', false);
+  window.pontDishUI?.refresh().catch(error => {
    $('pontDailyError').textContent = error.message;
   });
  } catch (error) {
