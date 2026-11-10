@@ -1018,7 +1018,7 @@ body #order::backdrop{background:#031c1a}
 #order #checkout .order-contact:has(#callNow[hidden]){display:none!important}
 #order #checkout .order-contact #callNow{
   display:inline-flex!important;
-  width:min(100%,92vw,430px)!important;
+  width:min(100%,clamp(252px,70vw,290px))!important;
   aspect-ratio:864 / 151;
   min-height:44px!important;
   height:auto!important;
@@ -1026,7 +1026,7 @@ body #order::backdrop{background:#031c1a}
   border:0!important;
   border-radius:999px!important;
   background:#083334 url("./showcase/call-reference.jpg") 43.59% 49.81% / 104.51% 270.2% no-repeat!important;
-  box-shadow:0 0 14px #4fe8d26b,0 6px 18px #efcd6170!important;
+  box-shadow:0 0 8px #4fe8d23d,0 4px 11px #efcd6148!important;
 }
 #order #checkout .order-contact #callNow[hidden]{display:none!important}
 #order #checkout #callNow :is(svg,span){opacity:0}
