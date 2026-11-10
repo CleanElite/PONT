@@ -6,7 +6,10 @@ const groups = [['first','Felul 1'], ['second','Felul 2'], ['dessert','Desert']]
 
 export function renderDishChecklist(entries, selected, {daily = false, renderDetails = () => ''} = {}) {
   return groups.map(([category, label]) => {
-    const options = entries.filter(([, dish]) => dish.category === category).map(([key, dish]) => {
+    const categoryEntries = entries.filter(([, dish]) => dish.category === category);
+    const totalCount = categoryEntries.length;
+    const selectedCount = categoryEntries.filter(([key]) => selected.has(key)).length;
+    const options = categoryEntries.map(([key, dish]) => {
       const checked = selected.has(key);
       return `<div class="pont-checklist-option">
         <label><input type="checkbox" ${daily ? 'data-select' : 'name="dish"'} value="${esc(key)}" ${checked ? 'checked' : ''}>
@@ -14,7 +17,8 @@ export function renderDishChecklist(entries, selected, {daily = false, renderDet
         ${renderDetails(key, dish, checked)}
       </div>`;
     }).join('');
-    return `<fieldset><legend>${label}</legend><div class="${daily ? 'pont-daily-scroll-list' : 'pont-standard-dish-list'}" data-course="${category}">${options || '<small>Niciun preparat.</small>'}</div></fieldset>`;
+    const counter = daily ? `<div class="pont-daily-course-counter" aria-live="polite"><span>${totalCount} preparate</span><span aria-hidden="true"> · </span><span>${selectedCount} selectate</span></div>` : '';
+    return `<fieldset><legend>${label}</legend><div class="${daily ? 'pont-daily-scroll-list' : 'pont-standard-dish-list'}" data-course="${category}">${options || '<small>Niciun preparat.</small>'}</div>${counter}</fieldset>`;
   }).join('');
 }
 
