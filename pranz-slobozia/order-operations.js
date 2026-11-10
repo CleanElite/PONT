@@ -40,12 +40,22 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  #pontRestaurantSettings input { background: var(--admin-surface); }
  #pontRestaurantSettings #pontOpStatus { margin-bottom: 0; }
  #pontRestaurantSettings #pontOpStatus:empty { min-height: 0; margin: 0; }
+ #restaurantOrderSettings #pontRestaurantSettings{margin:6px 0 10px}
+ #restaurantOrderSettings #pontHoursPanel{padding:10px 12px;border-radius:11px;background:#102c35}
+ #restaurantOrderSettings #pontHoursPanel>summary{min-height:0;font:600 14px system-ui;cursor:default;margin:0 0 9px}
+ #restaurantOrderSettings #pontHoursPanel>summary::after{display:none}
+ #restaurantOrderSettings #pontRestaurantSettings .pont-op-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 105px;gap:8px;margin:0}
+ #restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label{min-width:0;grid-column:auto;gap:3px;font-size:11px;color:#c6dddd;margin:0}
+ #restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input{width:100%;min-width:0;min-height:34px;height:34px;padding:5px 6px;border-radius:7px;font-size:12px}
+ #restaurantOrderSettings #pontRestaurantSettings #pontOpMin{max-width:85px;text-align:center}
+ #restaurantOrderSettings #pontOpStatus:not(:empty){margin-top:7px;font-size:12px}
+ @media(max-width:460px){#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 86px;gap:5px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input{font-size:11px;padding:4px}}
  </style>
- <details id="pontHoursPanel"><summary>Programul comenzilor și comanda minimă</summary>
+ <details id="pontHoursPanel"><summary>${superAdminSettings ? 'Program comenzi' : 'Programul comenzilor și comanda minimă'}</summary>
  <label id="pontOpRestaurantWrap">Restaurant<select id="pontOpRestaurant"></select></label>
- <p>Alege intervalul în care primești comenzi. Programul implicit este 09:00–15:00. Îl poți modifica oricând.</p>
- <div class="pont-op-grid"><label>Comenzi de la ora<input id="pontOpStart" type="time"></label><label>Comenzi până la ora<input id="pontOpEnd" type="time"></label><label>Minim meniuri complete<input id="pontOpMin" type="number" min="1" max="20" step="1" value="1" required></label></div>
- <button type="button" id="pontOpSave" class="${settingsHost ? 'primary' : 'pont-op-button'}">${settingsHost ? 'Salvează setările comenzilor' : 'Salvează programul'}</button><p id="pontOpStatus" role="status"></p></details>
+ ${superAdminSettings ? '' : '<p>Alege intervalul în care primești comenzi. Programul implicit este 09:00–15:00. Îl poți modifica oricând.</p>'}
+ <div class="pont-op-grid"><label>${superAdminSettings ? 'De la' : 'Comenzi de la ora'}<input id="pontOpStart" type="time"></label><label>${superAdminSettings ? 'Până la' : 'Comenzi până la ora'}<input id="pontOpEnd" type="time"></label><label>${superAdminSettings ? 'Comandă minimă · meniuri' : 'Minim meniuri complete'}<input id="pontOpMin" type="number" min="1" max="20" step="1" value="1" required></label></div>
+ ${superAdminSettings ? '' : '<button type="button" id="pontOpSave" class="' + (settingsHost ? 'primary' : 'pont-op-button') + '">' + (settingsHost ? 'Salvează setările comenzilor' : 'Salvează programul') + '</button>'}<p id="pontOpStatus" role="status"></p></details>
  <details id="pontWeekPanel"><summary>Planifică meniul pe toată săptămâna</summary>
  <p>Alegi săptămâna și planifici fiecare zi separat. Meniurile programate apar automat la data aleasă.</p>
  <label id="pontOpWeekRestaurantWrap" hidden>Restaurant<select id="pontOpWeekRestaurant"></select></label>
@@ -76,6 +86,8 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  const defaultStart='09:00', defaultEnd='15:00';
  let activeRestaurant='';
  let editRestaurantId = null;
+ let settingsLoadPromise=Promise.resolve();
+ let settingsLoaded=false;
  function options(){
    const rs=restaurants(),selector=$('pontOpRestaurant');
    const previous=superAdminSettings && editRestaurantId ? editRestaurantId : activeRestaurant;
@@ -94,7 +106,8 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    options();if(!activeRestaurant || (superAdminSettings && !editRestaurantId))return;
    const restaurantId=activeRestaurant;
    const saveButton=$('pontOpSave');
-   saveButton.disabled=true;
+   if(saveButton)saveButton.disabled=true;
+   if(superAdminSettings)settingsLoaded=false;
    $('pontOpStatus').textContent='Se încarcă setările…';
    const {data,error}=await db.from('pont_order_settings').select('opens_at,closes_at,min_full_menus').eq('restaurant_id',restaurantId).maybeSingle();
    if(restaurantId!==activeRestaurant || (superAdminSettings && editRestaurantId!==restaurantId))return;
@@ -103,29 +116,36 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    $('pontOpEnd').value=data?.closes_at?.slice(0,5)||defaultEnd;
    $('pontOpMin').value=data?.min_full_menus||1;
    $('pontOpStatus').textContent='';
-   saveButton.disabled=false;
+   if(saveButton)saveButton.disabled=false;
+   if(superAdminSettings)settingsLoaded=true;
  }
  for(const selector of [$('pontOpRestaurant'), $('pontOpWeekRestaurant')].filter(Boolean)){
    selector.addEventListener('change',()=>{activeRestaurant=selector.value;loadSettings();renderWeek()});
  }
- $('pontOpSave').addEventListener('click',async()=>{
+ function readOrderSettings(){
    const start=$('pontOpStart').value,end=$('pontOpEnd').value,min=Number($('pontOpMin').value);
-   if(Boolean(start)!==Boolean(end)){ $('pontOpStatus').textContent='Completează ambele ore sau lasă-le goale pentru programul implicit.';return}
-   if(start&&start===end){$('pontOpStatus').textContent='Ora de început și ora de încheiere nu pot fi egale.';return}
-   if(!Number.isInteger(min)||min<1||min>20){$('pontOpStatus').textContent='Minimum permis: între 1 și 20 meniuri complete.';return}
-   const restaurantId=activeRestaurant,button=$('pontOpSave');
-   if(superAdminSettings && (!editRestaurantId || restaurantId!==editRestaurantId)){
-     $('pontOpStatus').textContent='Selectează un restaurant din Editează.';return;
-   }
-   button.disabled=true;
-   try{const {error}=await db.from('pont_order_settings').upsert({restaurant_id:restaurantId,opens_at:start||defaultStart,closes_at:end||defaultEnd,min_full_menus:min,updated_at:new Date().toISOString()},{onConflict:'restaurant_id'});if(error)throw error;
-     if(restaurantId===activeRestaurant&&!start&&!$('pontOpStart').value&&!$('pontOpEnd').value){
-       $('pontOpStart').value=defaultStart;
-       $('pontOpEnd').value=defaultEnd;
-     }
-     $('pontOpStatus').textContent='Programul și comanda minimă au fost salvate.'}
-   catch(e){$('pontOpStatus').textContent=e.message}finally{button.disabled=false}
- });
+   if(Boolean(start)!==Boolean(end))throw Error('Completează ambele ore sau lasă-le goale pentru programul implicit.');
+   if(start&&start===end)throw Error('Ora de început și ora de încheiere nu pot fi egale.');
+   if(!Number.isInteger(min)||min<1||min>20)throw Error('Comanda minimă trebuie să fie între 1 și 20 de meniuri.');
+   return {opens_at:start||defaultStart,closes_at:end||defaultEnd,min_full_menus:min};
+ }
+ async function saveOrderSettings(restaurantId){
+   const values=readOrderSettings();
+   const {error}=await db.from('pont_order_settings').upsert({restaurant_id:restaurantId,...values,updated_at:new Date().toISOString()},{onConflict:'restaurant_id'});
+   if(error)throw error;
+   $('pontOpStatus').textContent='';
+ }
+ if(!superAdminSettings){
+   $('pontOpSave').addEventListener('click',async()=>{
+     const button=$('pontOpSave');button.disabled=true;
+     try{
+       await saveOrderSettings(activeRestaurant);
+       $('pontOpStatus').textContent='Programul și comanda minimă au fost salvate.';
+     }catch(e){$('pontOpStatus').textContent=e.message}
+     finally{button.disabled=false}
+   });
+ }
+
  function renderWeek(){
    const today=formatDate(new Date());
    if (weekStart===monday(renderedDay) && today!==renderedDay) weekStart=monday(today);
@@ -180,10 +200,21 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
      editRestaurantId=id||null;
      settingsHost.hidden=!editRestaurantId;
      $('pontOpStatus').textContent='';
-     if(!editRestaurantId){$('pontOpSave').disabled=true;return}
+     if(!editRestaurantId){settingsLoaded=false;return}
      activeRestaurant=editRestaurantId;
-     $('pontOpSave').disabled=true;
-     loadSettings().catch(error=>{$('pontOpStatus').textContent=error.message});
+     settingsLoadPromise=loadSettings().catch(error=>{$('pontOpStatus').textContent=error.message;settingsLoaded=false});
+   },
+   validateRestaurantSettings:async id=>{
+     if(!superAdminSettings)return;
+     await settingsLoadPromise;
+     if(!settingsLoaded || editRestaurantId!==id)throw Error('Setările comenzilor nu au fost încărcate. Reîncearcă.');
+     readOrderSettings();
+   },
+   saveRestaurantSettings:async id=>{
+     if(!superAdminSettings)return;
+     await settingsLoadPromise;
+     if(!settingsLoaded || editRestaurantId!==id)throw Error('Setările comenzilor nu au fost încărcate. Reîncearcă.');
+     await saveOrderSettings(id);
    }
  };
 }
