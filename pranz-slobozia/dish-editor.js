@@ -13,7 +13,6 @@ const photoValidationMessage = 'Fotografia trebuie să fie JPG, PNG sau WebP, ma
 const selected = new Map(), savedChoices = new Map();
 let dishes = [], category = 'first';
 let editorVersion = 0, menuDescription = '', pendingMenu = null, savingModel = false;
-let savingModel = false;
 let editingDish = null, editingMenu = null, loadedRid = '', loadVersion = 0, saving = false, previewURL = '', dishPhotoRemoved = false;
 const icon = name => '<svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#' + name + '"></use></svg>';
 
