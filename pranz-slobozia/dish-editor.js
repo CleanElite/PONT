@@ -13,6 +13,7 @@ const photoValidationMessage = 'Fotografia trebuie să fie JPG, PNG sau WebP, ma
 const selected = new Map(), savedChoices = new Map();
 let dishes = [], category = 'first';
 let editorVersion = 0, menuDescription = '', pendingMenu = null;
+let savingModel = false;
 let editingDish = null, editingMenu = null, loadedRid = '', loadVersion = 0, saving = false, previewURL = '', dishPhotoRemoved = false;
 const icon = name => '<svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#' + name + '"></use></svg>';
 
@@ -172,6 +173,7 @@ form.innerHTML = `
   <p id="pontDailyError" class="pont-dish-error" role="alert"></p>
   <div class="pont-dish-actions">
     <button id="pontDailyCancel" type="button">Anulează</button>
+    <button id="pontDailySaveModel" type="button" class="pont-daily-save-model">Salvează ca model</button>
     <button id="pontDailyNext" type="submit" class="primary">Publică</button>
   </div>
 `;
@@ -335,7 +337,24 @@ function resetDish() {
   dishFormMessage.textContent = '';
   renderDishPhoto();
 }
+function resetModelSaved() {
+  const button = $('pontDailySaveModel');
+  if (!button) return;
+  button.classList.remove('is-saved');
+  button.textContent = 'Salvează ca model';
+}
+function selectedModelIds() {
+  const currentIds = new Set(dishes.map(dish => dish.id));
+  const picked = [...selected.values()].map(item => item.id ||
+    dishes.find(dish => dish.category === item.category && dish.name === item.name)?.id || '');
+  if (picked.some(id => !id || !currentIds.has(id))) return null;
+  return [...new Set(picked)].sort();
+}
+function modelSignature() {
+  return rid() + '|' + (selectedModelIds() || []).join(',');
+}
 function resetDaily() {
+  resetModelSaved();
   editorVersion++;
   editingMenu = null;
   menuDescription = '';
@@ -401,6 +420,7 @@ async function refresh() {
   await load();
 }
 function changeRestaurant(event, message) {
+  resetModelSaved();
   const value = event.target.value;
   $('pontDailyRestaurant').value = value;
   $('pontDishRestaurant').value = value;
@@ -426,6 +446,7 @@ $('pontDailyCancel').onclick = () => {
 $('pontDailyDishes').onchange = event => {
   const checkbox = event.target.closest('[data-select]');
   if (!checkbox) return;
+  resetModelSaved();
   const key = checkbox.value;
   const dish = menuChoices().find(([candidate]) => candidate === key)?.[1];
   if (!dish) return;
@@ -442,6 +463,43 @@ $('pontDailyDishes').oninput = event => {
   const input = event.target.closest('[data-price]');
   const dish = input && selected.get(input.dataset.price);
   if (dish) dish.price = input.valueAsNumber;
+};
+
+$('pontDailySaveModel').onclick = async () => {
+  const button = $('pontDailySaveModel');
+  if (savingModel || button.classList.contains('is-saved')) return;
+  const restaurant = rid(), ids = selectedModelIds();
+  $('pontDailyError').textContent = '';
+  if (!restaurant) { $('pontDailyError').textContent = 'Alege mai întâi un restaurant.'; return; }
+  if (!selected.size) { $('pontDailyError').textContent = 'Selectează cel puțin un preparat pentru model.'; return; }
+  if (!ids || ids.length !== selected.size) {
+    $('pontDailyError').textContent = 'Modelul poate conține doar preparate salvate în biblioteca restaurantului.';
+    return;
+  }
+  if (ids.length > 60) { $('pontDailyError').textContent = 'Un model poate conține maximum 60 de preparate.'; return; }
+  const signature = modelSignature();
+  const stamp = new Intl.DateTimeFormat('ro-RO', {timeZone:'Europe/Bucharest', day:'2-digit',
+    month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23'}).format(new Date());
+  savingModel = true;
+  button.disabled = true;
+  button.textContent = 'Se salvează…';
+  try {
+    const {error} = await db.from('pont_menu_templates').insert({
+      restaurant_id:restaurant, name:('Model ' + stamp).slice(0, 80), dish_ids:ids
+    });
+    if (error) throw error;
+    if (signature === modelSignature()) {
+      button.classList.add('is-saved');
+      button.textContent = '✓ Salvat ca model';
+    } else resetModelSaved();
+    window.pontMenuModels?.refresh()?.catch(() => {});
+  } catch (error) {
+    resetModelSaved();
+    $('pontDailyError').textContent = 'Modelul nu a fost salvat: ' + error.message;
+  } finally {
+    savingModel = false;
+    button.disabled = false;
+  }
 };
 
 form.onsubmit = event => {
