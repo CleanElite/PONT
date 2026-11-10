@@ -9,11 +9,19 @@ export function renderDishChecklist(entries, selected, {daily = false, renderDet
     const categoryEntries = entries.filter(([, dish]) => dish.category === category);
     const totalCount = categoryEntries.length;
     const selectedCount = categoryEntries.filter(([key]) => selected.has(key)).length;
-    const options = categoryEntries.map(([key, dish]) => {
+    const options = categoryEntries.map(([key, dish], index) => {
       const checked = selected.has(key);
+      const name = esc(dish.name) + (dish.available === false ? ' · Epuizat' : '');
+      if (daily) {
+        const inputId = 'pont-daily-' + category + '-' + index;
+        return `<div class="pont-checklist-option pont-daily-choice">
+          <label for="${inputId}" class="pont-daily-choice-name"><span>${name}</span></label>
+          ${renderDetails(key, dish, checked)}
+          <input id="${inputId}" type="checkbox" data-select aria-label="Selectează ${esc(dish.name)}" value="${esc(key)}" ${checked ? 'checked' : ''}>
+        </div>`;
+      }
       return `<div class="pont-checklist-option">
-        <label><input type="checkbox" ${daily ? 'data-select' : 'name="dish"'} value="${esc(key)}" ${checked ? 'checked' : ''}>
-          <span>${esc(dish.name)}${dish.available === false ? ' · Epuizat' : ''}</span></label>
+        <label><input type="checkbox" name="dish" value="${esc(key)}" ${checked ? 'checked' : ''}><span>${name}</span></label>
         ${renderDetails(key, dish, checked)}
       </div>`;
     }).join('');
