@@ -1018,19 +1018,22 @@ body #order::backdrop{background:#031c1a}
 #order #checkout .order-contact:has(#callNow[hidden]){display:none!important}
 #order #checkout .order-contact #callNow{
   display:inline-flex!important;
-  width:min(100%,82vw,540px)!important;
-  aspect-ratio:712 / 116;
+  gap:8px;
+  width:auto!important;
+  max-width:100%;
   min-height:44px!important;
   height:auto!important;
-  padding:0!important;
-  border:0!important;
+  padding:7px 16px!important;
+  border:1px solid #ddbb74!important;
   border-radius:999px!important;
-  background:#073637 url("./showcase/portrait-reference.jpg") 50% 34.72% / 121.35% 1324.14% no-repeat!important;
-  box-shadow:0 0 12px #ffc86d75!important;
+  background:linear-gradient(150deg,#194c43,#092c2a 76%)!important;
+  color:#fff8e9!important;
+  font:700 13px/1.2 system-ui,sans-serif!important;
+  box-shadow:inset 0 1px #f9d89724,0 2px 12px #e8ba6230!important;
 }
 #order #checkout .order-contact #callNow[hidden]{display:none!important}
-#order #checkout #callNow :is(svg,span){opacity:0}
-#order #checkout #callNow svg{width:1.2em;height:1.2em}
+#order #checkout #callNow svg{width:16px;height:16px;flex:none;fill:#f4d18d}
+#order #checkout .order-contact #callNow:hover{background:linear-gradient(150deg,#225d51,#103b35 76%)!important}
 #order #checkout #callNow:focus-visible{outline:2px solid #a3fff1;outline-offset:3px}
 @media(min-width:760px){
   #order #checkout .pont-order-details{grid-row:1}
