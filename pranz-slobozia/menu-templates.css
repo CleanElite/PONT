@@ -72,3 +72,24 @@
   .pont-admin #pontDailyDishes .pont-daily-scroll-list{--pont-dish-row-height:54px}
   .pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option{gap:5px}
 }
+
+
+/* Fixed, non-scrolling selection summary under each daily menu category. */
+.pont-admin #pontDailyDishes .pont-daily-course-counter{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:0;
+  min-height:29px;
+  margin-top:6px;
+  padding:6px 4px 2px;
+  border-top:1px solid var(--admin-line,#285451);
+  color:#bcd9ce;
+  font-size:12px;
+  font-weight:600;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.pont-admin #pontDailyDishes .pont-daily-course-counter span:last-child{
+  color:#aaf3d3;
+}
