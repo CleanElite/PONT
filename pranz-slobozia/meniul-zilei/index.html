@@ -733,6 +733,14 @@ function openOrder(m,trigger){
   $('#heroMenuPrice').textContent=lei(m.full);
 
  trackPontMetric('restaurant_view',m);
+ // Count actual openings of a published daily menu separately from daily restaurant visits.
+ if(m.dishes?.length && m.restaurantId && window.PONT_CONFIG?.url && window.PONT_CONFIG?.anonKey){
+  const cfg=window.PONT_CONFIG;
+  fetch(cfg.url+'/rest/v1/rpc/pont_track_menu_view',{
+   method:'POST',headers:{'Content-Type':'application/json',apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},
+   body:JSON.stringify({p_restaurant_id:m.restaurantId}),keepalive:true,cache:'no-store'
+  }).catch(()=>{});
+ }
   current=m;draft=null;orderNoticeAccepted=true;returnFocus=trigger;form.reset();phoneTouched=false;closeCheckoutPanel(false);
   $('#orderTitle').textContent=m.name;
   $('#menuPreview').innerHTML=m.dishes?.length?m.dishes.map(d=>'<div class="preview-course"><span>'+(d.category==='first'?'F1':d.category==='second'?'F2':'D')+'</span><strong>'+esc(d.name)+(d.available===false?' · Epuizat acest preparat':'')+'</strong></div>').join(''):'<div class="preview-course"><span>F1</span><strong>'+esc(m.first)+'</strong></div><div class="preview-course"><span>F2</span><strong>'+esc(m.second)+'</strong></div>'+(m.dessert?'<div class="preview-course"><span>D</span><strong>'+esc(m.dessert)+'</strong></div>':'');$('#combo-price').innerHTML=m.full>0?'<small>Meniu complet</small><strong>'+lei(m.full)+'</strong>':'';
