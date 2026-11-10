@@ -233,15 +233,14 @@
     <div class="stat">Restaurante<strong id="nr">0</strong></div>
     <div class="stat pont-menu-status-stat"><span>Meniuri recente</span>
       <div class="pont-menu-status-counts">
-        <div><small>Active</small><strong id="nmActive">0</strong></div>
-        <div><small>Programate</small><strong id="nmScheduled">0</strong></div>
+        <div><small title="Active">A</small><strong id="nmActive">0</strong></div>
+        <div><small title="Programate">P</small><strong id="nmScheduled">0</strong></div>
       </div>
     </div>
     <div class="stat">Publicate azi<strong id="nt">0</strong></div>
   </div>
   <div class="dashboard-tools">
     <label for="analyticsMonth">Luna raportului<input type="month" id="analyticsMonth"></label>
-    <label class="dashboard-search" for="analyticsSearch">Caută restaurant<input type="search" id="analyticsSearch" placeholder="Nume restaurant" autocomplete="off"></label>
   </div>
   <div class="pont-analytics-summary dashboard-stats">
     <div class="stat">Vizite<strong id="analyticsTotalViews">—</strong></div>
@@ -527,7 +526,7 @@ function renderAnalytics() {
  for (const [id, metric] of Object.entries(totals)) {
   $(id).textContent = formatCount(analytics.reduce((total, row) => total + Number(row[metric] || 0), 0));
  }
- const result = restaurants.filter(restaurant => matching(restaurant.name, 'analyticsSearch'));
+ const result = restaurants;
  $('analyticsRows').innerHTML = result.length ? result.map(restaurant => {
   const metrics = rows.get(restaurant.id) || {};
   return '<tr role="row">' + [
@@ -560,7 +559,6 @@ async function loadAnalytics() {
 }
 $('analyticsMonth').value = todayRO().slice(0,7);
 $('analyticsMonth').onchange = loadAnalytics;
-$('analyticsSearch').addEventListener('input', renderAnalytics);
 $('analyticsRefresh').onclick = loadAnalytics;
 
 const auctionMoney = value => Number(value || 0).toLocaleString('ro-RO', {maximumFractionDigits:2}) + ' lei';
