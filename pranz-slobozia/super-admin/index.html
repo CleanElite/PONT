@@ -211,7 +211,7 @@
 @media(max-width:360px){#app .admin-hero.dashboard-intro{gap:6px!important}#app .pont-hero-dashboard{padding:8px 9px!important;min-height:37px!important}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
-<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><style id="pont-grouped-nav-style">
+<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><style id="pont-auction-validity-style">#auctions .pont-auction-validity{display:block;max-width:100%;margin:9px 0 15px;padding:10px 12px;border:1px solid rgba(160,218,198,.48);border-radius:12px;background:linear-gradient(135deg,rgba(24,75,63,.65),rgba(8,41,41,.72));font:500 12px/1.5 system-ui;color:#cce9dd;overflow-wrap:anywhere}</style><style id="pont-grouped-nav-style">
 /* C10 Simplified menu groupings & paired indicator layout */
 .pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster{justify-content:center!important;gap:8px!important;padding-top:12px!important;padding-bottom:12px!important}
 #analytics .pont-insights-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
@@ -450,6 +450,7 @@
     <button type="button" class="primary" id="saveAuctionPayments" disabled>Salvează modificările</button>
   </div>
   <p id="auctionFeedback" class="dashboard-message" role="status"></p>
+  <p id="auctionValidity" class="pont-auction-validity" role="note">Confirmările „Plătit” și „Doar autorizare” se aplică întregii luni selectate. Le poate schimba doar Super Admin.</p>
   <div id="auctionRows"></div>
   <dialog id="auctionRankingDialog" class="pont-auction-ranking-dialog" aria-labelledby="auctionRankingTitle">
     <div class="pont-auction-ranking-head">
@@ -1077,6 +1078,11 @@ function refreshAuctionSave() {
 }
 function renderAuctionRows() {
  const month = $('auctionMonth').value;
+ if (/^\d{4}-\d{2}$/.test(month)) {
+  const [year,number]=month.split('-').map(Number);
+  const last=new Date(Date.UTC(year,number,0)).getUTCDate();
+  $('auctionValidity').textContent='Valabilitate confirmări: 01–'+String(last).padStart(2,'0')+'.'+String(number).padStart(2,'0')+'.'+year+'. Rămân active întreaga lună; numai Super Admin le poate modifica manual.';
+ }
  if (month !== loadedAuctionMonth) return;
  const positions = new Map(auctionOffers.map((offer, index) => [offer.restaurant_id, {offer,rank:index+1}]));
  const filter = $('auctionFilter').value;
@@ -1192,7 +1198,10 @@ $('saveAuctionPayments').onclick = async () => {
  const paid = items.filter(([,mode]) => mode === 'paid').length;
  const authorized = items.filter(([,mode]) => mode === 'authorization').length;
  const summary = paid + ' plătite, ' + authorized + ' autorizate, ' + (items.length - paid - authorized) + ' retrase';
- if (!confirm('Salvezi ' + items.length + ' modificări pentru ' + loadedAuctionMonth + '? ' + summary + '. Se înregistrează doar confirmările.')) return;
+ const [selectedYear,selectedMonth]=loadedAuctionMonth.split('-').map(Number);
+ const lastDay=new Date(Date.UTC(selectedYear,selectedMonth,0)).getUTCDate();
+ const validRange='01–'+String(lastDay).padStart(2,'0')+'.'+String(selectedMonth).padStart(2,'0')+'.'+selectedYear;
+ if (!confirm('Salvezi ' + items.length + ' modificări pentru ' + loadedAuctionMonth + '? ' + summary + '. Confirmările rămân valabile în perioada '+validRange+' și pot fi modificate ulterior doar manual, din Super Admin.')) return;
  auctionSaving = true;
  refreshAuctionSave();
  let completed = 0;
@@ -1224,7 +1233,7 @@ $('saveAuctionPayments').onclick = async () => {
   showMessage('auctionFeedback', 'Salvate ' + completed + ' din ' + items.length + '. De reîncercat pentru ' + failed.join(', '), true);
   return;
  }
- showMessage('auctionFeedback', countLabel(completed, 'modificare salvată', 'modificări salvate') + '.');
+ showMessage('auctionFeedback', countLabel(completed, 'modificare salvată', 'modificări salvate') + '. Valabile pentru '+validRange+'.');
  await loadAuctions();
 };
 const auctionControlButton = $('toggleAuctionControl');
