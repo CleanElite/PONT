@@ -211,7 +211,19 @@
 @media(max-width:360px){#app .admin-hero.dashboard-intro{gap:6px!important}#app .pont-hero-dashboard{padding:8px 9px!important;min-height:37px!important}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
-<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><style id="pont-auction-validity-style">#auctions .pont-auction-validity{display:block;max-width:100%;margin:9px 0 15px;padding:10px 12px;border:1px solid rgba(160,218,198,.48);border-radius:12px;background:linear-gradient(135deg,rgba(24,75,63,.65),rgba(8,41,41,.72));font:500 12px/1.5 system-ui;color:#cce9dd;overflow-wrap:anywhere}</style><style id="pont-grouped-nav-style">
+<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><style id="pont-auction-period-save-style">
+#auctions .auction-save-bar.pont-auction-period-save{
+ display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+ gap:clamp(7px,2vw,14px)!important;align-items:end!important;justify-content:stretch!important;
+ width:100%!important;min-width:0!important;margin:15px 0 11px!important;padding:clamp(9px,2.5vw,15px)!important;
+ border:1px solid rgba(155,218,197,.52)!important;border-radius:15px!important;
+ background:linear-gradient(130deg,#123b37,#0a2c2d)!important;
+}
+#auctions .pont-auction-period-save>label{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:5px!important;min-width:0!important;width:100%!important;margin:0!important;padding:0!important;font:600 clamp(10px,2.8vw,12px)/1.25 system-ui!important;color:#cce5dd!important}
+#auctions .pont-auction-period-save>label>input{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:42px!important;height:42px!important;margin:0!important;padding:7px clamp(3px,1.4vw,9px)!important;border-radius:10px!important;border:1px solid #7da99fa8!important;background:#092b29!important;color:#fff!important;color-scheme:dark!important;font:600 clamp(11px,2.7vw,13px)/1.2 system-ui!important}
+#auctions .pont-auction-period-save>#saveAuctionPayments{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;max-width:100%!important;width:100%!important;min-height:42px!important;height:42px!important;margin:0!important;padding:6px 4px!important;border-radius:10px!important;white-space:normal!important;overflow-wrap:break-word!important;text-align:center!important;font:700 clamp(10px,2.65vw,13px)/1.15 system-ui!important}
+#auctions #auctionCount[hidden],#auctions #auctionSaveHint[hidden]{display:none!important}
+</style><style id="pont-grouped-nav-style">
 /* C10 Simplified menu groupings & paired indicator layout */
 .pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster{justify-content:center!important;gap:8px!important;padding-top:12px!important;padding-bottom:12px!important}
 #analytics .pont-insights-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
@@ -440,15 +452,12 @@
     <div class="stat">Încasat din oferte<strong id="auctionPaid">—</strong></div>
     <div class="stat">De încasat<strong id="auctionPending">—</strong></div>
   </div>
-  <div class="dashboard-tools">
+  <div class="auction-save-bar pont-auction-period-save">
     <label for="auctionMonth">Luna autorizării<input type="month" id="auctionMonth"></label>
-  </div>
-  <div class="auction-save-bar">
-    <div><strong id="auctionCount"></strong><span id="auctionSaveHint" role="status">Selectează confirmările, apoi salvează.</span></div>
     <button type="button" class="primary" id="saveAuctionPayments" disabled>Salvează modificările</button>
   </div>
+  <span id="auctionCount" hidden></span><span id="auctionSaveHint" role="status" hidden></span>
   <p id="auctionFeedback" class="dashboard-message" role="status"></p>
-  <p id="auctionValidity" class="pont-auction-validity" role="note">Confirmările „Plătit” și „Doar autorizare” se aplică întregii luni selectate. Le poate schimba doar Super Admin.</p>
   <div id="auctionRows"></div>
   <dialog id="auctionRankingDialog" class="pont-auction-ranking-dialog" aria-labelledby="auctionRankingTitle">
     <div class="pont-auction-ranking-head">
@@ -1076,11 +1085,6 @@ function refreshAuctionSave() {
 }
 function renderAuctionRows() {
  const month = $('auctionMonth').value;
- if (/^\d{4}-\d{2}$/.test(month)) {
-  const [year,number]=month.split('-').map(Number);
-  const last=new Date(Date.UTC(year,number,0)).getUTCDate();
-  $('auctionValidity').textContent='Valabilitate confirmări: 01–'+String(last).padStart(2,'0')+'.'+String(number).padStart(2,'0')+'.'+year+'. Rămân active întreaga lună; numai Super Admin le poate modifica manual.';
- }
  if (month !== loadedAuctionMonth) return;
  const positions = new Map(auctionOffers.map((offer, index) => [offer.restaurant_id, {offer,rank:index+1}]));
  const result = [...restaurants];
