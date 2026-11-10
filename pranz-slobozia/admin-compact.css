@@ -189,3 +189,21 @@ body.lunch.menu-showcase.pont-compact-promotion #customer #list { gap: 6px; }
 .pont-compact-promotion .auction-modal .modal-current { margin: 6px 0; padding: 6px; }
 .pont-compact-promotion .auction-modal input { min-height: 32px; margin: 3px 0 6px; padding: 4px 6px; font-size: 16px; }
 .pont-compact-promotion .auction-modal button.primary-bid { width: auto; min-height: 32px; padding: 4px 8px; font-size: 13px; }
+
+.pont-admin #app .pont-ranking-buttons,
+.pont-admin #app .saved-menu-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+.pont-admin #app .pont-ranking-buttons .pont-auction-ranking-trigger { width: auto; gap: 4px; }
+.pont-admin #app #savedView .row { gap: 5px; padding: 0; }
+.pont-admin #app .contact-card-settings {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 4px 7px;
+}
+.pont-admin #app .contact-card-settings > :is(h3, p) { flex-basis: 100%; margin-block: 0; }
+.pont-admin #app .contact-card-settings > label { flex: 1 1 125px; min-width: 0; margin: 0; }
