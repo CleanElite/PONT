@@ -520,7 +520,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-page.css?v=20261110k">
+<link rel="stylesheet" href="./restaurant-page.css?v=20261110l">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
 <style>.pont-promotion-label{align-self:flex-start;width:max-content;padding:3px 8px;border-radius:999px;background:#eacb85;color:#221605;font-size:11px;font-weight:750}</style>
 <dialog id="order" aria-labelledby="orderTitle">
@@ -721,8 +721,11 @@ function openOrder(m,trigger){
   $('#pontOrderRules').textContent=(m.opens_at&&m.closes_at?'Program comenzi: '+m.opens_at.slice(0,5)+'–'+m.closes_at.slice(0,5):'Program comenzi: de confirmat la restaurant')+' | Comandă minimă: '+(m.min_full_menus||1)+' meniu complet.';
   $('#send').textContent=m.phone?'Trimite comanda pe WhatsApp':isMenuPreview?'Comenzile sunt dezactivate în previzualizare':'WhatsApp indisponibil — lipsește numărul';$('#send').disabled=!m.phone;const callPhone=normalizeCallPhone(m.phone);$('#callNow').hidden=!callPhone;if(callPhone){$('#callNow').href='tel:'+callPhone;}else{$('#callNow').removeAttribute('href');}
   const hero=$('#order .pont-restaurant-hero');
-  hero.classList.toggle('pont-aromas-reference', Boolean(callPhone) && /^Restaurant Aromas$/i.test(m.name.trim()));
-  hero.classList.toggle('pont-reference-live-price', Number(m.full)!==30);
+  const aromasReference = /^Restaurant Aromas$/i.test(m.name.trim()) && Boolean(callPhone);
+  hero.classList.add('pont-menu-reference');
+  hero.classList.toggle('pont-aromas-reference', aromasReference);
+  hero.classList.toggle('pont-reference-no-call', !callPhone);
+  hero.classList.toggle('pont-reference-live-price', !aromasReference || Number(m.full)!==30);
   $('#orderMsg').textContent='';
   $('#order').showModal();update();
 }

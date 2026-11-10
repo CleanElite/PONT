@@ -887,24 +887,22 @@ body #order::backdrop{background:#031c1a}
 }
 
 /* The supplied Aromas artwork defines the geometry. Live controls sit over it. */
-#order .pont-restaurant-hero.pont-aromas-reference{
+#order .pont-restaurant-hero.pont-menu-reference{
   aspect-ratio:1672 / 800;
   padding:0;
   container-type:inline-size;
-  background:#031315 url("./showcase/aromas-reference.jpg") center / 100% 100% no-repeat;
+  --reference-art:url("./showcase/aromas-reference.jpg");
+  background:linear-gradient(90deg,transparent,#b98e4d 16%,#fff0c1 35%,#ae814c 54%,transparent 72%) center 61.7% / 92% 1px no-repeat,
+    radial-gradient(ellipse at 80% 49%,#0a2929,#031517 66%);
 }
-#order .pont-aromas-reference::before,
-#order .pont-aromas-reference::after,
-#order .pont-aromas-reference .pont-restaurant-hero__photo,
-#order .pont-aromas-reference .pont-restaurant-hero__identity::after{display:none}
-#order .pont-aromas-reference .pont-restaurant-hero__content,
-#order .pont-aromas-reference .pont-restaurant-hero__identity,
-#order .pont-aromas-reference .pont-hero-actions,
-#order .pont-aromas-reference .pont-menu-tag{display:contents}
-#order .pont-aromas-reference .pont-order-logo-image,
-#order .pont-aromas-reference .pont-order-brand,
-#order .pont-aromas-reference .pont-menu-tag__label,
-#order .pont-aromas-reference #heroMenuPrice{
+#order .pont-menu-reference .pont-restaurant-hero__identity::after{display:none}
+#order .pont-menu-reference .pont-restaurant-hero__content,
+#order .pont-menu-reference .pont-restaurant-hero__identity,
+#order .pont-menu-reference .pont-hero-actions,
+#order .pont-menu-reference .pont-menu-tag{display:contents}
+#order .pont-menu-reference .pont-order-logo-image,
+#order .pont-menu-reference .pont-menu-tag__label,
+#order .pont-menu-reference #heroMenuPrice{
   position:absolute!important;
   width:1px!important;
   height:1px!important;
@@ -914,12 +912,12 @@ body #order::backdrop{background:#031c1a}
   clip-path:inset(50%);
   white-space:nowrap;
 }
-#order .pont-aromas-reference .order-topbar{
+#order .pont-menu-reference .order-topbar{
   inset:8.25% auto auto 3.59%!important;
   width:6.34%;
   height:11.88%;
 }
-#order .pont-aromas-reference .order-topbar #close{
+#order .pont-menu-reference .order-topbar #close{
   width:100%;
   height:100%;
   min-width:44px;
@@ -927,10 +925,10 @@ body #order::backdrop{background:#031c1a}
   background:transparent!important;
   backdrop-filter:none;
 }
-#order .pont-aromas-reference #close svg,
-#order .pont-aromas-reference #callNow svg,
-#order .pont-aromas-reference #callNow span{opacity:0}
-#order .pont-aromas-reference .pont-hero-actions #callNow{
+#order .pont-menu-reference #close svg,
+#order .pont-menu-reference #callNow svg,
+#order .pont-menu-reference #callNow span{opacity:0}
+#order .pont-menu-reference .pont-hero-actions #callNow{
   position:absolute;
   inset:69.75% 3.29% auto 44.98%;
   height:19%;
@@ -939,8 +937,8 @@ body #order::backdrop{background:#031c1a}
   background:transparent;
   box-shadow:none;
 }
-#order .pont-aromas-reference .pont-hero-actions #callNow:hover{background:#baffef14}
-#order .pont-aromas-reference.pont-reference-live-price #heroMenuPrice{
+#order .pont-menu-reference .pont-hero-actions #callNow:hover{background:#baffef14}
+#order .pont-menu-reference.pont-reference-live-price #heroMenuPrice{
   inset:76.05% 58% auto 28.54%;
   width:auto!important;
   height:6.5%!important;
@@ -951,6 +949,62 @@ body #order::backdrop{background:#031c1a}
   font-size:2.4cqw;
 }
 @media(max-width:480px){
-  #order .pont-aromas-reference .order-topbar{inset-block-start:3%!important}
-  #order .pont-aromas-reference .pont-hero-actions #callNow{inset-block-start:66%}
+  #order .pont-menu-reference .order-topbar{inset-block-start:3%!important}
+  #order .pont-menu-reference .pont-hero-actions #callNow{inset-block-start:66%}
+}
+
+/* Share the original navigation and button artwork while rendering each restaurant’s details. */
+#order .pont-menu-reference::before,
+#order .pont-menu-reference::after{
+  inset:0;
+  width:100%;
+  height:100%;
+  z-index:0;
+  transform:none;
+  opacity:1;
+  background:var(--reference-art) center / 100% 100% no-repeat;
+}
+#order .pont-menu-reference::before{
+  clip-path:polygon(0 0,61% 0,61% 22%,42% 22%,0 38%);
+  mask-image:linear-gradient(#000 19%,transparent 38%);
+}
+#order .pont-menu-reference::after{
+  clip-path:inset(68% 0 0);
+  mask-image:linear-gradient(transparent 68%,#000 72%);
+}
+#order .pont-menu-reference.pont-reference-no-call::after{clip-path:inset(68% 56% 0 0)}
+#order .pont-menu-reference .pont-restaurant-hero__photo{
+  display:block;
+  inset:10% 0 30% auto;
+  width:57%;
+  background-position:center 45%;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 62%),linear-gradient(0deg,transparent,#000 20%,#000 78%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 62%),linear-gradient(0deg,transparent,#000 20%,#000 78%,transparent);
+}
+#order .pont-menu-reference .pont-order-brand{
+  position:absolute;
+  z-index:1;
+  inset:33% 40% auto 4.4%;
+  padding:0 0 0 2.2cqw;
+  gap:1cqw;
+}
+#order .pont-menu-reference .pont-order-brand h2{
+  font-size:4.85cqw!important;
+  text-wrap:wrap;
+}
+#order .pont-menu-reference .pont-hero-location{font-size:2.8cqw!important}
+#order .pont-menu-reference #heroMenuPrice,
+#order .pont-menu-reference #callNow{z-index:2}
+#order .pont-restaurant-hero.pont-aromas-reference{
+  background:#031315 var(--reference-art) center / 100% 100% no-repeat;
+}
+#order .pont-aromas-reference::before,
+#order .pont-aromas-reference::after,
+#order .pont-aromas-reference .pont-restaurant-hero__photo{display:none}
+#order .pont-aromas-reference .pont-order-brand{
+  width:1px;
+  height:1px;
+  padding:0;
+  overflow:hidden;
+  clip-path:inset(50%);
 }
