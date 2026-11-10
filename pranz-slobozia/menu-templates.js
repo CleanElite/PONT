@@ -14,7 +14,7 @@ export function renderDishChecklist(entries, selected, {daily = false, renderDet
         ${renderDetails(key, dish, checked)}
       </div>`;
     }).join('');
-    return `<fieldset><legend>${label}</legend>${options || '<small>Niciun preparat.</small>'}</fieldset>`;
+    return `<fieldset><legend>${label}</legend><div class="${daily ? 'pont-daily-scroll-list' : 'pont-standard-dish-list'}" data-course="${category}">${options || '<small>Niciun preparat.</small>'}</div></fieldset>`;
   }).join('');
 }
 
