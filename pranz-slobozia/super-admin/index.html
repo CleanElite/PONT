@@ -40,7 +40,38 @@
 @media(max-width:530px){#auctions .pont-auction-ranking-trigger{width:100%}#auctions .pont-auction-ranking-head{padding:19px 16px 12px}#auctions .pont-auction-ranking-rows{padding:6px 8px 10px}#auctions .pont-auction-ranking-row{gap:8px;grid-template-columns:30px minmax(0,1fr) auto;padding:10px 5px}#auctions .pont-auction-ranking-value{font-size:13px}#auctions .pont-auction-ranking-footer{padding:12px 15px 17px;gap:8px}}
 
 #auctions .pont-auction-ranking-month-label{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin:10px 0 0;color:#b8d8ce;font-size:11px;font-weight:650}#auctions .pont-auction-ranking-month-label input{box-sizing:border-box;max-width:185px;min-height:36px;padding:6px 10px;border:1px solid #5b8b7c;border-radius:10px;background:#123d37;color:#f6fffa;font-size:14px;color-scheme:dark}
-.pont-menu-status-counts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px;gap:0;text-align:center}.pont-menu-status-counts>div{min-width:0;padding:4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px}.pont-menu-status-counts>div+div{border-left:1px solid #45727b}.pont-menu-status-counts small{color:#b6d5d5;font-size:12px}.pont-menu-status-counts strong{font-variant-numeric:tabular-nums}</style><link rel="stylesheet" href="../admin-theme.css?v=7">
+.pont-menu-status-counts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px;gap:0;text-align:center}.pont-menu-status-counts>div{min-width:0;padding:4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px}.pont-menu-status-counts>div+div{border-left:1px solid #45727b}.pont-menu-status-counts small{color:#b6d5d5;font-size:12px}.pont-menu-status-counts strong{font-variant-numeric:tabular-nums}
+/* PONT restaurant overview: high-contrast statuses, compact controls and luminous dividers. */
+#restaurantRows.pont-restaurant-list{display:grid;gap:12px;margin-top:15px}
+#restaurantRows .restaurant-admin-item{
+ position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr);
+ gap:13px;align-items:center;text-align:center;padding:17px 16px 15px;
+ border:1px solid var(--restaurant-edge);border-radius:16px;
+ background:var(--restaurant-bg);box-shadow:inset 0 1px 0 rgba(255,255,255,.11),0 0 13px var(--restaurant-glow);
+ overflow:hidden;
+}
+#restaurantRows .restaurant-admin-item:before{content:"";position:absolute;inset:0 0 auto;height:1px;background:linear-gradient(90deg,transparent,var(--restaurant-edge) 48%,transparent);box-shadow:0 0 9px 1px var(--restaurant-glow);pointer-events:none}
+#restaurantRows .restaurant-status-active{--restaurant-bg:linear-gradient(125deg,#51451d 0%,#413b20 48%,#252b29 100%);--restaurant-edge:#f9d872;--restaurant-glow:rgba(252,201,75,.43)}
+#restaurantRows .restaurant-status-no-access{--restaurant-bg:linear-gradient(125deg,#54441a 0%,#42361e 48%,#302c26 100%);--restaurant-edge:#f6c965;--restaurant-glow:rgba(249,191,67,.36)}
+#restaurantRows .restaurant-status-suspended{--restaurant-bg:linear-gradient(125deg,#592b33 0%,#42232c 50%,#2b232b 100%);--restaurant-edge:#ff8794;--restaurant-glow:rgba(255,99,120,.37)}
+#restaurantRows .restaurant-admin-heading{position:relative;display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0;width:100%}
+#restaurantRows .restaurant-list-number{position:absolute;left:0;top:1px;display:grid;place-items:center;min-width:32px;height:28px;padding:0 6px;border-radius:8px;background:rgba(7,19,24,.43);border:1px solid rgba(255,255,255,.23);font:700 12px system-ui;color:#fdf5d9;font-variant-numeric:tabular-nums}
+#restaurantRows .restaurant-list-name{width:100%;padding:0 35px;font-size:clamp(18px,3vw,22px);font-weight:750;line-height:1.3;color:#fffdf4;overflow-wrap:anywhere;text-align:center}
+#restaurantRows .restaurant-list-meta{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:#f0e6cc}
+#restaurantRows .restaurant-list-meta span{overflow-wrap:anywhere}
+#restaurantRows .dashboard-badges{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+#restaurantRows .dashboard-badge{font-size:10px;padding:4px 8px;border-radius:20px;line-height:1.2}
+#restaurantRows .restaurant-admin-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));justify-content:center;gap:7px;width:100%;max-width:620px;margin:0 auto}
+#restaurantRows .restaurant-admin-actions button{width:100%;min-width:0;min-height:36px;padding:8px 5px;font-size:11px;line-height:1.25;white-space:normal;border-radius:9px;background:rgba(6,23,28,.58);border-color:rgba(255,255,255,.25)}
+#restaurantRows .restaurant-admin-actions .restaurant-create-access{background:#b52e3b;border:1px solid #ff7b88;color:white;font-weight:800;box-shadow:0 0 9px rgba(255,77,99,.22)}
+#restaurantRows .restaurant-admin-actions .admin-danger{color:#ffc0c5}
+#restaurantRows .restaurant-admin-actions button:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media(max-width:550px){
+ #restaurantRows .restaurant-admin-item{padding:14px 11px 13px;gap:10px}
+ #restaurantRows .restaurant-admin-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #restaurantRows .restaurant-list-name{font-size:18px}
+}
+</style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><body class="pont-admin pont-admin--platform">
 <main>
@@ -131,11 +162,7 @@
         <p class="dashboard-message" id="restaurantPasswordStatus" role="status"></p>
       </section>
     </details>
-  <div class="dashboard-tools">
-    <label class="dashboard-search" for="restaurantSearch">Caută restaurant<input type="search" id="restaurantSearch" placeholder="Nume restaurant" autocomplete="off"></label>
-    <label for="restaurantFilter">Stare<select id="restaurantFilter"><option value="">Toate</option><option value="enabled">Active</option><option value="disabled">Suspendate</option><option value="no-access">Fără cont</option></select></label>
-  </div>
-  <div id="restaurantRows"></div>
+  <div id="restaurantRows" class="pont-restaurant-list" aria-label="Lista restaurantelor"></div>
 </section>
 
 <section id="members" class="card dashboard-panel" aria-labelledby="membersTitle" hidden>
@@ -365,23 +392,27 @@ function renderMenuRows() {
 }
 
 function renderRestaurants() {
- const filter = $('restaurantFilter').value;
- const result = restaurants.filter(restaurant => matching(restaurant.name, 'restaurantSearch') &&
-  (!filter || (filter === 'no-access' ? !hasMember(restaurant.id) : restaurant.enabled === (filter === 'enabled'))));
- $('restaurantRows').innerHTML = result.length ? result.map(restaurant => {
+ const result = restaurants;
+ $('restaurantRows').innerHTML = result.length ? result.map((restaurant, index) => {
   const id = esc(restaurant.id), enabled = restaurant.enabled;
   const access = hasMember(restaurant.id);
-  return '<div class="restaurant-admin-item"><div class="restaurant-admin-heading"><strong>' + esc(restaurant.name) + '</strong>' +
-   '<small>Cod restaurant · ' + esc(restaurant.short_code || '—') + ' · ' + esc(restaurant.phone||'Telefon neconfigurat') + '</small><div class="dashboard-badges"><span class="dashboard-badge" data-state="' + (enabled ? 'enabled' : 'disabled') + '">' +
+  const state = !enabled ? 'suspended' : access ? 'active' : 'no-access';
+  const number = String(index + 1).padStart(2, '0');
+  return '<article class="restaurant-admin-item restaurant-status-' + state + '">' +
+   '<div class="restaurant-admin-heading">' +
+   '<span class="restaurant-list-number" aria-label="Restaurantul numărul ' + (index + 1) + '">' + number + '</span>' +
+   '<strong class="restaurant-list-name">' + esc(restaurant.name) + '</strong>' +
+   '<div class="restaurant-list-meta"><span>Cod ' + esc(restaurant.short_code || '—') + '</span><span>' + esc(restaurant.phone || 'Telefon neconfigurat') + '</span></div>' +
+   '<div class="dashboard-badges"><span class="dashboard-badge" data-state="' + (enabled ? 'enabled' : 'disabled') + '">' +
    (enabled ? 'Activ' : 'Suspendat') + '</span>' +
    (restaurant.accepts_card ? '<span class="dashboard-badge">Acceptă card</span>' : '') +
    (access ? '' : '<span class="dashboard-badge">Fără cont</span>') +
    '</div></div><div class="restaurant-admin-actions">' +
    '<button type="button" data-edit-restaurant="' + id + '">Editează</button>' +
-   (access ? '' : '<button type="button" data-create-access="' + id + '">Creează acces</button>') +
+   (access ? '' : '<button type="button" class="restaurant-create-access" data-create-access="' + id + '">Creează acces</button>') +
    '<button type="button" data-toggle="' + id + '">' + (enabled ? 'Suspendă' : 'Activează') + '</button>' +
-   '<button type="button" class="admin-danger" data-delete-restaurant="' + id + '">Șterge</button></div></div>';
- }).join('') : emptyMessage('Niciun restaurant pentru selecția curentă.');
+   '<button type="button" class="admin-danger" data-delete-restaurant="' + id + '">Șterge</button></div></article>';
+ }).join('') : emptyMessage('Nu există restaurante înregistrate.');
 }
 
 function renderMembers() {
@@ -393,8 +424,6 @@ function renderMembers() {
   emptyMessage('Niciun cont pentru selecția curentă.');
 }
 
-$('restaurantSearch').addEventListener('input', renderRestaurants);
-$('restaurantFilter').addEventListener('change', renderRestaurants);
 $('memberSearch').addEventListener('input', renderMembers);
 
 async function load() {
