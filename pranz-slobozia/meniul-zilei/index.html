@@ -520,7 +520,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-page.css?v=20261110v">
+<link rel="stylesheet" href="./restaurant-page.css?v=20261110x">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
 <style>.pont-promotion-label{align-self:flex-start;width:max-content;padding:3px 8px;border-radius:999px;background:#eacb85;color:#221605;font-size:11px;font-weight:750}</style>
 <dialog id="order" aria-labelledby="orderTitle">
@@ -686,7 +686,7 @@ function trackPontMetric(type,menu,menusCount=0,portionsCount=0){
 function openOrder(m,trigger){
   document.body.classList.add('pont-restaurant-page');
   document.title=m.name+' · Meniul zilei · PONT';
-  const featuredPhoto=/aromas/i.test(m.name||'')?'./showcase/paste.webp':/blabla\s*bistro/i.test(m.name||'')?'./showcase/pizza.webp':restaurantCover(m);
+  const featuredPhoto=restaurantCover(m);
   $('#restaurantHeroPhoto').style.backgroundImage='url("'+String(featuredPhoto).replace(/[\\\"\n]/g,'')+'")';
   $('#heroMenuPrice').textContent=lei(m.full);
 
@@ -726,6 +726,7 @@ function openOrder(m,trigger){
   const aromasReference = /^Restaurant Aromas$/i.test(m.name.trim());
   hero.classList.add('pont-menu-reference');
   hero.classList.toggle('pont-aromas-reference', aromasReference);
+  hero.classList.toggle('pont-long-restaurant-name', m.name.length > 27);
   $('#orderMsg').textContent='';
   $('#order').showModal();update();
 }

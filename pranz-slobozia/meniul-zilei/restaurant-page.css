@@ -938,29 +938,30 @@ body #order::backdrop{background:#031c1a}
   background:var(--reference-art) center top / 100% 360.56% no-repeat;
 }
 #order .pont-menu-reference::before{
-  clip-path:polygon(0 0,62% 0,62% 24%,42% 24%,0 32%);
-  mask-image:linear-gradient(#000 23%,transparent 34%);
+  clip-path:polygon(0 0,62% 0,62% 27%,42% 27%,0 36%);
+  mask-image:linear-gradient(#000 25%,transparent 36%);
 }
 #order .pont-menu-reference::after{display:none}
 #order .pont-menu-reference .pont-restaurant-hero__photo{
   display:block;
-  inset:14% 0 0 auto;
-  width:57%;
-  background-position:center 45%;
-  -webkit-mask-image:linear-gradient(90deg,transparent,#000 62%),linear-gradient(0deg,transparent,#000 28%,#000 78%,transparent);
-  mask-image:linear-gradient(90deg,transparent,#000 62%),linear-gradient(0deg,transparent,#000 28%,#000 78%,transparent);
+  inset:12% 0 8% auto;
+  width:60%;
+  background-position:center 43%;
+  -webkit-mask-image:linear-gradient(90deg,transparent,#000 58%),linear-gradient(0deg,transparent,#000 28%,#000 78%,transparent);
+  mask-image:linear-gradient(90deg,transparent,#000 58%),linear-gradient(0deg,transparent,#000 28%,#000 78%,transparent);
 }
 #order .pont-menu-reference .pont-order-brand{
   position:absolute;
   z-index:1;
-  inset:32% 48% auto 5.4%;
-  padding:0 0 0 2.2cqw;
-  gap:1cqw;
+  inset:34% 49% auto 5.4%;
+  padding:0 0 0 2.9cqw;
+  gap:1.25cqw;
 }
 #order .pont-menu-reference .pont-order-brand h2{
-  font-size:6.65cqw!important;
+  font-size:7.25cqw!important;
   text-wrap:wrap;
 }
+#order .pont-menu-reference.pont-long-restaurant-name .pont-order-brand h2{font-size:5.6cqw!important}
 #order .pont-menu-reference .pont-hero-location{font-size:3.7cqw!important}
 #order .pont-menu-reference.pont-aromas-reference::before{
   /* Keep the photo and divider, fading before the lettering baked into the artwork. */
