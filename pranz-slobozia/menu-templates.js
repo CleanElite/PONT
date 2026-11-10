@@ -1,10 +1,32 @@
-export function initMenuTemplates({db, getRestaurants, getMenus, refreshHistory}) {
+const esc = value => String(value ?? '').replace(/[&<>"]/g, char =>
+  ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;'}[char]));
+const today = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Bucharest'}).format(new Date());
+const formatDate = date => date.split('-').reverse().join('.');
+const groups = [['first','Felul 1'], ['second','Felul 2'], ['dessert','Desert']];
+
+export function renderMenuArchive(target, menus, restaurants) {
+  const names = new Map(restaurants.map(restaurant => [restaurant.id, restaurant.name]));
+  const cutoff = today();
+  const items = menus.filter(menu => menu.published && menu.service_date && menu.service_date <= cutoff);
+  target.innerHTML = items.map(menu => {
+    const snapshots = Array.isArray(menu.dish_selection) ? menu.dish_selection : [];
+    const legacy = {first:menu.first_course, second:menu.second_course, dessert:menu.dessert};
+    const courses = groups.map(([key, label]) => {
+      const dishes = snapshots.filter(dish => dish?.category === key && dish.name).map(dish => dish.name);
+      if (!dishes.length && legacy[key]) dishes.push(legacy[key]);
+      return dishes.length ? '<div><dt>'+label+'</dt><dd>'+dishes.map(esc).join(' · ')+'</dd></div>' : '';
+    }).join('');
+    const restaurant = restaurants.length > 1 ? ' · '+esc(names.get(menu.restaurant_id) || 'Restaurant') : '';
+    const price = menu.price == null || menu.price === '' ? '' : ' · '+esc(Number(menu.price).toLocaleString('ro-RO'))+' lei';
+    return `<article class="pont-archive-row">
+      <p><time datetime="${esc(menu.service_date)}">${esc(formatDate(menu.service_date))}</time> · <strong>${esc(menu.title || 'Meniul zilei')}</strong>${restaurant}${price}</p>
+      ${courses ? '<dl>'+courses+'</dl>' : '<p>Detaliile preparatelor nu sunt disponibile.</p>'}
+    </article>`;
+  }).join('') || '<p>Nu există meniuri publicate până azi.</p>';
+}
+
+export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
   const host = document.getElementById('pontMenuTemplates');
-  const esc = value => String(value ?? '').replace(/[&<>"]/g, char =>
-    ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;'}[char]));
-  const today = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Bucharest'}).format(new Date());
-  const formatDate = date => date.split('-').reverse().join('.');
-  const groups = [['first','Felul 1'], ['second','Felul 2'], ['dessert','Desert']];
   host.innerHTML = `
     <div class="pont-model-toolbar">
       <h2>Modele de meniu</h2>
@@ -202,19 +224,6 @@ export function initMenuTemplates({db, getRestaurants, getMenus, refreshHistory}
       busy = submit.disabled = cancel.disabled = false;
     }
   };
-
-  host.closest('section').addEventListener('click', async event => {
-    const button = event.target.closest('[data-copy-menu-model]');
-    const menu = button && getMenus().find(item => item.id === button.dataset.copyMenuModel);
-    if (!menu || dialog.open) return;
-    await refresh(menu.restaurant_id);
-    if (!ready || restaurantPicker.value !== menu.restaurant_id) return;
-    const items = menu.dish_selection?.length ? menu.dish_selection : [
-      {category:'first',name:menu.first_course}, {category:'second',name:menu.second_course}, {category:'dessert',name:menu.dessert}
-    ].filter(dish => dish.name);
-    const ids = items.map(item => item.id || dishes.find(dish => dish.category === item.category && dish.name === item.name)?.id);
-    open({name:'Model din '+formatDate(menu.service_date), dish_ids:ids}, false, button);
-  });
 
   return {refresh};
 }

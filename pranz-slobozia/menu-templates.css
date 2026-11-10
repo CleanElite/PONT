@@ -19,7 +19,23 @@
 #pontModelDishes fieldset { min-width: 0; padding: .45rem .55rem; border: 1px solid var(--admin-line, #285451); border-radius: 8px; }
 #pontModelDishes label { display: flex; align-items: center; gap: .45rem; padding-block: .25rem; overflow-wrap: anywhere; }
 #pontModelDishes input { flex: none; width: 1rem; height: 1rem; margin: 0; min-height: 0; }
-.pont-admin #savedView .admin-row-actions .pont-copy-model { width: auto; }
+.pont-menu-archive { margin-top: .5rem; }
+.pont-menu-archive > summary {
+  width: fit-content;
+  cursor: pointer;
+  padding: .3rem .5rem;
+  border: 1px solid var(--admin-line, #285451);
+  border-radius: 8px;
+  font-size: .875rem;
+}
+.pont-archive-row {
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--admin-line, #285451);
+  overflow-wrap: anywhere;
+}
+.pont-archive-row p, .pont-archive-row dl, .pont-archive-row dd { margin: 0; }
+.pont-archive-row dl > div { display: flex; gap: .5rem; }
+.pont-archive-row dt { flex: 0 0 3.5rem; }
 @media (max-width: 600px) {
   .pont-model-row { grid-template-columns: minmax(0,1fr); }
   .pont-model-row .pont-model-actions { grid-column: 1; grid-row: auto; }
