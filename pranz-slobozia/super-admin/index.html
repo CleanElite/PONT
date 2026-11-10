@@ -75,6 +75,8 @@
 #memberPassword,#memberPasswordConfirm,#restaurantNewPassword,#restaurantConfirmPassword{ -webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important;touch-action:auto; }
 .pont-password-paste{min-width:0}.pont-password-paste input{min-width:0;flex:1}.pont-password-paste .pont-paste-password{min-width:0;flex:0 0 auto;padding:9px 10px;font-size:12px;white-space:nowrap}
 @media(max-width:420px){.pont-password-paste{gap:5px}.pont-password-paste .pont-paste-password{padding:9px 7px;font-size:11px}}
+#restaurantForm .restaurant-menu-price{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:10px;width:fit-content;max-width:100%;font-size:13px;font-weight:600;margin:5px 0}
+#restaurantForm .restaurant-menu-price input{width:94px;max-width:94px;min-height:36px;height:36px;padding:6px 9px;text-align:center;font-size:14px;border-radius:9px}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><body class="pont-admin pont-admin--platform">
@@ -138,6 +140,9 @@
     <div class="dashboard-fields">
       <label for="name">Numele restaurantului<input id="name" required></label>
       <label for="restaurantContactPhone">Telefon contact clienți<input id="restaurantContactPhone" type="tel" inputmode="tel" placeholder="+407XXXXXXXX" maxlength="24"></label>
+      <label class="restaurant-menu-price" for="restaurantMenuPrice">Preț meniul zilei (lei)
+        <input id="restaurantMenuPrice" type="number" min="0.01" max="10000" step="0.01" inputmode="decimal" value="30" required>
+      </label>
       <label class="restaurant-card-toggle">
         <span>Plata cu cardul</span>
         <input id="restaurantAcceptsCard" type="checkbox" aria-label="Plata cu cardul">
@@ -1104,6 +1109,7 @@ function openRestaurantEditor(restaurant = null) {
  $('name').value = restaurant?.name ?? '';
  $('restaurantContactPhone').value=restaurant?.phone??'';
  $('restaurantAcceptsCard').checked = Boolean(restaurant?.accepts_card);
+ $('restaurantMenuPrice').value = restaurant?.menu_price ?? 30;
  $('restaurantFormTitle').textContent = restaurant ? 'Editează restaurantul' : 'Adaugă restaurant fără cont';
  $('saveRestaurantButton').textContent = restaurant ? 'Salvează modificările' : 'Adaugă restaurant';
  $('restaurantAccess').hidden = !restaurant || !hasMember(restaurant.id);
@@ -1134,7 +1140,13 @@ $('restaurantForm').onsubmit = async event => {
  }
  const phone=$('restaurantContactPhone').value.trim();
  if(phone&&!/^\+?[0-9 ()-]{8,24}$/.test(phone)){showMessage('restaurantFormStatus','Introdu un număr de telefon valid.',true);return}
- const values = {name,phone:phone||null, accepts_card:$('restaurantAcceptsCard').checked};
+ const menuPrice=Number($('restaurantMenuPrice').value);
+ if(!Number.isFinite(menuPrice)||menuPrice<=0||menuPrice>10000){
+  showMessage('restaurantFormStatus','Introdu un preț valid pentru meniul zilei.',true);
+  $('restaurantMenuPrice').focus();
+  return;
+ }
+ const values = {name,phone:phone||null,accepts_card:$('restaurantAcceptsCard').checked,menu_price:menuPrice};
  button.disabled = true;
  try {
   if(id)await window.pontOperations?.validateRestaurantSettings(id);
