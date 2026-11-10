@@ -520,7 +520,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-page.css?v=20261110-c1">
+<link rel="stylesheet" href="./restaurant-page.css?v=20261110-c2">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
 <style>.pont-promotion-label{align-self:flex-start;width:max-content;padding:3px 8px;border-radius:999px;background:#eacb85;color:#221605;font-size:11px;font-weight:750}</style>
 <dialog id="order" aria-labelledby="orderTitle">
@@ -695,17 +695,19 @@ function openOrder(m,trigger){
   $('#orderTitle').textContent=m.name;
   $('#menuPreview').innerHTML=m.dishes?.length?m.dishes.map(d=>'<div class="preview-course"><span>'+(d.category==='first'?'F1':d.category==='second'?'F2':'D')+'</span><strong>'+esc(d.name)+(d.available===false?' · Epuizat acest preparat':'')+'</strong></div>').join(''):'<div class="preview-course"><span>F1</span><strong>'+esc(m.first)+'</strong></div><div class="preview-course"><span>F2</span><strong>'+esc(m.second)+'</strong></div>'+(m.dessert?'<div class="preview-course"><span>D</span><strong>'+esc(m.dessert)+'</strong></div>':'');$('#combo-price').innerHTML=m.full>0?'<small>Meniu complet</small><strong>'+lei(m.full)+'</strong>':'';
   const optionDishes=m.dishes?.length?m.dishes.map(d=>({id:d.id,name:d.name,price:Number(d.price)||0,category:d.category,photo_url:d.photo_url||'',available:d.available!==false})):titles().map((name,i)=>({name,price:prices()[i],category:i?'second':'first',available:true}));
-  const categoryLabels={first:['bowl-food','Felul 1'],second:['chef-hat','Felul 2'],dessert:['cake','Desert']};
-  let dishIndex=0;
+  const categoryLabels={first:['bowl-food','Felul 1'],second:['chef-hat','Felul 2']};
+  const dessertNames=optionDishes.filter(d=>d.category==='dessert'&&d.available!==false).map(d=>d.name);
+  const dessertHeader=dessertNames.length
+    ? '<span class="pont-first-dessert"><strong>Desert</strong><span title="'+esc(dessertNames.join(', '))+'">'+esc(dessertNames.join(', '))+'</span></span>'
+    : '';
   $('#choices').innerHTML=Object.entries(categoryLabels).map(([cat,[symbol,title]])=>{
     const dishes=optionDishes.filter(d=>d.category===cat);
     if(!dishes.length)return '';
-    return '<details class="pont-dish-group" open><summary><svg class="pont-group-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#'+symbol+'"></use></svg><strong>'+title+'</strong><small>('+dishes.length+(dishes.length===1?' preparat':' preparate')+')</small><span class="pont-group-arrow">⌃</span></summary><div class="pont-dish-group__content">'+dishes.map(d=>{
+    const heading=cat==='first'
+      ? '<div class="pont-first-heading"><span class="pont-first-label"><svg class="pont-group-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#'+symbol+'"></use></svg><strong>'+title+'</strong><small>('+dishes.length+(dishes.length===1?' preparat':' preparate')+')</small></span>'+dessertHeader+'</div>'
+      : '<summary><svg class="pont-group-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#'+symbol+'"></use></svg><strong>'+title+'</strong><small>('+dishes.length+(dishes.length===1?' preparat':' preparate')+')</small><span class="pont-group-arrow">⌃</span></summary>';
+    return (cat==='first'?'<section class="pont-dish-group pont-first-static">':'<details class="pont-dish-group" open>')+heading+'<div class="pont-dish-group__content">'+dishes.map(d=>{
       const index=optionDishes.indexOf(d);
-      if(d.category==='dessert')return '<div class="quantity pont-choice-dish pont-dessert-included'+(d.available===false?' is-soldout':'')+'">'+
-        '<span class="pont-dessert-mark" aria-hidden="true">✦</span>'+ 
-        '<span class="pont-dish-name"><strong>'+esc(d.name)+'</strong></span>'+
-        '<span class="pont-dessert-label">'+(d.available===false?'Epuizat':'Inclus')+'</span></div>';
       const priceText=d.available===false?'Epuizat':lei(d.price);
       return '<div class="quantity pont-choice-dish'+(d.available===false?' is-soldout':'')+'">'+
         '<label class="pont-pick" for="qty-'+index+'" aria-label="Selectează '+esc(d.name)+'"><input type="checkbox" data-pick="'+index+'" '+(d.available===false?'disabled':'')+'><span aria-hidden="true"></span></label>'+
@@ -715,7 +717,7 @@ function openOrder(m,trigger){
         '<div class="stepper"><button type="button" class="secondary" data-step="-1" '+(d.available===false?'disabled':'')+' aria-label="Scade '+esc(d.name)+'">−</button>'+
         '<input id="qty-'+index+'" data-qty type="number" inputmode="numeric" min="0" max="99" value="0" '+(d.available===false?'disabled':'')+' aria-label="Cantitate '+esc(d.name)+'">'+
         '<button type="button" class="secondary" data-step="1" '+(d.available===false?'disabled':'')+' aria-label="Adaugă '+esc(d.name)+'">+</button></div></div>';
-    }).join('')+'</div></details>';
+    }).join('')+'</div>'+(cat==='first'?'</section>':'</details>');
   }).join('');
   form.elements.payment.innerHTML='<option value="Cash">Cash</option>'+(m.card?'<option value="Card">Card</option>':'');form.elements.payment.disabled=!m.card;let note=document.querySelector('#cardPaymentNote');if(!note){note=document.createElement('small');note.id='cardPaymentNote';form.elements.payment.closest('label').after(note)}note.hidden=!!m.card;note.textContent='Restaurantul nu percepe plata cu cardul.';
   const minimum = m.min_full_menus || 1;
