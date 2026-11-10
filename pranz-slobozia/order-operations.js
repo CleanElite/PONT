@@ -44,17 +44,22 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  #restaurantOrderSettings #pontHoursPanel{padding:10px 12px;border-radius:11px;background:#102c35}
  #restaurantOrderSettings #pontHoursPanel>summary{min-height:0;font:600 14px system-ui;cursor:default;margin:0 0 9px}
  #restaurantOrderSettings #pontHoursPanel>summary::after{display:none}
- #restaurantOrderSettings #pontRestaurantSettings .pont-op-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 105px;gap:8px;margin:0}
+ .pont-op-visually-hidden{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+ #restaurantOrderSettings #pontRestaurantSettings .pont-op-grid{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:7px;margin:0}
+ #restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label{flex:0 0 auto;width:auto;max-width:100%}
+ #restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label:nth-child(-n+2){width:106px}
+ #restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label:nth-child(3){width:116px;margin-left:5px}
+ #restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input[type="time"]{width:106px;max-width:106px}
  #restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label{min-width:0;grid-column:auto;gap:3px;font-size:11px;color:#c6dddd;margin:0}
  #restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input{width:100%;min-width:0;min-height:34px;height:34px;padding:5px 6px;border-radius:7px;font-size:12px}
  #restaurantOrderSettings #pontRestaurantSettings #pontOpMin{max-width:85px;text-align:center}
  #restaurantOrderSettings #pontOpStatus:not(:empty){margin-top:7px;font-size:12px}
- @media(max-width:460px){#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr) 86px;gap:5px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input{font-size:11px;padding:4px}}
+ @media(max-width:460px){#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid{gap:6px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label:nth-child(-n+2){width:94px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input[type="time"]{width:94px;max-width:94px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label:nth-child(3){width:104px;margin-left:0}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input{font-size:11px;padding:4px}}
  </style>
  <details id="pontHoursPanel"><summary>${superAdminSettings ? 'Program comenzi' : 'Programul comenzilor și comanda minimă'}</summary>
  <label id="pontOpRestaurantWrap">Restaurant<select id="pontOpRestaurant"></select></label>
  ${superAdminSettings ? '' : '<p>Alege intervalul în care primești comenzi. Programul implicit este 09:00–15:00. Îl poți modifica oricând.</p>'}
- <div class="pont-op-grid"><label>${superAdminSettings ? 'De la' : 'Comenzi de la ora'}<input id="pontOpStart" type="time"></label><label>${superAdminSettings ? 'Până la' : 'Comenzi până la ora'}<input id="pontOpEnd" type="time"></label><label>${superAdminSettings ? 'Comandă minimă · meniuri' : 'Minim meniuri complete'}<input id="pontOpMin" type="number" min="1" max="20" step="1" value="1" required></label></div>
+ <div class="pont-op-grid"><label><span ${superAdminSettings ? 'class="pont-op-visually-hidden"' : ''}>${superAdminSettings ? 'Ora de început' : 'Comenzi de la ora'}</span><input id="pontOpStart" type="time" aria-label="Ora de început"></label><label><span ${superAdminSettings ? 'class="pont-op-visually-hidden"' : ''}>${superAdminSettings ? 'Ora de încheiere' : 'Comenzi până la ora'}</span><input id="pontOpEnd" type="time" aria-label="Ora de încheiere"></label><label>${superAdminSettings ? 'Comandă minimă · meniuri' : 'Minim meniuri complete'}<input id="pontOpMin" type="number" min="1" max="20" step="1" value="1" required></label></div>
  ${superAdminSettings ? '' : '<button type="button" id="pontOpSave" class="' + (settingsHost ? 'primary' : 'pont-op-button') + '">' + (settingsHost ? 'Salvează setările comenzilor' : 'Salvează programul') + '</button>'}<p id="pontOpStatus" role="status"></p></details>
  <details id="pontWeekPanel"><summary>Planifică meniul pe toată săptămâna</summary>
  <p>Alegi săptămâna și planifici fiecare zi separat. Meniurile programate apar automat la data aleasă.</p>
