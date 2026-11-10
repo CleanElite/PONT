@@ -750,6 +750,7 @@ function enterRestaurant(id,trigger=null,changeUrl=true){
  return true;
 }
 function returnToRestaurants(updateUrl=true){
+ closeCheckoutPanel(false);
  if($('#order').open)$('#order').close();
  document.body.classList.remove('pont-restaurant-page');
  document.title='Meniul zilei · PONT Slobozia';
@@ -793,7 +794,7 @@ $('#close').onclick=()=>returnToRestaurants();
 window.addEventListener('popstate',routeRestaurantFromURL);
 $('#callNow').addEventListener('click',()=>{if(current&&$('#callNow').href)trackPontMetric('call_click',current)});
 $('#order').addEventListener('close',()=>{document.body.classList.remove('pont-restaurant-page');returnFocus?.focus()});
-$('#order').addEventListener('cancel',e=>{e.preventDefault();returnToRestaurants()});
+$('#order').addEventListener('cancel',e=>{e.preventDefault();if(!$('#pontCheckoutOverlay').hidden)closeCheckoutPanel();else returnToRestaurants()});
 form.oninput=update;form.elements.phone.addEventListener('blur',()=>{phoneTouched=true;update()});form.querySelectorAll('[data-method]').forEach(b=>b.addEventListener('click',()=>{form.elements.method.value=b.dataset.method;update()}));
 $('#choices').onclick=e=>{
 const pick=e.target.closest('[data-pick]');
