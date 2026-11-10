@@ -685,351 +685,162 @@ body #order::backdrop{background:#031c1a}
 }
 
 
-/* Premium restaurant hero, inspired by the approved visual. Scope ends before "Sună și comandă". */
+/* Compact restaurant banner. */
 #order .pont-restaurant-hero{
-  box-sizing:border-box;
-  min-height:250px!important;
-  max-width:1060px!important;
-  padding:19px clamp(18px,4.6vw,42px) 13px!important;
-  margin:0 auto 4px!important;
-  overflow:hidden!important;
+  position:relative;
   isolation:isolate;
-  background:
-    radial-gradient(ellipse at 78% 45%,rgba(22,87,69,.20),transparent 44%),
-    linear-gradient(98deg,#021b19 0%,#03201c 49%,#06211d 100%)!important;
+  overflow:hidden;
+  max-width:1536px;
+  min-height:0;
+  margin:0 auto 8px;
+  padding:clamp(8px,1.35vw,20px) clamp(12px,4vw,56px) clamp(13px,3.3vw,50px);
+  background:#031315;
 }
-#order .pont-restaurant-hero__photo{
-  position:absolute!important;
-  z-index:-1!important;
-  top:43px!important;
-  right:0!important;
-  bottom:42px!important;
-  left:auto!important;
-  width:66%!important;
-  opacity:.96!important;
-  background-position:center center!important;
-  background-size:cover!important;
-  border-radius:0!important;
-  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.40) 32%,#000 73%),linear-gradient(0deg,transparent 0%,#000 28%,#000 88%,transparent 100%)!important;
-  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.40) 32%,#000 73%),linear-gradient(0deg,transparent 0%,#000 28%,#000 88%,transparent 100%)!important;
-  -webkit-mask-composite:source-in;
-  mask-composite:intersect;
-}
+#order .pont-restaurant-hero::before,
 #order .pont-restaurant-hero::after{
-  z-index:-1!important;
-  background:
-    linear-gradient(0deg,#03231f 0%,rgba(3,30,27,.08) 42%,transparent 75%),
-    linear-gradient(90deg,#021a18 0%,rgba(2,26,24,.93) 26%,rgba(3,28,25,.15) 83%)!important;
+  content:"";
+  position:absolute;
+  z-index:-1;
+  width:min(55%,650px);
+  height:100%;
+  pointer-events:none;
+  background:url("./showcase/arc.webp") left top / contain no-repeat;
 }
+#order .pont-restaurant-hero::before{inset:0 auto auto 0;opacity:.72}
+#order .pont-restaurant-hero::after{inset:auto 0 0 auto;transform:rotate(180deg);opacity:.87}
+#order .order-topbar{
+  position:absolute!important;
+  top:clamp(9px,2vw,30px)!important;
+  left:clamp(10px,2.8vw,43px)!important;
+  right:auto!important;
+  width:auto;
+  min-height:0;
+  padding:0!important;
+  border:0;
+  background:none!important;
+}
+#order .order-topbar #close{
+  display:grid;
+  place-items:center;
+  width:clamp(44px,5.2vw,80px);
+  height:clamp(44px,5.2vw,80px);
+  min-height:44px;
+  padding:0!important;
+  border:1px solid #52d9d0!important;
+  border-radius:29%!important;
+  background:#051c20!important;
+  box-shadow:inset 0 0 0 4px #184247,0 0 14px #32c9cc52!important;
+}
+#order #close .pont-nav-action__icon{width:44%;height:44%;display:grid;place-items:center}
+#order #close svg{width:100%;height:100%}
+#order .pont-restaurant-hero__content{max-width:1010px;margin-inline:auto}
 #order .pont-restaurant-hero .pont-order-logo-image{
-  top:4px!important;
-  left:50%!important;
-  width:clamp(165px,26vw,225px)!important;
-  height:86px!important;
-  max-width:52vw!important;
-  transform:translateX(-50%)!important;
-  object-fit:contain!important;
-  z-index:2!important;
-  filter:drop-shadow(0 0 6px rgba(106,249,229,.20))!important;
-}
-#order .pont-restaurant-hero .pont-order-brand{
-  padding-top:88px!important;
-  align-items:flex-start!important;
-  gap:0!important;
-}
-#order .pont-restaurant-hero .pont-order-brand h2{
-  max-width:min(80%,590px)!important;
-  margin:1px 0 0!important;
-  font:600 clamp(34px,4.6vw,54px)/1.12 Georgia,'Times New Roman',serif!important;
-  letter-spacing:-.028em!important;
-  color:#fffdf7!important;
-  text-shadow:0 2px 14px rgba(0,12,11,.55)!important;
-  text-wrap:balance;
-}
-#order .pont-restaurant-hero .pont-order-brand .pont-hero-location{
-  display:flex!important;
-  align-items:center!important;
-  gap:7px!important;
-  margin:8px 0 0!important;
-  font:480 15px/1.2 system-ui,-apple-system,sans-serif!important;
-  color:#e0f0e8!important;
-  text-shadow:0 1px 8px rgba(0,17,15,.6);
-}
-#order .pont-hero-location svg{flex:none;color:#d6e6dd}
-#order .pont-restaurant-hero .pont-menu-tag{
-  width:100%!important;
-  max-width:100%!important;
-  gap:10px!important;
-  margin:17px 0 0!important;
-  padding:12px 0 0!important;
-  border-top:1px solid rgba(120,219,194,.26)!important;
-}
-#order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  gap:9px!important;
-  min-height:38px!important;
-  padding:8px 16px!important;
-  border:1px solid rgba(30,221,186,.83)!important;
-  border-radius:999px!important;
-  background:rgba(2,42,38,.7)!important;
-  box-shadow:inset 0 1px rgba(228,255,244,.09),0 0 12px rgba(11,215,177,.1)!important;
-  color:#f5fff9!important;
-  font:670 13px/1.1 system-ui,-apple-system,sans-serif!important;
-  white-space:nowrap;
-}
-#order .pont-menu-tag__label svg{flex:none;color:#f6fffb}
-#order .pont-restaurant-hero .pont-menu-tag strong{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  min-height:42px!important;
-  padding:8px 17px!important;
-  border-radius:999px!important;
-  background:linear-gradient(110deg,#ffebb7,#f0c76e)!important;
-  border:1px solid rgba(255,243,200,.8)!important;
-  box-shadow:0 5px 20px rgba(234,187,90,.17),inset 0 1px rgba(255,255,255,.55)!important;
-  color:#181d16!important;
-  font:790 clamp(16px,2.3vw,21px)/1.1 system-ui,-apple-system,sans-serif!important;
-  letter-spacing:-.025em!important;
-  white-space:nowrap;
-}
-@media(max-width:530px){
-  #order .pont-restaurant-hero{
-    min-height:236px!important;
-    padding:12px 18px 12px!important;
-  }
-  #order .pont-restaurant-hero__photo{
-    top:47px!important;
-    bottom:51px!important;
-    width:73%!important;
-    background-position:56% center!important;
-  }
-  #order .pont-restaurant-hero .pont-order-logo-image{
-    top:2px!important;
-    width:clamp(160px,48vw,208px)!important;
-    height:80px!important;
-    max-width:55vw!important;
-  }
-  #order .pont-restaurant-hero .pont-order-brand{padding-top:86px!important}
-  #order .pont-restaurant-hero .pont-order-brand h2{
-    font-size:clamp(31px,8.4vw,42px)!important;
-    max-width:85%!important;
-  }
-  #order .pont-restaurant-hero .pont-order-brand .pont-hero-location{
-    margin-top:7px!important;
-    font-size:14px!important;
-  }
-  #order .pont-restaurant-hero .pont-menu-tag{
-    margin-top:14px!important;
-    padding-top:10px!important;
-  }
-  #order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{
-    min-height:36px!important;
-    padding:8px 12px!important;
-    font-size:12px!important;
-  }
-  #order .pont-restaurant-hero .pont-menu-tag strong{
-    min-height:39px!important;
-    padding:8px 13px!important;
-    font-size:clamp(15px,4.5vw,19px)!important;
-  }
-}
-@media(max-width:365px){
-  #order .pont-restaurant-hero{padding-inline:13px!important}
-  #order .pont-restaurant-hero .pont-order-brand h2{font-size:29px!important}
-  #order .pont-restaurant-hero .pont-menu-tag{gap:7px!important}
-  #order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{
-    gap:6px!important;padding-inline:9px!important;font-size:11px!important;
-  }
-  #order .pont-restaurant-hero .pont-menu-tag strong{
-    padding-inline:10px!important;font-size:15px!important;
-  }
-}
-
-
-/* PONT restaurant hero v4: approved premium composition; does not affect ordering below. */
-#order .pont-restaurant-hero{
-  position:relative!important;
-  isolation:isolate!important;
-  box-sizing:border-box!important;
-  overflow:hidden!important;
-  display:block!important;
-  min-height:256px!important;
-  max-width:1060px!important;
-  padding:12px clamp(18px,4.5vw,40px) 14px!important;
-  margin:0 auto 3px!important;
-  border:0!important;
-  background:linear-gradient(105deg,#001411 0%,#001b17 52%,#03241e 100%)!important;
-}
-#order .pont-restaurant-hero__photo{
-  position:absolute!important;
-  z-index:0!important;
-  inset:50px 0 39px auto!important;
-  width:75%!important;
-  opacity:1!important;
-  border:0!important;
-  background-position:56% center!important;
-  background-size:cover!important;
-  background-repeat:no-repeat!important;
-  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.38) 32%,#000 62%),linear-gradient(0deg,transparent 0%,#000 23%,#000 90%,transparent 100%)!important;
-  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.38) 32%,#000 62%),linear-gradient(0deg,transparent 0%,#000 23%,#000 90%,transparent 100%)!important;
-  -webkit-mask-composite:source-in!important;
-  mask-composite:intersect!important;
-}
-#order .pont-restaurant-hero::after{
-  content:""!important;
-  position:absolute!important;
-  z-index:1!important;
-  inset:0!important;
-  pointer-events:none!important;
-  background:
-    linear-gradient(180deg,#001511 0%,rgba(0,19,16,.58) 13%,transparent 42%,rgba(0,25,21,.16) 77%,#00251f 100%),
-    linear-gradient(90deg,#001713 0%,rgba(0,23,20,.90) 22%,rgba(0,23,20,.42) 53%,transparent 88%)!important;
-}
-#order .pont-restaurant-hero__content{
-  position:relative!important;
-  z-index:2!important;
-  width:100%!important;
-  min-width:0!important;
-}
-#order .pont-restaurant-hero .pont-order-brand{
   position:static!important;
-  margin:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:flex-start!important;
-  gap:0!important;
-  padding:92px 0 0!important;
-  text-align:left!important;
-}
-#order .pont-restaurant-hero .pont-order-logo-image{
-  position:absolute!important;
-  z-index:4!important;
-  top:2px!important;
-  left:50%!important;
-  transform:translateX(-50%)!important;
+  transform:none!important;
   display:block!important;
-  width:clamp(194px,27vw,242px)!important;
-  height:95px!important;
-  max-width:58vw!important;
-  object-fit:contain!important;
-  opacity:1!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  mix-blend-mode:normal!important;
-  filter:drop-shadow(0 0 8px rgba(106,255,243,.20))!important;
+  width:clamp(113px,19vw,284px)!important;
+  height:auto!important;
+  margin:0 auto!important;
+  mix-blend-mode:screen;
+}
+#order .pont-restaurant-hero__identity{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 23%;
+  gap:clamp(7px,2vw,31px);
+  align-items:center;
+  padding:0 0 clamp(5px,.65vw,10px);
+}
+#order .pont-restaurant-hero__identity::after{
+  content:"";
+  position:absolute;
+  inset:auto 0 0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,#c28b48 36%,#fff1b0 50%,#c28b48 64%,transparent);
+  box-shadow:0 0 10px #d39a4e45;
+}
+#order .pont-restaurant-hero .pont-order-brand{
+  position:relative;
+  padding:clamp(3px,.55vw,9px) 0 clamp(3px,.55vw,9px) clamp(8px,2vw,30px);
+  gap:clamp(3px,.65vw,10px);
+}
+#order .pont-restaurant-hero .pont-order-brand::before{
+  content:"";
+  position:absolute;
+  left:0;
+  inset-block:0;
+  width:2px;
+  background:linear-gradient(transparent,#fff0aa 52%,transparent);
 }
 #order .pont-restaurant-hero .pont-order-brand h2{
-  display:block!important;
-  width:auto!important;
-  max-width:min(82%,620px)!important;
+  max-width:none;
   margin:0!important;
-  padding:0!important;
-  color:#fffdf8!important;
-  font-family:Georgia,'Times New Roman',serif!important;
-  font-weight:600!important;
-  font-size:clamp(38px,5.4vw,58px)!important;
-  line-height:1.06!important;
-  letter-spacing:-.034em!important;
-  text-shadow:0 3px 14px rgba(0,11,11,.8)!important;
+  font:700 clamp(21px,4.25vw,65px)/1.07 Georgia,serif!important;
+  letter-spacing:-.025em;
+  color:#fff5e6!important;
+  overflow-wrap:anywhere;
   text-wrap:balance;
 }
-#order .pont-restaurant-hero .pont-order-brand .pont-hero-location{
-  display:inline-flex!important;
-  align-items:center!important;
-  gap:7px!important;
-  margin:10px 0 0!important;
-  color:#e8f5ee!important;
-  font:480 16px/1.2 system-ui,-apple-system,sans-serif!important;
-  text-shadow:0 2px 8px rgba(0,13,12,.8)!important;
+#order .pont-restaurant-hero .pont-hero-location{
+  display:flex;
+  gap:clamp(4px,1vw,14px);
+  align-items:center;
+  margin:0!important;
+  font:500 clamp(12px,2.25vw,34px)/1.2 system-ui,sans-serif!important;
+}
+#order .pont-hero-location svg{flex:none;width:1em;height:1em;color:#bceee9}
+#order .pont-restaurant-hero__photo{
+  position:relative;
+  z-index:auto;
+  inset:auto;
+  aspect-ratio:1.27;
+  width:100%;
+  border-radius:50%;
+  opacity:1;
+  background-position:center;
+  background-size:cover;
+  -webkit-mask-image:radial-gradient(ellipse,#000 52%,#000c 64%,transparent 75%);
+  mask-image:radial-gradient(ellipse,#000 52%,#000c 64%,transparent 75%);
 }
 #order .pont-restaurant-hero .pont-menu-tag{
-  display:flex!important;
-  width:100%!important;
-  max-width:none!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:10px!important;
-  margin:19px 0 0!important;
-  padding:12px 0 0!important;
-  border-top:1px solid rgba(117,204,182,.30)!important;
+  display:flex;
+  justify-content:center;
+  align-items:stretch;
+  gap:0;
+  width:fit-content;
+  max-width:100%;
+  margin:clamp(10px,2.4vw,36px) auto 0;
+  padding:0;
+  border:1px solid #e3be72;
+  border-radius:999px;
+  background:linear-gradient(115deg,#fbdf9d,#e8ad4b 64%,#ffdc8c);
+  box-shadow:0 0 14px #e8bb6864;
 }
-#order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  min-height:38px!important;
-  gap:9px!important;
-  padding:8px 16px!important;
-  border:1px solid rgba(31,228,186,.77)!important;
-  border-radius:999px!important;
-  background:rgba(0,40,34,.64)!important;
-  box-shadow:inset 0 1px rgba(237,255,248,.08),0 0 15px rgba(0,211,170,.11)!important;
-  color:#f9fffc!important;
-  font:650 13px/1 system-ui,-apple-system,sans-serif!important;
-  white-space:nowrap!important;
-}
+#order .pont-restaurant-hero .pont-menu-tag__label,
 #order .pont-restaurant-hero .pont-menu-tag strong{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  min-height:43px!important;
-  padding:9px 18px!important;
-  border:1px solid rgba(255,236,178,.85)!important;
-  border-radius:999px!important;
-  background:linear-gradient(110deg,#ffebae 0%,#f4c968 100%)!important;
-  color:#171b14!important;
-  box-shadow:0 4px 19px rgba(224,176,79,.15),inset 0 1px rgba(255,255,255,.6)!important;
-  font:800 clamp(17px,2.5vw,21px)/1 system-ui,-apple-system,sans-serif!important;
-  letter-spacing:-.02em!important;
-  white-space:nowrap!important;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(5px,1.6vw,24px);
+  padding:clamp(7px,1.45vw,22px) clamp(9px,3.1vw,47px);
+  font:700 clamp(13px,2.42vw,37px)/1.15 system-ui,sans-serif;
+  white-space:nowrap;
 }
-@media(max-width:530px){
- #order .pont-restaurant-hero{
-   min-height:245px!important;
-   padding:9px 18px 11px!important;
- }
- #order .pont-restaurant-hero__photo{
-   inset:49px 0 45px auto!important;
-   width:79%!important;
-   background-position:54% center!important;
- }
- #order .pont-restaurant-hero .pont-order-logo-image{
-   top:-1px!important;
-   width:clamp(186px,52vw,222px)!important;
-   height:88px!important;
-   max-width:59vw!important;
- }
- #order .pont-restaurant-hero .pont-order-brand{padding-top:94px!important}
- #order .pont-restaurant-hero .pont-order-brand h2{
-   font-size:clamp(34px,9.2vw,43px)!important;
-   max-width:87%!important;
- }
- #order .pont-restaurant-hero .pont-order-brand .pont-hero-location{
-   margin-top:8px!important;
-   font-size:15px!important;
- }
- #order .pont-restaurant-hero .pont-menu-tag{
-   margin-top:19px!important;
-   padding-top:9px!important;
- }
- #order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{
-   padding:8px 12px!important;
-   min-height:35px!important;
-   font-size:12px!important;
- }
- #order .pont-restaurant-hero .pont-menu-tag strong{
-   padding:8px 13px!important;
-   min-height:39px!important;
-   font-size:clamp(16px,4.6vw,20px)!important;
- }
+#order .pont-restaurant-hero .pont-menu-tag__label{
+  margin:-1px 0 -1px -1px;
+  border:1px solid #49c7c0;
+  border-radius:999px;
+  background:#062327;
+  box-shadow:inset 0 0 15px #148c844e,0 0 11px #4cf7e56e;
+  color:#f1fcf6;
 }
-@media(max-width:365px){
- #order .pont-restaurant-hero{padding-left:13px!important;padding-right:13px!important}
- #order .pont-restaurant-hero .pont-order-brand h2{font-size:32px!important;max-width:93%!important}
- #order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{gap:6px!important;padding-inline:9px!important;font-size:11px!important}
- #order .pont-restaurant-hero .pont-menu-tag strong{padding-inline:10px!important;font-size:15px!important}
+#order .pont-menu-tag__label svg{flex:none;width:1.1em;height:1.1em}
+#order .pont-restaurant-hero .pont-menu-tag strong{
+  background:none;
+  box-shadow:none;
+  color:#1a1308;
+  font-weight:800;
+  font-size:clamp(14px,2.7vw,41px);
 }
+#order .order-contact{display:block!important}
+#order .order-contact:not(:has(.call-now:not([hidden]))){display:none!important}

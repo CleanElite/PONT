@@ -520,203 +520,15 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-page.css?v=20261110c">
+<link rel="stylesheet" href="./restaurant-page.css?v=20261110d">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
-<style id="pont-premium-restaurant-header-v4">
-/* PONT restaurant hero v4: approved premium composition; does not affect ordering below. */
-#order .pont-restaurant-hero{
-  position:relative!important;
-  isolation:isolate!important;
-  box-sizing:border-box!important;
-  overflow:hidden!important;
-  display:block!important;
-  min-height:256px!important;
-  max-width:1060px!important;
-  padding:12px clamp(18px,4.5vw,40px) 14px!important;
-  margin:0 auto 3px!important;
-  border:0!important;
-  background:linear-gradient(105deg,#001411 0%,#001b17 52%,#03241e 100%)!important;
-}
-#order .pont-restaurant-hero__photo{
-  position:absolute!important;
-  z-index:0!important;
-  inset:50px 0 39px auto!important;
-  width:75%!important;
-  opacity:1!important;
-  border:0!important;
-  background-position:56% center!important;
-  background-size:cover!important;
-  background-repeat:no-repeat!important;
-  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.38) 32%,#000 62%),linear-gradient(0deg,transparent 0%,#000 23%,#000 90%,transparent 100%)!important;
-  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.38) 32%,#000 62%),linear-gradient(0deg,transparent 0%,#000 23%,#000 90%,transparent 100%)!important;
-  -webkit-mask-composite:source-in!important;
-  mask-composite:intersect!important;
-}
-#order .pont-restaurant-hero::after{
-  content:""!important;
-  position:absolute!important;
-  z-index:1!important;
-  inset:0!important;
-  pointer-events:none!important;
-  background:
-    linear-gradient(180deg,#001511 0%,rgba(0,19,16,.58) 13%,transparent 42%,rgba(0,25,21,.16) 77%,#00251f 100%),
-    linear-gradient(90deg,#001713 0%,rgba(0,23,20,.90) 22%,rgba(0,23,20,.42) 53%,transparent 88%)!important;
-}
-#order .pont-restaurant-hero__content{
-  position:relative!important;
-  z-index:2!important;
-  width:100%!important;
-  min-width:0!important;
-}
-#order .pont-restaurant-hero .pont-order-brand{
-  position:static!important;
-  margin:0!important;
-  display:flex!important;
-  flex-direction:column!important;
-  align-items:flex-start!important;
-  gap:0!important;
-  padding:92px 0 0!important;
-  text-align:left!important;
-}
-#order .pont-restaurant-hero .pont-order-logo-image{
-  position:absolute!important;
-  z-index:4!important;
-  top:2px!important;
-  left:50%!important;
-  transform:translateX(-50%)!important;
-  display:block!important;
-  width:clamp(194px,27vw,242px)!important;
-  height:95px!important;
-  max-width:58vw!important;
-  object-fit:contain!important;
-  opacity:1!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  mix-blend-mode:normal!important;
-  filter:drop-shadow(0 0 8px rgba(106,255,243,.20))!important;
-}
-#order .pont-restaurant-hero .pont-order-brand h2{
-  display:block!important;
-  width:auto!important;
-  max-width:min(82%,620px)!important;
-  margin:0!important;
-  padding:0!important;
-  color:#fffdf8!important;
-  font-family:Georgia,'Times New Roman',serif!important;
-  font-weight:600!important;
-  font-size:clamp(38px,5.4vw,58px)!important;
-  line-height:1.06!important;
-  letter-spacing:-.034em!important;
-  text-shadow:0 3px 14px rgba(0,11,11,.8)!important;
-  text-wrap:balance;
-}
-#order .pont-restaurant-hero .pont-order-brand .pont-hero-location{
-  display:inline-flex!important;
-  align-items:center!important;
-  gap:7px!important;
-  margin:10px 0 0!important;
-  color:#e8f5ee!important;
-  font:480 16px/1.2 system-ui,-apple-system,sans-serif!important;
-  text-shadow:0 2px 8px rgba(0,13,12,.8)!important;
-}
-#order .pont-restaurant-hero .pont-menu-tag{
-  display:flex!important;
-  width:100%!important;
-  max-width:none!important;
-  align-items:center!important;
-  justify-content:space-between!important;
-  gap:10px!important;
-  margin:19px 0 0!important;
-  padding:12px 0 0!important;
-  border-top:1px solid rgba(117,204,182,.30)!important;
-}
-#order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  min-height:38px!important;
-  gap:9px!important;
-  padding:8px 16px!important;
-  border:1px solid rgba(31,228,186,.77)!important;
-  border-radius:999px!important;
-  background:rgba(0,40,34,.64)!important;
-  box-shadow:inset 0 1px rgba(237,255,248,.08),0 0 15px rgba(0,211,170,.11)!important;
-  color:#f9fffc!important;
-  font:650 13px/1 system-ui,-apple-system,sans-serif!important;
-  white-space:nowrap!important;
-}
-#order .pont-restaurant-hero .pont-menu-tag strong{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  min-height:43px!important;
-  padding:9px 18px!important;
-  border:1px solid rgba(255,236,178,.85)!important;
-  border-radius:999px!important;
-  background:linear-gradient(110deg,#ffebae 0%,#f4c968 100%)!important;
-  color:#171b14!important;
-  box-shadow:0 4px 19px rgba(224,176,79,.15),inset 0 1px rgba(255,255,255,.6)!important;
-  font:800 clamp(17px,2.5vw,21px)/1 system-ui,-apple-system,sans-serif!important;
-  letter-spacing:-.02em!important;
-  white-space:nowrap!important;
-}
-@media(max-width:530px){
- #order .pont-restaurant-hero{
-   min-height:245px!important;
-   padding:9px 18px 11px!important;
- }
- #order .pont-restaurant-hero__photo{
-   inset:49px 0 45px auto!important;
-   width:79%!important;
-   background-position:54% center!important;
- }
- #order .pont-restaurant-hero .pont-order-logo-image{
-   top:-1px!important;
-   width:clamp(186px,52vw,222px)!important;
-   height:88px!important;
-   max-width:59vw!important;
- }
- #order .pont-restaurant-hero .pont-order-brand{padding-top:94px!important}
- #order .pont-restaurant-hero .pont-order-brand h2{
-   font-size:clamp(34px,9.2vw,43px)!important;
-   max-width:87%!important;
- }
- #order .pont-restaurant-hero .pont-order-brand .pont-hero-location{
-   margin-top:8px!important;
-   font-size:15px!important;
- }
- #order .pont-restaurant-hero .pont-menu-tag{
-   margin-top:19px!important;
-   padding-top:9px!important;
- }
- #order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{
-   padding:8px 12px!important;
-   min-height:35px!important;
-   font-size:12px!important;
- }
- #order .pont-restaurant-hero .pont-menu-tag strong{
-   padding:8px 13px!important;
-   min-height:39px!important;
-   font-size:clamp(16px,4.6vw,20px)!important;
- }
-}
-@media(max-width:365px){
- #order .pont-restaurant-hero{padding-left:13px!important;padding-right:13px!important}
- #order .pont-restaurant-hero .pont-order-brand h2{font-size:32px!important;max-width:93%!important}
- #order .pont-restaurant-hero .pont-menu-tag .pont-menu-tag__label{gap:6px!important;padding-inline:9px!important;font-size:11px!important}
- #order .pont-restaurant-hero .pont-menu-tag strong{padding-inline:10px!important;font-size:15px!important}
-}
-
-</style>
 <style>.pont-promotion-label{align-self:flex-start;width:max-content;padding:3px 8px;border-radius:999px;background:#eacb85;color:#221605;font-size:11px;font-weight:750}</style>
 <dialog id="order" aria-labelledby="orderTitle">
-<div class="order-topbar"><button type="button" id="close" class="secondary pont-nav-action" aria-label="Înapoi la restaurante" autofocus><span class="pont-nav-action__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></span><span class="pont-nav-action__label">Restaurante</span></button></div>
-<div class="pont-restaurant-hero"><div class="pont-restaurant-hero__photo" id="restaurantHeroPhoto" aria-hidden="true"></div>
-<div class="pont-restaurant-hero__content"><div class="pont-order-brand"><img class="pont-order-logo pont-order-logo-image" src="./showcase/pont-wordmark.webp" alt="PONT Slobozia" width="576" height="240" decoding="async"><h2 id="orderTitle"></h2><p class="pont-hero-location"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Slobozia</span></p></div>
+<div class="pont-restaurant-hero"><div class="order-topbar"><button type="button" id="close" class="secondary" aria-label="Înapoi la restaurante" autofocus><span class="pont-nav-action__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></span></button></div>
+<div class="pont-restaurant-hero__content"><img class="pont-order-logo pont-order-logo-image" src="./showcase/pont-wordmark.webp" alt="PONT Slobozia" width="576" height="240" decoding="async"><div class="pont-restaurant-hero__identity"><div class="pont-order-brand"><h2 id="orderTitle"></h2><p class="pont-hero-location"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Slobozia</span></p></div><div class="pont-restaurant-hero__photo" id="restaurantHeroPhoto" aria-hidden="true"></div></div>
 <div class="pont-menu-tag"><span class="pont-menu-tag__label"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="16" rx="2"/><path d="M8 3v4M16 3v4M4 10h16M8 14h8M8 17h5"/></svg>Meniul zilei</span><strong id="heroMenuPrice"></strong></div></div></div>
 <form id="checkout">
-<section class="order-menu-preview" aria-label="Meniul restaurantului"><span class="pont-menu-icon" aria-hidden="true">♨</span><div id="menuPreview"></div><p id="combo-price"></p></section><div class="order-contact"><a id="callNow" class="call-now" hidden>☎ Sună și comandă</a><div class="pont-contact-or" id="pontContactOr">sau</div><p class="pont-contact-whatsapp" id="pontContactWhatsApp">Selectează preparatele de mai jos și trimite comanda pe WhatsApp.</p></div><p id="pontOrderRules" style="margin:8px 0 15px;color:#beced2;font-size:.83rem;line-height:1.5" role="status"></p><section class="order-selection"><div id="choices"></div><div id="pontSelectionSummary" class="pont-selection-summary" role="status" aria-live="polite"><strong>Rezumat selecție</strong><p id="pontSelectionText">Nu ai selectat încă preparate.</p></div></section>
+<section class="order-menu-preview" aria-label="Meniul restaurantului"><span class="pont-menu-icon" aria-hidden="true">♨</span><div id="menuPreview"></div><p id="combo-price"></p></section><div class="order-contact"><a id="callNow" class="call-now" hidden>☎ Sună și comandă</a></div><p id="pontOrderRules" style="margin:8px 0 15px;color:#beced2;font-size:.83rem;line-height:1.5" role="status"></p><section class="order-selection"><div id="choices"></div><div id="pontSelectionSummary" class="pont-selection-summary" role="status" aria-live="polite"><strong>Rezumat selecție</strong><p id="pontSelectionText">Nu ai selectat încă preparate.</p></div></section>
 <section class="pont-order-details"><div class="pont-details-head"><h3>▤ &nbsp; Detalii comandă</h3></div><div class="fulfillment"><span class="field-heading">Cum primești comanda?</span><div class="fulfillment-options"><button type="button" data-method="Livrare, dacă restaurantul confirmă" class="selected" aria-pressed="true">♧ Livrare</button><button type="button" data-method="Ridicare" aria-pressed="false">▢ Ridicare</button></div><select name="method" aria-label="Modalitate de primire" class="visually-hidden-select"><option>Livrare, dacă restaurantul confirmă</option><option>Ridicare</option></select></div>
 <label>Nume și prenume<input name="full_name" type="text" autocomplete="name" required minlength="3" maxlength="140" placeholder="Nume și prenume"></label><label>Număr de telefon<input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="24" placeholder="07XXXXXXXX sau +407XXXXXXXX" aria-describedby="phoneError"><small id="phoneError" class="phone-error" role="alert" hidden>Numărul de telefon nu este corect. Introdu un număr mobil românesc: 07XXXXXXXX sau +407XXXXXXXX.</small></label>
 <label id="address" hidden>Adresă de livrare<input name="address" autocomplete="street-address" maxlength="150" placeholder="Stradă, număr, bloc, etaj, apartament"><small class="address-hint">Completează strada și numărul, iar dacă este cazul: bloc, etaj și apartament.</small></label>
@@ -874,7 +686,7 @@ function trackPontMetric(type,menu,menusCount=0,portionsCount=0){
 function openOrder(m,trigger){
   document.body.classList.add('pont-restaurant-page');
   document.title=m.name+' · Meniul zilei · PONT';
-  const featuredPhoto=/blabla\s*bistro/i.test(m.name||'')?'./showcase/pizza.webp':restaurantCover(m);
+  const featuredPhoto=/aromas/i.test(m.name||'')?'./showcase/paste.webp':/blabla\s*bistro/i.test(m.name||'')?'./showcase/pizza.webp':restaurantCover(m);
   $('#restaurantHeroPhoto').style.backgroundImage='url("'+String(featuredPhoto).replace(/[\\\"\n]/g,'')+'")';
   $('#heroMenuPrice').textContent=lei(m.full);
 
@@ -907,7 +719,7 @@ function openOrder(m,trigger){
   }).join('');
   form.elements.payment.innerHTML='<option value="Cash">Cash</option>'+(m.card?'<option value="Card">Card</option>':'');form.elements.payment.disabled=!m.card;let note=document.querySelector('#cardPaymentNote');if(!note){note=document.createElement('small');note.id='cardPaymentNote';form.elements.payment.closest('label').after(note)}note.hidden=!!m.card;note.textContent='Restaurantul nu percepe plata cu cardul.';
   $('#pontOrderRules').textContent=(m.opens_at&&m.closes_at?'Program comenzi: '+m.opens_at.slice(0,5)+'–'+m.closes_at.slice(0,5):'Program comenzi: de confirmat la restaurant')+' | Comandă minimă: '+(m.min_full_menus||1)+' meniu complet.';
-  $('#send').textContent=m.phone?'Trimite comanda pe WhatsApp':isMenuPreview?'Comenzile sunt dezactivate în previzualizare':'WhatsApp indisponibil — lipsește numărul';$('#send').disabled=!m.phone;const callPhone=normalizeCallPhone(m.phone);$('#callNow').hidden=!callPhone;$('#pontContactOr').hidden=!callPhone;if(callPhone){$('#callNow').href='tel:'+callPhone;$('#callNow').textContent='☎ Sună și comandă';}else{$('#callNow').removeAttribute('href');}
+  $('#send').textContent=m.phone?'Trimite comanda pe WhatsApp':isMenuPreview?'Comenzile sunt dezactivate în previzualizare':'WhatsApp indisponibil — lipsește numărul';$('#send').disabled=!m.phone;const callPhone=normalizeCallPhone(m.phone);$('#callNow').hidden=!callPhone;if(callPhone){$('#callNow').href='tel:'+callPhone;$('#callNow').textContent='☎ Sună și comandă';}else{$('#callNow').removeAttribute('href');}
   $('#orderMsg').textContent='';
   $('#order').showModal();update();
 }
