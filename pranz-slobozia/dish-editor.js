@@ -270,7 +270,7 @@ function choices() {
   $('pontDailyDishes').innerHTML = renderDishChecklist(menuChoices(), selected, {
     daily: true,
     renderDetails(key, dish, checked) {
-      if (dish.category === 'dessert') return '<span class="pont-checklist-price">Inclus</span>';
+      if (dish.category === 'dessert') return '';
       if (!checked) return '<span class="pont-checklist-price">' + priceRO.format(dish.price) + ' lei</span>';
       const price = selected.get(key).price;
       return '<div class="pont-checklist-price"><input type="number" aria-label="Preț ' + esc(dish.name) +
