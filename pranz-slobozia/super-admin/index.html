@@ -72,13 +72,13 @@
       <span class="dashboard-when-closed">Meniu nou</span><span class="dashboard-when-open">Ascunde editorul</span>
     </button>
   </div>
+  <div id="menuFormWrap" class="dashboard-form pont-menu-form-wrap" hidden></div>
   <div id="pontMenuTemplates"></div>
   <div class="grid admin-stats dashboard-stats" aria-label="Rezumat">
     <div class="stat">Restaurante<strong id="nr">0</strong></div>
     <div class="stat">Meniuri recente<strong id="nm">0</strong></div>
     <div class="stat">Publicate azi<strong id="nt">0</strong></div>
   </div>
-  <div id="menuFormWrap" class="dashboard-form pont-menu-form-wrap" hidden></div>
   <dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle">
     <span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span>
     <h3 id="menuSuccessTitle">Meniu salvat</h3><p id="menuSuccessMessage"></p>
@@ -1259,7 +1259,7 @@ $('restaurantChangePassword').onclick=async()=>{
  }catch(e){notice.textContent=e.message}finally{btn.disabled=false}
 };
 $('memberRows').onclick=async e=>{let b=e.target.closest('[data-revoke]');if(!b||!confirm('Revoci accesul?'))return;try{await req(db.from('restaurant_members').delete().eq('user_id',b.dataset.revoke).eq('restaurant_id',b.dataset.restaurant));await load()}catch(e){status(e.message,true)}};
-const {initPontDishEditor}=await import('../dish-editor.js?v=19');
+const {initPontDishEditor}=await import('../dish-editor.js?v=21');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
