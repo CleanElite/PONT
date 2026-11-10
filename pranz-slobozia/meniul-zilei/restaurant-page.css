@@ -894,7 +894,7 @@ body #order::backdrop{background:#031c1a}
   container-type:inline-size;
   --reference-art:url("./showcase/portrait-reference.jpg");
   background:linear-gradient(90deg,transparent,#b98e4d 16%,#fff0c1 35%,#ae814c 54%,transparent 72%) center 81.2% / 92% 1px no-repeat,
-    radial-gradient(ellipse at 80% 49%,#0a2929,#031517 66%);
+    radial-gradient(ellipse at 80% 49%,#0a2929,#031517 66%) center top / 100% 81.2% no-repeat;
 }
 #order .pont-menu-reference .pont-restaurant-hero__identity::after{display:none}
 #order .pont-menu-reference .pont-restaurant-hero__content,
