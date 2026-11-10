@@ -1516,3 +1516,19 @@ body #order::backdrop{background:#031c1a}
  #order .pont-checkout-panel #send{padding-left:37px!important;font-size:12px!important}
  #order .pont-checkout-panel #send:before{width:22px;height:22px;left:12px}
 }
+
+/* Final checkout visibility, iOS form and icon safeguards. */
+#order .pont-checkout-panel #address[hidden]{display:none!important}
+#order .pont-checkout-panel .pont-order-details .address-hint[hidden],
+#order .pont-checkout-panel .phone-error[hidden]{display:none!important}
+#order .pont-checkout-panel .pont-checkout-icon{
+ display:inline-block!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
+#order .pont-checkout-panel input:focus-visible,
+#order .pont-checkout-panel select:focus-visible,
+#order .pont-checkout-panel textarea:focus-visible{
+ outline:2px solid #61eddb!important;outline-offset:2px!important;
+}
+#order .pont-checkout-panel .pont-order-notes label textarea{height:auto!important;min-height:76px!important;resize:vertical}
+#order .pont-checkout-panel .pont-order-notes[open] label{color:#e7f9f4!important}
+#order .pont-checkout-panel .pont-payment-field select option{color:#132522!important;background:#fff!important}
