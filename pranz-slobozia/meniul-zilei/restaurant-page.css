@@ -888,10 +888,11 @@ body #order::backdrop{background:#031c1a}
 
 /* The supplied Aromas artwork defines the geometry. Live controls sit over it. */
 #order .pont-restaurant-hero.pont-menu-reference{
-  aspect-ratio:1672 / 800;
+  aspect-ratio:864 / 480;
+  max-width:660px;
   padding:0;
   container-type:inline-size;
-  --reference-art:url("./showcase/aromas-reference.jpg");
+  --reference-art:url("./showcase/portrait-reference.jpg");
   background:linear-gradient(90deg,transparent,#b98e4d 16%,#fff0c1 35%,#ae814c 54%,transparent 72%) center 61.7% / 92% 1px no-repeat,
     radial-gradient(ellipse at 80% 49%,#0a2929,#031517 66%);
 }
@@ -913,9 +914,9 @@ body #order::backdrop{background:#031c1a}
   white-space:nowrap;
 }
 #order .pont-menu-reference .order-topbar{
-  inset:8.25% auto auto 3.59%!important;
-  width:6.34%;
-  height:11.88%;
+  inset:9.35% auto auto 3.95%!important;
+  width:9.25%;
+  height:13%;
 }
 #order .pont-menu-reference .order-topbar #close{
   width:100%;
@@ -927,14 +928,14 @@ body #order::backdrop{background:#031c1a}
 }
 #order .pont-menu-reference #close svg{opacity:0}
 #order .pont-menu-reference.pont-reference-live-price #heroMenuPrice{
-  inset:76.05% 58% auto 28.54%;
+  inset:83.3% 44.8% auto 35.2%;
   width:auto!important;
-  height:6.5%!important;
+  height:8.5%!important;
   clip-path:none;
   background:linear-gradient(105deg,#d9ae68,#e8c27d 55%,#e6bb75);
   border-radius:0 1.5cqw 1.5cqw 0;
   color:#0c0a05;
-  font-size:2.4cqw;
+  font-size:3.55cqw;
 }
 @media(max-width:480px){
   #order .pont-menu-reference .order-topbar{inset-block-start:3%!important}
@@ -949,19 +950,18 @@ body #order::backdrop{background:#031c1a}
   z-index:0;
   transform:none;
   opacity:1;
-  background:var(--reference-art) center / 100% 100% no-repeat;
+  background:var(--reference-art) center top / 100% 320% no-repeat;
 }
 #order .pont-menu-reference::before{
-  clip-path:polygon(0 0,61% 0,61% 22%,42% 22%,0 38%);
-  mask-image:linear-gradient(#000 19%,transparent 38%);
+  clip-path:polygon(0 0,62% 0,62% 24%,42% 24%,0 32%);
+  mask-image:linear-gradient(#000 23%,transparent 34%);
 }
 #order .pont-menu-reference::after{
-  clip-path:inset(68% 56% 0 0);
-  mask-image:linear-gradient(transparent 68%,#000 72%);
+  clip-path:inset(72.1% 0 0);
 }
 #order .pont-menu-reference .pont-restaurant-hero__photo{
   display:block;
-  inset:10% 0 30% auto;
+  inset:14% 0 26% auto;
   width:57%;
   background-position:center 45%;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 62%),linear-gradient(0deg,transparent,#000 20%,#000 78%,transparent);
@@ -970,20 +970,20 @@ body #order::backdrop{background:#031c1a}
 #order .pont-menu-reference .pont-order-brand{
   position:absolute;
   z-index:1;
-  inset:33% 40% auto 4.4%;
+  inset:32% 48% auto 5.4%;
   padding:0 0 0 2.2cqw;
   gap:1cqw;
 }
 #order .pont-menu-reference .pont-order-brand h2{
-  font-size:4.85cqw!important;
+  font-size:6.65cqw!important;
   text-wrap:wrap;
 }
-#order .pont-menu-reference .pont-hero-location{font-size:2.8cqw!important}
+#order .pont-menu-reference .pont-hero-location{font-size:3.7cqw!important}
 #order .pont-menu-reference #heroMenuPrice,
 #order .pont-menu-reference #callNow{z-index:2}
 #order .pont-menu-reference.pont-aromas-reference::before{
-  clip-path:inset(0 0 32%);
-  mask-image:linear-gradient(#000 65%,transparent 69%);
+  clip-path:inset(0 0 27.9%);
+  mask-image:none;
 }
 #order .pont-aromas-reference .pont-restaurant-hero__photo{display:none}
 #order .pont-aromas-reference .pont-order-brand{
@@ -997,47 +997,54 @@ body #order::backdrop{background:#031c1a}
 #order .pont-menu-reference #pontOrderRules{
   position:absolute;
   z-index:2;
-  inset:69.75% 3.29% auto 44.98%;
-  box-sizing:border-box;
+  inset:78.6% 3.5% auto 71.2%;
   display:grid;
-  align-content:center;
-  gap:.45cqw;
-  min-height:19%;
-  max-width:none!important;
+  grid-template-rows:1fr 1fr;
+  height:18%;
   margin:0!important;
   padding:0!important;
   border:0!important;
   background:none!important;
-  box-shadow:none!important;
-  color:#f1f6ed!important;
-  font:550 clamp(11px,2.55cqw,34px)/1.17 system-ui,sans-serif!important;
+  text-align:left!important;
+  font:550 3.55cqw/1.15 system-ui,sans-serif!important;
 }
-#order .pont-menu-reference #pontOrderRules span{color:#c2e6dc;font-variant-numeric:tabular-nums}
+#order .pont-menu-reference #pontOrderRules > *{
+  align-self:center;
+  padding:0 .5cqw;
+  clip-path:inset(50%);
+  white-space:nowrap;
+}
+#order .pont-reference-live-minimum #pontOrderMinimum,
+#order .pont-reference-live-hours #pontOrderHours{
+  clip-path:none;
+  background:#071f20;
+  color:#f1f6ed;
+  font-variant-numeric:tabular-nums;
+}
 #order #checkout .order-contact{
   position:relative;
   z-index:1;
   display:flex!important;
   justify-content:center!important;
-  margin:0 auto -14px!important;
+  margin:0 auto 10px!important;
 }
 #order #checkout .order-contact:has(#callNow[hidden]){display:none!important}
 #order #checkout .order-contact #callNow{
   display:inline-flex!important;
-  width:min(100%,330px)!important;
-  aspect-ratio:866 / 151;
+  width:min(100%,82vw,540px)!important;
+  aspect-ratio:712 / 116;
   min-height:44px!important;
   height:auto!important;
   padding:0!important;
   border:0!important;
   border-radius:999px!important;
-  background:#073637 url("./showcase/aromas-reference.jpg") 93.3% 86% / 193.07% 529.8% no-repeat!important;
-  box-shadow:0 0 14px #5ce6c373!important;
+  background:#073637 url("./showcase/portrait-reference.jpg") 50% 34.72% / 121.35% 1324.14% no-repeat!important;
+  box-shadow:0 0 12px #ffc86d75!important;
 }
 #order #checkout .order-contact #callNow[hidden]{display:none!important}
 #order #checkout #callNow :is(svg,span){opacity:0}
 #order #checkout #callNow svg{width:1.2em;height:1.2em}
 #order #checkout #callNow:focus-visible{outline:2px solid #a3fff1;outline-offset:3px}
-#order #checkout .order-contact:has(#callNow:not([hidden])) + #choices{padding-top:22px!important}
 @media(min-width:760px){
   #order #checkout .pont-order-details{grid-row:1}
 }
