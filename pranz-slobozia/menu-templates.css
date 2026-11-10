@@ -15,10 +15,10 @@
 .pont-model-row .pont-model-actions { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
 .pont-admin .pont-model-dialog { max-height: 86dvh; max-width: min(44rem, calc(100% - 1.5rem)); overflow-y: auto; text-align: start; }
 .pont-model-dialog .pont-model-actions { justify-content: flex-end; }
-#pontModelDishes { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .6rem; margin: .75rem 0; }
-#pontModelDishes fieldset { min-width: 0; padding: .45rem .55rem; border: 1px solid var(--admin-line, #285451); border-radius: 8px; }
-#pontModelDishes label { display: flex; align-items: center; gap: .45rem; padding-block: .25rem; overflow-wrap: anywhere; }
-#pontModelDishes input { flex: none; width: 1rem; height: 1rem; margin: 0; min-height: 0; }
+.pont-dish-checklist { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .6rem; margin: .75rem 0; }
+.pont-dish-checklist fieldset { min-width: 0; padding: .45rem .55rem; border: 1px solid var(--admin-line, #285451); border-radius: 8px; }
+.pont-dish-checklist label { display: flex; margin: 0; align-items: center; gap: .45rem; padding-block: .25rem; overflow-wrap: anywhere; }
+.pont-dish-checklist input[type="checkbox"] { flex: none; width: 1rem; height: 1rem; margin: 0; min-height: 0; }
 .pont-menu-archive { margin-top: .5rem; }
 .pont-menu-archive > summary {
   width: fit-content;
@@ -40,3 +40,8 @@
   .pont-model-row { grid-template-columns: minmax(0,1fr); }
   .pont-model-row .pont-model-actions { grid-column: 1; grid-row: auto; }
 }
+
+.pont-checklist-option { display: flex; align-items: center; justify-content: space-between; gap: .4rem; flex-wrap: wrap; }
+.pont-checklist-option + .pont-checklist-option { border-top: 1px solid var(--admin-line, #285451); }
+.pont-checklist-price { display: flex; align-items: center; gap: .25rem; font-size: .85em; white-space: nowrap; }
+.pont-dish-checklist .pont-checklist-price input { width: 5rem; margin: 0; }

@@ -4,6 +4,20 @@ const today = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Bucharest
 const formatDate = date => date.split('-').reverse().join('.');
 const groups = [['first','Felul 1'], ['second','Felul 2'], ['dessert','Desert']];
 
+export function renderDishChecklist(entries, selected, {daily = false, renderDetails = () => ''} = {}) {
+  return groups.map(([category, label]) => {
+    const options = entries.filter(([, dish]) => dish.category === category).map(([key, dish]) => {
+      const checked = selected.has(key);
+      return `<div class="pont-checklist-option">
+        <label><input type="checkbox" ${daily ? 'data-select' : 'name="dish"'} value="${esc(key)}" ${checked ? 'checked' : ''}>
+          <span>${esc(dish.name)}${dish.available === false ? ' · Epuizat' : ''}</span></label>
+        ${renderDetails(key, dish, checked)}
+      </div>`;
+    }).join('');
+    return `<fieldset><legend>${label}</legend>${options || '<small>Niciun preparat.</small>'}</fieldset>`;
+  }).join('');
+}
+
 export function renderMenuArchive(target, menus, restaurants) {
   const names = new Map(restaurants.map(restaurant => [restaurant.id, restaurant.name]));
   const cutoff = today();
@@ -41,7 +55,7 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
         <h3 id="pontModelTitle"></h3>
         <div id="pontModelEditor">
           <label>Numele modelului<input id="pontModelName" maxlength="80" required></label>
-          <div id="pontModelDishes"></div>
+          <div id="pontModelDishes" class="pont-dish-checklist"></div>
         </div>
         <div id="pontModelPublishFields" hidden>
           <p id="pontModelPublishName"></p>
@@ -143,11 +157,7 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
     } else {
       nameInput.value = model?.name ?? '';
       const picked = new Set(model?.dish_ids ?? []);
-      $('pontModelDishes').innerHTML = groups.map(([key,label]) =>
-        `<fieldset><legend>${label}</legend>${dishes.filter(dish => dish.category === key).map(dish =>
-          `<label><input type="checkbox" name="dish" value="${esc(dish.id)}" ${picked.has(dish.id)?'checked':''}> <span>${esc(dish.name)}${dish.available === false ? ' · Epuizat' : ''}</span></label>`
-        ).join('') || '<small>Niciun preparat.</small>'}</fieldset>`
-      ).join('');
+      $('pontModelDishes').innerHTML = renderDishChecklist(dishes.map(dish => [dish.id, dish]), picked);
       if (model?.dish_ids.some(id => !byId.has(id))) {
         errorMessage.textContent = 'Preparatele eliminate din bibliotecă trebuie înlocuite.';
       }

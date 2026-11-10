@@ -1,4 +1,5 @@
 // PONT: library of reusable restaurant dishes and daily menu selector.
+import {renderDishChecklist} from './menu-templates.js?v=3';
 export function initPontDishEditor({db, getRestaurants, refreshMenus, isRestaurantAdmin = false}) {
 const $ = id => document.getElementById(id);
 const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -10,7 +11,7 @@ if (!host || !wrap || !catalog) return;
 
 const photoValidationMessage = 'Fotografia trebuie să fie JPG, PNG sau WebP, maximum 2 MB.';
 const selected = new Map(), savedChoices = new Map();
-let dishes = [], category = 'first', dailyCategory = 'first';
+let dishes = [], category = 'first';
 let draftVersion = 0, menuDescription = '', pendingMenu = null;
 let editingDish = null, editingMenu = null, loadedRid = '', loadVersion = 0, saving = false, previewURL = '', dishPhotoRemoved = false;
 const icon = name => '<svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#' + name + '"></use></svg>';
@@ -168,19 +169,10 @@ form.innerHTML = `
     <div class="pont-daily-standard-price" role="status"><strong id="pontDailyComboDisplay">Preț nesetat</strong><input id="pontDailyCombo" type="hidden"></div>
     <label>Stare<select id="pontDailyState"><option value="true">Publică</option><option value="false">Ciornă</option></select></label>
   </div>
-  <div class="admin-daily-grid">
-    <div class="admin-daily-categories">
-      <h4>Categorii</h4>
-      <div id="pontDailyTabs" class="admin-categories" aria-label="Categorii din meniul zilei"></div>
-    </div>
-    <div class="admin-daily-selection">
-      <h4>Preparate</h4>
-      <div id="pontDailyDishes"></div>
-    </div>
-  </div>
+  <div id="pontDailyDishes" class="pont-dish-checklist"></div>
   <p id="pontDailyError" class="pont-dish-error" role="alert"></p>
   <div class="pont-dish-actions">
-    <button id="pontDailyCancel" type="button" hidden>Anulează</button>
+    <button id="pontDailyCancel" type="button">Anulează</button>
     <button id="pontDailyNext" type="submit" class="primary">Publică</button>
   </div>
 `;
@@ -273,19 +265,17 @@ function menuChoices() {
   return [...dishes.filter(dish => !savedChoices.has(dish.id)).map(dish => [dish.id, dish]), ...savedChoices];
 }
 function choices() {
-  const entries = menuChoices();
-  tabs('pontDailyTabs', dailyCategory, next => { dailyCategory = next; choices(); }, entries.map(([,dish]) => dish), false);
-  const list = entries.filter(([,dish]) => dish.category === dailyCategory);
-  $('pontDailyDishes').innerHTML = list.length ? list.map(([key,dish]) => {
-    const chosen = selected.get(key);
-    const price = dish.category === 'dessert' ? '<span class="pont-daily-price">Inclus</span>' :
-      chosen ? '<div class="pont-daily-price"><input type="number" aria-label="Preț ' + esc(dish.name) + '" data-price="' + esc(key) +
-        '" inputmode="decimal" min="0" max="10000" step=".01" value="' + esc(Number.isFinite(chosen.price) ? chosen.price : '') + '"><span>lei</span></div>' :
-        '<span class="pont-daily-price">' + priceRO.format(dish.price) + ' lei</span>';
-    return '<div class="pont-daily-dish"><div class="pont-daily-dish-info"><strong>' + esc(dish.name) + '</strong>' + price +
-      '</div><label class="pont-daily-switch"><input type="checkbox" role="switch" aria-label="Include ' + esc(dish.name) +
-      ' în meniul zilei" data-select="' + esc(key) + '"' + (chosen ? ' checked' : '') + '></label></div>';
-  }).join('') : '<p class="pont-daily-empty">Niciun preparat în această categorie.</p>';
+  $('pontDailyDishes').innerHTML = renderDishChecklist(menuChoices(), selected, {
+    daily: true,
+    renderDetails(key, dish, checked) {
+      if (dish.category === 'dessert') return '<span class="pont-checklist-price">Inclus</span>';
+      if (!checked) return '<span class="pont-checklist-price">' + priceRO.format(dish.price) + ' lei</span>';
+      const price = selected.get(key).price;
+      return '<div class="pont-checklist-price"><input type="number" aria-label="Preț ' + esc(dish.name) +
+        '" data-price="' + esc(key) + '" inputmode="decimal" min="0" max="10000" step=".01" value="' +
+        esc(Number.isFinite(price) ? price : '') + '"><span>lei</span></div>';
+    }
+  });
 }
 
 async function load() {
@@ -351,11 +341,9 @@ function resetDaily() {
   menuDescription = '';
   savedChoices.clear();
   selected.clear();
-  dailyCategory = 'first';
   $('pontDailyDate').value = todayRO();
   syncStandardPrice();
   $('pontDailyState').value = 'true';
-  $('pontDailyCancel').hidden = true;
   $('pontDailyError').textContent = '';
   updateDailyButton();
 }
@@ -402,7 +390,6 @@ async function open(menu, copy = false) {
     $('pontDailyDate').value = copy ? todayRO() : menu.service_date;
     syncStandardPrice();
     $('pontDailyState').value = String(!copy && menu.published);
-    $('pontDailyCancel').hidden = false;
   }
   updateDailyButton();
   setEditorOpen(true);
@@ -444,7 +431,7 @@ $('pontDailyState').onchange = updateDailyButton;
 $('pontDailyDishes').onchange = event => {
   const checkbox = event.target.closest('[data-select]');
   if (!checkbox) return;
-  const key = checkbox.dataset.select;
+  const key = checkbox.value;
   const dish = menuChoices().find(([candidate]) => candidate === key)?.[1];
   if (!dish) return;
   if (checkbox.checked) selected.set(key, {
@@ -454,7 +441,7 @@ $('pontDailyDishes').onchange = event => {
   });
   else selected.delete(key);
   choices();
-  [...$('pontDailyDishes').querySelectorAll('[data-select]')].find(input => input.dataset.select === key)?.focus({preventScroll:true});
+  [...$('pontDailyDishes').querySelectorAll('[data-select]')].find(input => input.value === key)?.focus({preventScroll:true});
 };
 $('pontDailyDishes').oninput = event => {
   const input = event.target.closest('[data-price]');
