@@ -815,7 +815,7 @@ body #order::backdrop{background:#031c1a}
   gap:0;
   width:fit-content;
   max-width:100%;
-  margin:clamp(10px,2.4vw,36px) auto 0;
+  margin:0;
   padding:0;
   border:1px solid #e3be72;
   border-radius:999px;
@@ -848,5 +848,31 @@ body #order::backdrop{background:#031c1a}
   font-weight:800;
   font-size:clamp(14px,2.7vw,41px);
 }
-#order .order-contact{display:block!important}
-#order .order-contact:not(:has(.call-now:not([hidden]))){display:none!important}
+#order .pont-hero-actions{
+  display:flex;
+  align-items:stretch;
+  justify-content:center;
+  gap:clamp(6px,1.4vw,18px);
+  margin-top:clamp(10px,2.4vw,36px);
+}
+#order .pont-hero-actions #callNow{
+  display:grid;
+  place-items:center;
+  min-width:0;
+  min-height:44px;
+  padding:5px clamp(7px,2vw,25px);
+  border:1px solid #68b9ae;
+  border-radius:999px;
+  background:#082f31;
+  color:#f0fffa;
+  text-align:center;
+  text-decoration:none;
+  font:750 clamp(11px,1.6vw,22px)/1.2 system-ui,sans-serif;
+}
+#order .pont-hero-actions #callNow[hidden]{display:none}
+#order .pont-hero-actions #callNow:hover{background:#10464a}
+#order .pont-hero-actions #callNow:focus-visible{outline:2px solid #baf5df;outline-offset:2px}
+@media(max-width:530px){
+  #order .pont-hero-actions:has(#callNow:not([hidden])) .pont-menu-tag__label,
+  #order .pont-hero-actions:has(#callNow:not([hidden])) .pont-menu-tag strong{padding-inline:7px}
+}
