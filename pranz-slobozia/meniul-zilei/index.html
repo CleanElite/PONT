@@ -520,15 +520,15 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-page.css?v=20261110l">
+<link rel="stylesheet" href="./restaurant-page.css?v=20261110m">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
 <style>.pont-promotion-label{align-self:flex-start;width:max-content;padding:3px 8px;border-radius:999px;background:#eacb85;color:#221605;font-size:11px;font-weight:750}</style>
 <dialog id="order" aria-labelledby="orderTitle">
 <div class="pont-restaurant-hero"><div class="order-topbar"><button type="button" id="close" class="secondary" aria-label="Înapoi la restaurante" autofocus><span class="pont-nav-action__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></span></button></div>
 <div class="pont-restaurant-hero__content"><img class="pont-order-logo pont-order-logo-image" src="./showcase/pont-wordmark.webp" alt="PONT Slobozia" width="576" height="240" decoding="async"><div class="pont-restaurant-hero__identity"><div class="pont-restaurant-hero__photo" id="restaurantHeroPhoto" aria-hidden="true"></div><div class="pont-order-brand"><h2 id="orderTitle"></h2><p class="pont-hero-location"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Slobozia</span></p></div></div>
-<div class="pont-hero-actions"><div class="pont-menu-tag"><span class="pont-menu-tag__label"><svg aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Meniul zilei</span><strong id="heroMenuPrice"></strong></div><a id="callNow" class="call-now" hidden><svg aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#phone"></use></svg><span>Sună acum și comandă</span></a></div></div></div>
+<div class="pont-hero-actions"><div class="pont-menu-tag"><span class="pont-menu-tag__label"><svg aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Meniul zilei</span><strong id="heroMenuPrice"></strong></div><div id="pontOrderRules"><strong id="pontOrderMinimum"></strong><span id="pontOrderHours"></span></div></div></div></div>
 <form id="checkout">
-<section class="order-menu-preview" aria-label="Meniul restaurantului"><span class="pont-menu-icon" aria-hidden="true">♨</span><div id="menuPreview"></div><p id="combo-price"></p></section><p id="pontOrderRules" style="margin:8px 0 15px;color:#beced2;font-size:.83rem;line-height:1.5" role="status"></p><section class="order-selection"><div id="choices"></div><div id="pontSelectionSummary" class="pont-selection-summary" role="status" aria-live="polite"><strong>Rezumat selecție</strong><p id="pontSelectionText">Nu ai selectat încă preparate.</p></div></section>
+<section class="order-menu-preview" aria-label="Meniul restaurantului"><span class="pont-menu-icon" aria-hidden="true">♨</span><div id="menuPreview"></div><p id="combo-price"></p></section><div class="order-contact"><a id="callNow" class="call-now" hidden><svg aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#phone"></use></svg><span>Sună acum și comandă</span></a></div><section class="order-selection"><div id="choices"></div><div id="pontSelectionSummary" class="pont-selection-summary" role="status" aria-live="polite"><strong>Rezumat selecție</strong><p id="pontSelectionText">Nu ai selectat încă preparate.</p></div></section>
 <section class="pont-order-details"><div class="pont-details-head"><h3>▤ &nbsp; Detalii comandă</h3></div><div class="fulfillment"><span class="field-heading">Cum primești comanda?</span><div class="fulfillment-options"><button type="button" data-method="Livrare, dacă restaurantul confirmă" class="selected" aria-pressed="true">♧ Livrare</button><button type="button" data-method="Ridicare" aria-pressed="false">▢ Ridicare</button></div><select name="method" aria-label="Modalitate de primire" class="visually-hidden-select"><option>Livrare, dacă restaurantul confirmă</option><option>Ridicare</option></select></div>
 <label>Nume și prenume<input name="full_name" type="text" autocomplete="name" required minlength="3" maxlength="140" placeholder="Nume și prenume"></label><label>Număr de telefon<input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="24" placeholder="07XXXXXXXX sau +407XXXXXXXX" aria-describedby="phoneError"><small id="phoneError" class="phone-error" role="alert" hidden>Numărul de telefon nu este corect. Introdu un număr mobil românesc: 07XXXXXXXX sau +407XXXXXXXX.</small></label>
 <label id="address" hidden>Adresă de livrare<input name="address" autocomplete="street-address" maxlength="150" placeholder="Stradă, număr, bloc, etaj, apartament"><small class="address-hint">Completează strada și numărul, iar dacă este cazul: bloc, etaj și apartament.</small></label>
@@ -718,13 +718,14 @@ function openOrder(m,trigger){
     }).join('')+'</div></details>';
   }).join('');
   form.elements.payment.innerHTML='<option value="Cash">Cash</option>'+(m.card?'<option value="Card">Card</option>':'');form.elements.payment.disabled=!m.card;let note=document.querySelector('#cardPaymentNote');if(!note){note=document.createElement('small');note.id='cardPaymentNote';form.elements.payment.closest('label').after(note)}note.hidden=!!m.card;note.textContent='Restaurantul nu percepe plata cu cardul.';
-  $('#pontOrderRules').textContent=(m.opens_at&&m.closes_at?'Program comenzi: '+m.opens_at.slice(0,5)+'–'+m.closes_at.slice(0,5):'Program comenzi: de confirmat la restaurant')+' | Comandă minimă: '+(m.min_full_menus||1)+' meniu complet.';
+  const minimum = m.min_full_menus || 1;
+  $('#pontOrderMinimum').textContent = 'Minim ' + minimum + (minimum === 1 ? ' meniu' : ' meniuri');
+  $('#pontOrderHours').textContent = (m.opens_at || '09:00').slice(0,5) + '–' + (m.closes_at || '15:00').slice(0,5);
   $('#send').textContent=m.phone?'Trimite comanda pe WhatsApp':isMenuPreview?'Comenzile sunt dezactivate în previzualizare':'WhatsApp indisponibil — lipsește numărul';$('#send').disabled=!m.phone;const callPhone=normalizeCallPhone(m.phone);$('#callNow').hidden=!callPhone;if(callPhone){$('#callNow').href='tel:'+callPhone;}else{$('#callNow').removeAttribute('href');}
   const hero=$('#order .pont-restaurant-hero');
-  const aromasReference = /^Restaurant Aromas$/i.test(m.name.trim()) && Boolean(callPhone);
+  const aromasReference = /^Restaurant Aromas$/i.test(m.name.trim());
   hero.classList.add('pont-menu-reference');
   hero.classList.toggle('pont-aromas-reference', aromasReference);
-  hero.classList.toggle('pont-reference-no-call', !callPhone);
   hero.classList.toggle('pont-reference-live-price', !aromasReference || Number(m.full)!==30);
   $('#orderMsg').textContent='';
   $('#order').showModal();update();
