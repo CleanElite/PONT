@@ -140,6 +140,8 @@
 #analytics #analyticsStatus:empty{display:none!important}
 #analytics #analyticsStatus{font-size:11px!important;margin:0 0 7px!important}
 @media(max-width:420px){#analytics.pont-insights{padding:12px!important}#analytics .pont-insight{padding:10px 7px!important;grid-template-columns:24px minmax(0,1fr)!important;column-gap:5px!important}#analytics .pont-insight>.pont-stat-symbol{font-size:19px!important}#analytics .pont-insights-restaurant>summary{padding:11px!important}#analytics .pont-insights-section-title h3{font-size:18px!important}}
+#analytics #nt[hidden]{display:none!important}
+#analytics .pont-insight[hidden],#analytics .pont-custom-period[hidden]{display:none!important}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><body class="pont-admin pont-admin--platform">
@@ -709,7 +711,7 @@ document.querySelectorAll('[data-analytics-period]').forEach(button=>button.addE
 }));
 $('analyticsFrom').onchange=()=>{if(analyticsPeriod==='custom')loadAnalytics()};
 $('analyticsTo').onchange=()=>{if(analyticsPeriod==='custom')loadAnalytics()};
-$('analyticsMonth').onchange=()=>{if(analyticsPeriod==='custom')return;const [y,m]=$('analyticsMonth').value.split('-').map(Number);if(!y||!m)return;analyticsPeriod='custom';$('analyticsFrom').value=$('analyticsMonth').value+'-01';$('analyticsTo').value=new Date(y,m,0).toISOString().slice(0,10);document.querySelector('[data-analytics-period="custom"]').click();loadAnalytics()};
+$('analyticsMonth').onchange=()=>{if(analyticsPeriod==='custom')return;const [y,m]=$('analyticsMonth').value.split('-').map(Number);if(!y||!m)return;analyticsPeriod='custom';$('analyticsFrom').value=$('analyticsMonth').value+'-01';$('analyticsTo').value=new Date(Date.UTC(y,m,0)).toISOString().slice(0,10);document.querySelector('[data-analytics-period="custom"]').click();loadAnalytics()};
 $('analyticsRefresh').onclick=async()=>{await loadAnalytics();if(!$('app').hidden)try{await load()}catch(e){console.warn('Meniuri statistici',e)}};
 setInterval(()=>{if(!$('app').hidden&&!$('analytics').hidden&&!document.hidden){loadAnalytics();load().catch(e=>console.warn('Actualizare meniuri:',e.message))}},20000);
 
