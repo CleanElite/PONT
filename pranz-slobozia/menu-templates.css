@@ -341,3 +341,28 @@
   .pont-admin #pontDailyBuilder .pont-dish-actions{gap:7px}
   .pont-admin #pontDailySaveModel{font-size:12px;padding-inline:9px}
 }
+
+
+/* Save selected daily menu as a reusable model, without publishing it. */
+.pont-admin .pont-daily-save-model{
+  min-height:40px;
+  border:1px solid rgba(139,224,197,.58);
+  border-radius:11px;
+  white-space:nowrap;
+}
+.pont-admin .pont-daily-save-model.is-saved{
+  background:rgba(21,99,75,.55)!important;
+  color:#bafbd9!important;
+  border-color:#83e2b5!important;
+  font-weight:700;
+}
+@media(max-width:440px){
+  .pont-admin .pont-dish-actions{
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .pont-admin .pont-daily-save-model{
+    font-size:12px;
+    padding:9px 10px;
+  }
+}
