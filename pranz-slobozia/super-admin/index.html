@@ -212,6 +212,12 @@
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><style id="pont-grouped-nav-style">
+/* C10 Simplified menu groupings & paired indicator layout */
+.pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster{justify-content:center!important;gap:8px!important;padding-top:12px!important;padding-bottom:12px!important}
+#analytics .pont-insights-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#analytics .pont-insights-grid>.pont-insight.stat:last-child{grid-column:1/-1!important;min-height:88px!important}
+@media(min-width:720px){#analytics .pont-insights-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}#analytics .pont-insights-grid>.pont-insight.stat:last-child{min-height:105px!important}}
+
 /* C8 Super Admin — grouped navigation: three vertical premium modules */
 .pont-admin--platform .admin-nav.pont-admin-grouped-nav{
   display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:stretch!important;
@@ -303,17 +309,14 @@
 </div>
 <nav class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Super Admin">
   <div class="pont-nav-cluster pont-nav-cluster--content" role="group" aria-label="Meniuri și preparate">
-    <span class="pont-nav-cluster-label">Conținut <span class="pont-nav-label-rule" aria-hidden="true"></span><span class="pont-nav-cluster-number">01</span></span>
     <button type="button" data-tab="menus" aria-controls="menus" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Meniuri</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <button type="button" data-tab="dishLibrary" aria-controls="dishLibrary" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#fork-knife"></use></svg><span>Preparate</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--management" role="group" aria-label="Restaurante și conturi">
-    <span class="pont-nav-cluster-label">Administrare <span class="pont-nav-label-rule" aria-hidden="true"></span><span class="pont-nav-cluster-number">02</span></span>
     <button type="button" data-tab="restaurants" aria-controls="restaurants" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#storefront"></use></svg><span>Restaurante</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <button type="button" data-tab="members" aria-controls="members" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#users-three"></use></svg><span>Conturi</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
-    <span class="pont-nav-cluster-label">Comercial <span class="pont-nav-label-rule" aria-hidden="true"></span><span class="pont-nav-cluster-number">03</span></span>
     <button type="button" data-tab="auctions" aria-controls="auctions" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg><span>Licitații</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <a href="../promovare/?v=grila"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
   </div>
@@ -501,15 +504,14 @@
  </div>
  <div class="pont-insights-section-title"><h3>Indicatori generali PONT</h3><small id="analyticsLastUpdated">—</small></div>
  <div class="pont-insights-grid" aria-label="Indicatori generali PONT">
-  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#storefront"></use></svg><strong id="nr">0</strong><span class="pont-stat-label">Restaurante</span></div>
-  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><strong id="analyticsActiveRestaurants">— / 15</strong><span class="pont-stat-label">Meniuri active azi</span></div>
-  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#list-bullets"></use></svg><strong id="analyticsMenuViews">—</strong><span class="pont-stat-label">Vizualizări meniuri</span></div>
-  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#phone"></use></svg><strong id="analyticsTotalCalls">—</strong><span class="pont-stat-label">Apăsări Sună acum</span></div>
-  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><strong id="analyticsTotalWhatsApp">—</strong><span class="pont-stat-label">Apăsări WhatsApp</span></div>
-  <div class="pont-insight stat pont-insight-status"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><div class="pont-status-numbers"><span>A <strong id="nmActive">0</strong></span><span>P <strong id="nmScheduled">0</strong></span></div><span class="pont-stat-label">Meniuri active / programate</span><strong id="nt" hidden>0</strong></div>
-  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#fork-knife"></use></svg><strong id="analyticsTotalMenus">—</strong><span class="pont-stat-label">Meniuri trimise estimativ</span></div>
   <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#chart-bar"></use></svg><strong id="analyticsTotalViews">—</strong><span class="pont-stat-label">Vizite totale</span></div>
   <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#users-three"></use></svg><strong id="analyticsUniqueVisitors">—</strong><span class="pont-stat-label">Vizitatori unici</span></div>
+  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><strong id="analyticsActiveRestaurants">— / 15</strong><span class="pont-stat-label">Meniuri active azi</span></div>
+  <div class="pont-insight stat pont-insight-status"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><div class="pont-status-numbers"><span>A <strong id="nmActive">0</strong></span><span>P <strong id="nmScheduled">0</strong></span></div><span class="pont-stat-label">Meniuri active / programate</span><strong id="nt" hidden>0</strong></div>
+  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#list-bullets"></use></svg><strong id="analyticsMenuViews">—</strong><span class="pont-stat-label">Vizualizări meniuri</span></div>
+  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#fork-knife"></use></svg><strong id="analyticsTotalMenus">—</strong><span class="pont-stat-label">Meniuri trimise estimativ</span></div>
+  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#phone"></use></svg><strong id="analyticsTotalCalls">—</strong><span class="pont-stat-label">Apăsări Sună acum</span></div>
+  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><strong id="analyticsTotalWhatsApp">—</strong><span class="pont-stat-label">Apăsări WhatsApp</span></div>
   <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#coins"></use></svg><strong id="analyticsEstimatedValue">—</strong><span class="pont-stat-label">Valoare estimată a meniurilor</span></div>
  </div>
  <p id="analyticsStatus" class="dashboard-message" role="status" aria-live="polite"></p>
@@ -669,7 +671,6 @@ async function load() {
   req(db.from('menus').select('*').eq('published',true).order('service_date', {ascending:false}).limit(200)),
   req(db.from('restaurant_members').select('*'))
  ]);
- $('nr').textContent = restaurants.length;
  const today = todayRO();
  const [activeCount, scheduledCount] = await Promise.all([
   db.from('menus').select('id', {count:'exact', head:true}).eq('published',true).eq('service_date',today),
@@ -817,7 +818,6 @@ function renderAnalytics(){
  put('analyticsUniqueVisitors',analytics.platform_unique_visitors||0);
  $('analyticsActiveRestaurants').textContent=pontStatNumber(analytics.active_restaurants||0)+' / '+pontStatNumber(analytics.restaurants_count||restaurants.length);
  $('analyticsEstimatedValue').textContent=pontStatLei(total('estimated_menus_value'));
- put('nr',analytics.restaurants_count||restaurants.length);
  $('analyticsLastUpdated').textContent='Actualizat '+new Intl.DateTimeFormat('ro-RO',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Bucharest'}).format(new Date());
 }
 async function loadAnalytics(){
