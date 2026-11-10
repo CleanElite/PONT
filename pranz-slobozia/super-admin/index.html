@@ -655,8 +655,7 @@ function renderAnalytics(){
  count('analyticsTotalCalls',total('calls'));
  count('analyticsTotalWhatsApp',total('whatsapp'));
  count('analyticsTotalMenus',total('menus'));
- count('analyticsUniqueVisitors',new Set(list.flatMap(()=>[])).size);
- // Unique visitors are browser identifiers; the per-restaurant sums may count the same browser several times.
+ // Distinct consenting browser identifiers are calculated across all restaurants.
  $('analyticsUniqueVisitors').textContent=pontStatNumber(analytics.platform_unique_visitors||0);
  $('analyticsActiveRestaurants').textContent=pontStatNumber(analytics.active_restaurants||0)+' / '+pontStatNumber(analytics.restaurants_count||restaurants.length);
  $('analyticsScheduledCount').textContent=pontStatNumber(analytics.scheduled_menus||0);
@@ -684,9 +683,12 @@ async function loadAnalytics(){
  }
  $('analyticsRefresh').disabled=true;
  try{
-  const result=await req(db.rpc('pont_admin_stats_range',{p_from:start,p_to:end}));
+  const [result,uniqueVisitors]=await Promise.all([
+   req(db.rpc('pont_admin_stats_range',{p_from:start,p_to:end})),
+   req(db.rpc('pont_admin_unique_visitors_range',{p_from:start,p_to:end}))
+  ]);
   if(request!==analyticsRequest)return;
-  analytics=result;
+  analytics={...result,platform_unique_visitors:Number(uniqueVisitors||0)};
   const openCards=[...$('analyticsRestaurantCards').querySelectorAll('details[open] summary .pont-insights-restaurant-name')].map(x=>x.textContent);
   renderAnalytics();
   $('analyticsRestaurantCards').querySelectorAll('details').forEach(d=>{if(openCards.includes(d.querySelector('.pont-insights-restaurant-name')?.textContent))d.open=true});
@@ -709,7 +711,7 @@ $('analyticsFrom').onchange=()=>{if(analyticsPeriod==='custom')loadAnalytics()};
 $('analyticsTo').onchange=()=>{if(analyticsPeriod==='custom')loadAnalytics()};
 $('analyticsMonth').onchange=()=>{if(analyticsPeriod==='custom')return;const [y,m]=$('analyticsMonth').value.split('-').map(Number);if(!y||!m)return;analyticsPeriod='custom';$('analyticsFrom').value=$('analyticsMonth').value+'-01';$('analyticsTo').value=new Date(y,m,0).toISOString().slice(0,10);document.querySelector('[data-analytics-period="custom"]').click();loadAnalytics()};
 $('analyticsRefresh').onclick=async()=>{await loadAnalytics();if(!$('app').hidden)try{await load()}catch(e){console.warn('Meniuri statistici',e)}};
-setInterval(()=>{if(!$('app').hidden&&!$('analytics').hidden&&!document.hidden)loadAnalytics()},20000);
+setInterval(()=>{if(!$('app').hidden&&!$('analytics').hidden&&!document.hidden){loadAnalytics();load().catch(e=>console.warn('Actualizare meniuri:',e.message))}},20000);
 
 const auctionMoney = value => Number(value || 0).toLocaleString('ro-RO', {maximumFractionDigits:2}) + ' lei';
 let auctionOffers = [], manualPaidApprovals = [], auctionRequest = 0, loadedAuctionMonth = '';
