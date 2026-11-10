@@ -369,3 +369,12 @@
     padding:9px 10px;
   }
 }
+
+/* Collapsible saved templates; the create-new action remains visible outside this panel. */
+.pont-model-saved{margin-top:.8rem;border:1px solid var(--admin-line,#285451);border-radius:12px;overflow:hidden}
+.pont-model-saved>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;list-style:none;padding:13px 15px;font-weight:700;user-select:none}
+.pont-model-saved>summary::-webkit-details-marker{display:none}
+.pont-model-saved>summary:focus-visible{outline:2px solid #76e6d5;outline-offset:-3px}
+.pont-model-saved .pont-model-chevron{flex:none;width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .2s ease;margin-right:5px}
+.pont-model-saved[open] .pont-model-chevron{transform:rotate(225deg)}
+.pont-model-saved-body{padding:0 13px 13px}
