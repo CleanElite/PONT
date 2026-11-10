@@ -827,9 +827,8 @@ body #order::backdrop{background:#031c1a}
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:clamp(5px,1.6vw,24px);
-  padding:clamp(7px,1.45vw,22px) clamp(9px,3.1vw,47px);
-  font:700 clamp(13px,2.42vw,37px)/1.15 system-ui,sans-serif;
+  padding:6px clamp(7px,1vw,12px);
+  font:700 clamp(12px,1.35vw,19px)/1.15 system-ui,sans-serif;
   white-space:nowrap;
 }
 #order .pont-restaurant-hero .pont-menu-tag__label{
@@ -840,39 +839,38 @@ body #order::backdrop{background:#031c1a}
   box-shadow:inset 0 0 15px #148c844e,0 0 11px #4cf7e56e;
   color:#f1fcf6;
 }
-#order .pont-menu-tag__label svg{flex:none;width:1.1em;height:1.1em}
 #order .pont-restaurant-hero .pont-menu-tag strong{
   background:none;
   box-shadow:none;
   color:#1a1308;
   font-weight:800;
-  font-size:clamp(14px,2.7vw,41px);
+  font-size:clamp(13px,1.45vw,21px);
 }
 #order .pont-hero-actions{
   display:flex;
-  align-items:stretch;
+  align-items:center;
   justify-content:center;
   gap:clamp(6px,1.4vw,18px);
   margin-top:clamp(10px,2.4vw,36px);
 }
 #order .pont-hero-actions #callNow{
-  display:grid;
-  place-items:center;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
   min-width:0;
   min-height:44px;
   padding:5px clamp(7px,2vw,25px);
-  border:1px solid #68b9ae;
+  border:1px solid #a9ddcf;
   border-radius:999px;
-  background:#082f31;
+  background:linear-gradient(120deg,#174944,#092b2d);
+  box-shadow:inset 0 1px 0 #c5ffe02b,0 3px 10px #0005;
   color:#f0fffa;
   text-align:center;
   text-decoration:none;
-  font:750 clamp(11px,1.6vw,22px)/1.2 system-ui,sans-serif;
+  font:750 clamp(11px,1.25vw,17px)/1.2 system-ui,sans-serif;
 }
 #order .pont-hero-actions #callNow[hidden]{display:none}
 #order .pont-hero-actions #callNow:hover{background:#10464a}
 #order .pont-hero-actions #callNow:focus-visible{outline:2px solid #baf5df;outline-offset:2px}
-@media(max-width:530px){
-  #order .pont-hero-actions:has(#callNow:not([hidden])) .pont-menu-tag__label,
-  #order .pont-hero-actions:has(#callNow:not([hidden])) .pont-menu-tag strong{padding-inline:7px}
-}
+#order .pont-hero-actions #callNow svg{width:1.15em;height:1.15em;flex:none;fill:#b9eddd}
