@@ -1,0 +1,191 @@
+/* Shared density for the restaurant and Super Admin workspaces. */
+body.pont-admin {
+  --admin-gutter: clamp(8px, 2vw, 22px);
+  --admin-bar-height: 44px;
+  --admin-control-size: 32px;
+}
+.pont-admin > main { padding-bottom: 24px; }
+.pont-admin .admin-brand { width: 92px; }
+.pont-admin .admin-topbar .admin-back,
+.pont-admin .admin-logout { min-height: var(--admin-control-size); }
+.pont-admin .admin-logout {
+  top: calc((var(--admin-bar-height) - var(--admin-control-size)) / 2);
+  min-width: 0 !important;
+}
+.pont-admin #app .admin-hero {
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin: 8px 0 6px;
+}
+.pont-admin #app .admin-hero > .admin-icon { width: 20px; }
+.pont-admin #app .admin-hero-copy { flex: 1 1 155px; }
+.pont-admin #app .admin-hero h1 { font-size: clamp(19px, 3vw, 25px); }
+.pont-admin #app .admin-hero p { margin: 2px 0 0; font-size: 12px; }
+.pont-admin #app .admin-context {
+  max-width: 100%;
+  margin: 0;
+  padding: 3px 6px;
+  gap: 4px;
+  font-size: 12px;
+}
+
+.pont-admin #app .admin-nav {
+  display: flex;
+  flex-wrap: wrap;
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  gap: 3px;
+  margin: 0 0 7px;
+  padding: 3px;
+  border-radius: 10px;
+}
+.pont-admin #app .admin-nav > :is(button, a) {
+  flex: 0 0 auto;
+  flex-direction: row;
+  gap: 4px;
+  min-height: var(--admin-control-size);
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.pont-admin #app .admin-nav .admin-icon { width: 13px; height: 13px; }
+
+.pont-admin #app button {
+  min-height: var(--admin-control-size);
+  padding: 4px 8px;
+  font-size: 12px;
+  line-height: 1.25;
+}
+.pont-admin #app :is(input:not([type='checkbox'], [type='radio'], [type='file']), select, textarea) {
+  min-height: var(--admin-control-size);
+  max-width: 100%;
+  padding: 4px 7px;
+  border-radius: 7px;
+}
+.pont-admin #app textarea { min-height: 48px; }
+.pont-admin #app label { margin-block: 4px; }
+.pont-admin #app label > :is(input:not([type='checkbox'], [type='radio'], [type='file']), select, textarea) { margin-top: 2px; }
+.pont-admin #app :is(.card, .dashboard-form, .dashboard-disclosure, .restaurant-password-box, .contact-phone-view, .contact-card-settings) {
+  padding: 8px;
+  border-radius: 10px;
+}
+.pont-admin #app :is(.dashboard-panel, .admin-workspace, .contact-card-settings, .dashboard-form, .dashboard-disclosure, .menu-group, .pont-operations) { margin-block: 6px; }
+.pont-admin #app :is(.admin-panel-head, .dashboard-heading) {
+  align-items: center;
+  gap: 5px 8px;
+  margin-bottom: 6px;
+  padding-bottom: 3px;
+}
+.pont-admin #app .dashboard-heading > div:first-child { flex: 1 1 120px; }
+.pont-admin #app :is(h2, .dashboard-heading h2) { font-size: 18px; margin-bottom: 3px; }
+.pont-admin #app h3 { font-size: 15px; margin-block: 3px 5px; }
+.pont-admin #app :is(.dashboard-heading, .dashboard-form, #contactView) > p { margin-block: 3px 5px; }
+.pont-admin #app :is(.dashboard-tools, .dashboard-fields, .dashboard-actions, .pont-dish-actions, .pont-daily-fields, .admin-library-grid) { gap: 5px 7px; }
+.pont-admin #app :is(.dashboard-tools, .dashboard-stats, .dashboard-list, .menu-log, .pont-dish-actions, .dashboard-form > .dashboard-actions) { margin-block: 6px; }
+.pont-admin #app .dashboard-tools > :is(label, .dashboard-search) { flex: 1 1 110px; min-width: 0; }
+.pont-admin #app .dashboard-tools input[type='month'] { width: 100%; }
+.pont-admin #app .dashboard-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.pont-admin #app :is(.dashboard-actions, .contact-edit-actions, .pont-dish-actions) { display: flex; flex-wrap: wrap; align-items: center; gap: 5px; }
+.pont-admin #app :is(.pont-dish-actions, .contact-edit-actions, .restaurant-admin-actions) > button { flex: 0 1 auto; width: auto; min-width: 0; }
+.pont-admin #app :is(.pont-menu-toggle, .auction-save-bar > button) { width: auto; gap: 6px; }
+.pont-admin #app .pont-menu-toggle .admin-icon { width: 15px; height: 15px; }
+.pont-admin #app .stat { padding: 5px 7px; border-radius: 8px; font-size: 11px; }
+.pont-admin #app .stat strong { margin-top: 2px; font-size: 17px; }
+
+.pont-admin #app :is(.restaurant-admin-item, .dashboard-member, .auction-entry, .pont-dish-line, .pont-daily-dish, .menu-group .row) {
+  padding-block: 4px;
+  gap: 4px 7px;
+}
+.pont-admin #app :is(.menu-group summary, .dashboard-disclosure summary) { padding: 5px 7px; }
+.pont-admin #app .menu-group .menu-items { padding: 0 7px 4px; }
+.pont-admin #app .dashboard-auction-state { min-width: 0; }
+.pont-admin #app .auction-save-bar { position: static; margin: 6px 0; padding: 6px 7px; gap: 5px; }
+.pont-admin #app .auction-save-bar > div { flex: 1 1 135px; }
+.pont-admin #app .auction-save-bar span { font-size: 11px; }
+.pont-admin #app .admin-row-actions button { width: var(--admin-control-size); min-width: var(--admin-control-size); padding: 3px; }
+.pont-admin #app .admin-row-actions .admin-icon { width: 14px; height: 14px; }
+.pont-admin #app .saved-menu-card { padding: 6px 8px; margin: 5px 0; border-radius: 9px; }
+.pont-admin #app .saved-menu-heading time { font-size: 14px; }
+.pont-admin #app .saved-menu-courses { margin: 5px 0; gap: 3px; }
+.pont-admin #app .saved-menu-footer { padding-top: 3px; }
+
+.pont-admin #app :is(.admin-categories, #pontDailyTabs) { gap: 3px; }
+.pont-admin #app :is(.admin-categories, #pontDailyTabs) button { min-height: var(--admin-control-size); gap: 4px; }
+.pont-admin #app .admin-category-help { margin: 5px 0 0; }
+.pont-admin #app .pont-daily-switch { width: 34px; min-height: var(--admin-control-size); }
+.pont-admin #app .pont-daily-fields label { flex: 0 1 118px; }
+.pont-admin #app .pont-daily-fields label:has(#pontDailyCombo) { flex-basis: 72px; }
+.pont-admin #app #pontDishForm .pont-dish-photo-price-layout { grid-template-columns: 72px minmax(0, 1fr); gap: 6px; }
+.pont-admin #app #pontDishForm .admin-dish-photo-field,
+.pont-admin #app #pontDishForm .admin-dish-photo { width: 72px; }
+.pont-admin #app #pontDishForm .admin-dish-photo { height: 72px; }
+.pont-admin #app #pontDishForm .pont-dish-photo-price-layout .pont-dish-grid { height: auto; gap: 4px; }
+.pont-admin #app #pontDishForm .pont-dish-photo-price-layout .pont-dish-grid :is(input, select) { height: auto; min-height: var(--admin-control-size); }
+.pont-admin #app #pontDishForm .pont-dish-description { margin-top: 5px; }
+.pont-admin #app .pont-dish-summary img { width: 30px; height: 30px; }
+.pont-admin #app .pont-library-row:has(img) .pont-dish-price { margin-left: 0; }
+.pont-admin #app .pont-availability { gap: 3px; margin: 0; }
+
+.pont-admin #app .pont-operations { gap: 5px; }
+.pont-admin #app .pont-operations details { padding: 6px 8px; }
+.pont-admin #app .pont-operations summary { min-height: 24px; font: 650 13px/1.25 system-ui; }
+.pont-admin #app .pont-operations details[open] summary { margin-bottom: 5px; }
+.pont-admin #app .pont-operations .pont-op-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 5px 0; gap: 4px; }
+.pont-admin #app .pont-operations .pont-op-days { gap: 3px; }
+.pont-admin #app .pont-operations .pont-op-day { padding: 3px 6px; gap: 4px; }
+.pont-admin #app :is(.dashboard-table td, .dashboard-table th) { padding: 3px 5px; }
+.pont-admin #app .dashboard-table tbody { gap: 4px; }
+.pont-admin #app :is(.pont-auction-ranking-head, .pont-auction-ranking-footer, .pont-auction-ranking-rows, .auction-choice-dialog, .pont-menu-dialog, #pontDishConfirm) { padding: 8px 10px; }
+.pont-admin #app .pont-auction-ranking-row { min-height: 0; gap: 4px 6px; padding: 4px; }
+.pont-admin #app .pont-auction-ranking-info { padding: 5px 10px; }
+.pont-admin #app .pont-ranking-add { margin: 4px 10px; gap: 4px; }
+.pont-admin #app .auction-choice-options { gap: 4px; margin-top: 6px; }
+.pont-admin #app .auction-choice-options label { padding: 5px 7px; }
+
+@media (max-width: 760px) {
+  .pont-admin #app .dashboard-table tbody tr { padding: 4px 6px; gap: 2px 4px; }
+}
+@media (max-width: 460px) {
+  .pont-admin #app .admin-nav > :is(button, a) { padding-inline: 5px; }
+  .pont-admin #app .admin-nav .admin-icon { display: none; }
+  .pont-admin #app :is(.restaurant-admin-heading, .auction-entry-main) { flex-basis: 90px; }
+  .pont-admin #app .pont-library-row { grid-template-areas: "summary actions" "price availability"; }
+  .pont-admin #app .pont-library-row .pont-availability { justify-self: end; }
+}
+@media (max-width: 360px) {
+  .pont-admin #app .dashboard-fields { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* The promotion view is reached from both workspaces. */
+body.lunch.menu-showcase.pont-compact-promotion > .menu-header { min-height: 42px; padding-block: 4px; }
+.pont-compact-promotion .menu-wordmark { width: 95px; }
+.pont-compact-promotion .menu-back { min-height: 32px; padding: 4px 7px; font-size: 12px; }
+.pont-compact-promotion .menu-heading { margin: 4px auto 8px; padding: 0; }
+.pont-compact-promotion .menu-heading h1 { font-size: 24px; gap: 6px; }
+.pont-compact-promotion .menu-heading .menu-icon--utensils { width: 17px; height: 17px; }
+.pont-compact-promotion .menu-heading p { margin: 3px 0; font-size: 13px; }
+.pont-compact-promotion .menu-heading::after { margin-top: 6px; }
+body.lunch.menu-showcase.pont-compact-promotion #customer #list { gap: 6px; }
+.pont-compact-promotion #list .menu-tile { grid-column: auto; }
+.pont-compact-promotion #list .menu-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px;
+  align-items: center;
+  min-height: 48px;
+  aspect-ratio: auto;
+  padding: 6px;
+  text-align: left;
+}
+.pont-compact-promotion #list .menu-card-copy { width: auto; gap: 3px; }
+.pont-compact-promotion #list .menu-card-name { max-width: none; font-size: 14px; overflow-wrap: anywhere; }
+.pont-compact-promotion #list .menu-card-price { position: static; padding: 2px 4px; font-size: 11px; }
+.pont-compact-promotion #list .promotion-action { padding: 2px 4px; margin: 0; font-size: 10px; }
+.pont-compact-promotion .promotion-footer { margin: 8px auto 0; padding: 5px; }
+.pont-compact-promotion .auction-modal-inner { padding: 12px; }
+.pont-compact-promotion .auction-modal h2 { font-size: 20px; margin-block: 5px; }
+.pont-compact-promotion .auction-modal .modal-current { margin: 6px 0; padding: 6px; }
+.pont-compact-promotion .auction-modal input { min-height: 32px; margin: 3px 0 6px; padding: 4px 6px; font-size: 16px; }
+.pont-compact-promotion .auction-modal button.primary-bid { width: auto; min-height: 32px; padding: 4px 8px; font-size: 13px; }
