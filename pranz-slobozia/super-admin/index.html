@@ -40,7 +40,7 @@
 @media(max-width:530px){#auctions .pont-auction-ranking-trigger{width:100%}#auctions .pont-auction-ranking-head{padding:19px 16px 12px}#auctions .pont-auction-ranking-rows{padding:6px 8px 10px}#auctions .pont-auction-ranking-row{gap:8px;grid-template-columns:30px minmax(0,1fr) auto;padding:10px 5px}#auctions .pont-auction-ranking-value{font-size:13px}#auctions .pont-auction-ranking-footer{padding:12px 15px 17px;gap:8px}}
 
 #auctions .pont-auction-ranking-month-label{display:flex;flex-direction:column;align-items:flex-start;gap:5px;margin:10px 0 0;color:#b8d8ce;font-size:11px;font-weight:650}#auctions .pont-auction-ranking-month-label input{box-sizing:border-box;max-width:185px;min-height:36px;padding:6px 10px;border:1px solid #5b8b7c;border-radius:10px;background:#123d37;color:#f6fffa;font-size:14px;color-scheme:dark}
-</style><link rel="stylesheet" href="../admin-theme.css?v=7">
+.pont-menu-status-counts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));margin-top:8px;gap:0;text-align:center}.pont-menu-status-counts>div{min-width:0;padding:4px 8px;display:flex;flex-direction:column;align-items:center;gap:3px}.pont-menu-status-counts>div+div{border-left:1px solid #45727b}.pont-menu-status-counts small{color:#b6d5d5;font-size:12px}.pont-menu-status-counts strong{font-variant-numeric:tabular-nums}</style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><body class="pont-admin pont-admin--platform">
 <main>
@@ -231,7 +231,12 @@
   <h3>Indicatori generali PONT</h3>
   <div class="grid admin-stats dashboard-stats" aria-label="Indicatori generali PONT">
     <div class="stat">Restaurante<strong id="nr">0</strong></div>
-    <div class="stat">Meniuri recente<strong id="nm">0</strong></div>
+    <div class="stat pont-menu-status-stat"><span>Meniuri recente</span>
+      <div class="pont-menu-status-counts">
+        <div><small>Active</small><strong id="nmActive">0</strong></div>
+        <div><small>Programate</small><strong id="nmScheduled">0</strong></div>
+      </div>
+    </div>
     <div class="stat">Publicate azi<strong id="nt">0</strong></div>
   </div>
   <div class="dashboard-tools">
@@ -399,9 +404,16 @@ async function load() {
   req(db.from('restaurant_members').select('*'))
  ]);
  $('nr').textContent = restaurants.length;
- $('nm').textContent = menus.length;
  const today = todayRO();
- $('nt').textContent = menus.filter(menu => menu.published && menu.service_date === today).length;
+ const [activeCount, scheduledCount] = await Promise.all([
+  db.from('menus').select('id', {count:'exact', head:true}).eq('published',true).eq('service_date',today),
+  db.from('menus').select('id', {count:'exact', head:true}).eq('published',true).gt('service_date',today)
+ ]);
+ if(activeCount.error)throw activeCount.error;
+ if(scheduledCount.error)throw scheduledCount.error;
+ $('nmActive').textContent = activeCount.count ?? 0;
+ $('nmScheduled').textContent = scheduledCount.count ?? 0;
+ $('nt').textContent = activeCount.count ?? 0;
  renderMenuRows();
  renderMenuArchive($('menuArchive'), menus, restaurants);
  window.pontOperations?.refreshWeek();
