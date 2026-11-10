@@ -158,12 +158,17 @@
         <label for="memberPassword">Parolă inițială (minimum 12 caractere)</label>
         <div class="restaurant-password-input"><input id="memberPassword" type="password" required minlength="12" maxlength="128" autocomplete="new-password"><button id="memberPasswordToggle" type="button" aria-label="Afișează sau ascunde parola inițială">Arată</button></div>
       </div>
+      <div class="dashboard-wide">
+        <label for="memberPasswordConfirm">Repetă parola</label>
+        <input id="memberPasswordConfirm" type="password" required minlength="12" maxlength="128" autocomplete="new-password" aria-describedby="memberPasswordMatchError">
+        <small id="memberPasswordMatchError" class="error" role="alert" hidden>Parolele introduse nu coincid.</small>
+      </div>
     </div>
     <div class="dashboard-actions"><button id="cancelMember" type="button">Anulează</button><button class="primary" id="saveMember" type="submit">Creează restaurant și cont</button></div>
     <p class="dashboard-message" id="memberFormStatus" role="status"></p>
   </form>
   <div class="dashboard-tools">
-    <label class="dashboard-search" for="memberSearch">Caută un cont<input type="search" id="memberSearch" placeholder="Restaurant sau ID cont" autocomplete="off"></label>
+    <label class="dashboard-search" for="memberSearch">Caută un cont<input type="search" id="memberSearch" placeholder="Restaurant sau cod B1" autocomplete="off"></label>
   </div>
   <div id="memberRows"></div>
 </section>
@@ -361,7 +366,7 @@ function renderRestaurants() {
   const id = esc(restaurant.id), enabled = restaurant.enabled;
   const access = hasMember(restaurant.id);
   return '<div class="restaurant-admin-item"><div class="restaurant-admin-heading"><strong>' + esc(restaurant.name) + '</strong>' +
-   '<small>' + esc(restaurant.phone||'Telefon neconfigurat') + '</small><div class="dashboard-badges"><span class="dashboard-badge" data-state="' + (enabled ? 'enabled' : 'disabled') + '">' +
+   '<small>Cod restaurant · ' + esc(restaurant.short_code || '—') + ' · ' + esc(restaurant.phone||'Telefon neconfigurat') + '</small><div class="dashboard-badges"><span class="dashboard-badge" data-state="' + (enabled ? 'enabled' : 'disabled') + '">' +
    (enabled ? 'Activ' : 'Suspendat') + '</span>' +
    (restaurant.accepts_card ? '<span class="dashboard-badge">Acceptă card</span>' : '') +
    (access ? '' : '<span class="dashboard-badge">Fără cont</span>') +
@@ -374,10 +379,10 @@ function renderRestaurants() {
 }
 
 function renderMembers() {
- const result = members.filter(member => matching(restaurantName(member.restaurant_id) + ' ' + member.user_id, 'memberSearch'));
+ const result = members.filter(member => matching(restaurantName(member.restaurant_id) + ' ' + member.user_id + ' ' + (member.short_code || '') + ' ' + (restaurants.find(r => r.id === member.restaurant_id)?.short_code || ''), 'memberSearch'));
  $('memberRows').innerHTML = result.length ? result.map(member =>
-  '<div class="dashboard-member"><div><strong>' + esc(restaurantName(member.restaurant_id)) + '</strong><small>ID cont · ' +
-  esc(member.user_id) + '</small></div><button type="button" class="admin-danger" data-revoke="' + esc(member.user_id) +
+  '<div class="dashboard-member"><div><strong>' + esc(restaurantName(member.restaurant_id)) + '</strong><small>Cod administrator · ' +
+  esc(member.short_code || '—') + ' · Restaurant ' + esc(restaurants.find(r => r.id === member.restaurant_id)?.short_code || '—') + '</small></div><button type="button" class="admin-danger" data-revoke="' + esc(member.user_id) +
   '" data-restaurant="' + esc(member.restaurant_id) + '">Revocă accesul</button></div>').join('') :
   emptyMessage('Niciun cont pentru selecția curentă.');
 }
@@ -1148,6 +1153,9 @@ function closeMemberEditor() {
  $('memberForm').hidden = true;
  delete $('uid').dataset.userEdited;
  $('memberPassword').type = 'password';
+ $('memberPasswordConfirm').type = 'password';
+ $('memberPasswordConfirm').setCustomValidity('');
+ $('memberPasswordMatchError').hidden = true;
  $('memberPasswordToggle').textContent = 'Arată';
  $('newMember').setAttribute('aria-expanded','false');
  setMemberTarget();
@@ -1174,10 +1182,23 @@ $('memberRestaurantName').addEventListener('input', suggestUsername);
 $('uid').addEventListener('input', () => {
  $('uid').dataset.userEdited = $('uid').value ? 'true' : '';
 });
+function checkMemberPasswordMatch() {
+ const password = $('memberPassword').value;
+ const confirmation = $('memberPasswordConfirm').value;
+ const mismatch = confirmation.length > 0 && password !== confirmation;
+ $('memberPasswordConfirm').setCustomValidity(mismatch ? 'Parolele introduse nu coincid.' : '');
+ $('memberPasswordConfirm').setAttribute('aria-invalid', String(mismatch));
+ $('memberPasswordMatchError').hidden = !mismatch;
+ return !mismatch && password === confirmation;
+}
+$('memberPassword').addEventListener('input', checkMemberPasswordMatch);
+$('memberPasswordConfirm').addEventListener('input', checkMemberPasswordMatch);
 $('memberPasswordToggle').onclick = () => {
  const field = $('memberPassword');
- field.type = field.type === 'password' ? 'text' : 'password';
- $('memberPasswordToggle').textContent = field.type === 'password' ? 'Arată' : 'Ascunde';
+ const showing = field.type === 'password';
+ field.type = showing ? 'text' : 'password';
+ $('memberPasswordConfirm').type = showing ? 'text' : 'password';
+ $('memberPasswordToggle').textContent = showing ? 'Ascunde' : 'Arată';
 };
 $('memberForm').onsubmit = async event => {
  event.preventDefault();
@@ -1185,6 +1206,11 @@ $('memberForm').onsubmit = async event => {
  if (button.disabled) return;
  let target = restaurants.find(restaurant => restaurant.id === accountRestaurantId);
  const username = $('uid').value.trim(), password = $('memberPassword').value, phone=$('memberRestaurantPhone').value.trim();
+ if (!checkMemberPasswordMatch()) {
+  showMessage('memberFormStatus', 'Parolele introduse nu coincid.', true);
+  $('memberPasswordConfirm').focus();
+  return;
+ }
  if(!/^\+?[0-9 ()-]{8,24}$/.test(phone)){showMessage('memberFormStatus','Introdu un număr de telefon valid pentru contactul cu clienții.',true);return}
  if (!name || !/^[a-zA-Z0-9_. -]{3,64}$/.test(username)) {
   showMessage('memberFormStatus','Completează numele restaurantului și un nume de utilizator valid, fără diacritice.',true);
