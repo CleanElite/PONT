@@ -181,15 +181,13 @@ wrap.append(form);
 const standardPriceStyles=document.createElement('style');
 standardPriceStyles.textContent='.pont-daily-fields .pont-daily-standard-price{display:flex;align-items:center;justify-content:center;align-self:end;flex:0 1 132px;min-width:0;min-height:40px;height:40px;padding:6px 10px;border:1px solid #447b78;border-radius:9px;background:#0d3438;box-sizing:border-box}.pont-daily-standard-price strong{font-size:13px;line-height:1.2;font-weight:700;color:#ffe5a0;text-align:center;white-space:nowrap}.pont-daily-standard-price strong.is-missing{color:#ffb6a5}@media(max-width:620px){.pont-daily-fields .pont-daily-standard-price{width:100%;flex:auto;padding:6px 5px}.pont-daily-standard-price strong{font-size:12px}}';
 document.head.append(standardPriceStyles);
-const saveModelStyles=document.createElement('style');
-saveModelStyles.textContent='.pont-dish-confirm-actions{display:flex;flex-wrap:wrap;align-items:center;gap:8px}.pont-dish-confirm-actions #pontDishSaveModel{min-height:40px}.pont-dish-confirm-actions #pontDishSaveModel.is-saved{color:#a8f5ce!important;border-color:#6acda5!important;background:rgba(11,85,62,.45)!important;font-weight:700}@media(max-width:410px){.pont-dish-confirm-actions{gap:7px}.pont-dish-confirm-actions>button{font-size:12px!important;padding:9px!important}}';
-document.head.append(saveModelStyles);
+
 
 
 const dialog = document.createElement('dialog');
 dialog.id = 'pontDishConfirm';
 dialog.setAttribute('aria-labelledby', 'pontDishConfirmTitle');
-dialog.innerHTML = '<h3 id="pontDishConfirmTitle">Confirmă publicarea</h3><div id="pontDishRecap"></div><p id="pontDishConfirmError" class="pont-dish-error" role="alert"></p><div class="pont-dish-actions pont-dish-confirm-actions"><button type="button" id="pontDishBack">Înapoi</button><button type="button" id="pontDishSaveModel">Salvează ca model</button><button type="button" class="primary" id="pontDishPublish">Publică</button></div>';
+dialog.innerHTML = '<h3 id="pontDishConfirmTitle">Confirmă publicarea</h3><div id="pontDishRecap"></div><p id="pontDishConfirmError" class="pont-dish-error" role="alert"></p><div class="pont-dish-actions"><button type="button" id="pontDishBack">Înapoi</button><button type="button" class="primary" id="pontDishPublish">Publică</button></div>';
 document.body.append(dialog);
 
 const rid = () => $('pontDailyRestaurant').value;
@@ -527,10 +525,6 @@ form.onsubmit = event => {
     id:editingMenu, restaurant, date, price, items,
     description:menuDescription
   };
-  const saveModelButton = $('pontDishSaveModel');
-  saveModelButton.disabled = false;
-  saveModelButton.classList.remove('is-saved');
-  saveModelButton.textContent = 'Salvează ca model';
   const restaurantName = getRestaurants().find(item => item.id === restaurant)?.name ?? '';
   $('pontDishRecap').innerHTML = '<p><strong>Meniul zilei</strong> · ' + esc(date.split('-').reverse().join('.')) + '</p>' +
     (restaurantName ? '<p>' + esc(restaurantName) + '</p>' : '') +
@@ -543,32 +537,6 @@ form.onsubmit = event => {
   dialog.showModal();
 };
 $('pontDishBack').onclick = () => dialog.close();
-$('pontDishSaveModel').onclick = async () => {
-  if (saving || savingModel || !pendingMenu) return;
-  const {restaurant, items, date} = pendingMenu;
-  const ids = items.map(item => item.id);
-  $('pontDishConfirmError').textContent = '';
-  if (!restaurant || !ids.length || ids.length > 60 || ids.some(id => !id) || new Set(ids).size !== ids.length) {
-    $('pontDishConfirmError').textContent = 'Modelul necesită între 1 și 60 de preparate salvate în biblioteca restaurantului.';
-    return;
-  }
-  const button = $('pontDishSaveModel');
-  savingModel = true;
-  button.disabled = true;
-  button.textContent = 'Se salvează…';
-  try {
-    const modelName = 'Model ' + date.split('-').reverse().join('.') + ' · ' + new Intl.DateTimeFormat('ro-RO', {timeZone:'Europe/Bucharest',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
-    const {error} = await db.from('pont_menu_templates').insert({restaurant_id:restaurant,name:modelName,dish_ids:ids});
-    if (error) throw error;
-    button.textContent = '✓ Salvat ca model';
-    button.classList.add('is-saved');
-    void window.pontMenuModels?.refresh(restaurant, true)?.catch(() => {});
-  } catch (error) {
-    $('pontDishConfirmError').textContent = 'Modelul nu a fost salvat: ' + error.message;
-    button.disabled = false;
-    button.textContent = 'Salvează ca model';
-  } finally { savingModel = false; }
-};
 dialog.addEventListener('cancel', event => { if (saving) event.preventDefault(); });
 $('pontDishPublish').onclick = async () => {
   if (saving || savingModel || !pendingMenu) return;
@@ -577,7 +545,6 @@ $('pontDishPublish').onclick = async () => {
   saving = true;
   button.disabled = true;
   $('pontDishBack').disabled = true;
-  $('pontDishSaveModel').disabled = true;
   button.textContent = 'Se salvează…';
   $('pontDishConfirmError').textContent = '';
   try {
@@ -615,7 +582,6 @@ $('pontDishPublish').onclick = async () => {
     saving = false;
     button.disabled = false;
     $('pontDishBack').disabled = false;
-    $('pontDishSaveModel').disabled = $('pontDishSaveModel').classList.contains('is-saved');
     button.textContent = 'Publică';
   }
 };
