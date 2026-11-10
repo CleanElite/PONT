@@ -59,9 +59,14 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
       <label id="pontModelRestaurantField">Restaurant<select id="pontModelRestaurant"></select></label>
       <button type="button" class="primary" id="pontModelNew">Model nou</button>
     </div>
-    <p class="pont-model-hint">Alege un model și o dată pentru a publica. Poți reutiliza același model oricând.</p>
     <p id="pontModelStatus" role="status"></p>
-    <div id="pontModelList"></div>
+    <details class="pont-model-saved" id="pontModelSaved">
+      <summary>Modele salvate <span class="pont-model-chevron" aria-hidden="true"></span></summary>
+      <div class="pont-model-saved-body">
+        <p class="pont-model-hint">Alege un model și o dată pentru a publica. Poți reutiliza același model oricând.</p>
+        <div id="pontModelList"></div>
+      </div>
+    </details>
     <dialog id="pontModelDialog" class="pont-menu-dialog pont-model-dialog" aria-labelledby="pontModelTitle">
       <form id="pontModelForm">
         <h3 id="pontModelTitle"></h3>
