@@ -144,6 +144,23 @@
 #analytics .pont-insight[hidden],#analytics .pont-custom-period[hidden]{display:none!important}
 #analytics .pont-insights-table-wrap table{min-width:710px!important}
 #analytics .pont-insights-table-wrap td{white-space:nowrap!important}
+
+/* Two immediately visible performance rankings; scoped to Statistics only. */
+#analytics .pont-ranking-heading{align-items:center!important;flex-wrap:wrap!important}
+#analytics .pont-ranking-heading label{display:flex!important;align-items:center!important;gap:7px!important;margin:0!important;font-size:11px!important;color:#c9e5dd!important}
+#analytics .pont-ranking-heading select{min-width:0!important;width:160px!important;max-width:51vw!important;border-radius:10px!important;padding:8px 9px!important;font-size:12px!important;color:#f4fffb!important;background:#0b453d!important}
+#analytics .pont-ranking-list{display:grid!important;gap:7px!important;margin:8px 0 20px!important}
+#analytics .pont-ranking-entry{display:grid!important;grid-template-columns:29px minmax(0,1fr) auto!important;align-items:center!important;gap:9px!important;min-height:44px!important;padding:9px 11px!important;border:1px solid #93dfd3a6!important;border-radius:13px!important;background:linear-gradient(125deg,#104841,#052c29)!important;box-shadow:inset 0 1px 3px #d8ffff20!important}
+#analytics .pont-ranking-place{width:27px!important;height:27px!important;display:grid!important;place-items:center!important;border-radius:9px!important;border:1px solid #d8c38e!important;color:#f5d490!important;font-size:13px!important;font-weight:750!important;background:#18433b!important}
+#analytics .pont-ranking-entry:first-child .pont-ranking-place{background:linear-gradient(130deg,#fce6a5,#cfa752)!important;color:#193629!important}
+#analytics .pont-ranking-name{font-size:13px!important;font-weight:650!important;min-width:0!important;color:#f1fff9!important;overflow-wrap:anywhere}
+#analytics .pont-ranking-value{font:750 17px/1.2 system-ui!important;color:#ffdc96!important;white-space:nowrap!important}
+#analytics .pont-ranking-auction-list{margin-top:7px!important}
+#analytics .pont-auction-ranking-list .pont-ranking-entry{grid-template-columns:29px minmax(0,.85fr) minmax(0,1.3fr)!important}
+#analytics .pont-auction-ranking-list .pont-ranking-name{display:grid!important;gap:2px!important}
+#analytics .pont-auction-ranking-list .pont-ranking-name small{font-size:10px!important;color:#b2d2c6!important}
+#analytics .pont-ranking-auction-performance{display:flex!important;flex-wrap:wrap!important;gap:3px 9px!important;justify-content:flex-end!important;text-align:right!important;min-width:0!important;color:#e6f4eb!important;font-size:10px!important}
+#analytics .pont-ranking-empty{font-size:12px!important;margin:4px 0!important;color:#bedbd0!important}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><body class="pont-admin pont-admin--platform">
@@ -346,6 +363,7 @@
  <div class="pont-insights-grid" aria-label="Indicatori generali PONT">
   <div class="pont-insight stat"><span class="pont-stat-symbol">♧</span><strong id="nr">0</strong><span>Restaurante</span></div>
   <div class="pont-insight stat"><span class="pont-stat-symbol">♨</span><strong id="analyticsActiveRestaurants">— / 15</strong><span>Meniuri active azi</span></div>
+  <div class="pont-insight stat"><span class="pont-stat-symbol">◈</span><strong id="analyticsMenuViews">—</strong><span>Vizualizări meniuri</span></div>
   <div class="pont-insight stat"><span class="pont-stat-symbol">☎</span><strong id="analyticsTotalCalls">—</strong><span>Apăsări Sună acum</span></div>
   <div class="pont-insight stat"><span class="pont-stat-symbol">◉</span><strong id="analyticsTotalWhatsApp">—</strong><span>Apăsări WhatsApp</span></div>
   <div class="pont-insight stat"><span class="pont-stat-symbol">▤</span><div class="pont-status-numbers"><span>A <strong id="nmActive">0</strong></span><span>P <strong id="nmScheduled">0</strong></span></div><span>Meniuri active / programate</span><strong id="nt" hidden>0</strong></div>
@@ -359,9 +377,14 @@
  <p class="pont-insights-clarification">* Vizitatorii unici includ doar browserele care au acceptat identificarea pentru statistici. Nu reprezintă toate persoanele.</p>
  <div class="pont-insights-section-title pont-month-row"><h3>Statistici restaurante</h3><label for="analyticsMonth">Luna raportului<input type="month" id="analyticsMonth"></label></div>
  <p id="analyticsStatus" class="dashboard-message" role="status" aria-live="polite"></p>
+ <div class="pont-insights-section-title pont-ranking-heading"><h3>Clasament restaurante</h3><label for="analyticsRankingMetric">Ordonează după <select id="analyticsRankingMetric"><option value="views">Vizite</option><option value="menu_views">Vizualizări meniuri</option><option value="calls">Apăsări Sună</option><option value="whatsapp">WhatsApp</option><option value="menus">Meniuri estimate</option><option value="contact_rate">Rată contact</option></select></label></div>
+ <div id="analyticsRestaurantRanking" class="pont-ranking-list" aria-live="polite"></div>
+ <div class="pont-insights-section-title"><h3>Detalii pe restaurant</h3><small>Atinge restaurantul pentru informații</small></div>
  <div id="analyticsRestaurantCards" class="pont-restaurant-insights"></div>
+ <div class="pont-insights-section-title"><h3>Clasament după poziția licitată</h3><small>Pe intervalul selectat</small></div>
+ <div id="analyticsAuctionRanking" class="pont-ranking-list pont-auction-ranking-list" aria-live="polite"></div>
  <details class="pont-insights-disclosure" id="analyticsAuctions">
-  <summary>Licitații și promovare <span>Performanța pozițiilor <b>⌄</b></span></summary>
+  <summary>Comparație înainte / după promovare <span>Detalii licitații <b>⌄</b></span></summary>
   <p>Compară poziția licitată cu aceeași perioadă calendaristică din luna anterioară. Diferențele nu dovedesc singure efectul promovării.</p>
   <div class="pont-insights-table-wrap"><table><thead><tr><th>Loc</th><th>Restaurant</th><th>Lună</th><th>Vizite înainte → acum</th><th>Sună înainte → acum</th><th>WhatsApp înainte → acum</th><th>Meniuri înainte → acum</th></tr></thead><tbody id="analyticsAuctionRows"></tbody></table></div>
  </details>
@@ -371,7 +394,7 @@
   <p>Valoarea comenzilor restaurantelor nu reprezintă venit PONT. Alte venituri apar după integrarea abonamentelor sau promovărilor plătite.</p>
  </details>
  <details class="pont-insights-disclosure"><summary>Cum sunt calculate statisticile <span><b>⌄</b></span></summary>
-  <p>Apăsările sunt interacțiuni, nu apeluri sau vânzări confirmate. Meniurile estimate provin din solicitările inițiate către WhatsApp, iar suma estimată include doar meniurile complete, fără preparatele individuale. Rata de contact este raportul aproximativ dintre contactele inițiate și vizite; poate include repetări.</p>
+  <p>Vizualizările meniurilor se numără când se deschide un meniu publicat; contorul începe de la activarea funcției și nu este retroactiv. Apăsările sunt interacțiuni, nu apeluri sau vânzări confirmate. Meniurile estimate provin din solicitările inițiate către WhatsApp, iar suma estimată include doar meniurile complete, fără preparatele individuale. Rata de contact este raportul aproximativ dintre contactele inițiate și vizite; poate include repetări.</p>
  </details>
 </section>
 
@@ -650,35 +673,57 @@ function pontAnalyticsDates(){
  if(analyticsPeriod==='30')return [pontDayOffset(29),today];
  return [$('analyticsFrom').value,$('analyticsTo').value];
 }
+let pontRestaurantRankingSort='views';
 function renderAnalytics(){
  if(!analytics)return;
  const list=analytics.restaurants||[];
  const total=field=>list.reduce((sum,row)=>sum+Number(row[field]||0),0);
  const count=(id,val)=>{$(id).textContent=pontStatNumber(val)};
  count('analyticsTotalViews',total('views'));
+ count('analyticsMenuViews',total('menu_views'));
  count('analyticsTotalCalls',total('calls'));
  count('analyticsTotalWhatsApp',total('whatsapp'));
  count('analyticsTotalMenus',total('menus'));
- // Distinct consenting browser identifiers are calculated across all restaurants.
  $('analyticsUniqueVisitors').textContent=pontStatNumber(analytics.platform_unique_visitors||0);
  $('analyticsActiveRestaurants').textContent=pontStatNumber(analytics.active_restaurants||0)+' / '+pontStatNumber(analytics.restaurants_count||restaurants.length);
  $('analyticsScheduledCount').textContent=pontStatNumber(analytics.scheduled_menus||0);
  $('analyticsEstimatedValue').textContent=pontStatLei(total('estimated_menus_value'));
  $('analyticsRevenueAuctions').textContent=pontStatLei(analytics.revenue_auctions);
  $('nr').textContent=pontStatNumber(analytics.restaurants_count||restaurants.length);
+ const rankMetric=row=>pontRestaurantRankingSort==='contact_rate'
+   ?Number(row.views||0)>0?(Number(row.calls||0)+Number(row.whatsapp||0))/Number(row.views):0
+   :Number(row[pontRestaurantRankingSort]||0);
+ const sorted=[...list].sort((a,b)=>rankMetric(b)-rankMetric(a)||String(a.name).localeCompare(String(b.name),'ro'));
+ const rankingText=value=>pontRestaurantRankingSort==='contact_rate'?Math.round(value*1000)/10+'%':pontStatNumber(value);
+ $('analyticsRestaurantRanking').innerHTML=sorted.length?sorted.map((row,i)=>
+  '<div class="pont-ranking-entry"><span class="pont-ranking-place">'+(i+1)+'</span><strong class="pont-ranking-name">'+esc(row.name)+'</strong><span class="pont-ranking-value">'+rankingText(rankMetric(row))+'</span></div>'
+ ).join(''):'<p>Nu există restaurante înregistrate.</p>';
  const cards=$('analyticsRestaurantCards');
  cards.innerHTML=list.length?list.map(row=>{
   const visits=Number(row.views||0),contacts=Number(row.calls||0)+Number(row.whatsapp||0);
   const rate=visits?Math.round(1000*contacts/visits)/10:0;
-  return '<details class="pont-insights-restaurant"><summary><span class="pont-insights-restaurant-name">'+esc(row.name)+'</span><span class="pont-insights-restaurant-preview">'+pontStatNumber(row.views)+' vizite · '+pontStatNumber(row.calls)+' apeluri · '+pontStatNumber(row.whatsapp)+' WhatsApp</span><span class="pont-insights-chevron" aria-hidden="true">›</span></summary>'+
+  return '<details class="pont-insights-restaurant"><summary><span class="pont-insights-restaurant-name">'+esc(row.name)+'</span><span class="pont-insights-restaurant-preview">'+pontStatNumber(row.views)+' vizite · '+pontStatNumber(row.menu_views)+' meniuri vizualizate · '+pontStatNumber(row.whatsapp)+' WhatsApp</span><span class="pont-insights-chevron" aria-hidden="true">›</span></summary>'+
    '<div class="pont-restaurant-metrics">'+
-   [['Vizite',row.views],['Sună acum',row.calls],['WhatsApp',row.whatsapp],['Meniuri estimate',row.menus],['Clienți noi',row.new_customers],['Clienți fideli',row.loyal_customers],['Vizitatori unici*',row.unique_visitors],['Contacte / vizite',rate+'%'],['Valoare meniuri',pontStatLei(row.estimated_menus_value)]].map(([label,value])=>'<div><strong>'+esc(String(value??'0'))+'</strong><span>'+esc(label)+'</span></div>').join('')+
+   [['Vizite',row.views],['Vizualizări meniuri',row.menu_views],['Sună acum',row.calls],['WhatsApp',row.whatsapp],['Meniuri estimate',row.menus],['Clienți noi',row.new_customers],['Clienți fideli',row.loyal_customers],['Vizitatori unici*',row.unique_visitors],['Contacte / vizite',rate+'%'],['Valoare meniuri',pontStatLei(row.estimated_menus_value)]].map(([label,value])=>'<div><strong>'+esc(String(value??'0'))+'</strong><span>'+esc(label)+'</span></div>').join('')+
    '</div></details>';
  }).join(''):'<p>Nu există restaurante înregistrate.</p>';
  const ranks=analytics.rankings||[];
- $('analyticsAuctionRows').innerHTML=ranks.length?ranks.map(r=>'<tr><td>'+pontStatNumber(r.position)+'</td><td>'+esc(r.name)+'</td><td>'+esc(String(r.month||'').slice(0,7))+'</td><td>'+pontStatNumber(r.views_before)+' → '+pontStatNumber(r.views)+'</td><td>'+pontStatNumber(r.calls_before)+' → '+pontStatNumber(r.calls)+'</td><td>'+pontStatNumber(r.whatsapp_before)+' → '+pontStatNumber(r.whatsapp)+'</td><td>'+pontStatNumber(r.menus_before)+' → '+pontStatNumber(r.menus)+'</td></tr>').join(''):'<tr><td colspan="7">Nu există poziții licitate în perioada selectată.</td></tr>';
+ const ordered=[...ranks].sort((a,b)=>String(b.month||'').localeCompare(String(a.month||''))||Number(a.position)-Number(b.position));
+ $('analyticsAuctionRanking').innerHTML=ordered.length?ordered.map(r=>
+  '<div class="pont-ranking-entry"><span class="pont-ranking-place">'+pontStatNumber(r.position)+'</span><div class="pont-ranking-name"><strong>'+esc(r.name)+'</strong><small>'+esc(String(r.month||'').slice(0,7))+'</small></div><div class="pont-ranking-auction-performance"><span>'+pontStatNumber(r.views)+' vizite</span><span>'+pontStatNumber(r.calls)+' apeluri</span><span>'+pontStatNumber(r.whatsapp)+' WhatsApp</span><span>'+pontStatNumber(r.menus)+' meniuri</span></div></div>'
+ ).join(''):'<p class="pont-ranking-empty">Nu există poziții licitate pentru perioada selectată.</p>';
+ $('analyticsAuctionRows').innerHTML=ordered.length?ordered.map(r=>'<tr><td>'+pontStatNumber(r.position)+'</td><td>'+esc(r.name)+'</td><td>'+esc(String(r.month||'').slice(0,7))+'</td><td>'+pontStatNumber(r.views_before)+' → '+pontStatNumber(r.views)+'</td><td>'+pontStatNumber(r.calls_before)+' → '+pontStatNumber(r.calls)+'</td><td>'+pontStatNumber(r.whatsapp_before)+' → '+pontStatNumber(r.whatsapp)+'</td><td>'+pontStatNumber(r.menus_before)+' → '+pontStatNumber(r.menus)+'</td></tr>').join(''):'<tr><td colspan="7">Nu există poziții licitate în perioada selectată.</td></tr>';
  $('analyticsLastUpdated').textContent='Actualizat '+new Intl.DateTimeFormat('ro-RO',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Bucharest'}).format(new Date());
 }
+$('analyticsRankingMetric').addEventListener('change',event=>{
+ pontRestaurantRankingSort=event.target.value;
+ if(analytics){
+  const openCards=[...$('analyticsRestaurantCards').querySelectorAll('details[open] summary .pont-insights-restaurant-name')].map(x=>x.textContent);
+  renderAnalytics();
+  $('analyticsRestaurantCards').querySelectorAll('details').forEach(d=>{if(openCards.includes(d.querySelector('.pont-insights-restaurant-name')?.textContent))d.open=true});
+ }
+});
+
 async function loadAnalytics(){
  const request=++analyticsRequest;
  const [start,end]=pontAnalyticsDates();
@@ -687,13 +732,15 @@ async function loadAnalytics(){
  }
  $('analyticsRefresh').disabled=true;
  try{
-  const [result,uniqueVisitors,promotionComparison]=await Promise.all([
+  const [result,uniqueVisitors,promotionComparison,menuViews]=await Promise.all([
    req(db.rpc('pont_admin_stats_range',{p_from:start,p_to:end})),
    req(db.rpc('pont_admin_unique_visitors_range',{p_from:start,p_to:end})),
-   req(db.rpc('pont_admin_promotion_comparison_range',{p_from:start,p_to:end}))
+   req(db.rpc('pont_admin_promotion_comparison_range',{p_from:start,p_to:end})),
+   req(db.rpc('pont_admin_menu_views_range',{p_from:start,p_to:end}))
   ]);
   if(request!==analyticsRequest)return;
-  analytics={...result,platform_unique_visitors:Number(uniqueVisitors||0),rankings:promotionComparison||[]};
+  const viewsByRestaurant=new Map((menuViews||[]).map(row=>[row.restaurant_id,Number(row.menu_views||0)]));
+  analytics={...result,restaurants:(result.restaurants||[]).map(row=>({...row,menu_views:viewsByRestaurant.get(row.id)||0})),platform_unique_visitors:Number(uniqueVisitors||0),rankings:promotionComparison||[]};
   const openCards=[...$('analyticsRestaurantCards').querySelectorAll('details[open] summary .pont-insights-restaurant-name')].map(x=>x.textContent);
   renderAnalytics();
   $('analyticsRestaurantCards').querySelectorAll('details').forEach(d=>{if(openCards.includes(d.querySelector('.pont-insights-restaurant-name')?.textContent))d.open=true});
