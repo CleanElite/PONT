@@ -72,6 +72,9 @@
  #restaurantRows .restaurant-list-name{font-size:18px}
 }
 .restaurant-card-toggle{width:fit-content;max-width:100%;display:inline-flex;justify-content:space-between;align-items:center;gap:14px;padding:7px 11px;margin:5px 0;border-radius:9px;font-size:13px;font-weight:600;min-height:36px}.restaurant-card-toggle span{white-space:nowrap}.restaurant-card-toggle input{width:17px;height:17px;min-width:17px;min-height:17px;margin:0;cursor:pointer}
+#memberPassword,#memberPasswordConfirm,#restaurantNewPassword,#restaurantConfirmPassword{ -webkit-user-select:text!important;user-select:text!important;-webkit-touch-callout:default!important;touch-action:auto; }
+.pont-password-paste{min-width:0}.pont-password-paste input{min-width:0;flex:1}.pont-password-paste .pont-paste-password{min-width:0;flex:0 0 auto;padding:9px 10px;font-size:12px;white-space:nowrap}
+@media(max-width:420px){.pont-password-paste{gap:5px}.pont-password-paste .pont-paste-password{padding:9px 7px;font-size:11px}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><body class="pont-admin pont-admin--platform">
@@ -180,11 +183,11 @@
       <label for="uid">Nume de utilizator<input id="uid" required minlength="3" maxlength="64" autocomplete="off"></label>
       <div class="dashboard-wide">
         <label for="memberPassword">Parolă inițială (minimum 12 caractere)</label>
-        <div class="restaurant-password-input"><input id="memberPassword" type="password" required minlength="12" maxlength="128" autocomplete="new-password"><button id="memberPasswordToggle" type="button" aria-label="Afișează sau ascunde parola inițială">Arată</button></div>
+        <div class="restaurant-password-input pont-password-paste"><input id="memberPassword" type="password" required minlength="12" maxlength="128" autocomplete="new-password"><button type="button" class="pont-paste-password" data-paste-target="memberPassword" aria-label="Lipește parola din clipboard">Lipește</button><button id="memberPasswordToggle" type="button" aria-label="Afișează sau ascunde parola inițială">Arată</button></div>
       </div>
       <div class="dashboard-wide">
         <label for="memberPasswordConfirm">Repetă parola</label>
-        <input id="memberPasswordConfirm" type="password" required minlength="12" maxlength="128" autocomplete="new-password" aria-describedby="memberPasswordMatchError">
+        <div class="restaurant-password-input pont-password-paste"><input id="memberPasswordConfirm" type="password" required minlength="12" maxlength="128" autocomplete="new-password" aria-describedby="memberPasswordMatchError"><button type="button" class="pont-paste-password" data-paste-target="memberPasswordConfirm" aria-label="Lipește confirmarea parolei din clipboard">Lipește</button></div>
         <small id="memberPasswordMatchError" class="error" role="alert" hidden>Parolele introduse nu coincid.</small>
       </div>
     </div>
@@ -1237,6 +1240,23 @@ function checkMemberPasswordMatch() {
  $('memberPasswordMatchError').hidden = !mismatch;
  return !mismatch && password === confirmation;
 }
+$('memberForm').addEventListener('click', async event => {
+ const button=event.target.closest('[data-paste-target]');
+ if(!button)return;
+ const field=$(button.dataset.pasteTarget);
+ if(!field)return;
+ try{
+   if(!navigator.clipboard?.readText)throw Error('Clipboard indisponibil');
+   const pasted=await navigator.clipboard.readText();
+   if(!pasted){field.focus();return}
+   field.value=pasted;
+   field.dispatchEvent(new Event('input',{bubbles:true}));
+   field.focus();
+ }catch(error){
+   field.focus();
+   showMessage('memberFormStatus','Ține apăsat în câmpul parolei și selectează „Lipiți”. Dacă nu apare, permite accesul la clipboard în browser.',true);
+ }
+});
 $('memberPassword').addEventListener('input', checkMemberPasswordMatch);
 $('memberPasswordConfirm').addEventListener('input', checkMemberPasswordMatch);
 $('memberPasswordToggle').onclick = () => {
