@@ -176,7 +176,7 @@
     <p id="memberFormHint">Numele de utilizator se completează automat. Îl poți modifica.</p>
     <div class="dashboard-fields">
       <label for="memberRestaurantName">Numele restaurantului<input id="memberRestaurantName" required maxlength="120" autocomplete="organization"></label>
-      <label for="memberRestaurantPhone">Telefon contact clienți (apel și WhatsApp)<input id="memberRestaurantPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+407XXXXXXXX" required maxlength="24"></label>
+      <label for="memberRestaurantPhone">Telefon contact clienți (opțional)<input id="memberRestaurantPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+407XXXXXXXX" maxlength="24"></label>
       <label for="uid">Nume de utilizator<input id="uid" required minlength="3" maxlength="64" autocomplete="off"></label>
       <div class="dashboard-wide">
         <label for="memberPassword">Parolă inițială (minimum 12 caractere)</label>
@@ -1257,7 +1257,7 @@ $('memberForm').onsubmit = async event => {
   $('memberPasswordConfirm').focus();
   return;
  }
- if(!/^\+?[0-9 ()-]{8,24}$/.test(phone)){showMessage('memberFormStatus','Introdu un număr de telefon valid pentru contactul cu clienții.',true);return}
+ if(phone&&!/^\+?[0-9 ()-]{8,24}$/.test(phone)){showMessage('memberFormStatus','Introdu un număr de telefon valid sau lasă câmpul gol.',true);return}
  if (!name || !/^[a-zA-Z0-9_. -]{3,64}$/.test(username)) {
   showMessage('memberFormStatus','Completează numele restaurantului și un nume de utilizator valid, fără diacritice.',true);
   return;
@@ -1270,11 +1270,11 @@ $('memberForm').onsubmit = async event => {
   if (!target) {
    const {data:{session}} = await db.auth.getSession();
    if (!session) throw Error('Sesiunea a expirat. Reconectează-te.');
-   const {data,error} = await db.from('restaurants').insert({name,phone, slug:uniqueSlug(name,restaurants)}).select('id,name,phone').single();
+   const {data,error} = await db.from('restaurants').insert({name,phone:phone||null, slug:uniqueSlug(name,restaurants)}).select('id,name,phone').single();
    if (error) throw error;
    target = data;
   }
-  if(target.phone!==phone){const {error:phoneError}=await db.from('restaurants').update({phone}).eq('id',target.id);if(phoneError)throw phoneError;}
+  if(phone && target.phone!==phone){const {error:phoneError}=await db.from('restaurants').update({phone}).eq('id',target.id);if(phoneError)throw phoneError;}
   await restaurantAccountAction('create', {username, password, restaurant_id:target.id});
   closeMemberEditor();
   await load();
