@@ -1259,14 +1259,14 @@ $('restaurantChangePassword').onclick=async()=>{
  }catch(e){notice.textContent=e.message}finally{btn.disabled=false}
 };
 $('memberRows').onclick=async e=>{let b=e.target.closest('[data-revoke]');if(!b||!confirm('Revoci accesul?'))return;try{await req(db.from('restaurant_members').delete().eq('user_id',b.dataset.revoke).eq('restaurant_id',b.dataset.restaurant));await load()}catch(e){status(e.message,true)}};
-const {initPontDishEditor}=await import('../dish-editor.js?v=12');
+const {initPontDishEditor}=await import('../dish-editor.js?v=13');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
 const {initMenuTemplates,renderMenuArchive}=await import('../menu-templates.js?v=3');
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=3');
+const {initPontOperations}=await import('../order-operations.js?v=4');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:false});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();

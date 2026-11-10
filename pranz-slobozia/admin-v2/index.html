@@ -144,14 +144,14 @@ $('menus').onclick = async event => {
   status(error.message,true);
  }
 };
-const {initPontDishEditor}=await import('../dish-editor.js?v=12');
+const {initPontDishEditor}=await import('../dish-editor.js?v=13');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:true});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
 const {initMenuTemplates,renderMenuArchive}=await import('../menu-templates.js?v=3');
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=3');
+const {initPontOperations}=await import('../order-operations.js?v=4');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();

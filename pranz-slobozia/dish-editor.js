@@ -12,7 +12,7 @@ if (!host || !wrap || !catalog) return;
 const photoValidationMessage = 'Fotografia trebuie să fie JPG, PNG sau WebP, maximum 2 MB.';
 const selected = new Map(), savedChoices = new Map();
 let dishes = [], category = 'first';
-let draftVersion = 0, menuDescription = '', pendingMenu = null;
+let editorVersion = 0, menuDescription = '', pendingMenu = null;
 let editingDish = null, editingMenu = null, loadedRid = '', loadVersion = 0, saving = false, previewURL = '', dishPhotoRemoved = false;
 const icon = name => '<svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#' + name + '"></use></svg>';
 
@@ -167,7 +167,6 @@ form.innerHTML = `
     <label id="pontDailyRestaurantField">Restaurant<select id="pontDailyRestaurant" required></select></label>
     <label>Data<input id="pontDailyDate" type="date" required></label>
     <div class="pont-daily-standard-price" role="status"><strong id="pontDailyComboDisplay">Preț nesetat</strong><input id="pontDailyCombo" type="hidden"></div>
-    <label>Stare<select id="pontDailyState"><option value="true">Publică</option><option value="false">Ciornă</option></select></label>
   </div>
   <div id="pontDailyDishes" class="pont-dish-checklist"></div>
   <p id="pontDailyError" class="pont-dish-error" role="alert"></p>
@@ -186,7 +185,7 @@ document.head.append(standardPriceStyles);
 const dialog = document.createElement('dialog');
 dialog.id = 'pontDishConfirm';
 dialog.setAttribute('aria-labelledby', 'pontDishConfirmTitle');
-dialog.innerHTML = '<h3 id="pontDishConfirmTitle">Verifică meniul</h3><div id="pontDishRecap"></div><p id="pontDishConfirmError" class="pont-dish-error" role="alert"></p><div class="pont-dish-actions"><button type="button" id="pontDishBack">Înapoi</button><button type="button" class="primary" id="pontDishPublish">Publică</button></div>';
+dialog.innerHTML = '<h3 id="pontDishConfirmTitle">Confirmă publicarea</h3><div id="pontDishRecap"></div><p id="pontDishConfirmError" class="pont-dish-error" role="alert"></p><div class="pont-dish-actions"><button type="button" id="pontDishBack">Înapoi</button><button type="button" class="primary" id="pontDishPublish">Publică</button></div>';
 document.body.append(dialog);
 
 const rid = () => $('pontDailyRestaurant').value;
@@ -332,20 +331,15 @@ function resetDish() {
   dishFormMessage.textContent = '';
   renderDishPhoto();
 }
-function updateDailyButton() {
-  $('pontDailyNext').textContent = $('pontDailyState').value === 'true' ? 'Publică' : 'Salvează ciorna';
-}
 function resetDaily() {
-  draftVersion++;
+  editorVersion++;
   editingMenu = null;
   menuDescription = '';
   savedChoices.clear();
   selected.clear();
   $('pontDailyDate').value = todayRO();
   syncStandardPrice();
-  $('pontDailyState').value = 'true';
   $('pontDailyError').textContent = '';
-  updateDailyButton();
 }
 function setEditorOpen(open) {
   wrap.hidden = !open;
@@ -378,7 +372,7 @@ function restoreMenuDishes(menu) {
 async function open(menu, copy = false) {
   options();
   resetDaily();
-  const version = draftVersion;
+  const version = editorVersion;
   if (menu) {
     editingMenu = copy ? null : menu.id;
     menuDescription = menu.description ?? '';
@@ -389,13 +383,11 @@ async function open(menu, copy = false) {
     }
     $('pontDailyDate').value = copy ? todayRO() : menu.service_date;
     syncStandardPrice();
-    $('pontDailyState').value = String(!copy && menu.published);
   }
-  updateDailyButton();
   setEditorOpen(true);
   if (menu) $('pontDailyDate').focus();
   await load();
-  if (menu && version === draftVersion) {
+  if (menu && version === editorVersion) {
     restoreMenuDishes(menu);
     choices();
   }
@@ -409,7 +401,7 @@ function changeRestaurant(event, message) {
   $('pontDailyRestaurant').value = value;
   $('pontDishRestaurant').value = value;
   syncStandardPrice();
-  draftVersion++;
+  editorVersion++;
   savedChoices.clear();
   selected.clear();
   resetDish();
@@ -427,7 +419,6 @@ $('pontDailyCancel').onclick = () => {
   setEditorOpen(false);
   host.focus();
 };
-$('pontDailyState').onchange = updateDailyButton;
 $('pontDailyDishes').onchange = event => {
   const checkbox = event.target.closest('[data-select]');
   if (!checkbox) return;
@@ -453,7 +444,6 @@ form.onsubmit = event => {
   event.preventDefault();
   const items = [...selected.values()];
   const restaurant = rid(), date = $('pontDailyDate').value;
-  const published = $('pontDailyState').value === 'true';
   syncStandardPrice();
   const price = Number($('pontDailyCombo').value);
   $('pontDailyError').textContent = '';
@@ -470,10 +460,9 @@ form.onsubmit = event => {
     return;
   }
   pendingMenu = {
-    id:editingMenu, restaurant, date, price, published, items,
+    id:editingMenu, restaurant, date, price, items,
     description:menuDescription
   };
-  $('pontDishConfirmTitle').textContent = published ? 'Confirmă publicarea' : 'Confirmă ciorna';
   const restaurantName = getRestaurants().find(item => item.id === restaurant)?.name ?? '';
   $('pontDishRecap').innerHTML = '<p><strong>Meniul zilei</strong> · ' + esc(date.split('-').reverse().join('.')) + '</p>' +
     (restaurantName ? '<p>' + esc(restaurantName) + '</p>' : '') +
@@ -483,14 +472,13 @@ form.onsubmit = event => {
         '<div>' + esc(item.name) + ' · ' + (key === 'dessert' ? 'inclus' : priceRO.format(item.price) + ' lei') + '</div>').join('') + '</div>' : '';
     }).join('') + '<p>Preț meniu complet · ' + priceRO.format(price) + ' lei</p>';
   $('pontDishConfirmError').textContent = '';
-  $('pontDishPublish').textContent = published ? 'Publică' : 'Salvează ciorna';
   dialog.showModal();
 };
 $('pontDishBack').onclick = () => dialog.close();
 dialog.addEventListener('cancel', event => { if (saving) event.preventDefault(); });
 $('pontDishPublish').onclick = async () => {
   if (saving || !pendingMenu) return;
-  const {id, restaurant, date, price, published, items, description} = pendingMenu;
+  const {id, restaurant, date, price, items, description} = pendingMenu;
   const button = $('pontDishPublish');
   saving = true;
   button.disabled = true;
@@ -498,29 +486,27 @@ $('pontDishPublish').onclick = async () => {
   button.textContent = 'Se salvează…';
   $('pontDishConfirmError').textContent = '';
   try {
-    if (published) {
-      const {data,error} = await db.rpc('pont_restaurant_month_paid', {p_restaurant_id:restaurant, p_service_date:date});
-      if (error) throw error;
-      if (!data) throw Error('Restaurantul nu este autorizat pentru luna selectată. Poți salva meniul ca ciornă.');
-    }
+    const {data, error: authorizationError} = await db.rpc('pont_restaurant_month_paid', {p_restaurant_id:restaurant, p_service_date:date});
+    if (authorizationError) throw authorizationError;
+    if (!data) throw Error('Restaurantul nu este autorizat să publice meniuri în luna selectată.');
     const first = items.find(item => item.category === 'first');
     const second = items.find(item => item.category === 'second');
     const dessert = items.find(item => item.category === 'dessert');
     const values = {
-      restaurant_id:restaurant, service_date:date, title:'Meniul zilei', price, description, published,
+      restaurant_id:restaurant, service_date:date, title:'Meniul zilei', price, description, published:true,
       first_course:first?.name || '', first_price:first?.price ?? null,
       second_course:second?.name || '', second_price:second?.price ?? null,
       dessert:dessert?.name || '', dish_selection:items.map(item => ({...item, available:(dishes.find(dish => dish.id === item.id)?.available ?? item.available) !== false}))
     };
     const {error} = await (id ? db.from('menus').update(values).eq('id', id) : db.from('menus').insert(values));
-    if (error?.code === '23505') throw Error('Există deja un meniu publicat pentru această zi. Editează meniul existent sau salvează o ciornă.');
+    if (error?.code === '23505') throw Error('Există deja un meniu publicat pentru această zi. Editează meniul existent sau alege altă dată.');
     if (error) throw error;
     pendingMenu = null;
     dialog.close();
     resetDaily();
     choices();
     setEditorOpen(false);
-    const message = published ? 'Meniul zilei a fost publicat pentru ' : 'Ciorna a fost salvată pentru ';
+    const message = date > todayRO() ? 'Meniul zilei a fost programat pentru ' : 'Meniul zilei a fost publicat pentru ';
     $('menuSuccessMessage').textContent = message + date.split('-').reverse().join('.') + '.';
     try {
       await refreshMenus();
@@ -534,7 +520,7 @@ $('pontDishPublish').onclick = async () => {
     saving = false;
     button.disabled = false;
     $('pontDishBack').disabled = false;
-    button.textContent = published ? 'Publică' : 'Salvează ciorna';
+    button.textContent = 'Publică';
   }
 };
 

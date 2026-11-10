@@ -127,8 +127,6 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
      $('pontDishRestaurant').value=activeRestaurant;
      if(!menu)$('pontDailyRestaurant').dispatchEvent(new Event('change'));
      $('pontDailyDate').value=date;
-     $('pontDailyState').value=menu?String(menu.published):'true';
-     $('pontDailyState').dispatchEvent(new Event('change'));
      wrap.hidden=false;host?.setAttribute('aria-expanded','true');
      wrap.scrollIntoView({behavior:'smooth',block:'start'});
      $('pontOpWeekStatus').textContent='Completează și publică meniul pentru '+date+'. Va apărea automat în ziua respectivă.';
