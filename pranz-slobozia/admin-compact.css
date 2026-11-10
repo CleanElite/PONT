@@ -94,7 +94,7 @@ body.pont-admin {
 .pont-admin #app .stat { padding: 5px 7px; border-radius: 8px; font-size: 11px; }
 .pont-admin #app .stat strong { margin-top: 2px; font-size: 17px; }
 
-.pont-admin #app :is(.restaurant-admin-item, .dashboard-member, .auction-entry, .pont-dish-line, .pont-daily-dish, .menu-group .row) {
+.pont-admin #app :is(.restaurant-admin-item, .dashboard-member, .auction-entry, .pont-daily-dish, .menu-group .row) {
   padding-block: 4px;
   gap: 4px 7px;
 }
@@ -124,9 +124,47 @@ body.pont-admin {
 .pont-admin #app #pontDishForm .pont-dish-photo-price-layout .pont-dish-grid { height: auto; gap: 4px; }
 .pont-admin #app #pontDishForm .pont-dish-photo-price-layout .pont-dish-grid :is(input, select) { height: auto; min-height: var(--admin-control-size); }
 .pont-admin #app #pontDishForm .pont-dish-description { margin-top: 5px; }
-.pont-admin #app .pont-dish-summary img { width: 30px; height: 30px; }
+.pont-admin #app .pont-dish-summary img { width: 36px; height: 36px; }
 .pont-admin #app .pont-library-row:has(img) .pont-dish-price { margin-left: 0; }
-.pont-admin #app .pont-availability { gap: 3px; margin: 0; }
+/* Saved dishes: keep the name and price together, then group the two kinds of actions. */
+.pont-admin #app .pont-library-row {
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  grid-template-areas: "summary price availability actions";
+  gap: 5px 12px;
+  padding-block: 7px;
+}
+.pont-library-row .pont-dish-summary { grid-area: summary; }
+.pont-library-row .pont-dish-price { grid-area: price; }
+.pont-library-row .pont-availability { grid-area: availability; }
+.pont-library-row .admin-row-actions { grid-area: actions; }
+.pont-admin #app .pont-library-row .name strong { font-size: 16px; line-height: 1.25; }
+.pont-admin #app .pont-library-row .name small {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+  font-size: 13px;
+  line-height: 1.3;
+}
+.pont-admin #app .pont-library-row .pont-dish-price {
+  font-size: 14px;
+  color: var(--admin-ink);
+  text-align: right;
+}
+.pont-admin #app .pont-library-row :is(.pont-availability, .admin-row-actions) {
+  width: auto;
+  margin: 0;
+  gap: 6px;
+}
+.pont-admin #app .pont-library-row .pont-availability button { flex: none; }
+@media (max-width: 640px) {
+  .pont-admin #app .pont-library-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "summary price" "availability actions";
+    gap: 6px 8px;
+  }
+  .pont-admin #app .pont-library-row .admin-row-actions { justify-self: end; }
+}
 
 .pont-admin #app .pont-operations { gap: 5px; }
 .pont-admin #app .pont-operations details { padding: 6px 8px; }
@@ -151,8 +189,6 @@ body.pont-admin {
   .pont-admin #app .admin-nav > :is(button, a) { padding-inline: 5px; }
   .pont-admin #app .admin-nav .admin-icon { display: none; }
   .pont-admin #app :is(.restaurant-admin-heading, .auction-entry-main) { flex-basis: 90px; }
-  .pont-admin #app .pont-library-row { grid-template-areas: "summary actions" "price availability"; }
-  .pont-admin #app .pont-library-row .pont-availability { justify-self: end; }
 }
 @media (max-width: 360px) {
   .pont-admin #app .dashboard-fields { grid-template-columns: minmax(0, 1fr); }
