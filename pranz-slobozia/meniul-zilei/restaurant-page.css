@@ -746,7 +746,7 @@ body #order::backdrop{background:#031c1a}
 #order .pont-restaurant-hero__identity{
   position:relative;
   display:grid;
-  grid-template-columns:minmax(0,1fr) 23%;
+  grid-template-columns:minmax(0,1fr) 26%;
   gap:clamp(7px,2vw,31px);
   align-items:center;
   padding:0 0 clamp(5px,.65vw,10px);
@@ -793,7 +793,7 @@ body #order::backdrop{background:#031c1a}
   position:relative;
   z-index:auto;
   inset:auto;
-  aspect-ratio:1.27;
+  aspect-ratio:1.4;
   width:100%;
   border-radius:50%;
   opacity:1;
@@ -801,6 +801,13 @@ body #order::backdrop{background:#031c1a}
   background-size:cover;
   -webkit-mask-image:radial-gradient(ellipse,#000 52%,#000c 64%,transparent 75%);
   mask-image:radial-gradient(ellipse,#000 52%,#000c 64%,transparent 75%);
+}
+#order .pont-restaurant-hero__photo::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,#000 0%,#000c 16%,#0005 35%,transparent 61%);
 }
 #order .pont-restaurant-hero .pont-menu-tag{
   display:flex;
