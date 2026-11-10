@@ -74,11 +74,6 @@
   </div>
   <div id="menuFormWrap" class="dashboard-form pont-menu-form-wrap" hidden></div>
   <div id="pontMenuTemplates"></div>
-  <div class="grid admin-stats dashboard-stats" aria-label="Rezumat">
-    <div class="stat">Restaurante<strong id="nr">0</strong></div>
-    <div class="stat">Meniuri recente<strong id="nm">0</strong></div>
-    <div class="stat">Publicate azi<strong id="nt">0</strong></div>
-  </div>
   <dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle">
     <span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span>
     <h3 id="menuSuccessTitle">Meniu salvat</h3><p id="menuSuccessMessage"></p>
@@ -232,6 +227,12 @@
   <div class="dashboard-heading">
     <div><h2 id="analyticsTitle">Statistici</h2><p>Urmărește vizitele și interacțiunile pe restaurant.</p></div>
     <button type="button" id="analyticsRefresh">Actualizează</button>
+  </div>
+  <h3>Indicatori generali PONT</h3>
+  <div class="grid admin-stats dashboard-stats" aria-label="Indicatori generali PONT">
+    <div class="stat">Restaurante<strong id="nr">0</strong></div>
+    <div class="stat">Meniuri recente<strong id="nm">0</strong></div>
+    <div class="stat">Publicate azi<strong id="nt">0</strong></div>
   </div>
   <div class="dashboard-tools">
     <label for="analyticsMonth">Luna raportului<input type="month" id="analyticsMonth"></label>
