@@ -1266,7 +1266,7 @@ window.pontAllMenus=()=>menus;
 const {initMenuTemplates,renderMenuArchive}=await import('../menu-templates.js?v=3');
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=6');
+const {initPontOperations}=await import('../order-operations.js?v=7');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:false});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();
