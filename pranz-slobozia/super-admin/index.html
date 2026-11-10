@@ -442,8 +442,6 @@
   </div>
   <div class="dashboard-tools">
     <label for="auctionMonth">Luna autorizării<input type="month" id="auctionMonth"></label>
-    <label class="dashboard-search" for="auctionSearch">Caută restaurant<input type="search" id="auctionSearch" placeholder="Nume restaurant" autocomplete="off"></label>
-    <label for="auctionFilter">Confirmare<select id="auctionFilter"><option value="">Toate</option><option value="none">Neconfirmat</option><option value="paid">Plătit</option><option value="authorization">Doar autorizat</option></select></label>
   </div>
   <div class="auction-save-bar">
     <div><strong id="auctionCount"></strong><span id="auctionSaveHint" role="status">Selectează confirmările, apoi salvează.</span></div>
@@ -1085,9 +1083,7 @@ function renderAuctionRows() {
  }
  if (month !== loadedAuctionMonth) return;
  const positions = new Map(auctionOffers.map((offer, index) => [offer.restaurant_id, {offer,rank:index+1}]));
- const filter = $('auctionFilter').value;
- const result = restaurants.filter(restaurant => matching(restaurant.name, 'auctionSearch') &&
-  (!filter || currentAuctionMode(restaurant.id) === filter));
+ const result = [...restaurants];
  const rank = restaurant => positions.get(restaurant.id)?.rank ?? Number.MAX_SAFE_INTEGER;
  result.sort((a,b) => rank(a) - rank(b) || a.name.localeCompare(b.name, 'ro'));
  $('auctionCount').textContent = countLabel(auctionOffers.length, 'ofertă', 'oferte') + ' · ' + countLabel(result.length, 'restaurant afișat', 'restaurante afișate');
@@ -1137,7 +1133,7 @@ async function loadAuctions() {
 }
 function focusAuctionRow(restaurantId) {
  const button = [...$('auctionRows').querySelectorAll('[data-auction-restaurant]')].find(item => item.dataset.auctionRestaurant === restaurantId);
- (button ?? $('auctionFilter')).focus({preventScroll:true});
+ button?.focus({preventScroll:true});
 }
 
 const requestedMonth = new URLSearchParams(location.search).get('month') || '';
@@ -1153,8 +1149,6 @@ $('auctionMonth').onchange = () => {
  refreshAuctionSave();
  loadAuctions();
 };
-$('auctionSearch').addEventListener('input', renderAuctionRows);
-$('auctionFilter').addEventListener('change', renderAuctionRows);
 function closeAuctionChoice() {
  $('auctionChoiceDialog').close();
  activeAuctionRestaurant = null;
