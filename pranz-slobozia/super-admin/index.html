@@ -398,6 +398,7 @@ async function load() {
  $('nt').textContent = menus.filter(menu => menu.published && menu.service_date === today).length;
  renderMenuRows();
  renderMenuArchive($('menuArchive'), menus, restaurants);
+ window.pontOperations?.refreshWeek();
  renderRestaurants();
  renderMembers();
 }
@@ -1265,7 +1266,7 @@ window.pontAllMenus=()=>menus;
 const {initMenuTemplates,renderMenuArchive}=await import('../menu-templates.js?v=3');
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=5');
+const {initPontOperations}=await import('../order-operations.js?v=6');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:false});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();

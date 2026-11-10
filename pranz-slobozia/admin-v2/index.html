@@ -110,6 +110,7 @@ const renderMenu=menu=>{
 };
 const group=(title,items,empty)=>'<div class="menu-group"><h3>'+title+' ('+items.length+')</h3>'+(items.length?items.map(renderMenu).join(''):'<p>'+empty+'</p>')+'</div>';$('menus').innerHTML=group('Active acum și programate',live,'Nu există meniuri active sau programate.');
 renderMenuArchive($('menuArchive'), menus, restaurants);
+window.pontOperations?.refreshWeek();
 }
 function syncContactPhone(){const r=restaurants.find(r=>r.id===$('contactRestaurant').value);const phone=r?.phone||'';$('restaurantMenuPrice').value=r?.menu_price??'';$('acceptsCard').checked=!!r?.accepts_card;$('contactPhone').value=phone;$('contactPhoneDisplay').textContent=phone||'Număr neconfigurat';$('contactPhoneView').hidden=false;$('contactPhoneEditor').hidden=true;$('editContactPhone').textContent=phone?'Modifică':'Adaugă număr';}
 $('contactRestaurant').onchange=syncContactPhone;
@@ -151,7 +152,7 @@ window.pontAllMenus=()=>menus;
 const {initMenuTemplates,renderMenuArchive}=await import('../menu-templates.js?v=3');
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=5');
+const {initPontOperations}=await import('../order-operations.js?v=6');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();

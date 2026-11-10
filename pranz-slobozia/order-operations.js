@@ -19,6 +19,8 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  .pont-operations input,.pont-operations select{box-sizing:border-box;width:100%;min-height:43px;padding:9px 11px;background:#09202a;border:1px solid #47717b;border-radius:10px;color:white;font:inherit}
  .pont-operations .pont-op-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
  .pont-operations .pont-op-button{border:1px solid #76c3c2;background:#15515a;color:#fff;padding:10px 14px;border-radius:11px;font:inherit;cursor:pointer;min-height:42px}
+ .pont-operations .pont-op-week-nav{display:flex;align-items:end;gap:8px;flex-wrap:wrap;margin:12px 0}
+ .pont-operations .pont-op-week-nav label{margin:0}
  .pont-operations .pont-op-days{display:grid;gap:7px}
  .pont-operations .pont-op-day{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px;border:1px solid #2f5260;border-radius:11px}
  .pont-operations .pont-op-day strong{display:block;font-size:.88rem}
@@ -43,9 +45,13 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  <div class="pont-op-grid"><label>Comenzi de la ora<input id="pontOpStart" type="time"></label><label>Comenzi până la ora<input id="pontOpEnd" type="time"></label><label>Minim meniuri complete<input id="pontOpMin" type="number" min="1" max="20" step="1" value="1" required></label></div>
  <button type="button" id="pontOpSave" class="${settingsHost ? 'primary' : 'pont-op-button'}">${settingsHost ? 'Salvează setările comenzilor' : 'Salvează programul'}</button><p id="pontOpStatus" role="status"></p></details>
  <details id="pontWeekPanel"><summary>Planifică meniul pe toată săptămâna</summary>
- <p>Pregătești fiecare zi separat, pentru următoarea săptămână. Un meniu publicat cu dată viitoare apare automat în ziua aleasă și poate fi modificat oricând.</p>
- ${settingsHost ? '<label id="pontOpWeekRestaurantWrap" hidden>Restaurant<select id="pontOpWeekRestaurant"></select></label>' : ''}
- <div class="pont-op-grid"><label>Săptămâna care începe<input id="pontOpWeek" type="date"></label></div>
+ <p>Alegi săptămâna și planifici fiecare zi separat. Meniurile programate apar automat la data aleasă.</p>
+ <label id="pontOpWeekRestaurantWrap" hidden>Restaurant<select id="pontOpWeekRestaurant"></select></label>
+ <div class="pont-op-week-nav">
+ <label>Săptămâna care începe<input id="pontOpWeek" type="date" required></label>
+ <button type="button" class="pont-op-button" id="pontOpWeekPrevious">Săptămâna anterioară</button>
+ <button type="button" class="pont-op-button" id="pontOpWeekNext">Săptămâna următoare</button>
+ </div>
  <div id="pontOpDays" class="pont-op-days"></div><p id="pontOpWeekStatus" role="status"></p></details>`;
  parent.append(section);
  if(settingsHost){
@@ -56,9 +62,12 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    settingsHost.append(settings);
  }
  const formatDate=d=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
- const monday=()=>{const local=formatDate(new Date());const d=new Date(local+'T12:00:00Z');d.setUTCDate(d.getUTCDate()-(d.getUTCDay()+6)%7);return d};
+ const monday=date=>dateAt(date,-(new Date(date+'T12:00:00Z').getUTCDay()+6)%7);
  const dateAt=(start,days)=>{const d=new Date(start+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+days);return d.toISOString().slice(0,10)};
- $('pontOpWeek').value=monday().toISOString().slice(0,10);
+ const weekInput=$('pontOpWeek');
+ let renderedDay=formatDate(new Date());
+ let weekStart=monday(renderedDay);
+ weekInput.value=weekStart;
  const restaurants=()=>getRestaurants()||[];
  const defaultStart='09:00', defaultEnd='15:00';
  let activeRestaurant='';
@@ -104,19 +113,37 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    catch(e){$('pontOpStatus').textContent=e.message}finally{button.disabled=false}
  });
  function renderWeek(){
-   const start=$('pontOpWeek').value||monday().toISOString().slice(0,10);
+   const today=formatDate(new Date());
+   if (weekStart===monday(renderedDay) && today!==renderedDay) weekInput.value=weekStart=monday(today);
+   renderedDay=today;
    const menus=typeof window.pontAllMenus==='function'?window.pontAllMenus():[];
    const days=['Luni','Marți','Miercuri','Joi','Vineri','Sâmbătă','Duminică'];
    $('pontOpDays').innerHTML=days.map((name,i)=>{
-     const date=dateAt(start,i),menu=menus.find(m=>m.restaurant_id===activeRestaurant&&m.service_date===date);
-     const label=menu?'Programat / publicat':'Fără meniu';
-     return '<div class="pont-op-day"><div><strong>'+name+' · '+date.split('-').reverse().join('.')+'</strong><small>'+label+'</small></div><button type="button" class="pont-op-button" data-week-date="'+date+'">'+(menu?'Editează meniul':'Creează meniul')+'</button></div>';
+     const date=dateAt(weekStart,i),menu=menus.find(m=>m.restaurant_id===activeRestaurant&&m.service_date===date);
+     const past=date<today;
+     const label=!menu?'Fără meniu':past?'Finalizat':date===today?'Publicat':'Programat';
+     const action=past?'':'<button type="button" class="pont-op-button" data-week-date="'+date+'">'+(menu?'Editează meniul':'Creează meniul')+'</button>';
+     return '<div class="pont-op-day"><div><strong>'+name+' · '+date.split('-').reverse().join('.')+'</strong><small>'+label+'</small></div>'+action+'</div>';
    }).join('');
  }
- $('pontOpWeek').addEventListener('change',renderWeek);
+ function selectWeek(start){
+   weekInput.value=weekStart=start;
+   $('pontOpWeekStatus').textContent='';
+   renderWeek();
+ }
+ weekInput.addEventListener('change',()=>selectWeek(weekInput.value ? monday(weekInput.value) : monday(formatDate(new Date()))));
+ $('pontOpWeekPrevious').onclick=()=>selectWeek(dateAt(weekStart,-7));
+ $('pontOpWeekNext').onclick=()=>selectWeek(dateAt(weekStart,7));
+ function updateDay(){
+   if(formatDate(new Date())!==renderedDay)renderWeek();
+ }
+ setInterval(updateDay,15000);
+ document.addEventListener('visibilitychange',updateDay);
  $('pontOpDays').addEventListener('click',async event=>{
    const button=event.target.closest('[data-week-date]');if(!button)return;
-   const date=button.dataset.weekDate,menu=(window.pontAllMenus?.()||[]).find(m=>m.restaurant_id===activeRestaurant&&m.service_date===date);
+   const date=button.dataset.weekDate;
+   if(date<formatDate(new Date())){renderWeek();return}
+   const menu=(window.pontAllMenus?.()||[]).find(m=>m.restaurant_id===activeRestaurant&&m.service_date===date);
    try{
      const addTab=document.querySelector('.admin-nav button[data-view="add"]');
      if(addTab)addTab.click();
@@ -132,5 +159,5 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
      $('pontOpWeekStatus').textContent='Completează și publică meniul pentru '+date+'. Va apărea automat în ziua respectivă.';
    }catch(e){$('pontOpWeekStatus').textContent=e.message}
  });
- return {refresh:async()=>{await loadSettings();renderWeek()}};
+ return {refresh:async()=>{await loadSettings();renderWeek()},refreshWeek:renderWeek};
 }
