@@ -157,6 +157,31 @@
 #analytics .pont-ranking-open strong{font:650 clamp(15px,3.8vw,18px)/1.2 Georgia,serif!important;color:#fff!important}
 #analytics .pont-ranking-open small{font:400 11px/1.3 system-ui!important;color:#bbd8d0!important;white-space:normal!important}
 #analytics .pont-ranking-open-arrow{font-size:29px!important;color:#ebd2a0!important;line-height:1!important}
+
+/* Statistics header, period selector and verified auction revenues – scoped to Statistics */
+#analytics .pont-insights-heading{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(90px,112px)!important;gap:9px!important;align-items:stretch!important;margin-bottom:14px!important}
+#analytics .pont-analytics-title-card{display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;min-width:0!important;padding:12px 13px!important;border-radius:13px!important;border:1px solid #a5ddd2a3!important;background:linear-gradient(140deg,#155047,#0b3632)!important;box-shadow:inset 0 1px 2px #ffffff30!important}
+#analytics .pont-insights-heading .pont-analytics-title-card h2{font-size:clamp(24px,5vw,32px)!important;margin:0 0 5px!important}
+#analytics .pont-insights-heading .pont-analytics-title-card p{font-size:clamp(10px,2.4vw,12px)!important;line-height:1.3!important;overflow-wrap:anywhere!important}
+#analytics .pont-analytics-header-actions{display:grid!important;grid-template-rows:1fr 1fr!important;gap:7px!important;align-items:stretch!important;min-width:0!important}
+#analytics #analyticsRefresh,#analytics a.pont-ranking-open{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;max-width:none!important;min-width:0!important;min-height:39px!important;height:auto!important;margin:0!important;padding:7px 4px!important;border:1px solid #b1dfd5c4!important;border-radius:12px!important;background:linear-gradient(145deg,#1b554c,#0b3b34)!important;color:#fff!important;text-decoration:none!important;text-align:center!important;box-shadow:inset 0 1px 3px #f5ffff35,0 0 8px #d5ffff19!important;font:650 clamp(10px,2.6vw,12px)/1.2 system-ui!important;white-space:normal!important;gap:3px!important}
+#analytics #analyticsRefresh span{font-size:17px!important}
+#analytics a.pont-ranking-open span{font-size:18px!important;color:#e9cc93!important;line-height:1!important}
+#analytics .pont-analytics-time-controls{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:8px!important;align-items:center!important;margin-bottom:13px!important}
+#analytics .pont-analytics-time-controls .pont-period-bar{margin:0!important;min-width:0!important}
+#analytics .pont-analytics-month-quick{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;margin:0!important;min-width:0!important;color:#c6e5da!important;font:600 12px/1.2 system-ui!important}
+#analytics .pont-analytics-month-quick input{margin:0!important;min-width:0!important;width:160px!important;max-width:68%!important;min-height:36px!important;padding:7px 10px!important;border:1px solid #93c5b9!important;border-radius:10px!important;background:#073e36!important;color:#eafbf6!important;font:600 13px/1.2 system-ui!important;color-scheme:dark}
+#analytics .pont-analytics-month-quick input.active{border-color:#ecdb9f!important;box-shadow:0 0 9px #f1d5943d!important}
+#analytics .pont-revenue-section{margin-top:17px!important}
+#analytics .pont-revenue-month-row{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;align-items:end!important;gap:10px!important;margin:3px 0 8px!important}
+#analytics .pont-revenue-month-row>label{display:grid!important;gap:6px!important;margin:0!important;color:#bcd7cc!important;font:600 11px/1.25 system-ui!important}
+#analytics .pont-revenue-month-row input{min-width:0!important;width:100%!important;min-height:38px!important;padding:7px!important;border-radius:9px!important;background:#0c3e38!important;color:#fff!important;color-scheme:dark;font-size:12px!important}
+#analytics .pont-revenue-month-row .pont-revenue-summary{display:grid!important;gap:5px!important;min-width:0!important;padding:0!important;margin:0!important;align-content:center!important}
+#analytics .pont-revenue-summary span{font:600 11px/1.2 system-ui!important;color:#bcd7cc!important}
+#analytics .pont-revenue-summary strong{font:750 clamp(17px,4.5vw,24px)/1.2 system-ui!important;overflow-wrap:anywhere!important;color:#ebd09b!important}
+#analytics .pont-revenue-note{font:400 11px/1.4 system-ui!important;color:#aecfc3!important;margin:7px 0 12px!important}
+@media(min-width:700px){#analytics .pont-analytics-time-controls{grid-template-columns:minmax(0,1fr) 185px!important}#analytics .pont-analytics-month-quick{justify-content:flex-end!important}#analytics .pont-analytics-month-quick input{width:135px!important}#analytics .pont-insights-heading{grid-template-columns:minmax(0,1fr) 145px!important}}
+@media(max-width:359px){#analytics .pont-insights-heading{grid-template-columns:minmax(0,1fr) 91px!important;gap:6px!important}#analytics .pont-analytics-title-card{padding:10px!important}#analytics #analyticsRefresh,#analytics a.pont-ranking-open{font-size:10px!important;padding:6px 2px!important}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><body class="pont-admin pont-admin--platform">
@@ -342,14 +367,20 @@
 
 <section id="analytics" class="card dashboard-panel pont-insights" aria-labelledby="analyticsTitle" hidden>
  <div class="dashboard-heading pont-insights-heading">
-  <div><h2 id="analyticsTitle">Statistici</h2><p>Performanța PONT, în timp aproape real.</p></div>
-  <button type="button" id="analyticsRefresh" class="pont-refresh"><span aria-hidden="true">↻</span> Actualizează</button>
+  <div class="pont-analytics-title-card"><h2 id="analyticsTitle">Statistici</h2><p>Performanța PONT, în timp aproape real.</p></div>
+  <div class="pont-analytics-header-actions">
+   <button type="button" id="analyticsRefresh" class="pont-refresh"><span aria-hidden="true">↻</span> Actualizează</button>
+   <a class="pont-ranking-open" href="./clasament/" aria-label="Deschide clasamentul restaurantelor">Clasament <span aria-hidden="true">›</span></a>
+  </div>
  </div>
- <div class="pont-period-bar" role="group" aria-label="Perioada statisticilor">
-  <button type="button" class="active" data-analytics-period="today" aria-pressed="true">Azi</button>
-  <button type="button" data-analytics-period="7" aria-pressed="false">7 zile</button>
-  <button type="button" data-analytics-period="30" aria-pressed="false">30 zile</button>
-  <button type="button" data-analytics-period="custom" aria-pressed="false">Perioadă</button>
+ <div class="pont-analytics-time-controls">
+  <div class="pont-period-bar" role="group" aria-label="Perioada statisticilor">
+   <button type="button" class="active" data-analytics-period="today" aria-pressed="true">Azi</button>
+   <button type="button" data-analytics-period="7" aria-pressed="false">7 zile</button>
+   <button type="button" data-analytics-period="30" aria-pressed="false">30 zile</button>
+   <button type="button" data-analytics-period="custom" aria-pressed="false">Perioadă</button>
+  </div>
+  <label class="pont-analytics-month-quick" for="analyticsMonth">Luna <input type="month" id="analyticsMonth" aria-label="Selectează luna statisticilor"></label>
  </div>
  <div id="pontCustomPeriod" class="pont-custom-period" hidden>
   <label>De la<input type="date" id="analyticsFrom"></label>
@@ -365,24 +396,17 @@
   <div class="pont-insight stat pont-insight-status"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><div class="pont-status-numbers"><span>A <strong id="nmActive">0</strong></span><span>P <strong id="nmScheduled">0</strong></span></div><span class="pont-stat-label">Meniuri active / programate</span><strong id="nt" hidden>0</strong></div>
   <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#fork-knife"></use></svg><strong id="analyticsTotalMenus">—</strong><span class="pont-stat-label">Meniuri trimise estimativ</span></div>
   <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#chart-bar"></use></svg><strong id="analyticsTotalViews">—</strong><span class="pont-stat-label">Vizite totale</span></div>
-  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#users-three"></use></svg><strong id="analyticsUniqueVisitors">—</strong><span class="pont-stat-label">Vizitatori unici*</span></div>
+  <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#users-three"></use></svg><strong id="analyticsUniqueVisitors">—</strong><span class="pont-stat-label">Vizitatori unici</span></div>
   <div class="pont-insight stat"><svg class="pont-stat-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#coins"></use></svg><strong id="analyticsEstimatedValue">—</strong><span class="pont-stat-label">Valoare estimată a meniurilor</span></div>
  </div>
- <p class="pont-insights-clarification">* Vizitatorii unici includ doar browserele care au acceptat identificarea pentru statistici. Nu reprezintă toate persoanele.</p>
- <div class="pont-insights-section-title pont-month-row"><h3>Statistici restaurante</h3><label for="analyticsMonth">Luna raportului<input type="month" id="analyticsMonth"></label></div>
  <p id="analyticsStatus" class="dashboard-message" role="status" aria-live="polite"></p>
- <a class="pont-ranking-open" href="./clasament/" aria-label="Deschide clasamentul de performanță al restaurantelor">
-  <span class="pont-ranking-open-icon" aria-hidden="true">🏆</span>
-  <span><strong>Clasament restaurante</strong><small>Toate restaurantele · 5 indicatori · poziția licitată</small></span>
-  <span class="pont-ranking-open-arrow" aria-hidden="true">›</span>
- </a>
- <details class="pont-insights-disclosure" id="analyticsRevenue">
-  <summary>Venituri PONT <span>Încasări reale <b>⌄</b></span></summary>
-  <div class="pont-revenue-summary"><span>Licitații încasate</span><strong id="analyticsRevenueAuctions">—</strong></div>
-  <p>Valoarea comenzilor restaurantelor nu reprezintă venit PONT. Alte venituri apar după integrarea abonamentelor sau promovărilor plătite.</p>
- </details>
- <details class="pont-insights-disclosure"><summary>Cum sunt calculate statisticile <span><b>⌄</b></span></summary>
-  <p>Vizualizările meniurilor se numără când se deschide un meniu publicat; contorul începe de la activarea funcției și nu este retroactiv. Apăsările sunt interacțiuni, nu apeluri sau vânzări confirmate. Meniurile estimate provin din solicitările inițiate către WhatsApp, iar suma estimată include doar meniurile complete, fără preparatele individuale. Rata de contact este raportul aproximativ dintre contactele inițiate și vizite; poate include repetări.</p>
+ <details class="pont-insights-disclosure pont-revenue-section" id="analyticsRevenue" open>
+  <summary>Venituri PONT <span>Încasări confirmate din licitații <b>⌄</b></span></summary>
+  <div class="pont-revenue-month-row">
+   <label for="analyticsRevenueMonth">Luna licitației <input type="month" id="analyticsRevenueMonth" aria-label="Luna pentru veniturile PONT"></label>
+   <div class="pont-revenue-summary"><span>Încasat</span><strong id="analyticsRevenueAuctions">—</strong></div>
+  </div>
+  <p id="analyticsRevenueStatus" class="pont-revenue-note" role="status">Sunt însumate doar ofertele bifate „Plătit” în Licitații, pentru luna selectată.</p>
  </details>
 </section>
 
@@ -646,45 +670,41 @@ $('customerOrderRows').onclick = async event => {
  }
 };
 
-let analytics = null, analyticsRequest = 0, analyticsPeriod = 'today';
+let analytics = null, analyticsRequest = 0, analyticsPeriod = 'today', analyticsRevenueRequest = 0;
 const pontStatNumber = value => Number(value || 0).toLocaleString('ro-RO');
-const pontStatLei = value => Number(value || 0).toLocaleString('ro-RO', {maximumFractionDigits:2}) + ' lei';
+const pontStatLei = value => Number(value || 0).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
 const pontDayOffset = count => {
- const d = new Date(todayRO() + 'T12:00:00');
- d.setDate(d.getDate() - count);
- return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+ const d = new Date(todayRO()+'T12:00:00');
+ d.setDate(d.getDate()-count);
+ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
 };
 function pontAnalyticsDates(){
  const today=todayRO();
- if(analyticsPeriod==='today') return [today,today];
+ if(analyticsPeriod==='today')return [today,today];
  if(analyticsPeriod==='7')return [pontDayOffset(6),today];
  if(analyticsPeriod==='30')return [pontDayOffset(29),today];
+ if(analyticsPeriod==='month'){
+  const month=$('analyticsMonth').value;
+  if(!/^\d{4}-\d{2}$/.test(month))return ['',''];
+  const [year,num]=month.split('-').map(Number);
+  return [month+'-01',new Date(Date.UTC(year,num,0)).toISOString().slice(0,10)];
+ }
  return [$('analyticsFrom').value,$('analyticsTo').value];
 }
 function renderAnalytics(){
  if(!analytics)return;
  const list=analytics.restaurants||[];
  const total=field=>list.reduce((sum,row)=>sum+Number(row[field]||0),0);
- const count=(id,val)=>{$(id).textContent=pontStatNumber(val)};
- count('analyticsTotalViews',total('views'));
- count('analyticsMenuViews',total('menu_views'));
- count('analyticsTotalCalls',total('calls'));
- count('analyticsTotalWhatsApp',total('whatsapp'));
- count('analyticsTotalMenus',total('menus'));
- $('analyticsUniqueVisitors').textContent=pontStatNumber(analytics.platform_unique_visitors||0);
+ const put=(id,value)=>{$(id).textContent=pontStatNumber(value)};
+ put('analyticsTotalViews',total('views'));
+ put('analyticsMenuViews',total('menu_views'));
+ put('analyticsTotalCalls',total('calls'));
+ put('analyticsTotalWhatsApp',total('whatsapp'));
+ put('analyticsTotalMenus',total('menus'));
+ put('analyticsUniqueVisitors',analytics.platform_unique_visitors||0);
  $('analyticsActiveRestaurants').textContent=pontStatNumber(analytics.active_restaurants||0)+' / '+pontStatNumber(analytics.restaurants_count||restaurants.length);
  $('analyticsEstimatedValue').textContent=pontStatLei(total('estimated_menus_value'));
- $('analyticsRevenueAuctions').textContent=pontStatLei(analytics.revenue_auctions);
- $('nr').textContent=pontStatNumber(analytics.restaurants_count||restaurants.length);
- const cards=$('analyticsRestaurantCards');
- cards.innerHTML=list.length?list.map(row=>{
-  const visits=Number(row.views||0),contacts=Number(row.calls||0)+Number(row.whatsapp||0);
-  const rate=visits?Math.round(1000*contacts/visits)/10:0;
-  return '<details class="pont-insights-restaurant"><summary><span class="pont-insights-restaurant-name">'+esc(row.name)+'</span><span class="pont-insights-restaurant-preview">'+pontStatNumber(row.views)+' vizite · '+pontStatNumber(row.menu_views)+' meniuri vizualizate · '+pontStatNumber(row.whatsapp)+' WhatsApp</span><span class="pont-insights-chevron" aria-hidden="true">›</span></summary>'+
-   '<div class="pont-restaurant-metrics">'+
-   [['Vizite',row.views],['Vizualizări meniuri',row.menu_views],['Sună acum',row.calls],['WhatsApp',row.whatsapp],['Meniuri estimate',row.menus],['Clienți noi',row.new_customers],['Clienți fideli',row.loyal_customers],['Vizitatori unici*',row.unique_visitors],['Contacte / vizite',rate+'%'],['Valoare meniuri',pontStatLei(row.estimated_menus_value)]].map(([label,value])=>'<div><strong>'+esc(String(value??'0'))+'</strong><span>'+esc(label)+'</span></div>').join('')+
-   '</div></details>';
- }).join(''):'<p>Nu există restaurante înregistrate.</p>';
+ put('nr',analytics.restaurants_count||restaurants.length);
  $('analyticsLastUpdated').textContent='Actualizat '+new Intl.DateTimeFormat('ro-RO',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Bucharest'}).format(new Date());
 }
 async function loadAnalytics(){
@@ -701,31 +721,52 @@ async function loadAnalytics(){
    req(db.rpc('pont_admin_menu_views_range',{p_from:start,p_to:end}))
   ]);
   if(request!==analyticsRequest)return;
-  const viewsByRestaurant=new Map((menuViews||[]).map(row=>[row.restaurant_id,Number(row.menu_views||0)]));
-  analytics={...result,restaurants:(result.restaurants||[]).map(row=>({...row,menu_views:viewsByRestaurant.get(row.id)||0})),platform_unique_visitors:Number(uniqueVisitors||0)};
-  const openCards=[...$('analyticsRestaurantCards').querySelectorAll('details[open] summary .pont-insights-restaurant-name')].map(x=>x.textContent);
+  const counts=new Map((menuViews||[]).map(row=>[row.restaurant_id,Number(row.menu_views||0)]));
+  analytics={...result,restaurants:(result.restaurants||[]).map(row=>({...row,menu_views:counts.get(row.id)||0})),platform_unique_visitors:Number(uniqueVisitors||0)};
   renderAnalytics();
-  $('analyticsRestaurantCards').querySelectorAll('details').forEach(d=>{if(openCards.includes(d.querySelector('.pont-insights-restaurant-name')?.textContent))d.open=true});
   showMessage('analyticsStatus','');
  }catch(error){
   if(request!==analyticsRequest)return;
   showMessage('analyticsStatus','Statisticile nu s-au putut încărca: '+error.message,true);
  }finally{if(request===analyticsRequest)$('analyticsRefresh').disabled=false}
 }
+async function loadAnalyticsRevenue(){
+ const request=++analyticsRevenueRequest;
+ const month=$('analyticsRevenueMonth').value;
+ if(!/^\d{4}-\d{2}$/.test(month)){$('analyticsRevenueStatus').textContent='Selectează o lună validă.';return}
+ try{
+  const offers=await req(db.from('auction_offers').select('amount').eq('campaign_month',month+'-01').eq('payment_status','paid'));
+  if(request!==analyticsRevenueRequest)return;
+  $('analyticsRevenueAuctions').textContent=pontStatLei(offers.reduce((sum,row)=>sum+Number(row.amount||0),0));
+  $('analyticsRevenueStatus').textContent='Doar oferte bifate „Plătit” în Licitații pentru luna selectată.';
+ }catch(error){
+  if(request!==analyticsRevenueRequest)return;
+  $('analyticsRevenueAuctions').textContent='—';
+  $('analyticsRevenueStatus').textContent='Veniturile nu au putut fi încărcate: '+error.message;
+ }
+}
+function pontSetAnalyticsPeriod(value){
+ analyticsPeriod=value;
+ document.querySelectorAll('[data-analytics-period]').forEach(button=>{
+  const active=button.dataset.analyticsPeriod===value;
+  button.classList.toggle('active',active);
+  button.setAttribute('aria-pressed',String(active));
+ });
+ $('analyticsMonth').classList.toggle('active',value==='month');
+ $('pontCustomPeriod').hidden=value!=='custom';
+ loadAnalytics();
+}
 $('analyticsMonth').value=todayRO().slice(0,7);
+$('analyticsRevenueMonth').value=todayRO().slice(0,7);
 $('analyticsFrom').value=todayRO();
 $('analyticsTo').value=todayRO();
-document.querySelectorAll('[data-analytics-period]').forEach(button=>button.addEventListener('click',()=>{
- analyticsPeriod=button.dataset.analyticsPeriod;
- document.querySelectorAll('[data-analytics-period]').forEach(b=>{const selected=b===button;b.classList.toggle('active',selected);b.setAttribute('aria-pressed',String(selected))});
- $('pontCustomPeriod').hidden=analyticsPeriod!=='custom';
- loadAnalytics();
-}));
+document.querySelectorAll('[data-analytics-period]').forEach(button=>button.addEventListener('click',()=>pontSetAnalyticsPeriod(button.dataset.analyticsPeriod)));
+$('analyticsMonth').onchange=()=>pontSetAnalyticsPeriod('month');
+$('analyticsRevenueMonth').onchange=loadAnalyticsRevenue;
 $('analyticsFrom').onchange=()=>{if(analyticsPeriod==='custom')loadAnalytics()};
 $('analyticsTo').onchange=()=>{if(analyticsPeriod==='custom')loadAnalytics()};
-$('analyticsMonth').onchange=()=>{const [y,m]=$('analyticsMonth').value.split('-').map(Number);if(!y||!m)return;analyticsPeriod='custom';$('analyticsFrom').value=$('analyticsMonth').value+'-01';$('analyticsTo').value=new Date(Date.UTC(y,m,0)).toISOString().slice(0,10);document.querySelector('[data-analytics-period="custom"]').click()};
-$('analyticsRefresh').onclick=async()=>{await loadAnalytics();if(!$('app').hidden)try{await load()}catch(e){console.warn('Meniuri statistici',e)}};
-setInterval(()=>{if(!$('app').hidden&&!$('analytics').hidden&&!document.hidden){loadAnalytics();load().catch(e=>console.warn('Actualizare meniuri:',e.message))}},20000);
+$('analyticsRefresh').onclick=async()=>{await Promise.all([loadAnalytics(),loadAnalyticsRevenue()]);if(!$('app').hidden)try{await load()}catch(e){console.warn('Meniuri statistici',e)}};
+setInterval(()=>{if(!$('app').hidden&&!$('analytics').hidden&&!document.hidden){loadAnalytics();loadAnalyticsRevenue();load().catch(e=>console.warn('Actualizare meniuri:',e.message))}},20000);
 
 const auctionMoney = value => Number(value || 0).toLocaleString('ro-RO', {maximumFractionDigits:2}) + ' lei';
 let auctionOffers = [], manualPaidApprovals = [], auctionRequest = 0, loadedAuctionMonth = '';
@@ -1131,7 +1172,7 @@ const panelLoaders = {
  menus:() => window.pontMenuModels?.refresh(),
  auctions:() => { loadAuctions(); loadAuctionControl(); },
  dishLibrary:() => window.pontDishUI?.refresh().catch(error => status(error.message, true)),
- analytics:loadAnalytics,
+ analytics:() => {loadAnalytics();loadAnalyticsRevenue()},
  customers:loadCustomers
 };
 function selectPlatformPanel(id, remember = true) {
