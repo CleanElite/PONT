@@ -50,14 +50,17 @@
 /* Compact daily publishing: show five dishes per category, keep all selectable. */
 .pont-admin #pontDailyDishes .pont-daily-scroll-list{
   --pont-dish-row-height:50px;
-  max-height:calc(5 * var(--pont-dish-row-height));
+  --pont-visible-dishes:3;
+  max-height:calc(var(--pont-visible-dishes) * var(--pont-dish-row-height));
   overflow-y:auto;
   overflow-x:hidden;
   overscroll-behavior:contain;
   -webkit-overflow-scrolling:touch;
-  scrollbar-width:thin;
-  scrollbar-color:rgba(134,214,190,.6) transparent;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
 }
+.pont-admin #pontDailyDishes .pont-daily-fieldset--second .pont-daily-scroll-list{--pont-visible-dishes:5}
+.pont-admin #pontDailyDishes .pont-daily-scroll-list::-webkit-scrollbar{display:none;width:0;height:0}
 .pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option{
   box-sizing:border-box;
   min-height:var(--pont-dish-row-height);
@@ -69,7 +72,7 @@
 }
 .pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-price{flex:0 0 auto}
 @media(max-width:430px){
-  .pont-admin #pontDailyDishes .pont-daily-scroll-list{--pont-dish-row-height:54px}
+  .pont-admin #pontDailyDishes .pont-daily-scroll-list{--pont-dish-row-height:55px}
   .pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option{gap:5px}
 }
 
