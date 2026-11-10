@@ -391,6 +391,25 @@
  .pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster>:is(button,a){font-size:9px!important;grid-template-columns:14px minmax(0,1fr)!important;padding:6px 2px!important}
  .pont-admin--platform .pont-admin-grouped-nav .pont-nav-cluster-label{font-size:7px!important}
 }
+</style><style id="pont-auction-actions-c16">
+/* Three equal controls with the auction status directly beneath the first. */
+#auctions .pont-auction-page-title{margin:0 0 13px!important;font:600 clamp(20px,4.5vw,25px)/1.2 Georgia,serif!important}
+#auctions .pont-auction-action-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:clamp(5px,1.8vw,12px)!important;align-items:stretch!important;min-width:0!important;width:100%!important;margin:0 0 16px!important}
+#auctions .pont-auction-action-cell{display:flex!important;flex-direction:column!important;align-items:stretch!important;justify-content:flex-start!important;min-width:0!important;min-height:98px!important;padding:clamp(5px,1.6vw,10px)!important;border-radius:14px!important;border:1px solid rgba(145,203,183,.46)!important;background:linear-gradient(145deg,#16463f,#092c30)!important;box-sizing:border-box!important}
+#auctions .pont-auction-action-cell>button{display:flex!important;align-items:center!important;justify-content:center!important;gap:5px!important;flex:1 1 auto!important;min-width:0!important;width:100%!important;min-height:56px!important;max-width:100%!important;margin:0!important;padding:8px 5px!important;border:1px solid rgba(182,226,206,.56)!important;border-radius:10px!important;background:linear-gradient(140deg,#1b6051,#104135)!important;color:#f3fff8!important;text-align:center!important;font:700 clamp(10px,2.55vw,13px)/1.2 system-ui!important;white-space:normal!important;overflow-wrap:anywhere!important;box-shadow:inset 0 1px 2px #ffffff20!important}
+#auctions .pont-auction-action-cell>button:disabled{opacity:.55!important}
+#auctions .pont-auction-action-cell>button svg{flex:0 0 16px!important;width:16px!important;height:16px!important}
+#auctions .pont-auction-control-cell>button{flex:0 0 56px!important}
+#auctions .pont-auction-control-status{display:flex!important;align-items:center!important;justify-content:center!important;flex:1 1 auto!important;min-width:0!important;min-height:23px!important;margin:6px 0 0!important;padding:3px!important;text-align:center!important;color:#d3e5dc!important;font:650 clamp(9px,2.3vw,11px)/1.25 system-ui!important;white-space:normal!important;overflow-wrap:anywhere!important}
+#auctions .pont-auction-control-status[data-state="open"]{color:#9ef2bc!important}
+#auctions .pont-auction-control-status[data-state="closed"]{color:#e1c68e!important}
+@media(max-width:365px){
+ #auctions .pont-auction-action-grid{gap:5px!important}
+ #auctions .pont-auction-action-cell{padding:5px 3px!important;min-height:100px!important}
+ #auctions .pont-auction-action-cell>button{font-size:10px!important;padding:6px 2px!important;gap:2px!important}
+ #auctions .pont-auction-action-cell>button svg{display:none!important}
+ #auctions .pont-auction-control-status{font-size:9px!important}
+}
 </style><body class="pont-admin pont-admin--platform">
 <main>
 <header class="admin-topbar">
@@ -522,13 +541,18 @@
 </section>
 
 <section id="auctions" class="card dashboard-panel" aria-labelledby="auctionsTitle" hidden>
-  <div class="dashboard-heading">
-    <div><h2 id="auctionsTitle">Licitații și încasări</h2><p>Alege luna în care restaurantul va putea publica meniuri.</p></div>
-    <div class="pont-ranking-buttons"><button type="button" id="showAuctionRanking" class="pont-auction-ranking-trigger" aria-haspopup="dialog" aria-controls="auctionRankingDialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M6 16V9h4v7M10 16V5h4v11M14 16v-5h4v5"/></svg><span>Rezumat licitații</span></button><button type="button" id="editAuctionRanking" class="pont-auction-ranking-trigger" aria-haspopup="dialog" aria-controls="auctionRankingDialog">Editează pozițiile</button></div>
-  </div>
-  <div class="dashboard-heading">
-    <div><strong>Licitația pentru luna următoare</strong><p id="auctionControlStatus" role="status">Se verifică starea licitației…</p></div>
-    <button type="button" id="toggleAuctionControl" class="primary" disabled>Pornește licitația</button>
+  <h2 id="auctionsTitle" class="pont-auction-page-title">Licitații și încasări</h2>
+  <div class="pont-auction-action-grid" role="group" aria-label="Control și clasament licitații">
+    <div class="pont-auction-action-cell pont-auction-control-cell">
+      <button type="button" id="toggleAuctionControl" class="primary" disabled>Pornește licitația</button>
+      <p id="auctionControlStatus" class="pont-auction-control-status" role="status" aria-live="polite">Se verifică…</p>
+    </div>
+    <div class="pont-auction-action-cell">
+      <button type="button" id="showAuctionRanking" class="pont-auction-ranking-trigger" aria-haspopup="dialog" aria-controls="auctionRankingDialog"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16M6 16V9h4v7M10 16V5h4v11M14 16v-5h4v5"/></svg><span>Rezumat licitații</span></button>
+    </div>
+    <div class="pont-auction-action-cell">
+      <button type="button" id="editAuctionRanking" class="pont-auction-ranking-trigger" aria-haspopup="dialog" aria-controls="auctionRankingDialog">Editează pozițiile</button>
+    </div>
   </div>
   <div class="auction-save-bar pont-auction-period-save">
     <label for="auctionMonth">Luna autorizării<input type="month" id="auctionMonth"></label>
@@ -1332,7 +1356,9 @@ function nextAuctionMonth() {
 function displayAuctionControl(month, isOpen, finalized) {
  auctionControl = {month, isOpen, finalized};
  const label = new Intl.DateTimeFormat('ro-RO', {month:'long', year:'numeric', timeZone:'UTC'}).format(new Date(month));
- showMessage('auctionControlStatus', label + ' · ' + (isOpen ? 'Deschisă' : 'Închisă'));
+ const controlStatus=$('auctionControlStatus');
+ controlStatus.textContent=(isOpen ? 'Deschisă' : 'Închisă')+' · '+label;
+ controlStatus.dataset.state=isOpen?'open':'closed';
  auctionControlButton.textContent = isOpen ? 'Închide licitația' : 'Pornește licitația';
  auctionControlButton.disabled = auctionControlBusy;
 }
@@ -1366,7 +1392,7 @@ auctionControlButton.onclick = async () => {
    .upsert({campaign_month:month, is_open:!isOpen}, {onConflict:'campaign_month'}).select('is_open,final_ranking').single();
   if (error) throw error;
   displayAuctionControl(month, data.is_open, Array.isArray(data.final_ranking));
-  if(!data.is_open) showMessage('auctionControlStatus', 'Licitație închisă. Clasamentul a fost salvat automat.');
+  if(!data.is_open) $('auctionControlStatus').textContent='Închisă · Clasament salvat';
  } catch (error) {
   showMessage('auctionControlStatus', 'Starea licitației nu a putut fi actualizată. ' + error.message, true);
  } finally {
