@@ -281,6 +281,7 @@ function choices() {
   $('pontDailyDishes').querySelectorAll('.pont-daily-scroll-list').forEach(list => {
     list.scrollTop = scrollPositions.get(list.dataset.course) || 0;
   });
+  syncSaveModelButton();
 }
 
 async function load() {
@@ -337,11 +338,23 @@ function resetDish() {
   dishFormMessage.textContent = '';
   renderDishPhoto();
 }
+function canSaveDailyModel() {
+  const items = [...selected.values()];
+  return items.some(item => item.category === 'first') &&
+    items.some(item => item.category === 'second');
+}
+function syncSaveModelButton() {
+  const button = $('pontDailySaveModel');
+  if (!button) return;
+  button.disabled = savingModel || !canSaveDailyModel() || button.classList.contains('is-saved');
+  button.title = canSaveDailyModel() ? '' : 'Selectează minimum un preparat din Felul 1 și unul din Felul 2.';
+}
 function resetModelSaved() {
   const button = $('pontDailySaveModel');
   if (!button) return;
   button.classList.remove('is-saved');
   button.textContent = 'Salvează ca model';
+  syncSaveModelButton();
 }
 function selectedModelIds() {
   const currentIds = new Set(dishes.map(dish => dish.id));
@@ -468,10 +481,14 @@ $('pontDailyDishes').oninput = event => {
 $('pontDailySaveModel').onclick = async () => {
   const button = $('pontDailySaveModel');
   if (savingModel || button.classList.contains('is-saved')) return;
+  if (!canSaveDailyModel()) {
+    syncSaveModelButton();
+    return;
+  }
   const restaurant = rid(), ids = selectedModelIds();
   $('pontDailyError').textContent = '';
   if (!restaurant) { $('pontDailyError').textContent = 'Alege mai întâi un restaurant.'; return; }
-  if (!selected.size) { $('pontDailyError').textContent = 'Selectează cel puțin un preparat pentru model.'; return; }
+  if (!canSaveDailyModel()) { $('pontDailyError').textContent = 'Selectează minimum un preparat din Felul 1 și unul din Felul 2.'; return; }
   if (!ids || ids.length !== selected.size) {
     $('pontDailyError').textContent = 'Modelul poate conține doar preparate salvate în biblioteca restaurantului.';
     return;
@@ -498,7 +515,7 @@ $('pontDailySaveModel').onclick = async () => {
     $('pontDailyError').textContent = 'Modelul nu a fost salvat: ' + error.message;
   } finally {
     savingModel = false;
-    button.disabled = false;
+    syncSaveModelButton();
   }
 };
 
