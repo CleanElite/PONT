@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<title>PONT · Clasament restaurante</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#f2faf5;background:#051f1e}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 55% -20%,#15514a 0%,#052825 42%,#041e1d 100%);min-height:100svh}
+button,select,input{font:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+main{width:min(100%,1100px);margin:auto;padding:clamp(12px,3vw,24px) clamp(9px,2.4vw,22px) 80px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:16px}
+.back{display:inline-flex;align-items:center;justify-content:center;gap:5px;text-decoration:none;color:#ecfff8;font-size:12px;font-weight:650;padding:9px 10px;min-height:38px;border:1px solid #9bd8ce92;border-radius:100px;background:#103c36;white-space:nowrap}
+.brand{font:800 clamp(22px,6vw,31px)/1 system-ui;letter-spacing:.22em;color:#f5fffd;text-shadow:0 0 11px #b5ffff8c;padding-left:.2em}
+.top-trailing{font-size:10px;color:#aed0c5;white-space:nowrap}
+.surface{position:relative;overflow:hidden;border:1px solid #a6ddd3a6;border-radius:20px;background:linear-gradient(145deg,#07332f,#042622 85%);padding:clamp(10px,2.5vw,20px);box-shadow:0 0 21px #a8ffff19,inset 0 1px 1px #efffff26}
+.surface:before{content:"";height:1px;width:52%;position:absolute;top:0;left:24%;background:linear-gradient(90deg,transparent,#eaffff,transparent);box-shadow:0 0 8px #eaffff}
+h1{font:600 clamp(26px,6vw,36px)/1.16 Georgia,serif;letter-spacing:-.02em;margin:4px 0 5px}
+.lead{font:400 12px/1.48 system-ui;color:#b7d3c9;margin:0 0 17px}
+.controls{display:grid;gap:10px;grid-template-columns:1fr}
+.period{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:2px;padding:2px;border:1px solid #a1ded2;border-radius:100px;background:#073f37}
+.period button{min-height:36px;min-width:0;padding:7px 1px;border:none;border-radius:100px;background:transparent;color:#d6eee4;font:600 clamp(10px,2.8vw,13px)/1.2 system-ui}
+.period button.active{background:linear-gradient(#198475,#065548);color:#fff;border:1px solid #d5fff8;box-shadow:inset 0 0 4px #bfffe97c}
+.dates{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dates label,.sort-wrap label{display:grid;gap:5px;color:#b8d6cc;font:500 11px/1.25 system-ui}
+.dates input,.sort-wrap select{min-width:0;width:100%;min-height:38px;border:1px solid #7ab6a9;border-radius:10px;background:#0c4038;color:#fff;padding:8px 10px;font-size:12px}
+.toolbar{display:flex;align-items:end;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:14px}
+.sort-wrap{min-width:min(100%,210px)}
+.sort-wrap select{width:210px;max-width:100%}
+.refresh{min-height:37px;display:flex;gap:5px;align-items:center;justify-content:center;padding:8px 12px;background:#135045;border:1px solid #d8f6e5b0;border-radius:12px;color:#f6ffff;box-shadow:0 0 9px #b5fbe22c;font-size:12px;font-weight:650}
+.summary{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:14px 0 8px}
+.summary h2{font:600 18px/1.2 Georgia,serif;margin:0}
+.summary small{font-size:10px;color:#aecfc2;text-align:right}
+.table-outer{overflow:hidden;border:1px solid #8cccbfac;border-radius:13px;background:#07342e}
+table{width:100%;min-width:0;border-collapse:collapse;table-layout:fixed}
+col.name{width:28%}col.metric{width:14.4%}
+thead{background:linear-gradient(110deg,#13574b,#0b4038)}
+th{padding:10px 2px 9px;color:#d7f3e9;font-size:clamp(8px,2.05vw,11px);font-weight:700;line-height:1.22;text-align:center;overflow-wrap:anywhere;vertical-align:middle}
+th:first-child{text-align:left;padding-left:9px}
+th .short{display:none}
+tbody tr{border-top:1px solid #bde3d135}
+tbody tr:nth-child(2n){background:#e2fff006}
+td{padding:11px 2px;text-align:center;font-variant-numeric:tabular-nums;color:#f5fff9;font-size:clamp(10px,2.8vw,14px);font-weight:680;vertical-align:middle;overflow-wrap:anywhere;line-height:1.2}
+td:first-child{text-align:left;padding-left:8px}
+.restaurant{display:grid;gap:4px;min-width:0}
+.restaurant-top{display:flex;align-items:start;gap:5px}
+.rank{flex:0 0 19px;display:grid;place-items:center;width:19px;height:20px;border:1px solid #c3a76c;border-radius:6px;color:#f1d491;background:#153f35;font:750 10px/1 system-ui}
+tbody tr:first-child .rank{background:linear-gradient(#f7e4a6,#c99a48);color:#173626}
+.restaurant-name{font:650 clamp(10px,2.65vw,13px)/1.2 system-ui;overflow-wrap:anywhere;color:#fff;min-width:0}
+.auction-place{font:450 clamp(9px,2.25vw,11px)/1.25 system-ui;color:#d2b980;margin-left:24px}
+td.emphasis{color:#f2d49a;font-weight:750}
+td.rate{color:#c9f6e7}
+.note{font-size:11px;line-height:1.5;color:#a5cbbf;margin:13px 1px 0}
+.status{margin:10px 0;color:#bddbce;font-size:12px}
+.status.error{color:#ffc1bd}
+.foot{margin:17px 1px 0;font-size:10px;color:#a9c6ba}
+@media(min-width:650px){.controls{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:end}.dates{margin:0}.sort-wrap select{width:245px}col.name{width:30%}col.metric{width:14%}th,td{padding-top:13px;padding-bottom:13px}td:first-child{padding-left:15px}.restaurant-name{font-size:14px}.auction-place{font-size:11px}}
+@media(max-width:365px){main{padding-left:6px;padding-right:6px}.surface{padding:8px}.top-trailing{display:none}th .long{display:none}th .short{display:inline}col.name{width:29%}col.metric{width:14.2%}th{font-size:9px}td{font-size:10px}.restaurant-name{font-size:10px}.rank{flex-basis:17px;width:17px}.restaurant-top{gap:3px}.auction-place{margin-left:20px}}
+</style>
+</head>
+<body>
+<main>
+<header class="top">
+<a class="back" href="../index.html#analytics">‹ Înapoi la Statistici</a>
+<div class="brand" aria-label="PONT">PONT</div>
+<span class="top-trailing">SUPER ADMIN</span>
+</header>
+<section class="surface">
+<h1>Clasament restaurante</h1>
+<p class="lead">Performanța tuturor restaurantelor. Poziția din stânga este locul în clasamentul de performanță; sub nume apare separat poziția licitată.</p>
+<div id="authNotice" class="status" hidden></div>
+<div id="rankingApp" hidden>
+<div class="controls">
+<div class="period" role="group" aria-label="Perioada analizată">
+<button type="button" data-period="today" class="active" aria-pressed="true">Azi</button>
+<button type="button" data-period="7" aria-pressed="false">7 zile</button>
+<button type="button" data-period="30" aria-pressed="false">30 zile</button>
+<button type="button" data-period="custom" aria-pressed="false">Perioadă</button>
+</div>
+<div class="dates" id="dates" hidden>
+<label>De la<input type="date" id="startDate"></label>
+<label>Până la<input type="date" id="endDate"></label>
+</div>
+</div>
+<div class="toolbar">
+<div class="sort-wrap"><label for="sortMetric">Clasificare după
+<select id="sortMetric">
+<option value="whatsapp">Apăsări WhatsApp</option>
+<option value="menu_views">Vizualizări meniu</option>
+<option value="calls">Apăsări Sună</option>
+<option value="menus">Meniuri estimate</option>
+<option value="contact_rate">Rata de contact</option>
+</select>
+</label></div>
+<button type="button" id="refresh" class="refresh">↻ Actualizează</button>
+</div>
+<div class="summary"><h2>Rezultate restaurante</h2><small id="updated">—</small></div>
+<div class="table-outer">
+<table aria-label="Clasament complet restaurante">
+<colgroup><col class="name"><col class="metric"><col class="metric"><col class="metric"><col class="metric"><col class="metric"></colgroup>
+<thead><tr>
+<th scope="col">Restaurant</th>
+<th scope="col"><span class="long">Vizualizări meniu</span><span class="short">Viz. meniu</span></th>
+<th scope="col"><span class="long">Apăsări Sună</span><span class="short">Sună</span></th>
+<th scope="col"><span class="long">Apăsări WhatsApp</span><span class="short">WhatsApp</span></th>
+<th scope="col"><span class="long">Meniuri estimate</span><span class="short">Meniuri</span></th>
+<th scope="col"><span class="long">Rată contact</span><span class="short">Contact %</span></th>
+</tr></thead>
+<tbody id="rows"><tr><td colspan="6">Se încarcă…</td></tr></tbody>
+</table>
+</div>
+<p class="note">Rata de contact este aproximativă: (apăsări Sună + WhatsApp) / vizite. Aceeași persoană poate apăsa de mai multe ori. Solicitările WhatsApp nu sunt neapărat comenzi confirmate.</p>
+<p id="status" class="status" role="status" aria-live="polite"></p>
+</div>
+</section>
+<p class="foot">Clasamentul folosește datele înregistrate în PONT. Poziția licitată este afișată pentru cea mai recentă lună din perioada selectată.</p>
+</main>
+<script src="../config.js"></script>
+<script type="module">
+const el=id=>document.getElementById(id);
+const escapeHtml=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[char]));
+const format=n=>Number(n||0).toLocaleString('ro-RO');
+const dayRO=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+const minusDays=n=>{const date=new Date(dayRO()+'T12:00:00');date.setDate(date.getDate()-n);return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0')};
+let db,period='today',rows=[],requestId=0;
+const sort=el('sortMetric');
+function range(){const today=dayRO();return period==='today'?[today,today]:period==='7'?[minusDays(6),today]:period==='30'?[minusDays(29),today]:[el('startDate').value,el('endDate').value]}
+function score(row){const key=sort.value;return key==='contact_rate'?((Number(row.calls||0)+Number(row.whatsapp||0))/Math.max(1,Number(row.views||0)))*100:Number(row[key]||0)}
+function rate(row){return row.views>0?Math.round(1000*(Number(row.calls||0)+Number(row.whatsapp||0))/row.views)/10:0}
+function draw(){
+ const sorted=[...rows].sort((a,b)=>score(b)-score(a)||Number(b.whatsapp||0)-Number(a.whatsapp||0)||String(a.name).localeCompare(String(b.name),'ro'));
+ el('rows').innerHTML=sorted.length?sorted.map((r,i)=>{
+ const auction=r.auction_position?'Loc licitație: '+format(r.auction_position):'Fără poziție licitată';
+ return '<tr><td><div class="restaurant"><div class="restaurant-top"><span class="rank">'+(i+1)+'</span><span class="restaurant-name">'+escapeHtml(r.name)+'</span></div><span class="auction-place">'+escapeHtml(auction)+'</span></div></td>'+
+ '<td>'+format(r.menu_views)+'</td><td>'+format(r.calls)+'</td><td class="'+(sort.value==='whatsapp'?'emphasis':'')+'">'+format(r.whatsapp)+'</td><td>'+format(r.menus)+'</td><td class="rate">'+rate(r).toLocaleString('ro-RO',{maximumFractionDigits:1})+'%</td></tr>'
+ }).join(''):'<tr><td colspan="6">Nu există restaurante.</td></tr>';
+}
+async function load(){
+ const ticket=++requestId,[start,end]=range();
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(start||'')||!/^\d{4}-\d{2}-\d{2}$/.test(end||'')||start>end){el('status').textContent='Alege un interval valid.';return}
+ el('refresh').disabled=true;el('status').textContent='Se actualizează…';
+ try{
+  const query=(name,args)=>db.rpc(name,args).then(({data,error})=>{if(error)throw error;return data});
+  const [data,menuViews,positions]=await Promise.all([
+   query('pont_admin_stats_range',{p_from:start,p_to:end}),
+   query('pont_admin_menu_views_range',{p_from:start,p_to:end}),
+   query('pont_admin_promotion_comparison_range',{p_from:start,p_to:end})
+  ]);
+  if(ticket!==requestId)return;
+  const views=new Map((menuViews||[]).map(x=>[x.restaurant_id,Number(x.menu_views||0)]));
+  const auctionMap=new Map();
+  for(const item of [...(positions||[])].sort((a,b)=>String(b.month||'').localeCompare(String(a.month||'')))){
+   if(!auctionMap.has(item.restaurant_id))auctionMap.set(item.restaurant_id,item.position);
+  }
+  rows=(data.restaurants||[]).map(r=>({...r,menu_views:views.get(r.id)||0,auction_position:auctionMap.get(r.id)||null}));
+  draw();
+  el('updated').textContent=format(rows.length)+' restaurante · '+new Intl.DateTimeFormat('ro-RO',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Bucharest'}).format(new Date());
+  el('status').textContent='';
+ }catch(e){if(ticket===requestId){el('status').textContent='Eroare la încărcare: '+e.message;el('status').classList.add('error')}}
+ finally{if(ticket===requestId)el('refresh').disabled=false}
+}
+document.querySelectorAll('[data-period]').forEach(button=>button.onclick=()=>{
+ period=button.dataset.period;
+ document.querySelectorAll('[data-period]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button))});
+ el('dates').hidden=period!=='custom';if(period!=='custom')load();
+});
+el('startDate').value=minusDays(29);el('endDate').value=dayRO();
+el('startDate').onchange=()=>{if(period==='custom')load()};
+el('endDate').onchange=()=>{if(period==='custom')load()};
+sort.onchange=draw;el('refresh').onclick=load;
+try{
+ const cfg=window.PONT_CONFIG||{};
+ if(!cfg.url||!cfg.anonKey)throw Error('Conexiunea Supabase nu este configurată.');
+ const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+ db=createClient(cfg.url,cfg.anonKey);
+ const {data:{user},error}=await db.auth.getUser();
+ if(error||!user)throw Error('Autentificare necesară.');
+ const {data:profile,error:roleError}=await db.from('profiles').select('role').eq('user_id',user.id).single();
+ if(roleError||profile?.role!=='super_admin')throw Error('Acces permis doar Super Admin.');
+ el('rankingApp').hidden=false;await load();
+ setInterval(()=>{if(!document.hidden)load()},30000);
+}catch(error){
+ el('authNotice').hidden=false;
+ el('authNotice').innerHTML=escapeHtml(error.message)+' <a href="../../login/" style="color:#c7f9e5">Conectare administrator</a>';
+}
+</script>
+</body>
+</html>
