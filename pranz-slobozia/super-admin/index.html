@@ -71,6 +71,7 @@
  #restaurantRows .restaurant-admin-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
  #restaurantRows .restaurant-list-name{font-size:18px}
 }
+.restaurant-card-toggle{width:fit-content;max-width:100%;display:inline-flex;justify-content:space-between;align-items:center;gap:14px;padding:7px 11px;margin:5px 0;border-radius:9px;font-size:13px;font-weight:600;min-height:36px}.restaurant-card-toggle span{white-space:nowrap}.restaurant-card-toggle input{width:17px;height:17px;min-width:17px;min-height:17px;margin:0;cursor:pointer}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><body class="pont-admin pont-admin--platform">
@@ -135,8 +136,8 @@
       <label for="name">Numele restaurantului<input id="name" required></label>
       <label for="restaurantContactPhone">Telefon contact clienți<input id="restaurantContactPhone" type="tel" inputmode="tel" placeholder="+407XXXXXXXX" maxlength="24"></label>
       <label class="restaurant-card-toggle">
-        <input id="restaurantAcceptsCard" type="checkbox" role="switch">
-        <span><strong>Acceptă plata cu cardul</strong><small>Clientul poate alege numerar sau card.</small></span>
+        <span>Plata cu cardul</span>
+        <input id="restaurantAcceptsCard" type="checkbox" aria-label="Plata cu cardul">
       </label>
     </div>
     <div id="restaurantOrderSettings" hidden></div>
@@ -1133,8 +1134,10 @@ $('restaurantForm').onsubmit = async event => {
  const values = {name,phone:phone||null, accepts_card:$('restaurantAcceptsCard').checked};
  button.disabled = true;
  try {
+  if(id)await window.pontOperations?.validateRestaurantSettings(id);
   await req(id ? db.from('restaurants').update(values).eq('id', id) :
    db.from('restaurants').insert({...values, slug:uniqueSlug(name,restaurants)}));
+  if(id)await window.pontOperations?.saveRestaurantSettings(id);
   closeRestaurantEditor();
   await load();
   status('Restaurantul a fost salvat.');
@@ -1335,7 +1338,7 @@ window.pontAllMenus=()=>menus;
 const {initMenuTemplates,renderMenuArchive}=await import('../menu-templates.js?v=8');
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=8');
+const {initPontOperations}=await import('../order-operations.js?v=9');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:false});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();
