@@ -923,8 +923,13 @@ body #order::backdrop{background:#031c1a}
   backdrop-filter:none;
 }
 #order .pont-menu-reference #close svg{opacity:0}
+#order #orderTitle:focus{outline:none}
 @media(max-width:480px){
-  #order .pont-menu-reference .order-topbar{inset-block-start:3%!important}
+  #order .pont-menu-reference .order-topbar{
+    inset:calc(17.8% - 22px) auto auto calc(8.55% - 22px)!important;
+    width:44px;
+    height:44px;
+  }
 }
 
 /* Share the original navigation and button artwork while rendering each restaurant’s details. */
