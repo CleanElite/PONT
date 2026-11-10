@@ -1093,3 +1093,52 @@ body #order::backdrop{background:#031c1a}
   min-height:33px!important;
   padding-block:1px!important;
 }
+
+/* Fixed, compact Felul 1 heading paired with the included dessert.
+   Felul 2 retains the original collapsible <details> behaviour. */
+#order #choices .pont-first-static{padding-top:0!important;padding-bottom:7px!important}
+#order #choices .pont-first-heading{
+ display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+ align-items:center!important;gap:clamp(7px,2vw,18px)!important;
+ min-height:44px!important;padding:7px 5px 9px!important;
+ margin:0 0 3px!important;min-width:0;
+ border-bottom:1px solid rgba(182,212,194,.25);
+}
+#order #choices .pont-first-label{
+ display:flex!important;align-items:center!important;gap:6px!important;
+ min-width:0;white-space:nowrap;
+}
+#order #choices .pont-first-label>.pont-group-symbol{
+ flex:0 0 23px!important;min-width:23px!important;
+ width:23px!important;height:23px!important;
+}
+#order #choices .pont-first-label>strong{
+ flex:0 0 auto;font:700 clamp(15px,3.5vw,20px)/1.15 system-ui!important;
+ color:#f7f7f0;
+}
+#order #choices .pont-first-label>small{
+ font:400 clamp(9px,2.4vw,12px)/1.2 system-ui!important;
+ color:#c6d6d0;white-space:nowrap;
+}
+#order #choices .pont-first-dessert{
+ display:flex;flex-direction:column;align-items:flex-start;
+ justify-content:center;min-width:0;gap:2px;
+ border-left:1px solid rgba(230,199,127,.47);
+ padding-left:clamp(8px,2.5vw,18px);
+}
+#order #choices .pont-first-dessert>strong{
+ font:700 clamp(12px,2.8vw,15px)/1.15 system-ui!important;
+ color:#f0d998;letter-spacing:.01em;
+}
+#order #choices .pont-first-dessert>span{
+ max-width:100%;font:500 clamp(11px,2.5vw,14px)/1.28 system-ui;
+ color:#f4f7f1;overflow-wrap:anywhere;
+ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+@media(max-width:390px){
+ #order #choices .pont-first-heading{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:5px!important;padding-inline:0!important}
+ #order #choices .pont-first-label{gap:4px!important}
+ #order #choices .pont-first-label>.pont-group-symbol{flex-basis:18px!important;min-width:18px!important;width:18px!important;height:18px!important}
+ #order #choices .pont-first-label>small{font-size:9px!important}
+ #order #choices .pont-first-dessert{padding-left:7px}
+}
