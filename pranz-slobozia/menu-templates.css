@@ -378,3 +378,40 @@
 .pont-model-saved .pont-model-chevron{flex:none;width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .2s ease;margin-right:5px}
 .pont-model-saved[open] .pont-model-chevron{transform:rotate(225deg)}
 .pont-model-saved-body{padding:0 13px 13px}
+
+/* C19 — preserve individual scrolling with exactly 3 / 5 / 3 visible dishes.
+   Fixed row dimensions prevent partial fourth/sixth rows on mobile. */
+.pont-admin #pontDailyDishes .pont-daily-scroll-list {
+  --pont-dish-row-height: 52px;
+  --pont-visible-dishes: 3;
+  max-height: calc(var(--pont-visible-dishes) * var(--pont-dish-row-height)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-scroll-list,
+.pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-scroll-list {
+  --pont-visible-dishes: 3;
+}
+.pont-admin #pontDailyDishes .pont-daily-fieldset--second .pont-daily-scroll-list {
+  --pont-visible-dishes: 5;
+}
+.pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option {
+  height: var(--pont-dish-row-height) !important;
+  min-height: var(--pont-dish-row-height) !important;
+  max-height: var(--pont-dish-row-height) !important;
+  box-sizing: border-box !important;
+}
+@media (max-width: 720px) {
+  .pont-admin #pontDailyDishes .pont-daily-scroll-list {
+    --pont-dish-row-height: 60px;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-choice,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-choice {
+    height: var(--pont-dish-row-height) !important;
+    min-height: var(--pont-dish-row-height) !important;
+    max-height: var(--pont-dish-row-height) !important;
+  }
+}
