@@ -415,3 +415,33 @@
     max-height: var(--pont-dish-row-height) !important;
   }
 }
+
+/* C20 — Model nou: Felul 1 + Desert stacked left, Felul 2 at right. */
+.pont-admin #pontModelDishes.pont-dish-checklist{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-areas:"first second" "dessert second";
+  grid-template-rows:auto auto;
+  align-items:stretch;
+  gap:10px 12px;
+}
+.pont-admin #pontModelDishes>fieldset{
+  box-sizing:border-box;
+  min-width:0;
+  width:100%;
+  max-width:100%;
+  margin:0;
+  padding:10px;
+  border-radius:12px;
+}
+.pont-admin #pontModelDishes>fieldset:has(> [data-course="first"]){grid-area:first}
+.pont-admin #pontModelDishes>fieldset:has(> [data-course="second"]){grid-area:second}
+.pont-admin #pontModelDishes>fieldset:has(> [data-course="dessert"]){grid-area:dessert}
+.pont-admin #pontModelDishes .pont-checklist-option{min-width:0}
+.pont-admin #pontModelDishes .pont-checklist-option label{min-width:0;overflow-wrap:anywhere}
+@media(max-width:430px){
+  .pont-admin #pontModelDishes.pont-dish-checklist{gap:8px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .pont-admin #pontModelDishes>fieldset{padding:7px 5px}
+  .pont-admin #pontModelDishes .pont-checklist-option label{gap:4px;font-size:clamp(10px,2.6vw,12px);line-height:1.35}
+  .pont-admin #pontModelDishes .pont-checklist-option input[type="checkbox"]{width:15px;height:15px;flex:none}
+}
