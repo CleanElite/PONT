@@ -211,7 +211,86 @@
 @media(max-width:360px){#app .admin-hero.dashboard-intro{gap:6px!important}#app .pont-hero-dashboard{padding:8px 9px!important;min-height:37px!important}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
-<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><body class="pont-admin pont-admin--platform">
+<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=11"><style id="pont-grouped-nav-style">
+/* C8 Super Admin — grouped navigation: three vertical premium modules */
+.pont-admin--platform .admin-nav.pont-admin-grouped-nav{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:stretch!important;
+  gap:clamp(8px,1.7vw,16px)!important;width:100%!important;min-width:0!important;
+  margin:5px 0 19px!important;padding:clamp(9px,1.8vw,16px)!important;
+  border:1px solid rgba(138,216,191,.55)!important;border-radius:23px!important;
+  background:radial-gradient(ellipse 85% 90% at 50% 0%,rgba(35,119,97,.23),transparent 74%),linear-gradient(140deg,#092b29 0%,#071e22 55%,#0b302b 100%)!important;
+  box-shadow:inset 0 1px 1px rgba(237,255,246,.18),0 18px 40px rgba(0,0,0,.16)!important;
+  overflow:visible!important;position:relative!important;isolation:isolate!important;
+}
+.pont-admin--platform .pont-admin-grouped-nav::before{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:-1;border-radius:inherit;
+  background:repeating-linear-gradient(125deg,transparent 0,transparent 38px,rgba(180,242,220,.015) 39px,transparent 40px)!important;
+}
+.pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster{
+  position:relative!important;display:flex!important;flex-direction:column!important;align-items:stretch!important;
+  gap:6px!important;min-width:0!important;min-height:0!important;grid-column:auto!important;
+  margin:0!important;padding:12px 10px 11px!important;overflow:hidden!important;
+  border:1px solid rgba(163,218,202,.34)!important;border-radius:16px!important;
+  background:linear-gradient(158deg,rgba(27,76,68,.78),rgba(8,42,42,.94))!important;
+  box-shadow:inset 0 1px 0 rgba(227,255,239,.1),0 7px 18px rgba(0,0,0,.13)!important;
+}
+.pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster::before{
+ content:"";position:absolute;inset:0 auto auto 14px;height:1px;width:70%;pointer-events:none;
+ background:linear-gradient(90deg,rgba(237,210,146,.85),transparent 100%);box-shadow:0 0 8px rgba(239,207,153,.27)
+}
+.pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster--management{
+ background:linear-gradient(158deg,rgba(24,71,68,.82),rgba(7,37,45,.94))!important;
+}
+.pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster--commercial{
+ background:linear-gradient(158deg,rgba(56,73,55,.76),rgba(12,42,37,.95))!important;
+}
+.pont-admin--platform .pont-admin-grouped-nav .pont-nav-cluster-label{
+ display:flex!important;align-items:center!important;gap:7px!important;min-width:0!important;
+ margin:0 0 3px!important;padding:0 4px 7px!important;text-transform:uppercase!important;
+ font:700 clamp(8px,1.65vw,10px)/1.25 system-ui!important;letter-spacing:.11em!important;
+ color:#d6b982!important;white-space:nowrap!important;
+}
+.pont-admin--platform .pont-admin-grouped-nav .pont-nav-label-rule{flex:1!important;height:1px!important;min-width:3px!important;background:linear-gradient(90deg,rgba(224,197,146,.37),transparent)!important}
+.pont-admin--platform .pont-admin-grouped-nav .pont-nav-cluster-number{color:#9bc5b8!important;font:650 10px/1 system-ui!important;letter-spacing:0!important}
+.pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster>:is(button,a){
+ display:grid!important;grid-template-columns:24px minmax(0,1fr) 12px!important;align-items:center!important;justify-content:stretch!important;
+ column-gap:6px!important;grid-column:auto!important;width:100%!important;min-width:0!important;
+ min-height:43px!important;height:auto!important;margin:0!important;padding:8px 8px!important;
+ border:1px solid rgba(187,236,219,.23)!important;border-radius:10px!important;
+ background:rgba(4,35,34,.55)!important;color:#ebf8f2!important;
+ text-align:left!important;font:650 clamp(11px,1.6vw,14px)/1.2 system-ui!important;
+ text-decoration:none!important;white-space:normal!important;overflow-wrap:anywhere!important;
+ box-shadow:inset 0 1px 0 rgba(240,255,247,.035)!important;
+ transition:background .18s,border-color .18s,box-shadow .18s!important;
+}
+.pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster>:is(button,a):is(:hover,:focus-visible){
+ background:#184c42!important;border-color:rgba(198,253,229,.65)!important;
+}
+.pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster>button[aria-pressed="true"]{
+ background:linear-gradient(115deg,#2e846c,#175245)!important;
+ border-color:#dbf7c5!important;color:#fff!important;
+ box-shadow:0 0 0 1px rgba(214,245,214,.16),inset 3px 0 0 #eed69e!important;
+}
+.pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster>:is(button,a) .admin-icon{
+ display:block!important;flex:none!important;width:18px!important;height:18px!important;color:#d7c08e!important;
+}
+.pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster>button[aria-pressed="true"] .admin-icon{color:#fff5cf!important}
+.pont-admin--platform .pont-admin-grouped-nav .pont-nav-item-arrow{font:700 18px/1 system-ui!important;color:#a9cbbd!important;justify-self:end!important}
+@media(max-width:680px){
+ .pont-admin--platform .admin-nav.pont-admin-grouped-nav{gap:7px!important;padding:7px!important;border-radius:17px!important}
+ .pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster{gap:5px!important;padding:9px 5px 7px!important;border-radius:12px!important}
+ .pont-admin--platform .pont-admin-grouped-nav .pont-nav-cluster-label{font-size:8px!important;letter-spacing:.045em!important;gap:3px!important;padding:0 2px 5px!important}
+ .pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster>:is(button,a){grid-template-columns:17px minmax(0,1fr)!important;gap:4px!important;min-height:41px!important;padding:7px 4px!important;font-size:clamp(9px,2.65vw,12px)!important}
+ .pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster>:is(button,a) .admin-icon{width:15px!important;height:15px!important}
+ .pont-admin--platform .pont-admin-grouped-nav .pont-nav-item-arrow{display:none!important}
+}
+@media(max-width:350px){
+ .pont-admin--platform .admin-nav.pont-admin-grouped-nav{gap:5px!important;padding:5px!important}
+ .pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster{padding:8px 3px 5px!important}
+ .pont-admin--platform .pont-admin-grouped-nav>.pont-nav-cluster>:is(button,a){font-size:9px!important;grid-template-columns:14px minmax(0,1fr)!important;padding:6px 2px!important}
+ .pont-admin--platform .pont-admin-grouped-nav .pont-nav-cluster-label{font-size:7px!important}
+}
+</style><body class="pont-admin pont-admin--platform">
 <main>
 <header class="admin-topbar">
   <a class="admin-back pont-nav-action" href="../" aria-label="Acasă"><span class="pont-nav-action__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></span><span class="pont-nav-action__label">Acasă</span></a>
@@ -222,13 +301,22 @@
   <div class="admin-hero-copy"><h1>Super Admin</h1><p>Administrarea platformei PONT</p></div>
   <button type="button" class="pont-hero-dashboard" data-tab="analytics" aria-controls="analytics" aria-pressed="true">Dashboard</button>
 </div>
-<nav class="admin-nav" aria-label="Secțiunile Super Admin">
-  <button type="button" data-tab="menus" aria-controls="menus" aria-pressed="true"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Meniuri</button>
-  <button type="button" data-tab="dishLibrary" aria-controls="dishLibrary" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#fork-knife"></use></svg>Preparate</button>
-  <button type="button" data-tab="restaurants" aria-controls="restaurants" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#storefront"></use></svg>Restaurante</button>
-  <button type="button" data-tab="members" aria-controls="members" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#users-three"></use></svg>Conturi</button>
-  <button type="button" data-tab="auctions" aria-controls="auctions" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg>Licitații</button>
-  <a href="../promovare/?v=grila"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg>Promovare</a>
+<nav class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Super Admin">
+  <div class="pont-nav-cluster pont-nav-cluster--content" role="group" aria-label="Meniuri și preparate">
+    <span class="pont-nav-cluster-label">Conținut <span class="pont-nav-label-rule" aria-hidden="true"></span><span class="pont-nav-cluster-number">01</span></span>
+    <button type="button" data-tab="menus" aria-controls="menus" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Meniuri</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+    <button type="button" data-tab="dishLibrary" aria-controls="dishLibrary" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#fork-knife"></use></svg><span>Preparate</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+  </div>
+  <div class="pont-nav-cluster pont-nav-cluster--management" role="group" aria-label="Restaurante și conturi">
+    <span class="pont-nav-cluster-label">Administrare <span class="pont-nav-label-rule" aria-hidden="true"></span><span class="pont-nav-cluster-number">02</span></span>
+    <button type="button" data-tab="restaurants" aria-controls="restaurants" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#storefront"></use></svg><span>Restaurante</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+    <button type="button" data-tab="members" aria-controls="members" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#users-three"></use></svg><span>Conturi</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+  </div>
+  <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
+    <span class="pont-nav-cluster-label">Comercial <span class="pont-nav-label-rule" aria-hidden="true"></span><span class="pont-nav-cluster-number">03</span></span>
+    <button type="button" data-tab="auctions" aria-controls="auctions" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg><span>Licitații</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+    <a href="../promovare/?v=grila"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
+  </div>
 </nav>
 <section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section>
 
