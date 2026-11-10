@@ -6,6 +6,8 @@
   }
 }
 
+#auctions .pont-ranking-add{display:grid;gap:8px;margin:0 22px 16px}
+#auctions .pont-ranking-add label{margin:0}
 .pont-ranking-buttons,.pont-ranking-actions{display:flex;gap:7px;flex-wrap:wrap}
 #auctions .pont-ranking-actions{grid-column:2 / -1}
 #auctions .pont-ranking-actions button{min-height:38px;padding:5px 9px;font-size:12px}
@@ -199,6 +201,11 @@
     </div>
     <p id="auctionRankingInfo" class="pont-auction-ranking-info" role="status" aria-live="polite"></p>
     <div id="auctionRankingRows" class="pont-auction-ranking-rows"></div>
+    <div id="auctionRankingAdd" class="pont-ranking-add" hidden>
+      <label for="auctionRankingRestaurant">Restaurant autorizat</label>
+      <select id="auctionRankingRestaurant"></select>
+      <button type="button" id="addAuctionRank">Adaugă în clasament</button>
+    </div>
     <div class="pont-auction-ranking-footer"><span id="auctionRankingNote">Ofertele mai mari au prioritate. La egalitate contează oferta mai veche.</span><button type="button" id="refreshAuctionRanking">Actualizează</button><button type="button" class="primary" id="saveAuctionRanking" hidden disabled>Salvează pozițiile</button></div>
   </dialog>
   <dialog id="auctionChoiceDialog" class="auction-choice-dialog" aria-labelledby="auctionChoiceTitle">
@@ -552,8 +559,8 @@ let auctionOffers = [], manualPaidApprovals = [], auctionRequest = 0, loadedAuct
 
 const auctionRankingDialog=$('auctionRankingDialog');
 let auctionRankingRequest=0, rankingEditor=false, rankingSaving=false;
-let rankingOriginal=null, rankingDraft=[], rankingOffers=new Map();
-const rankingDirty=()=>rankingOriginal!==null && rankingOriginal.join(',')!==rankingDraft.join(',');
+let rankingOriginal=null, rankingDraft=[], rankingOffers=new Map(), rankingEligible=[], rankingReady=false;
+const rankingDirty=()=>rankingReady && (rankingOriginal??[]).join(',')!==rankingDraft.join(',');
 const discardRanking=()=>!rankingDirty()||confirm('Renunți la modificările nesalvate ale clasamentului?');
 function showRankingRows(ids, editable){
  const rows=$('auctionRankingRows');
@@ -563,18 +570,26 @@ function showRankingRows(ids, editable){
   return '<div class="pont-auction-ranking-row'+(index===0?' is-first':'')+'">'+
    '<span class="pont-auction-ranking-position">'+(index+1)+'</span>'+
    '<span class="pont-auction-ranking-name"><strong>'+name+'</strong></span>'+
-   '<strong class="pont-auction-ranking-value">'+(offer?auctionMoney(offer.amount):'—')+'</strong>'+
+   '<strong class="pont-auction-ranking-value">'+(offer?auctionMoney(offer.amount):'Manual')+'</strong>'+
    (editable?'<div class="pont-ranking-actions">'+
     '<button type="button" data-move="-1" data-position="'+index+'" aria-label="Urcă '+name+'" '+(index===0||rankingSaving?'disabled':'')+'>↑ Urcă</button>'+
     '<button type="button" data-move="1" data-position="'+index+'" aria-label="Coboară '+name+'" '+(index===ids.length-1||rankingSaving?'disabled':'')+'>↓ Coboară</button>'+
     '<button type="button" data-remove-position="'+index+'" aria-label="Elimină '+name+'" '+(rankingSaving?'disabled':'')+'>Elimină</button></div>':'')+
    '</div>';
  }).join('')||'<p>Niciun restaurant în clasament.</p>';
+ const select=$('auctionRankingRestaurant');
+ const previous=select.value;
+ const candidates=rankingEligible.filter(r=>!ids.includes(r.id));
+ select.replaceChildren(...candidates.map(r=>new Option(r.name,r.id)));
+ if(candidates.some(r=>r.id===previous))select.value=previous;
+ $('auctionRankingAdd').hidden=!editable;
+ select.disabled=$('addAuctionRank').disabled=rankingSaving||!candidates.length;
+ if(!candidates.length)select.add(new Option('Niciun restaurant autorizat disponibil',''));
  $('saveAuctionRanking').disabled=!rankingDirty()||rankingSaving;
 }
 $('auctionRankingRows').onclick=event=>{
  const button=event.target.closest('[data-move],[data-remove-position]');
- if(!button||rankingSaving||!rankingEditor||rankingOriginal===null)return;
+ if(!button||rankingSaving||!rankingEditor||!rankingReady)return;
  const i=Number(button.dataset.position??button.dataset.removePosition);
  const move=Number(button.dataset.move||0);
  const name=restaurantName(rankingDraft[i]);
@@ -589,6 +604,14 @@ $('auctionRankingRows').onclick=event=>{
  $('auctionRankingInfo').textContent=move?name+' este pe locul '+(i+move+1)+'.':name+' va fi eliminat din clasament la salvare.';
  const focus=move?$('auctionRankingRows').querySelector('[data-position="'+(i+move)+'"]:not(:disabled)'):$('auctionRankingRows').querySelector('[data-remove-position="'+Math.min(i,rankingDraft.length-1)+'"]');
  (focus||$('saveAuctionRanking')).focus();
+};
+$('addAuctionRank').onclick=()=>{
+ const id=$('auctionRankingRestaurant').value;
+ if(!rankingReady||rankingSaving||rankingDraft.includes(id)||!rankingEligible.some(r=>r.id===id))return;
+ rankingDraft.push(id);
+ showRankingRows(rankingDraft,true);
+ $('auctionRankingInfo').textContent=restaurantName(id)+' a fost adăugat pe locul '+rankingDraft.length+'.';
+ $('auctionRankingRows').querySelector('[data-position="'+(rankingDraft.length-1)+'"]:not(:disabled)')?.focus();
 };
 function rankedAuctionOffers(offers){
  const best=new Map();
@@ -609,14 +632,17 @@ async function renderAuctionRanking(){
  $('auctionRankingMonth').dataset.loaded=month;
  rankingOriginal=null;
  rankingDraft=[];
+ rankingReady=false;
+ $('auctionRankingAdd').hidden=true;
  $('saveAuctionRanking').disabled=true;
  $('auctionRankingInfo').textContent='Se încarcă ofertele…';
  $('auctionRankingRows').innerHTML='';
  try{
   if(!/^\d{4}-\d{2}$/.test(month))throw Error('Selectează o lună validă.');
-  const [offers,control]=await Promise.all([
-   req(db.from('auction_offers').select('restaurant_id,amount,created_at,round').eq('campaign_month',month+'-01')),
-   db.from('pont_auction_control').select('is_open,final_ranking').eq('campaign_month',month+'-01').maybeSingle()
+  const [offers,control,approvals]=await Promise.all([
+   req(db.from('auction_offers').select('restaurant_id,amount,created_at,round,payment_status').eq('campaign_month',month+'-01')),
+   db.from('pont_auction_control').select('is_open,final_ranking').eq('campaign_month',month+'-01').maybeSingle(),
+   rankingEditor?req(db.from('pont_manual_payment_approvals').select('restaurant_id').eq('campaign_month',month+'-01')):[]
   ]);
   if(control.error)throw control.error;
   if(request!==auctionRankingRequest||!auctionRankingDialog.open)return;
@@ -625,13 +651,16 @@ async function renderAuctionRanking(){
   const final=control.data&&!control.data.is_open&&Array.isArray(control.data.final_ranking)
    ?control.data.final_ranking:null;
   rankingOriginal=final;
+  rankingReady=rankingEditor&&!control.data?.is_open;
+  const eligible=new Set([...approvals.map(a=>a.restaurant_id),...offers.filter(o=>o.payment_status==='paid').map(o=>o.restaurant_id)]);
+  rankingEligible=restaurants.filter(r=>r.enabled&&eligible.has(r.id));
   rankingDraft=final?.slice()??[];
   $('auctionRankingInfo').textContent=final?'Clasament final · '+final.length+' restaurante':
-   control.data?.is_open?'Licitație deschisă · Clasament provizoriu':'Luna selectată nu are un clasament final salvat.';
+   control.data?.is_open?'Licitație deschisă · Clasament provizoriu':rankingEditor?'Adaugă restaurantele autorizate pentru luna selectată.':'Luna selectată nu are un clasament salvat.';
   $('auctionRankingNote').textContent=rankingEditor
-   ?final?'Pozițiile publice se aplică restaurantelor cu promovarea achitată. Eliminarea păstrează oferta și plata în istoric.':'Poți edita pozițiile după închiderea licitației.'
+   ?rankingReady?'Poți include restaurante aprobate prin „Doar autorizare”. Mută-le în ordinea dorită și salvează.':'Poți edita pozițiile după închiderea licitației.'
    :final?'Pozițiile afișate includ modificările salvate de Super Admin.':'Ofertele mai mari au prioritate. La egalitate contează oferta mai veche.';
-  showRankingRows(final??ranked.map(offer=>offer.restaurant_id),rankingEditor&&final!==null);
+  showRankingRows(rankingReady?rankingDraft:final??ranked.map(offer=>offer.restaurant_id),rankingReady);
  }catch(error){
   if(request!==auctionRankingRequest||!auctionRankingDialog.open)return;
   $('auctionRankingInfo').textContent='Nu am putut încărca licitațiile: '+error.message;
@@ -641,7 +670,7 @@ function openRanking(edit){
  rankingEditor=edit;
  $('auctionRankingTitle').textContent=edit?'Editează pozițiile':'Rezumat licitații';
  $('saveAuctionRanking').hidden=!edit;
- $('auctionRankingMonth').value=nextAuctionMonth().slice(0,7);
+ $('auctionRankingMonth').value=edit?$('auctionMonth').value:nextAuctionMonth().slice(0,7);
  auctionRankingDialog.showModal();
  void renderAuctionRanking();
 }
@@ -899,7 +928,7 @@ auctionControlButton.onclick = async () => {
  const {month, isOpen} = auctionControl;
  if (month !== nextAuctionMonth()) { await loadAuctionControl(); return; }
  if(isOpen&&!confirm('Închizi licitația și salvezi clasamentul pe baza ofertelor?'))return;
- if(!isOpen&&auctionControl.finalized&&!confirm('Redeschizi licitația? La următoarea închidere, pozițiile vor fi recalculate din oferte.'))return;
+ if(!isOpen&&auctionControl.finalized&&!confirm('Pornești licitația? La închidere, ofertele vor stabili primele poziții. Restaurantele adăugate manual fără ofertă rămân după ele.'))return;
  auctionControlBusy = true;
  ++auctionControlRequest;
  auctionControlButton.disabled = true;

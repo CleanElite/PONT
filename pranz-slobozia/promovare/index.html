@@ -99,7 +99,7 @@ $('date').textContent=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeri
 function orderedOffers(){
  if(!auctionIsOpen()&&finalRanking!==null){
   const byRestaurant=new Map(offers.map(offer=>[offer.restaurant_id,offer]));
-  return finalRanking.map(id=>byRestaurant.get(id)).filter(Boolean);
+  return finalRanking.filter(id=>names[id]).map(id=>byRestaurant.get(id)??{restaurant_id:id,amount:null});
  }
  return [...offers].sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at))}
 function ownOffer(){return offers.find(o=>o.restaurant_id===me)}
@@ -121,7 +121,7 @@ function render(){
   const prompt=canBid?'<span class="menu-card-action promotion-action">Apasă pentru a licita</span>':'';
   return '<article class="menu-tile"><button type="button" class="'+cardClass+'"'+design+' data-slot="'+i+
    '" aria-label="Poziția '+(i+1)+', '+esc(name)+'. '+action+'"><span class="menu-card-copy"><span class="menu-card-name">'+
-   esc(name)+'</span>'+prompt+'</span><span class="menu-card-price">'+(offer?money(offer.amount):'De la '+money(minimumBid))+'</span></button></article>';
+   esc(name)+'</span>'+prompt+'</span><span class="menu-card-price">'+(offer?(offer.amount==null?'Aprobat':money(offer.amount)):'De la '+money(minimumBid))+'</span></button></article>';
  }).join('');
  if(focusedSlot!==undefined)list.querySelector('[data-slot="'+focusedSlot+'"]')?.focus({preventScroll:true});
 }
@@ -133,7 +133,7 @@ function updateModal(){
  const sorted=orderedOffers(),target=sorted[selectedSlot],own=ownOffer(),isAdmin=role==='super_admin',open=auctionIsOpen();
  $('auctionModalPosition').textContent='POZIȚIA '+String(selectedSlot+1).padStart(2,'0')+' · '+new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month));
  $('auctionModalTitle').textContent=target?(names[target.restaurant_id]||'Restaurant'):'Loc disponibil';
- $('auctionModalCurrent').textContent=(target?'Oferta poziției: '+money(target.amount):'Nicio ofertă pentru această poziție')+(own?' · Oferta ta: '+money(own.amount):'');
+ $('auctionModalCurrent').textContent=(target?(target.amount==null?'Poziție atribuită de PONT':'Oferta poziției: '+money(target.amount)):'Nicio ofertă pentru această poziție')+(own?' · Oferta ta: '+money(own.amount):'');
  const minimum=Math.max(minimumBid,own?Number(own.amount)+10:minimumBid,target?Number(target.amount)+10:minimumBid);
  $('bidAmount').min=String(minimum);
  $('bidAmount').placeholder='Minimum '+money(minimum);
