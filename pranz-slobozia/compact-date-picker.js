@@ -12,7 +12,7 @@ const fields=new Map();let active=null,scrollY=null,oldBody=null;
 function today(){const p=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()).split('-').map(Number);return {year:p[0],month:p[1],day:p[2]};}
 function get(input){const a=input.value.split('-').map(Number),t=today();return {year:a[0]||t.year,month:a[1]||t.month,day:input.type==='month'?1:a[2]||t.day};}
 function refresh(input){const item=fields.get(input);if(!item)return;const a=input.value.split('-').map(Number);
-item.buttons.forEach(b=>{const k=b.dataset.part;b.textContent=k==='year'?(a[0]||'An'):k==='month'?(a[1]&&a[1]<=12?months[a[1]-1]:'Lună'):(a[2]&&a[2]<=31?pad(a[2]):'Zi');});}
+item.buttons.forEach(b=>{const k=b.dataset.part;const label=String(k==='year'?(a[0]||'An'):k==='month'?(a[1]&&a[1]<=12?months[a[1]-1]:'Lună'):(a[2]&&a[2]<=31?pad(a[2]):'Zi'));if(b.textContent!==label)b.textContent=label;});}
 function install(input){if(fields.has(input))return;
 const group=document.createElement('span');group.className='pont-date-inline';
 const buttons=(input.type==='month'?['month','year']:['day','month','year']).map(k=>{const b=document.createElement('button');b.type='button';b.className='pont-date-part';b.dataset.part=k;
