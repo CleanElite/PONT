@@ -119,10 +119,10 @@ button{font:inherit}
 .pont-intro.is-splitting .pont-intro__panel{
   display:block;animation:var(--curtain-motion) 1.32s linear both;
 }
-.pont-intro.is-matching .pont-intro__panel::before{
+.pont-intro.is-matching :is(.pont-intro__art,.pont-intro__panel)::before{
   content:"";position:absolute;left:var(--well-left);top:var(--well-top);
   width:var(--well-width);height:var(--well-height);
-  background:#03090f;mask-image:radial-gradient(ellipse 70% 76%, #000 55%, transparent 88%);
+  background:#03090f;border-radius:25%;box-shadow:0 0 12px 6px #03090f;
 }
 .pont-intro__led{
   position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;
@@ -133,9 +133,7 @@ button{font:inherit}
   stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
   filter:drop-shadow(0 0 4px #c8e9fa9c);
 }
-.pont-intro__flight{display:none;position:absolute;inset:0 auto auto 0;transform-origin:0 0;height:auto;pointer-events:none}
-.pont-intro.is-matching .pont-intro__flight{display:block}
-.entry.intro-playing .entry-mark{visibility:hidden}
+.entry.intro-playing .entry-mark{position:relative;z-index:21;transform-origin:0 0}
 html.pont-intro-active{overflow:hidden}
 .entry.intro-reveal{overflow-x:clip}
 .entry.intro-reveal .choice-card{
@@ -334,7 +332,6 @@ html.pont-intro-active{overflow:hidden}
     <h2 id="install-title">Instalează PONT</h2><p></p>
     <form method="dialog"><button class="install-button">Am înțeles</button></form>
   </dialog>
-</div>
 <div class="pont-intro" id="pont-intro" hidden>
   <div class="pont-intro__art" aria-hidden="true">
     <img src="./assets/pont-intro-c3.jpg" alt="" width="865" height="1536" fetchpriority="high">
@@ -352,7 +349,7 @@ html.pont-intro-active{overflow:hidden}
     </defs>
     <path/><path/>
   </svg>
-  <img class="pont-intro__flight" src="./assets/pont-intro-logo-c4.png" alt="" width="260" height="108" aria-hidden="true">
+</div>
 </div>
 <script>
 (() => {
@@ -364,7 +361,6 @@ html.pont-intro-active{overflow:hidden}
   const art = intro.querySelector('.pont-intro__art');
   const image = art.querySelector('img');
   const logo = page.querySelector('.entry-mark');
-  const flight = intro.querySelector('.pont-intro__flight');
   const leftPanel = intro.querySelector('.pont-intro__panel.left');
   const led = intro.querySelector('.pont-intro__led');
   const ledGradient = led.querySelector('linearGradient');
@@ -389,6 +385,7 @@ html.pont-intro-active{overflow:hidden}
     root.classList.remove('pont-intro-active');
     page.inert = false;
     flightMotion?.cancel();
+    logo.style.removeProperty('transform');
     image.removeEventListener('load', ready);
     image.removeEventListener('error', finish);
     window.removeEventListener('pagehide', finish);
@@ -406,11 +403,11 @@ html.pont-intro-active{overflow:hidden}
   }
 
   function onResize() {
-    if (leaving) finish();
+    if (started) finish();
   }
 
-  function matchLogo() {
-    if (typeof flight.animate !== 'function' || !flight.complete || !flight.naturalWidth) return;
+  function placeLogo() {
+    if (typeof logo.animate !== 'function' || !logo.complete || !logo.naturalWidth) return;
     // The flight starts at the 260 × 108 wordmark crop in the new intro image.
     const bounds = intro.getBoundingClientRect();
     const target = logo.getBoundingClientRect();
@@ -421,15 +418,11 @@ html.pont-intro-active{overflow:hidden}
     const sourceHeight = 108 * scale;
     if (!target.width || !sourceWidth || target.bottom <= 0) return;
 
-    intro.style.setProperty('--well-left', left + 'px');
-    intro.style.setProperty('--well-top', top + 'px');
-    intro.style.setProperty('--well-width', sourceWidth + 'px');
-    intro.style.setProperty('--well-height', sourceHeight + 'px');
-    flight.style.width = target.width + 'px';
-    flightMotion = flight.animate([
-      { transform:'translate(' + left + 'px,' + top + 'px) scale(' + (sourceWidth / target.width) + ')' },
-      { transform:'translate(' + target.left + 'px,' + target.top + 'px) scale(1)' },
-    ], { duration:liftDuration - 105, delay:105, easing:'cubic-bezier(.42,0,.26,1)', fill:'both' });
+    intro.style.setProperty('--well-left', (left - 9 * scale) + 'px');
+    intro.style.setProperty('--well-top', (top - 9 * scale) + 'px');
+    intro.style.setProperty('--well-width', (sourceWidth + 18 * scale) + 'px');
+    intro.style.setProperty('--well-height', (sourceHeight + 18 * scale) + 'px');
+    logo.style.transform = `translate(${left - target.left}px,${top - target.top}px) scale(${sourceWidth / target.width})`;
     intro.classList.add('is-matching');
     page.classList.add('intro-playing');
   }
@@ -464,7 +457,12 @@ html.pont-intro-active{overflow:hidden}
   function splitCurtain() {
     if (finished || leaving) return;
     leaving = true;
-    try { matchLogo(); } catch {}
+    if (page.classList.contains('intro-playing')) {
+      flightMotion = logo.animate(
+        [{ transform:logo.style.transform }, { transform:'none' }],
+        { duration:liftDuration - 105, delay:105, easing:'cubic-bezier(.42,0,.26,1)', fill:'both' }
+      );
+    }
     intro.classList.add('is-splitting');
     page.classList.add('intro-reveal');
     lightCurtain();
@@ -476,6 +474,7 @@ html.pont-intro-active{overflow:hidden}
     if (!image.naturalWidth) { finish(); return; }
     started = true;
     clearTimeout(readyTimer);
+    placeLogo();
     holdTimer = setTimeout(splitCurtain, 950);
   }
 
