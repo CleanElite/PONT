@@ -316,7 +316,14 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
       }
     }
     dialog.showModal();
-    (publish ? dateInput : nameInput).focus();
+    // Do not focus the hidden native date input: iOS Safari would open its legacy calendar.
+    // Focus the visible compact month/day/year control instead.
+    if (publish) {
+      const compact = dateInput.nextElementSibling?.querySelector('.pont-date-part');
+      (compact || $('pontModelTitle')).focus({preventScroll:true});
+    } else {
+      nameInput.focus({preventScroll:true});
+    }
   }
 
   restaurantPicker.onchange = () => void refresh();
