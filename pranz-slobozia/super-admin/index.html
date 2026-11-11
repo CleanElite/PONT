@@ -1777,7 +1777,7 @@ $('restaurantChangePassword').onclick=async()=>{
  }catch(e){notice.textContent=e.message}finally{btn.disabled=false}
 };
 $('memberRows').onclick=async e=>{let b=e.target.closest('[data-revoke]');if(!b||!confirm('Revoci accesul?'))return;try{await req(db.from('restaurant_members').delete().eq('user_id',b.dataset.revoke).eq('restaurant_id',b.dataset.restaurant));await load()}catch(e){status(e.message,true)}};
-const {initPontDishEditor}=await import('../dish-editor.js?v=week-edit-c11');
+const {initPontDishEditor}=await import('../dish-editor.js?v=wizard-c22');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
