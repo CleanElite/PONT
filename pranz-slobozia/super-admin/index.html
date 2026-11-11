@@ -444,7 +444,6 @@
       <span class="dashboard-when-closed">Meniu nou</span><span class="dashboard-when-open">Ascunde editorul</span>
     </button>
   </div>
-  <section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section>
   <div id="menuFormWrap" class="dashboard-form pont-menu-form-wrap" hidden></div>
   <div id="pontMenuTemplates"></div>
   <dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle">
@@ -460,6 +459,7 @@
   <summary>Istoricul meniurilor</summary>
   <div id="menuArchive"></div>
 </details>
+  <section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section>
 </section>
 
 <section id="restaurants" class="card dashboard-panel" aria-labelledby="restaurantsTitle" hidden>
@@ -1803,6 +1803,7 @@ if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app
 const {initPontOperations}=await import('../order-operations.js?v=week-edit-c11');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:false});
 window.pontOperations=pontOperations;
+$('pontOperations').after($('pontTodayMenu'));
 await pontOperations.refresh();
 }
 </script>
