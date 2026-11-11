@@ -1452,7 +1452,7 @@ async function enter() {
   if (profiles[0]?.role !== 'super_admin') throw Error('Acest cont nu are rol Super Admin.');
   await load();
   if(stopWatchingRestaurantPresence)stopWatchingRestaurantPresence();
-  const {watchRestaurantPresence}=await import('../admin-presence.js?v=20261111a');
+  const {watchRestaurantPresence}=await import('../admin-presence.js?v=20261111-secure');
   stopWatchingRestaurantPresence=watchRestaurantPresence(db,online=>{restaurantOnlineIds=online;renderRestaurants();});
   await window.pontOperations?.refresh();
   $('app').hidden = false;
