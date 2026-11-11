@@ -30,13 +30,17 @@ export function renderDishChecklist(entries, selected, {daily = false, renderDet
   }).join('');
 }
 
-function renderMenuCourses(menu) {
+function renderMenuCourses(menu, numbered = false) {
   const snapshots = Array.isArray(menu.dish_selection) ? menu.dish_selection : [];
   const legacy = {first:menu.first_course, second:menu.second_course, dessert:menu.dessert};
   return groups.map(([key, label]) => {
     const dishes = snapshots.filter(dish => dish?.category === key && dish.name).map(dish => dish.name);
     if (!dishes.length && legacy[key]) dishes.push(legacy[key]);
-    return dishes.length ? '<div><dt>'+label+'</dt><dd>'+dishes.map(esc).join(' · ')+'</dd></div>' : '';
+    if (!dishes.length) return '';
+    const content = numbered
+      ? '<ol class="pont-today-dish-list">' + dishes.map(dish => '<li>' + esc(dish) + '</li>').join('') + '</ol>'
+      : dishes.map(esc).join(' · ');
+    return '<div><dt>' + label + '</dt><dd>' + content + '</dd></div>';
   }).join('');
 }
 
@@ -45,19 +49,22 @@ export function renderPublishedToday(target, menus, restaurants, showRestaurantN
   const published = restaurants.flatMap(restaurant => menus
     .filter(menu => menu.published && menu.service_date === date && menu.restaurant_id === restaurant.id)
     .map(menu => ({menu, restaurant})));
-  const editButton = menu => '<button type="button" class="pont-today-edit" data-today-edit="' +
-    esc(menu.id) + '">Editează</button>';
+  const menuActions = menu => '<span class="pont-today-actions">' +
+    '<button type="button" class="pont-today-edit" data-today-edit="' + esc(menu.id) + '">Editează</button>' +
+    '<button type="button" class="pont-today-delete" data-today-delete="' + esc(menu.id) +
+    '" aria-label="Șterge meniul publicat" title="Șterge meniul">' +
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M10 7V4h4v3m4 0-1 13H7L6 7m4 4v5m4-5v5"/></svg></button></span>';
   const expanded = !resetExpanded && target.querySelector('.pont-today-toggle')?.getAttribute('aria-expanded') === 'true';
   const header = '<div class="pont-today-header"><h3 id="pontTodayHeading">' +
     '<button class="pont-today-toggle" type="button" aria-expanded="' + expanded + '" aria-controls="pontTodayDetails">' +
     '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg>' +
     'Meniul publicat azi</button></h3>' +
     '<time datetime="' + date + '">' + formatDate(date) + '</time>' +
-    (published.length === 1 ? editButton(published[0].menu) : '') + '</div>';
+    (published.length === 1 ? menuActions(published[0].menu) : '') + '</div>';
   const cards = published.map(({menu, restaurant}) => {
     const heading = showRestaurantName ? '<h4>' + esc(restaurant.name) + '</h4>' : '';
-    const action = published.length > 1 ? editButton(menu) : '';
-    const courses = renderMenuCourses(menu);
+    const action = published.length > 1 ? menuActions(menu) : '';
+    const courses = renderMenuCourses(menu, true);
     return '<article class="pont-archive-row pont-today-card">' +
       (heading || action ? '<div class="pont-today-meta">' + heading + action + '</div>' : '') +
       (courses ? '<dl>' + courses + '</dl>' : '<p>Detalii indisponibile.</p>') + '</article>';
