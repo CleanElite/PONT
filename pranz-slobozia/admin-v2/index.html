@@ -152,12 +152,11 @@
 <section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section><section id="contactView" class="card" hidden><h2>Setări restaurant</h2><p>Numărul folosit de clienți pentru apeluri și WhatsApp. Introdu numărul cu prefixul țării, de exemplu +40.</p><form id="contactForm"><label id="contactRestaurantField">Restaurant<select id="contactRestaurant" required></select></label><p id="contactRestaurantName" hidden></p><div class="contact-phone-view" id="contactPhoneView"><span>Telefon comenzi · Apel și WhatsApp</span><div class="contact-phone-line"><strong id="contactPhoneDisplay">Neconfigurat</strong><button type="button" id="editContactPhone">Modifică</button></div></div><div id="contactPhoneEditor" hidden><label>Telefon comenzi (WhatsApp și apel)<input id="contactPhone" type="tel" placeholder="+407..." required></label><div class="contact-edit-actions"><button class="primary" type="submit" id="saveContactPhone">Salvează modificările</button><button type="button" id="cancelContactPhone">Anulează</button></div></div></form><div class="contact-card-settings"><h3>Preț standard meniu complet</h3><p>Prețul este stabilit o singură dată pentru fiecare restaurant și se aplică automat meniurilor noi. Modificarea actualizează și meniurile de astăzi și cele programate.</p><label for="restaurantMenuPrice">Preț meniu complet (lei)<input id="restaurantMenuPrice" type="number" min="0.01" max="10000" step="0.01" inputmode="decimal" placeholder="Ex. 32,00"></label><button type="button" class="primary" id="saveRestaurantMenuPrice">Salvează prețul standard</button></div><div class="contact-card-settings"><h3>Metode de plată acceptate</h3><p>Cash este disponibil implicit. Activează plata cu cardul numai dacă restaurantul poate încasa prin POS sau altă metodă proprie.</p><label style="display:flex;align-items:center;gap:10px"><input type="checkbox" role="switch" id="acceptsCard"> Acceptă plata cu cardul</label><button type="button" id="saveCardSettings" class="primary">Salvează metodele de plată</button></div>
 <div class="contact-card-settings pont-password-settings">
 <h3>Schimbă parola contului</h3>
-<p>Parola este personală. Pentru siguranță, introdu parola actuală înainte de a o modifica.</p>
+<p>Parola este personală. O poți schimba din contul tău autentificat.</p>
 <form id="restaurantSelfPasswordForm" autocomplete="on">
-<label for="selfCurrentPassword">Parola actuală<input id="selfCurrentPassword" type="password" autocomplete="current-password" required></label>
 <label for="selfNewPassword">Parola nouă<input id="selfNewPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128" aria-describedby="selfPasswordHint"></label>
 <label for="selfConfirmPassword">Confirmă parola nouă<input id="selfConfirmPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label>
-<small id="selfPasswordHint">Minimum 12 caractere. Folosește o parolă unică, diferită de cea actuală.</small>
+<small id="selfPasswordHint">Minimum 12 caractere. Folosește o parolă unică, greu de ghicit.</small>
 <p id="selfPasswordFeedback" role="status" aria-live="polite"></p>
 <button type="submit" class="primary" id="selfPasswordSubmit">Schimbă parola</button>
 </form>
@@ -237,7 +236,6 @@ selfPasswordForm.addEventListener('submit', async event => {
  event.preventDefault();
  const button = $('selfPasswordSubmit');
  if(button.disabled)return;
- const current = $('selfCurrentPassword').value;
  const next = $('selfNewPassword').value;
  const confirmation = $('selfConfirmPassword').value;
  selfPasswordFeedback.className = '';
@@ -247,30 +245,16 @@ selfPasswordForm.addEventListener('submit', async event => {
   selfPasswordFeedback.textContent='Parola nouă trebuie să conțină între 12 și 128 de caractere.';
   return;
  }
- if(next === current){
-  selfPasswordFeedback.className='error';
-  selfPasswordFeedback.textContent='Alege o parolă diferită de cea actuală.';
-  return;
- }
  if(next !== confirmation){
   selfPasswordFeedback.className='error';
   selfPasswordFeedback.textContent='Confirmarea parolei nu corespunde.';
   return;
  }
  button.disabled = true;
- button.textContent = 'Se verifică…';
+ button.textContent = 'Se actualizează…';
  try {
   const {data:{user:account},error:accountError}=await db.auth.getUser();
   if(accountError||!account?.email)throw Error('Contul nu a putut fi verificat. Reconectează-te.');
-  // Verify the current password using a non-persistent, isolated session.
-  const checkClient = createClient(c.url,c.anonKey,{auth:{
-   persistSession:false,autoRefreshToken:false,detectSessionInUrl:false
-  }});
-  const {error:verifyError}=await checkClient.auth.signInWithPassword({
-   email:account.email,password:current
-  });
-  if(verifyError)throw Error('Parola actuală este incorectă.');
-  await checkClient.auth.signOut({scope:'local'}).catch(()=>{});
   button.textContent='Se actualizează…';
   const {error:updateError}=await db.auth.updateUser({password:next});
   if(updateError)throw updateError;
