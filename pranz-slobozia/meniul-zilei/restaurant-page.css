@@ -1542,3 +1542,99 @@ body #order::backdrop{background:#031c1a}
   border-bottom:1px solid #d8f1eb9c;border-radius:0 0 48% 53%;
   box-shadow:0 4px 7px #e8fff94f;transform:rotate(-1.8deg);
 }
+
+
+/* Checkout as a true full-screen step, compact on small mobile displays. */
+#order .pont-checkout-overlay:not([hidden]){
+ position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;
+ padding:0!important;margin:0!important;z-index:2147483000!important;
+ display:flex!important;align-items:stretch!important;justify-content:stretch!important;
+ background:#032521!important;
+}
+#order .pont-checkout-backdrop{
+ position:absolute!important;inset:0!important;
+ background:#032521!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+#order .pont-checkout-panel{
+ position:relative!important;z-index:1!important;
+ box-sizing:border-box!important;display:block!important;
+ width:100%!important;max-width:none!important;min-width:0!important;
+ height:100%!important;max-height:100dvh!important;min-height:100%!important;
+ margin:0!important;padding:calc(10px + env(safe-area-inset-top)) clamp(14px,4vw,24px) calc(16px + env(safe-area-inset-bottom))!important;
+ border:none!important;border-radius:0!important;box-shadow:none!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch;
+}
+#order .pont-checkout-logo{display:none!important}
+#order .pont-checkout-top{
+ min-height:0!important;gap:3px!important;
+ padding:0 42px 12px!important;margin:0 0 7px!important;
+}
+#order .pont-checkout-top h3{font-size:clamp(22px,5vw,28px)!important;line-height:1.16!important}
+#order .pont-checkout-kicker{font-size:9px!important;margin:0 0 3px!important}
+#order #closeCheckout{
+ top:0!important;right:0!important;
+ width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;
+ font-size:24px!important;
+}
+#order .pont-checkout-panel>.pont-order-details{padding-top:4px!important}
+#order .pont-checkout-panel .fulfillment{margin-bottom:8px!important}
+#order .pont-checkout-panel .field-heading{font-size:12px!important;margin-bottom:6px!important;gap:6px!important}
+#order .pont-checkout-panel .fulfillment-options{min-height:36px!important}
+#order .pont-checkout-panel .fulfillment-options button{
+ height:36px!important;min-height:36px!important;
+ padding:5px 8px!important;font-size:12px!important;gap:5px!important;
+}
+#order .pont-checkout-panel .pont-checkout-icon{width:16px!important;height:16px!important;flex-basis:16px!important}
+#order .pont-checkout-panel .pont-field-caption{
+ min-height:0!important;margin-bottom:5px!important;
+ font-size:12px!important;gap:6px!important;
+}
+#order .pont-checkout-panel .pont-order-details>label:not(.pont-loyalty-consent),
+#order .pont-checkout-panel .pont-contact-payment label{
+ margin:0 0 8px!important;font-size:12px!important;
+}
+#order .pont-checkout-panel label input:not([type=checkbox]),
+#order .pont-checkout-panel label select,
+#order .pont-checkout-panel label textarea{
+ height:38px!important;min-height:38px!important;
+ padding:7px 10px!important;border-radius:10px!important;
+ font-size:16px!important;
+}
+#order .pont-checkout-panel .pont-contact-payment{gap:9px!important}
+#order .pont-checkout-panel .pont-order-notes{margin:8px 0!important}
+#order .pont-checkout-panel .pont-order-notes summary{
+ min-height:34px!important;padding:6px 10px!important;font-size:12px!important;
+}
+#order .pont-checkout-panel .pont-order-notes label textarea{height:auto!important;min-height:58px!important}
+#order .pont-checkout-panel .pont-checkout-summary{
+ min-height:0!important;margin:9px 0!important;padding:7px 9px!important;border-radius:12px!important;
+}
+#order .pont-checkout-summary .order-total strong{font-size:clamp(18px,4.5vw,23px)!important}
+#order .pont-checkout-summary .pont-summary-icon{flex-basis:20px!important}
+#order .pont-checkout-summary .pont-summary-icon .pont-checkout-icon{width:20px!important;height:20px!important}
+#order .pont-checkout-panel .pont-loyalty-consent{
+ margin:4px 0!important;padding:5px 0!important;gap:8px!important;
+}
+#order .pont-checkout-panel .pont-loyalty-consent input[type=checkbox]{
+ width:18px!important;min-width:18px!important;height:18px!important;flex-basis:18px!important;
+}
+#order .pont-checkout-panel .pont-loyalty-consent span{
+ font-size:11px!important;line-height:1.35!important;
+}
+#order .pont-checkout-panel .order-footer{margin-top:8px!important}
+#order .pont-checkout-panel #send{
+ min-height:42px!important;padding:9px 12px!important;font-size:13px!important;
+}
+@media(max-width:390px){
+ #order .pont-checkout-panel{
+  padding:calc(8px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom))!important;
+ }
+ #order .pont-checkout-top{padding:0 34px 10px!important}
+ #order .pont-checkout-top h3{font-size:23px!important}
+ #order .pont-checkout-panel .pont-contact-payment{
+  grid-template-columns:minmax(0,1.6fr) minmax(90px,1fr)!important;gap:7px!important;
+ }
+ #order .pont-checkout-panel .pont-checkout-summary{padding:6px!important}
+ #order .pont-checkout-panel .pont-checkout-summary #breakdown{font-size:10px!important}
+}
