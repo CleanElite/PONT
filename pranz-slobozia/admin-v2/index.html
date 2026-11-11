@@ -238,7 +238,7 @@ const {initPontDishEditor}=await import('../dish-editor.js?v=price-layout-c29');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:true});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
-const {initMenuTemplates,renderMenuArchive,renderPublishedToday}=await import('../menu-templates.js?v=model-wizard-c31');
+const {initMenuTemplates,renderMenuArchive,renderPublishedToday}=await import('../menu-templates.js?v=calendar-fix-c33');
 const renderTodayMenu=(resetExpanded=false)=>renderPublishedToday($('pontTodayMenu'), menus, restaurants, restaurants.length > 1, resetExpanded);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) renderTodayMenu(); });
 $('pontTodayMenu').addEventListener('click', async event => {
