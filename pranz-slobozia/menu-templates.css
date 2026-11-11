@@ -489,3 +489,29 @@
 .pont-today-menu dt {font-weight:700;color:var(--admin-text,#eef8f4)}
 .pont-today-menu dd {min-width:0;overflow-wrap:break-word}
 .pont-today-menu .pont-today-empty {margin:0}
+#pontTodayMenu .pont-today-toggle {
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  width:auto;
+  min-width:0;
+  min-height:24px;
+  margin:0;
+  padding:0 2px 0 0;
+  border:0;
+  background:none;
+  box-shadow:none;
+  color:inherit;
+  font:inherit;
+  text-align:start;
+  cursor:pointer;
+}
+#pontTodayMenu .pont-today-toggle svg {
+  flex:none;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.5;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#pontTodayMenu .pont-today-toggle[aria-expanded="false"] svg {transform:rotate(-90deg)}
