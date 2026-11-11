@@ -115,7 +115,15 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
         <h3 id="pontModelTitle"></h3>
         <div id="pontModelEditor">
           <label>Numele modelului<input id="pontModelName" maxlength="80" required></label>
-          <div id="pontModelDishes" class="pont-dish-checklist"></div>
+          <div id="pontModelDishes" class="pont-model-course-buttons" role="group" aria-label="Categorii">
+            <button type="button" class="pont-model-course-button" data-model-course="first">Felul 1</button>
+            <button type="button" class="pont-model-course-button" data-model-course="second">Felul 2</button>
+            <button type="button" class="pont-model-course-button" data-model-course="dessert">Desert</button>
+          </div>
+          <section class="pont-model-selection-summary" aria-labelledby="pontModelSummaryHeading">
+            <h4 id="pontModelSummaryHeading">Rezumatul modelului</h4>
+            <div id="pontModelSelected"></div>
+          </section>
         </div>
         <div id="pontModelPublishFields" hidden>
           <p id="pontModelPublishName"></p>
@@ -127,12 +135,24 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
           <button type="submit" class="primary" id="pontModelSubmit">Salvează modelul</button>
         </div>
       </form>
+    </dialog>
+    <dialog id="pontModelCourseDialog" class="pont-model-course-dialog" aria-labelledby="pontModelCourseTitle">
+      <header class="pont-model-course-header"><h3 id="pontModelCourseTitle">Felul 1</h3></header>
+      <p class="pont-model-course-hint">Bifează preparatele pe care vrei să le incluzi în model.</p>
+      <div id="pontModelCourseList" class="pont-model-course-list"></div>
+      <footer class="pont-model-course-footer">
+        <button type="button" id="pontModelCourseBack">Înapoi fără modificări</button>
+        <button type="button" id="pontModelCourseConfirm" class="primary">Confirmă selecția</button>
+      </footer>
     </dialog>`;
   const $ = id => document.getElementById(id);
   const restaurantPicker = $('pontModelRestaurant');
   const list = $('pontModelList');
   const status = $('pontModelStatus');
   const dialog = $('pontModelDialog');
+  const courseDialog = $('pontModelCourseDialog');
+  const courseList = $('pontModelCourseList');
+  const selectedList = $('pontModelSelected');
   const nameInput = $('pontModelName');
   const dateInput = $('pontModelDate');
   const submit = $('pontModelSubmit');
@@ -140,6 +160,78 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
   const errorMessage = $('pontModelError');
   let models = [], dishes = [], byId = new Map();
   let request = 0, ready = false, busy = false, activeModel = null, publishing = false, focusAfterClose = null;
+
+  const modelSelected = new Set();
+  let openedCourse = null, courseSnapshot = null, courseOpener = null;
+  function renderModelSummary() {
+    selectedList.innerHTML = groups.map(([key,label]) => {
+      const entries = dishes.filter(dish => dish.category === key && modelSelected.has(dish.id));
+      const body = entries.length
+        ? '<ol class="pont-model-selected-list">' + entries.map(dish =>
+          '<li><span>' + esc(dish.name) + '</span><button type="button" data-model-remove="' + esc(dish.id) +
+          '" aria-label="Elimină ' + esc(dish.name) + '" title="Elimină">×</button></li>').join('') + '</ol>'
+        : '<p class="pont-model-none">Niciun preparat selectat</p>';
+      return '<div class="pont-model-summary-group"><div class="pont-model-summary-head"><strong>' + label +
+        '</strong><button type="button" data-model-course="' + key + '">Modifică</button></div>' + body + '</div>';
+    }).join('');
+  }
+  function renderModelCourse() {
+    if (!openedCourse) return;
+    $('pontModelCourseTitle').textContent = groups.find(([key]) => key === openedCourse)?.[1] ?? 'Preparate';
+    const options = dishes.filter(dish => dish.category === openedCourse);
+    courseList.innerHTML = options.length ? options.map(dish =>
+      '<label class="pont-model-course-choice"><span class="pont-model-course-name">' + esc(dish.name) +
+      (dish.available === false ? ' · Epuizat' : '') + '</span><input type="checkbox" data-model-pick="' + esc(dish.id) +
+      '" aria-label="Selectează ' + esc(dish.name) + '" ' + (modelSelected.has(dish.id) ? 'checked' : '') + '></label>'
+    ).join('') : '<p>Nu există preparate salvate în această categorie.</p>';
+  }
+  function openModelCourse(key, opener) {
+    if (publishing || busy || !groups.some(([course]) => course === key)) return;
+    courseSnapshot = new Set([...modelSelected].filter(id => byId.get(id)?.category === key));
+    courseOpener = opener;
+    openedCourse = key;
+    renderModelCourse();
+    courseDialog.showModal();
+    $('pontModelCourseConfirm').focus({preventScroll:true});
+  }
+  function closeModelCourse(confirmSelection) {
+    if (!openedCourse) return;
+    if (!confirmSelection && courseSnapshot) {
+      for (const id of [...modelSelected]) if (byId.get(id)?.category === openedCourse) modelSelected.delete(id);
+      for (const id of courseSnapshot) modelSelected.add(id);
+    }
+    openedCourse = null;
+    courseSnapshot = null;
+    courseDialog.close();
+    renderModelSummary();
+    if (courseOpener?.isConnected) courseOpener.focus({preventScroll:true});
+    courseOpener = null;
+  }
+  $('pontModelDishes').addEventListener('click', event => {
+    const button = event.target.closest('[data-model-course]');
+    if (button) openModelCourse(button.dataset.modelCourse, button);
+  });
+  selectedList.addEventListener('click', event => {
+    const remove = event.target.closest('[data-model-remove]');
+    if (remove) {
+      modelSelected.delete(remove.dataset.modelRemove);
+      renderModelSummary();
+      return;
+    }
+    const button = event.target.closest('[data-model-course]');
+    if (button) openModelCourse(button.dataset.modelCourse, button);
+  });
+  courseList.onchange = event => {
+    const input = event.target.closest('[data-model-pick]');
+    if (!input) return;
+    if (input.checked) modelSelected.add(input.dataset.modelPick);
+    else modelSelected.delete(input.dataset.modelPick);
+  };
+  $('pontModelCourseBack').onclick = () => closeModelCourse(false);
+  $('pontModelCourseConfirm').onclick = () => closeModelCourse(true);
+  courseDialog.addEventListener('cancel', event => { event.preventDefault(); closeModelCourse(false); });
+  courseDialog.addEventListener('click', event => { if (event.target === courseDialog) closeModelCourse(false); });
+
 
   function renderList() {
     list.innerHTML = models.map(model => {
@@ -216,8 +308,9 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
       $('pontModelPublishName').textContent = model.name;
     } else {
       nameInput.value = model?.name ?? '';
-      const picked = new Set(model?.dish_ids ?? []);
-      $('pontModelDishes').innerHTML = renderDishChecklist(dishes.map(dish => [dish.id, dish]), picked);
+      modelSelected.clear();
+      for (const id of model?.dish_ids ?? []) if (byId.has(id)) modelSelected.add(id);
+      renderModelSummary();
       if (model?.dish_ids.some(id => !byId.has(id))) {
         errorMessage.textContent = 'Preparatele eliminate din bibliotecă trebuie înlocuite.';
       }
@@ -275,7 +368,7 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
         try { await refreshHistory(); } catch { status.textContent += ' Reîncarcă pagina pentru a vedea istoricul.'; }
       } else {
         const name = nameInput.value.trim();
-        const ids = new FormData(event.currentTarget).getAll('dish');
+        const ids = [...modelSelected];
         if (!name || !ids.length || ids.length > 60) throw Error('Completează numele și selectează între 1 și 60 de preparate.');
         const values = {name, dish_ids:ids};
         const query = activeModel?.id
