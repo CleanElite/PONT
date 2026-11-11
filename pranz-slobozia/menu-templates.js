@@ -42,21 +42,23 @@ function renderMenuCourses(menu) {
 
 export function renderPublishedToday(target, menus, restaurants, showRestaurantName) {
   const date = today();
-  const published = menus.filter(menu => menu.published && menu.service_date === date);
-  target.innerHTML = restaurants.map(restaurant => {
-    const current = published.filter(menu => menu.restaurant_id === restaurant.id);
-    if (!current.length) return '';
+  const published = restaurants.flatMap(restaurant => menus
+    .filter(menu => menu.published && menu.service_date === date && menu.restaurant_id === restaurant.id)
+    .map(menu => ({menu, restaurant})));
+  const editButton = menu => '<button type="button" class="pont-today-edit" data-today-edit="' +
+    esc(menu.id) + '">Editează</button>';
+  const header = '<div class="pont-today-header"><h3 id="pontTodayHeading">Meniul publicat azi</h3>' +
+    '<time datetime="' + date + '">' + formatDate(date) + '</time>' +
+    (published.length === 1 ? editButton(published[0].menu) : '') + '</div>';
+  const cards = published.map(({menu, restaurant}) => {
     const heading = showRestaurantName ? '<h4>' + esc(restaurant.name) + '</h4>' : '';
-    return current.map(menu => {
-      const price = Number(restaurant.menu_price) > 0 ? Number(restaurant.menu_price) : Number(menu.price);
-      const amount = Number.isFinite(price) && price > 0
-        ? '<strong class="pont-today-price">' + new Intl.NumberFormat('ro-RO',{maximumFractionDigits:2}).format(price) + ' lei</strong>' : '';
-      const courses = renderMenuCourses(menu);
-      return '<article class="pont-archive-row pont-today-card"><div class="pont-today-meta">' +
-        heading + '<time datetime="' + date + '">' + formatDate(date) + '</time>' + amount + '</div>' +
-        (courses ? '<dl>' + courses + '</dl>' : '<p>Detalii indisponibile.</p>') + '</article>';
-    }).join('');
-  }).join('') || '<p class="pont-today-empty">Nu există meniuri publicate azi.</p>';
+    const action = published.length > 1 ? editButton(menu) : '';
+    const courses = renderMenuCourses(menu);
+    return '<article class="pont-archive-row pont-today-card">' +
+      (heading || action ? '<div class="pont-today-meta">' + heading + action + '</div>' : '') +
+      (courses ? '<dl>' + courses + '</dl>' : '<p>Detalii indisponibile.</p>') + '</article>';
+  }).join('');
+  target.innerHTML = header + (cards || '<p class="pont-today-empty">Nu există meniuri publicate azi.</p>');
 }
 
 export function renderMenuArchive(target, menus, restaurants) {

@@ -211,7 +211,7 @@
 @media(max-width:360px){#app .admin-hero.dashboard-intro{gap:6px!important}#app .pont-hero-dashboard{padding:8px 9px!important;min-height:37px!important}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
-<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=today-c13"><style id="pont-auction-period-save-c15">
+<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=today-c14"><style id="pont-auction-period-save-c15">
 /* Compact control row: date input gets the width it needs, the Save button is deliberately shorter */
 #auctions .auction-save-bar.pont-auction-period-save{
  display:grid!important;
@@ -444,7 +444,7 @@
       <span class="dashboard-when-closed">Meniu nou</span><span class="dashboard-when-open">Ascunde editorul</span>
     </button>
   </div>
-  <section class="pont-today-menu" aria-labelledby="pontTodayHeading"><h3 id="pontTodayHeading">Meniul publicat azi</h3><div id="pontTodayMenu"></div></section>
+  <section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section>
   <div id="menuFormWrap" class="dashboard-form pont-menu-form-wrap" hidden></div>
   <div id="pontMenuTemplates"></div>
   <dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle">
@@ -1781,9 +1781,23 @@ const {initPontDishEditor}=await import('../dish-editor.js?v=week-edit-c11');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
-const {initMenuTemplates,renderMenuArchive,renderPublishedToday}=await import('../menu-templates.js?v=today-c12');
+const {initMenuTemplates,renderMenuArchive,renderPublishedToday}=await import('../menu-templates.js?v=today-c14');
 const renderTodayMenu=()=>renderPublishedToday($('pontTodayMenu'), menus, restaurants, true);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) renderTodayMenu(); });
+$('pontTodayMenu').addEventListener('click', async event => {
+ const button = event.target.closest('[data-today-edit]');
+ if (!button) return;
+ const menu = menus.find(item => item.id === button.dataset.todayEdit && item.published);
+ if (!menu) return;
+ button.disabled = true;
+ try {
+  if (await pontDishUI.open(menu)) $('menuFormWrap').scrollIntoView({block:'start'});
+ } catch (error) {
+  status(error.message, true);
+ } finally {
+  button.disabled = false;
+ }
+});
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
 const {initPontOperations}=await import('../order-operations.js?v=week-edit-c11');

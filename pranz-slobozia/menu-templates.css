@@ -455,22 +455,32 @@
   background:var(--admin-field,#102f2c);
   font:400 .75rem/1.28 system-ui,sans-serif;
 }
-.pont-today-menu #pontTodayHeading {
-  margin:0 0 3px;
-  font:700 .8125rem/1.15 system-ui,sans-serif;
-}
-.pont-today-menu .pont-today-card {margin:0;padding:3px 0}
-.pont-today-menu .pont-today-card:last-child {border-bottom:0;padding-bottom:0}
+.pont-today-header,
 .pont-today-meta {
   display:flex;
-  flex-wrap:wrap;
-  align-items:baseline;
-  gap:1px 6px;
+  align-items:center;
+  gap:4px 7px;
   margin:0 0 2px;
 }
+.pont-today-menu #pontTodayHeading {margin:0;font:700 .75rem/1.15 system-ui,sans-serif}
+.pont-today-header time {font-size:.6875rem;white-space:nowrap}
+.pont-today-menu .pont-today-card {margin:0;padding:3px 0}
+.pont-today-menu .pont-today-card:last-child {border-bottom:0;padding-bottom:0}
 .pont-today-menu .pont-today-meta h4 {margin:0;font:700 .75rem/1.25 system-ui,sans-serif}
-.pont-today-meta time {font-size:.6875rem}
-.pont-today-price {margin-inline-start:auto;color:#f4d38b;white-space:nowrap}
+#pontTodayMenu .pont-today-edit {
+  margin:0 0 0 auto;
+  padding:3px 6px;
+  min-width:0;
+  min-height:24px;
+  width:auto;
+  flex:none;
+  border:1px solid var(--admin-line,#427068);
+  border-radius:5px;
+  background:var(--admin-surface,#102f2c);
+  color:inherit;
+  font:700 .6875rem/1.15 system-ui,sans-serif;
+}
+#pontTodayMenu .pont-today-edit:hover {border-color:currentColor}
 .pont-today-menu .pont-today-card dl > div {
   display:grid;
   grid-template-columns:4em minmax(0,1fr);
