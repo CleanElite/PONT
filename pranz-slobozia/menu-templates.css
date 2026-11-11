@@ -515,3 +515,10 @@
   stroke-linejoin:round;
 }
 #pontTodayMenu .pont-today-toggle[aria-expanded="false"] svg {transform:rotate(-90deg)}
+
+#pontTodayMenu:has(#pontTodayDetails[hidden]) {padding-block:2px}
+#pontTodayMenu:has(#pontTodayDetails[hidden]) .pont-today-header {margin-bottom:0}
+#pontTodayMenu:has(#pontTodayDetails[hidden]) .pont-today-header button {
+  min-height:24px!important;
+  padding-block:0!important;
+}

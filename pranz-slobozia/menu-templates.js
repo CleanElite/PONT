@@ -40,14 +40,14 @@ function renderMenuCourses(menu) {
   }).join('');
 }
 
-export function renderPublishedToday(target, menus, restaurants, showRestaurantName) {
+export function renderPublishedToday(target, menus, restaurants, showRestaurantName, resetExpanded = false) {
   const date = today();
   const published = restaurants.flatMap(restaurant => menus
     .filter(menu => menu.published && menu.service_date === date && menu.restaurant_id === restaurant.id)
     .map(menu => ({menu, restaurant})));
   const editButton = menu => '<button type="button" class="pont-today-edit" data-today-edit="' +
     esc(menu.id) + '">Editează</button>';
-  const expanded = target.querySelector('.pont-today-toggle')?.getAttribute('aria-expanded') !== 'false';
+  const expanded = !resetExpanded && target.querySelector('.pont-today-toggle')?.getAttribute('aria-expanded') === 'true';
   const header = '<div class="pont-today-header"><h3 id="pontTodayHeading">' +
     '<button class="pont-today-toggle" type="button" aria-expanded="' + expanded + '" aria-controls="pontTodayDetails">' +
     '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg>' +
