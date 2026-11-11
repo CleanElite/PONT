@@ -386,8 +386,6 @@ html.pont-intro-active{overflow:hidden}
     page.inert = false;
     flightMotion?.cancel();
     logo.style.removeProperty('transform');
-    image.removeEventListener('load', ready);
-    image.removeEventListener('error', finish);
     window.removeEventListener('pagehide', finish);
     window.removeEventListener('resize', onResize);
     document.removeEventListener('keydown', onKey);
@@ -403,25 +401,29 @@ html.pont-intro-active{overflow:hidden}
   }
 
   function onResize() {
-    if (started) finish();
+    if (started) placeLogo();
   }
 
   function placeLogo() {
     if (typeof logo.animate !== 'function' || !logo.complete || !logo.naturalWidth) return;
     // The flight starts at the 260 × 108 wordmark crop in the new intro image.
     const bounds = intro.getBoundingClientRect();
-    const target = logo.getBoundingClientRect();
     const scale = Math.min(bounds.width / image.naturalWidth, bounds.height / image.naturalHeight);
     const left = (bounds.width - image.naturalWidth * scale) / 2 + 303 * scale;
     const top = (bounds.height - image.naturalHeight * scale) / 2 + 688 * scale;
     const sourceWidth = 260 * scale;
     const sourceHeight = 108 * scale;
-    if (!target.width || !sourceWidth || target.bottom <= 0) return;
+    if (!sourceWidth) return;
 
     intro.style.setProperty('--well-left', (left - 9 * scale) + 'px');
     intro.style.setProperty('--well-top', (top - 9 * scale) + 'px');
     intro.style.setProperty('--well-width', (sourceWidth + 18 * scale) + 'px');
     intro.style.setProperty('--well-height', (sourceHeight + 18 * scale) + 'px');
+    // During the lift the logo is already moving relative to its live header position.
+    if (leaving) return;
+    logo.style.removeProperty('transform');
+    const target = logo.getBoundingClientRect();
+    if (!target.width || target.bottom <= 0) return;
     logo.style.transform = `translate(${left - target.left}px,${top - target.top}px) scale(${sourceWidth / target.width})`;
     intro.classList.add('is-matching');
     page.classList.add('intro-playing');
@@ -485,12 +487,8 @@ html.pont-intro-active{overflow:hidden}
   window.addEventListener('resize', onResize);
   document.addEventListener('keydown', onKey);
   motion.addEventListener?.('change', onMotion);
-  readyTimer = setTimeout(finish, 1450);
-  if (image.complete) ready();
-  else {
-    image.addEventListener('load', ready, { once:true });
-    image.addEventListener('error', finish, { once:true });
-  }
+  readyTimer = setTimeout(finish, 4000);
+  Promise.all([image.decode(), logo.decode().catch(() => {})]).then(ready, finish);
 })();
 </script>
 </body>
