@@ -55,6 +55,11 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  #restaurantOrderSettings #pontRestaurantSettings #pontOpMin{width:55px;max-width:55px;text-align:center}
  #restaurantOrderSettings #pontRestaurantSettings .pont-op-min-row{display:flex;align-items:center;gap:7px;white-space:nowrap}
  #restaurantOrderSettings #pontRestaurantSettings .pont-op-min-row>span{font-size:12px;color:#c6dddd}
+ #contactView .pont-min-order-settings label{display:block;width:max-content;max-width:100%}
+ #contactView .pont-min-order-settings .pont-op-min-row{display:flex;align-items:center;gap:9px}
+ #contactView .pont-min-order-settings #pontOpMin{box-sizing:border-box;width:64px;min-height:36px;text-align:center}
+ #contactView .pont-min-order-settings .pont-op-min-row>span{font-size:14px}
+ #contactView .pont-min-order-settings #pontOpStatus:empty{display:none}
  #restaurantOrderSettings #pontOpStatus:not(:empty){margin-top:7px;font-size:12px}
  @media(max-width:460px){#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid{gap:6px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label:nth-child(-n+2){width:94px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input[type="time"]{width:94px;max-width:94px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label:nth-child(3){width:104px;margin-left:0}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input{font-size:11px;padding:4px}}
  </style>
@@ -77,7 +82,30 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    settings.id='pontRestaurantSettings';
    settings.className='pont-operations';
    settings.append($('pontHoursPanel'));
-   settingsHost.append(settings);
+   if (isRestaurantAdmin) {
+     const priceCard = $('restaurantMenuPrice')?.closest('.contact-card-settings');
+     if (priceCard) settingsHost.insertBefore(settings, priceCard);
+     else settingsHost.append(settings);
+     const hoursPanel = $('pontHoursPanel');
+     hoursPanel.querySelector('summary').textContent = 'Programul comenzilor';
+     hoursPanel.open = true;
+     const minLabel = hoursPanel.querySelector('.pont-op-grid label:nth-child(3)');
+     const minCard = document.createElement('div');
+     minCard.className = 'contact-card-settings pont-min-order-settings';
+     const minTitle = document.createElement('h3');
+     minTitle.textContent = 'Comandă minimă';
+     minCard.append(minTitle);
+     if (minLabel) {
+       minLabel.firstChild.textContent = '';
+       minLabel.setAttribute('aria-label', 'Comandă minimă');
+       minCard.append(minLabel);
+     }
+     minCard.append($('pontOpSave'), $('pontOpStatus'));
+     if (priceCard) priceCard.after(minCard);
+     else settings.after(minCard);
+   } else {
+     settingsHost.append(settings);
+   }
    if (superAdminSettings) {
      settingsHost.hidden = true;
      $('pontHoursPanel').open = true;
