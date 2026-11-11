@@ -181,7 +181,7 @@ form.innerHTML = `
       <button id="pontDailyNext" type="submit" class="primary">Publică</button>
     </div>
   </div>
-  <section id="pontDailyPicker" class="pont-daily-picker" hidden aria-label="Selectare preparate">
+  <dialog id="pontDailyPicker" class="pont-daily-picker" aria-labelledby="pontDailyPickerTitle">
     <div class="pont-daily-picker-head">
       <h3 id="pontDailyPickerTitle">Felul 1</h3>
       <button type="button" class="primary" id="pontDailyPickerConfirm">Confirmă selecția</button>
@@ -189,9 +189,12 @@ form.innerHTML = `
     <p class="pont-daily-picker-hint">Bifează preparatele dorite pentru această categorie.</p>
     <div id="pontDailyPickerList" class="pont-daily-picker-list"></div>
     <button type="button" id="pontDailyPickerBack" class="pont-daily-picker-back">← Înapoi fără modificări</button>
-  </section>
+  </dialog>
 `;
 wrap.append(form);
+// Move the category picker out of the publishing form so it can open above the page.
+const pickerDialog = $('pontDailyPicker');
+document.body.append(pickerDialog);
 
 const standardPriceStyles=document.createElement('style');
 standardPriceStyles.textContent='.pont-daily-fields .pont-daily-standard-price{display:flex;align-items:center;justify-content:center;align-self:end;flex:0 1 132px;min-width:0;min-height:40px;height:40px;padding:6px 10px;border:1px solid #447b78;border-radius:9px;background:#0d3438;box-sizing:border-box}.pont-daily-standard-price strong{font-size:13px;line-height:1.2;font-weight:700;color:#ffe5a0;text-align:center;white-space:nowrap}.pont-daily-standard-price strong.is-missing{color:#ffb6a5}@media(max-width:620px){.pont-daily-fields .pont-daily-standard-price{width:100%;flex:auto;padding:6px 5px}.pont-daily-standard-price strong{font-size:12px}}';
@@ -202,6 +205,9 @@ document.head.append(standardPriceStyles);
 const wizardStyles = document.createElement('style');
 wizardStyles.textContent = "\n/* C23: three clean category buttons and independent recap; dedicated picker view. */\n#pontDailyBuilder #pontDailyOverview[hidden],#pontDailyBuilder #pontDailyPicker[hidden]{display:none!important}\n#pontDailyBuilder .pont-daily-course-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:17px 0 14px}\n#pontDailyBuilder .pont-daily-course-open{display:grid;place-items:center;min-width:0;width:100%;min-height:55px;margin:0;padding:12px 5px;text-align:center;font:700 clamp(13px,2.5vw,16px)/1.2 system-ui,sans-serif;border:1px solid #6b9990;border-radius:12px;background:linear-gradient(145deg,#16494a,#0b3036);color:#f5fcf8;box-shadow:inset 0 1px #ffffff18;cursor:pointer}\n#pontDailyBuilder .pont-daily-course-open:active{background:#23645e}\n#pontDailyBuilder .pont-daily-summary{padding:15px 16px;border:1px solid #4c7b74;border-radius:14px;background:#0a2e31}\n#pontDailyBuilder .pont-daily-summary h3{font:700 15px system-ui,sans-serif;margin:0 0 12px;color:#e8eee9}\n#pontDailyBuilder .pont-daily-summary-group{padding:9px 0;border-top:1px solid #ffffff20}\n#pontDailyBuilder .pont-daily-summary-group:first-child{border-top:0;padding-top:0}\n#pontDailyBuilder .pont-daily-summary-group:last-child{padding-bottom:0}\n#pontDailyBuilder .pont-daily-summary-group-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}\n#pontDailyBuilder .pont-daily-summary-group-head strong{font:700 13px system-ui,sans-serif;color:#e1d3ad}\n#pontDailyBuilder .pont-daily-summary-group-head button{padding:3px 8px;min-height:27px;margin:0;font:600 11px system-ui,sans-serif;color:#b9e4dd;background:transparent;border:1px solid #557970;border-radius:7px}\n#pontDailyBuilder .pont-daily-selected-list{display:grid;gap:5px;margin:0;padding-left:22px;font-size:13px;color:#e4f2ed}\n#pontDailyBuilder .pont-daily-selected-list li{line-height:1.4;padding-left:2px}\n#pontDailyBuilder .pont-daily-selected-list li::marker{color:#d9bd7b}\n#pontDailyBuilder .pont-daily-selected-list li button{float:right;display:inline-grid;place-items:center;width:23px;min-width:23px;height:23px;min-height:23px;padding:0;margin:-1px 0 0 7px;border:1px solid #63877f;border-radius:7px;background:#112f33;color:#f3c8be;font-size:18px;line-height:1}\n#pontDailyBuilder .pont-daily-selected-list li::after{content:\"\";display:block;clear:both}\n#pontDailyBuilder .pont-daily-none{margin:0;color:#9cb8b9;font-size:12px}\n#pontDailyBuilder .pont-daily-picker{margin:0;min-width:0;border:1px solid #50847d;border-radius:15px;background:#0a2a2d;overflow:hidden}\n#pontDailyBuilder .pont-daily-picker-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 14px;border-bottom:1px solid #3c6d68;background:#123b3d}\n#pontDailyBuilder .pont-daily-picker-head h3{margin:0;text-align:left;font:750 clamp(17px,3vw,21px)/1.2 system-ui,sans-serif;color:#f4f7f0}\n#pontDailyBuilder .pont-daily-picker-head button{flex:none;margin:0;min-height:38px;padding:8px 12px;font:700 12px system-ui,sans-serif}\n#pontDailyBuilder .pont-daily-picker-hint{margin:11px 14px;color:#a9d1c8;font-size:12px;line-height:1.4}\n#pontDailyBuilder .pont-daily-picker-list{display:grid;gap:0;max-height:min(60dvh,620px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 13px 8px}\n#pontDailyBuilder .pont-daily-picker-row{display:grid;grid-template-columns:minmax(0,1fr) auto 24px;align-items:center;gap:9px;padding:12px 0;border-bottom:1px solid #ffffff1b;min-width:0}\n#pontDailyBuilder .pont-daily-picker-name{font-size:13px;line-height:1.3;overflow-wrap:break-word;min-width:0}\n#pontDailyBuilder .pont-daily-picker-row small{font-size:11px;color:#b9d2c9;white-space:nowrap;text-align:right}\n#pontDailyBuilder .pont-daily-picker-price{display:flex;align-items:center;gap:3px;font-size:11px;margin:0;white-space:nowrap}\n#pontDailyBuilder .pont-daily-picker-price input{width:54px;min-width:0;margin:0;padding:6px 3px;height:32px;min-height:32px;text-align:center;font-size:12px}\n#pontDailyBuilder .pont-daily-picker-row input[type=checkbox]{appearance:auto;-webkit-appearance:checkbox;width:21px;height:21px;min-width:21px;min-height:21px;margin:0;accent-color:#d6ba78;cursor:pointer}\n#pontDailyBuilder .pont-daily-picker-row:has(input:disabled){opacity:.52}\n#pontDailyBuilder .pont-daily-picker-back{display:block;margin:10px 13px 15px;min-height:36px;padding:8px 12px;font:600 12px system-ui,sans-serif;color:#c6dfd6;background:transparent;border:1px solid #496e69;border-radius:9px}\n@media(max-width:430px){#pontDailyBuilder .pont-daily-course-cards{gap:6px}#pontDailyBuilder .pont-daily-course-open{min-height:49px;font-size:13px;padding:9px 2px}#pontDailyBuilder .pont-daily-summary{padding:12px}#pontDailyBuilder .pont-daily-picker-head{padding:12px 9px;gap:7px}#pontDailyBuilder .pont-daily-picker-head button{font-size:11px;padding:8px 7px}#pontDailyBuilder .pont-daily-picker-list{padding-inline:9px}#pontDailyBuilder .pont-daily-picker-row{gap:5px}#pontDailyBuilder .pont-daily-picker-name{font-size:12px}}\n";
 document.head.append(wizardStyles);
+const pickerModalStyles=document.createElement('style');
+pickerModalStyles.textContent="\n/* C24 — independent category dialog over the unchanged publishing page. */\n#pontDailyPicker.pont-daily-picker {\n  position:fixed;\n  inset:0;\n  box-sizing:border-box;\n  width:min(580px,calc(100vw - 24px));\n  max-width:calc(100vw - 24px);\n  max-height:min(85dvh,760px);\n  margin:auto;\n  padding:0;\n  overflow:hidden;\n  border:1px solid #6da398;\n  border-radius:19px;\n  background:#0b292e;\n  color:#f1f9f7;\n  box-shadow:0 24px 90px #000b,0 0 0 1px #a0ebd318;\n}\n#pontDailyPicker::backdrop{background:rgba(0,8,13,.78);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}\n#pontDailyPicker .pont-daily-picker-head {\n  display:flex;align-items:center;justify-content:space-between;gap:12px;\n  padding:16px;border-bottom:1px solid #406b67;background:#14383d;\n}\n#pontDailyPicker .pont-daily-picker-head h3{margin:0;font:750 clamp(17px,4vw,21px)/1.2 system-ui,sans-serif}\n#pontDailyPicker .pont-daily-picker-head button{\n  flex:none;width:auto;min-width:0;min-height:40px;padding:9px 12px;\n  border-radius:10px;background:#9be7d5;border:1px solid #9be7d5;color:#07332d;\n  font:750 12px/1.2 system-ui,sans-serif;\n}\n#pontDailyPicker .pont-daily-picker-hint{margin:12px 15px;color:#b8d3cc;font-size:12px;line-height:1.45}\n#pontDailyPicker .pont-daily-picker-list{\n  display:grid;gap:0;max-height:calc(min(85dvh,760px) - 178px);overflow-y:auto;\n  -webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 14px 8px;\n}\n#pontDailyPicker .pont-daily-picker-row{\n  display:grid;grid-template-columns:minmax(0,1fr) auto 24px;\n  align-items:center;gap:9px;min-width:0;padding:12px 0;border-bottom:1px solid #ffffff20;\n}\n#pontDailyPicker .pont-daily-picker-name{min-width:0;font-size:13px;line-height:1.35;overflow-wrap:break-word}\n#pontDailyPicker .pont-daily-picker-row small{font-size:11px;color:#b9d2c9;white-space:nowrap;text-align:right}\n#pontDailyPicker .pont-daily-picker-price{display:flex;align-items:center;gap:4px;margin:0;color:#e5f1e9;font-size:11px}\n#pontDailyPicker .pont-daily-picker-price input{\n  width:55px;min-width:0;max-width:55px;height:33px;min-height:33px;\n  margin:0;padding:5px 3px;font:13px system-ui,sans-serif;text-align:center;\n  border-radius:8px;background:#123b40;border:1px solid #5f8680;color:#fff;\n}\n#pontDailyPicker .pont-daily-picker-row input[type=checkbox]{\n  appearance:auto;-webkit-appearance:checkbox;width:21px;height:21px;\n  min-width:21px;min-height:21px;margin:0;accent-color:#e5cc91;cursor:pointer;\n}\n#pontDailyPicker .pont-daily-picker-row:has(input:disabled){opacity:.55}\n#pontDailyPicker .pont-daily-picker-back{\n  display:block;width:calc(100% - 28px);min-height:39px;margin:8px 14px 14px;\n  padding:8px 12px;border:1px solid #567973;border-radius:10px;\n  background:#15373c;color:#d1e2df;font:600 12px system-ui,sans-serif;\n}\n@media(max-width:420px){\n  #pontDailyPicker .pont-daily-picker-head{padding:13px 10px;gap:7px}\n  #pontDailyPicker .pont-daily-picker-head button{font-size:11px;padding:9px 8px}\n  #pontDailyPicker .pont-daily-picker-list{padding-inline:10px}\n  #pontDailyPicker .pont-daily-picker-row{gap:6px}\n  #pontDailyPicker .pont-daily-picker-name{font-size:12px}\n}\n";
+document.head.append(pickerModalStyles);
 
 const dialog = document.createElement('dialog');
 dialog.id = 'pontDishConfirm';
@@ -287,8 +293,7 @@ function menuChoices() {
 let pickerCategory = null, pickerSnapshot = null;
 function renderPicker() {
   const picker = $('pontDailyPicker');
-  if (!pickerCategory) { picker.hidden = true; return; }
-  picker.hidden = false;
+  if (!pickerCategory) return;
   $('pontDailyPickerTitle').textContent = groups.find(([key]) => key === pickerCategory)?.[1] || 'Preparate';
   const entries = menuChoices().filter(([,dish]) => dish.category === pickerCategory);
   $('pontDailyPickerList').innerHTML = entries.length ? entries.map(([key,dish]) => {
@@ -311,9 +316,9 @@ function showPicker(key) {
   pickerSnapshot = new Map([...selected].filter(([,item]) => item.category === key)
     .map(([id,item]) => [id,{...item}]));
   pickerCategory = key;
-  $('pontDailyOverview').hidden = true;
   renderPicker();
-  $('pontDailyPicker').scrollIntoView({block:'start',behavior:'instant'});
+  if (!pickerDialog.open) pickerDialog.showModal();
+  $('pontDailyPickerConfirm').focus({preventScroll:true});
 }
 function closePicker(confirmed = false) {
   if (!confirmed && pickerSnapshot && pickerCategory) {
@@ -322,10 +327,8 @@ function closePicker(confirmed = false) {
   }
   pickerCategory = null;
   pickerSnapshot = null;
-  $('pontDailyPicker').hidden = true;
-  $('pontDailyOverview').hidden = false;
+  if (pickerDialog.open) pickerDialog.close();
   choices();
-  $('pontDailyDishes').scrollIntoView({block:'nearest',behavior:'instant'});
 }
 function choices() {
   $('pontDailyDishes').innerHTML = groups.map(([key,label]) =>
@@ -359,6 +362,10 @@ $('pontDailyDishes').addEventListener('click', dailyOverviewClick);
 $('pontDailySummaryList').addEventListener('click', dailyOverviewClick);
 $('pontDailyPickerBack').onclick = () => closePicker(false);
 $('pontDailyPickerConfirm').onclick = () => { resetModelSaved(); closePicker(true); };
+pickerDialog.addEventListener('cancel', event => { event.preventDefault(); closePicker(false); });
+pickerDialog.addEventListener('click', event => {
+  if (event.target === pickerDialog) closePicker(false);
+});
 async function load() {
   const version = ++loadVersion;
   const restaurant = rid();
@@ -451,8 +458,7 @@ function resetDaily() {
   $('pontDailyDate').value = todayRO();
   pickerCategory = null;
   pickerSnapshot = null;
-  $('pontDailyPicker').hidden = true;
-  $('pontDailyOverview').hidden = false;
+  if (pickerDialog.open) pickerDialog.close();
   syncStandardPrice();
   $('pontDailyError').textContent = '';
 }
