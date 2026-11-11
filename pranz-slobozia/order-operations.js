@@ -55,6 +55,9 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  #restaurantOrderSettings #pontRestaurantSettings #pontOpMin{width:55px;max-width:55px;text-align:center}
  #restaurantOrderSettings #pontRestaurantSettings .pont-op-min-row{display:flex;align-items:center;gap:7px;white-space:nowrap}
  #restaurantOrderSettings #pontRestaurantSettings .pont-op-min-row>span{font-size:12px;color:#c6dddd}
+ #contactView #pontRestaurantSettings .pont-op-grid{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-start}
+ #contactView #pontRestaurantSettings .pont-op-grid>label{display:grid;flex:0 0 auto;width:max-content;max-width:100%;min-width:0}
+ #contactView #pontRestaurantSettings .pont-op-grid input[type="time"]{box-sizing:border-box;display:block;width:108px;max-width:108px;min-width:0;padding:4px 5px;font-size:13px}
  #contactView .pont-min-order-settings label{display:block;width:max-content;max-width:100%}
  #contactView .pont-min-order-settings .pont-op-min-row{display:flex;align-items:center;gap:9px}
  #contactView .pont-min-order-settings #pontOpMin{box-sizing:border-box;width:64px;min-height:36px;text-align:center}
