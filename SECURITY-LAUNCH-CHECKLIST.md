@@ -11,6 +11,10 @@ Last reviewed: 2026-11-11. **Internal notes only — not served as public UI.**
 - Storage image bucket allows only JPEG/PNG/WebP, 2 MB maximum, with restaurant-scoped write policies.
 - Failed restaurant login events: recorded server-side for known restaurant accounts; persistent security incidents created at 6+ failures within 15 minutes; Super Admin alone may read history. Dashboard lists incidents even after 15-minute window, with relative timestamps; verified with simulated 5-hour-old incident, role-restricted access and rollback of test data.
 - Biometric / facial login: NOT IMPLEMENTED. User explicitly said this was only a question. Do not implement without a new explicit request.
+- Login lockout (2026-11-11): server-side per-restaurant account counter; after **8 consecutive incorrect passwords**, account locks; further PONT login attempts return “Ați epuizat încercările de conectare. Contactați administratorul.”; Super Admin has “Deblochează cont” in Restaurant settings. Edge Function also requests Supabase Auth ban on lock and unban on manual unlock. Locked accounts fail RLS authorization even with previously issued sessions. Simulated transactional tests passed; final real-browser tests and a review of direct Auth endpoint attempts remain required.
+- Super Admin login bounce: corrected an invalid email-validation regex in the Edge Function and adjusted dashboard to keep authenticated UI visible when auxiliary modules fail; test on live iPhone session before launch.
+- Remember credentials: only login identifier persists in localStorage; passwords must be saved by the device/browser password manager using standard `autocomplete=username/current-password`. **Never save plaintext password in localStorage.**
+
 
 ## Before production launch — mandatory
 - Run tests in two actual restaurant sessions simultaneously (A/B), verify direct REST/RPC/Storage calls cannot see/change each other's data; test every INSERT/UPDATE/DELETE endpoint.
