@@ -263,7 +263,7 @@ function library() {
 }
 
 function menuChoices() {
-  return [...dishes.filter(dish => !savedChoices.has(dish.id)).map(dish => [dish.id, dish]), ...savedChoices];
+  return [...savedChoices, ...dishes.filter(dish => !savedChoices.has(dish.id)).map(dish => [dish.id, dish])];
 }
 function choices() {
   const scrollPositions = new Map([...$('pontDailyDishes').querySelectorAll('.pont-daily-scroll-list')].map(list => [list.dataset.course, list.scrollTop]));
@@ -405,28 +405,29 @@ function restoreMenuDishes(menu) {
     selected.set(key, {...item});
   }
 }
-async function open(menu, copy = false) {
+async function open(menu, copy = false, {restaurant = menu?.restaurant_id, date = menu?.service_date} = {}) {
   options();
   resetDaily();
   const version = editorVersion;
+  if (restaurant && rid() !== restaurant) {
+    $('pontDailyRestaurant').value = restaurant;
+    $('pontDishRestaurant').value = restaurant;
+    resetDish();
+  }
+  if (!copy && date) $('pontDailyDate').value = date;
   if (menu) {
     editingMenu = copy ? null : menu.id;
     menuDescription = menu.description ?? '';
-    if (rid() !== menu.restaurant_id) {
-      $('pontDailyRestaurant').value = menu.restaurant_id;
-      $('pontDishRestaurant').value = menu.restaurant_id;
-      resetDish();
-    }
-    $('pontDailyDate').value = copy ? todayRO() : menu.service_date;
-    syncStandardPrice();
   }
-  setEditorOpen(true);
-  if (menu) $('pontDailyDate').focus();
+  syncStandardPrice();
+  setEditorOpen(false);
   await load();
-  if (menu && version === editorVersion) {
-    restoreMenuDishes(menu);
-    choices();
-  }
+  if (version !== editorVersion) return false;
+  if (menu) restoreMenuDishes(menu);
+  choices();
+  setEditorOpen(true);
+  if (menu) $('pontDailyDate').focus({preventScroll:true});
+  return true;
 }
 async function refresh() {
   options();

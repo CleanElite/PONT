@@ -102,8 +102,9 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    $('pontOpRestaurantWrap').hidden=superAdminSettings || rs.length<=1;
    const weekSelector=$('pontOpWeekRestaurant');
    if(weekSelector){
+     const previousWeekRestaurant=weekSelector.value;
      weekSelector.innerHTML=selector.innerHTML;
-     weekSelector.value=activeRestaurant;
+     if(rs.some(r=>r.id===previousWeekRestaurant))weekSelector.value=previousWeekRestaurant;
      $('pontOpWeekRestaurantWrap').hidden=rs.length<=1;
    }
  }
@@ -124,9 +125,8 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    if(saveButton)saveButton.disabled=false;
    if(superAdminSettings)settingsLoaded=true;
  }
- for(const selector of [$('pontOpRestaurant'), $('pontOpWeekRestaurant')].filter(Boolean)){
-   selector.addEventListener('change',()=>{activeRestaurant=selector.value;loadSettings();renderWeek()});
- }
+ $('pontOpRestaurant').addEventListener('change',event=>{activeRestaurant=event.target.value;loadSettings()});
+ $('pontOpWeekRestaurant').addEventListener('change',renderWeek);
  function readOrderSettings(){
    const start=$('pontOpStart').value,end=$('pontOpEnd').value,min=Number($('pontOpMin').value);
    if(Boolean(start)!==Boolean(end))throw Error('Completează ambele ore sau lasă-le goale pentru programul implicit.');
@@ -155,10 +155,11 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    const today=formatDate(new Date());
    if (weekStart===monday(renderedDay) && today!==renderedDay) weekStart=monday(today);
    renderedDay=today;
+   const restaurant=$('pontOpWeekRestaurant').value;
    const menus=typeof window.pontAllMenus==='function'?window.pontAllMenus():[];
    const days=['Luni','Marți','Miercuri','Joi','Vineri','Sâmbătă','Duminică'];
    $('pontOpDays').innerHTML=days.map((name,i)=>{
-     const date=dateAt(weekStart,i),menu=menus.find(m=>m.restaurant_id===activeRestaurant&&m.service_date===date);
+     const date=dateAt(weekStart,i),menu=menus.find(m=>m.restaurant_id===restaurant&&m.service_date===date);
      const past=date<today;
      const label=!menu?'Fără meniu':past?'Finalizat':date===today?'Publicat':'Programat';
      const action=past?'':'<button type="button" class="pont-op-button" data-week-date="'+date+'">'+(menu?'Editează meniul':'Creează meniul')+'</button>';
@@ -181,21 +182,21 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    const button=event.target.closest('[data-week-date]');if(!button)return;
    const date=button.dataset.weekDate;
    if(date<formatDate(new Date())){renderWeek();return}
-   const menu=(window.pontAllMenus?.()||[]).find(m=>m.restaurant_id===activeRestaurant&&m.service_date===date);
+   const restaurant=$('pontOpWeekRestaurant').value;
+   if(!restaurant)return;
+   const menu=(window.pontAllMenus?.()||[]).find(m=>m.restaurant_id===restaurant&&m.service_date===date);
+   button.disabled=true;
    try{
      const addTab=document.querySelector('.admin-nav button[data-view="add"]');
      if(addTab)addTab.click();
-     const host=$('toggleMenuForm');
-     if(wrap.hidden)host?.click();
-     await window.pontDishUI.activate(menu||null);
-     $('pontDailyRestaurant').value=activeRestaurant;
-     $('pontDishRestaurant').value=activeRestaurant;
-     if(!menu)$('pontDailyRestaurant').dispatchEvent(new Event('change'));
-     $('pontDailyDate').value=date;
-     wrap.hidden=false;host?.setAttribute('aria-expanded','true');
+     const opened=await window.pontDishUI.open(menu||null,false,{restaurant,date});
+     if(!opened)return;
      wrap.scrollIntoView({behavior:'smooth',block:'start'});
-     $('pontOpWeekStatus').textContent='Completează și publică meniul pentru '+date+'. Va apărea automat în ziua respectivă.';
+     $('pontOpWeekStatus').textContent=menu
+       ?'Editezi meniul din '+date.split('-').reverse().join('.')+'.'
+       :'Completează meniul pentru '+date.split('-').reverse().join('.')+'.';
    }catch(e){$('pontOpWeekStatus').textContent=e.message}
+   finally{button.disabled=false}
  });
  return {
    refresh:async()=>{await loadSettings();renderWeek()},
