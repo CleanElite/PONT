@@ -57,6 +57,16 @@
   </div>
   <button type="button" class="pont-restaurant-nav-settings" id="showContact" data-view="contact" data-hash="#contact" aria-controls="contactView" aria-pressed="false" aria-label="Setări restaurant" title="Setări restaurant"><svg class="admin-settings-icon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Z"/><path d="M19.4 13.5a7.8 7.8 0 0 0 0-3l1.7-1.3-1.7-3-2 .8a7.5 7.5 0 0 0-2.5-1.5L14.5 3h-3.1L11 5.5A7.5 7.5 0 0 0 8.5 7l-2-.8-1.7 3 1.7 1.3a7.8 7.8 0 0 0 0 3l-1.7 1.3 1.7 3 2-.8a7.5 7.5 0 0 0 2.5 1.5l.4 2.5h3.1l.4-2.5a7.5 7.5 0 0 0 2.5-1.5l2 .8 1.7-3-1.7-1.3Z"/></svg></button>
 </nav>
+<style id="pont-password-settings-c34">
+/* C34 — Self-service restaurant password management. */
+.pont-admin--restaurant #restaurantSelfPasswordForm{display:grid;gap:8px;max-width:440px}
+.pont-admin--restaurant #restaurantSelfPasswordForm label{display:grid;gap:5px;margin:0;font-size:12px;color:#d5ede5}
+.pont-admin--restaurant #restaurantSelfPasswordForm input{box-sizing:border-box;width:100%;min-width:0;min-height:40px;padding:9px 11px;background:#08252e;border:1px solid #517e77;border-radius:9px;color:#f4fffb;font-size:16px}
+.pont-admin--restaurant #restaurantSelfPasswordForm small{font-size:11px;line-height:1.5;color:#bcd6cc}
+.pont-admin--restaurant #restaurantSelfPasswordForm #selfPasswordFeedback{margin:0;font-size:12px;min-height:0;color:#a9ead1}
+.pont-admin--restaurant #restaurantSelfPasswordForm #selfPasswordFeedback.error{color:#ffb4b4}
+.pont-admin--restaurant #restaurantSelfPasswordForm #selfPasswordSubmit{width:max-content;min-width:145px;min-height:39px;margin-top:2px}
+</style>
 <style id="pont-restaurant-nav-c32">
 /* C32: Restaurant navigation — 3 grouped columns + settings icon. */
 .pont-admin--restaurant #app .admin-nav.pont-restaurant-grouped-nav{
@@ -139,7 +149,19 @@
  }
 }
 </style>
-<section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section><section id="contactView" class="card" hidden><h2>Setări restaurant</h2><p>Numărul folosit de clienți pentru apeluri și WhatsApp. Introdu numărul cu prefixul țării, de exemplu +40.</p><form id="contactForm"><label id="contactRestaurantField">Restaurant<select id="contactRestaurant" required></select></label><p id="contactRestaurantName" hidden></p><div class="contact-phone-view" id="contactPhoneView"><span>Telefon comenzi · Apel și WhatsApp</span><div class="contact-phone-line"><strong id="contactPhoneDisplay">Neconfigurat</strong><button type="button" id="editContactPhone">Modifică</button></div></div><div id="contactPhoneEditor" hidden><label>Telefon comenzi (WhatsApp și apel)<input id="contactPhone" type="tel" placeholder="+407..." required></label><div class="contact-edit-actions"><button class="primary" type="submit" id="saveContactPhone">Salvează modificările</button><button type="button" id="cancelContactPhone">Anulează</button></div></div></form><div class="contact-card-settings"><h3>Preț standard meniu complet</h3><p>Prețul este stabilit o singură dată pentru fiecare restaurant și se aplică automat meniurilor noi. Modificarea actualizează și meniurile de astăzi și cele programate.</p><label for="restaurantMenuPrice">Preț meniu complet (lei)<input id="restaurantMenuPrice" type="number" min="0.01" max="10000" step="0.01" inputmode="decimal" placeholder="Ex. 32,00"></label><button type="button" class="primary" id="saveRestaurantMenuPrice">Salvează prețul standard</button></div><div class="contact-card-settings"><h3>Metode de plată acceptate</h3><p>Cash este disponibil implicit. Activează plata cu cardul numai dacă restaurantul poate încasa prin POS sau altă metodă proprie.</p><label style="display:flex;align-items:center;gap:10px"><input type="checkbox" role="switch" id="acceptsCard"> Acceptă plata cu cardul</label><button type="button" id="saveCardSettings" class="primary">Salvează metodele de plată</button></div></section><div id="addView"><section class="card admin-workspace"><section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section><h2>Planifică meniul zilei</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="true" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap"></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section></div><div id="savedView" hidden><section class="card"><div id="pontMenuTemplates"></div><details class="pont-menu-archive">
+<section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section><section id="contactView" class="card" hidden><h2>Setări restaurant</h2><p>Numărul folosit de clienți pentru apeluri și WhatsApp. Introdu numărul cu prefixul țării, de exemplu +40.</p><form id="contactForm"><label id="contactRestaurantField">Restaurant<select id="contactRestaurant" required></select></label><p id="contactRestaurantName" hidden></p><div class="contact-phone-view" id="contactPhoneView"><span>Telefon comenzi · Apel și WhatsApp</span><div class="contact-phone-line"><strong id="contactPhoneDisplay">Neconfigurat</strong><button type="button" id="editContactPhone">Modifică</button></div></div><div id="contactPhoneEditor" hidden><label>Telefon comenzi (WhatsApp și apel)<input id="contactPhone" type="tel" placeholder="+407..." required></label><div class="contact-edit-actions"><button class="primary" type="submit" id="saveContactPhone">Salvează modificările</button><button type="button" id="cancelContactPhone">Anulează</button></div></div></form><div class="contact-card-settings"><h3>Preț standard meniu complet</h3><p>Prețul este stabilit o singură dată pentru fiecare restaurant și se aplică automat meniurilor noi. Modificarea actualizează și meniurile de astăzi și cele programate.</p><label for="restaurantMenuPrice">Preț meniu complet (lei)<input id="restaurantMenuPrice" type="number" min="0.01" max="10000" step="0.01" inputmode="decimal" placeholder="Ex. 32,00"></label><button type="button" class="primary" id="saveRestaurantMenuPrice">Salvează prețul standard</button></div><div class="contact-card-settings"><h3>Metode de plată acceptate</h3><p>Cash este disponibil implicit. Activează plata cu cardul numai dacă restaurantul poate încasa prin POS sau altă metodă proprie.</p><label style="display:flex;align-items:center;gap:10px"><input type="checkbox" role="switch" id="acceptsCard"> Acceptă plata cu cardul</label><button type="button" id="saveCardSettings" class="primary">Salvează metodele de plată</button></div>
+<div class="contact-card-settings pont-password-settings">
+<h3>Schimbă parola contului</h3>
+<p>Parola este personală. Pentru siguranță, introdu parola actuală înainte de a o modifica.</p>
+<form id="restaurantSelfPasswordForm" autocomplete="on">
+<label for="selfCurrentPassword">Parola actuală<input id="selfCurrentPassword" type="password" autocomplete="current-password" required></label>
+<label for="selfNewPassword">Parola nouă<input id="selfNewPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128" aria-describedby="selfPasswordHint"></label>
+<label for="selfConfirmPassword">Confirmă parola nouă<input id="selfConfirmPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label>
+<small id="selfPasswordHint">Minimum 12 caractere. Folosește o parolă unică, diferită de cea actuală.</small>
+<p id="selfPasswordFeedback" role="status" aria-live="polite"></p>
+<button type="submit" class="primary" id="selfPasswordSubmit">Schimbă parola</button>
+</form>
+</div></section><div id="addView"><section class="card admin-workspace"><section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section><h2>Planifică meniul zilei</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="true" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap"></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section></div><div id="savedView" hidden><section class="card"><div id="pontMenuTemplates"></div><details class="pont-menu-archive">
   <summary>Meniuri active și programate</summary>
   <div id="menus"></div>
 </details>
@@ -208,6 +230,61 @@ $('cancelContactPhone').onclick=syncContactPhone;
 $('contactForm').onsubmit=async e=>{e.preventDefault();const save=$('saveContactPhone');save.disabled=true;save.textContent='Se salvează…';try{const phone=$('contactPhone').value.trim();await req(db.rpc('set_my_restaurant_phone',{p_restaurant_id:$('contactRestaurant').value,p_phone:phone}));const r=restaurants.find(r=>r.id===$('contactRestaurant').value);if(r)r.phone=phone;syncContactPhone();status('Numărul pentru comenzi a fost actualizat.')}catch(err){status(err.message,true)}finally{save.disabled=false;save.textContent='Salvează modificările'}};
 $('saveRestaurantMenuPrice').onclick=async()=>{const button=$('saveRestaurantMenuPrice');const restaurant_id=$('contactRestaurant').value;const input=$('restaurantMenuPrice');const price=input.valueAsNumber;if(!Number.isFinite(price)||price<=0||price>10000||Math.abs(Math.round(price*100)-price*100)>0.00001){status('Introdu un preț valid, mai mare decât 0, cu cel mult două zecimale.',true);input.focus();return;}button.disabled=true;try{await req(db.rpc('set_my_restaurant_menu_price',{p_restaurant_id:restaurant_id,p_menu_price:price}));const restaurant=restaurants.find(x=>x.id===restaurant_id);if(restaurant)restaurant.menu_price=price;await load();await window.pontDishUI?.refresh();status('Prețul standard a fost salvat. Se aplică meniurilor noi și celor programate.');}catch(err){status(err.message,true)}finally{button.disabled=false}};
 $('saveCardSettings').onclick=async()=>{const button=$('saveCardSettings');button.disabled=true;try{const restaurant_id=$('contactRestaurant').value,accepts_card=$('acceptsCard').checked;await req(db.rpc('set_my_restaurant_accepts_card',{p_restaurant_id:restaurant_id,p_accepts_card:accepts_card}));const r=restaurants.find(x=>x.id===restaurant_id);if(r)r.accepts_card=accepts_card;status('Metodele de plată au fost salvate.')}catch(e){status(e.message,true)}finally{button.disabled=false}};
+
+const selfPasswordForm = $('restaurantSelfPasswordForm');
+const selfPasswordFeedback = $('selfPasswordFeedback');
+selfPasswordForm.addEventListener('submit', async event => {
+ event.preventDefault();
+ const button = $('selfPasswordSubmit');
+ if(button.disabled)return;
+ const current = $('selfCurrentPassword').value;
+ const next = $('selfNewPassword').value;
+ const confirmation = $('selfConfirmPassword').value;
+ selfPasswordFeedback.className = '';
+ selfPasswordFeedback.textContent = '';
+ if(next.length < 12 || next.length > 128){
+  selfPasswordFeedback.className='error';
+  selfPasswordFeedback.textContent='Parola nouă trebuie să conțină între 12 și 128 de caractere.';
+  return;
+ }
+ if(next === current){
+  selfPasswordFeedback.className='error';
+  selfPasswordFeedback.textContent='Alege o parolă diferită de cea actuală.';
+  return;
+ }
+ if(next !== confirmation){
+  selfPasswordFeedback.className='error';
+  selfPasswordFeedback.textContent='Confirmarea parolei nu corespunde.';
+  return;
+ }
+ button.disabled = true;
+ button.textContent = 'Se verifică…';
+ try {
+  const {data:{user:account},error:accountError}=await db.auth.getUser();
+  if(accountError||!account?.email)throw Error('Contul nu a putut fi verificat. Reconectează-te.');
+  // Verify the current password using a non-persistent, isolated session.
+  const checkClient = createClient(c.url,c.anonKey,{auth:{
+   persistSession:false,autoRefreshToken:false,detectSessionInUrl:false
+  }});
+  const {error:verifyError}=await checkClient.auth.signInWithPassword({
+   email:account.email,password:current
+  });
+  if(verifyError)throw Error('Parola actuală este incorectă.');
+  await checkClient.auth.signOut({scope:'local'}).catch(()=>{});
+  button.textContent='Se actualizează…';
+  const {error:updateError}=await db.auth.updateUser({password:next});
+  if(updateError)throw updateError;
+  selfPasswordForm.reset();
+  selfPasswordFeedback.textContent='Parola a fost schimbată. Folosește parola nouă la următoarea autentificare.';
+ }catch(error){
+  selfPasswordFeedback.className='error';
+  selfPasswordFeedback.textContent=error.message||'Schimbarea parolei a eșuat.';
+ }finally{
+  button.disabled=false;
+  button.textContent='Schimbă parola';
+ }
+});
+
 async function enter(){const {data}=await db.auth.getUser();user=data.user;$('login').hidden=!!user;$('app').hidden=!user;if(user){try{await load();if(!$('savedView').hidden) await window.pontMenuModels?.refresh();await window.pontDishUI?.refresh();await window.pontOperations?.refresh()}catch(e){status(e.message,true)}}}
 $('auth').onsubmit=async e=>{e.preventDefault();const identifier=$('email').value.trim();let error;if(identifier.includes('@')){({error}=await db.auth.signInWithPassword({email:identifier,password:$('password').value}))}else{try{const res=await fetch(c.url+'/functions/v1/pont-restaurant-accounts',{method:'POST',headers:{'Content-Type':'application/json',apikey:c.anonKey},body:JSON.stringify({action:'login',username:identifier,password:$('password').value})});const result=await res.json();if(!res.ok)throw Error(result.error||'Autentificare eșuată');({error}=await db.auth.setSession({access_token:result.session.access_token,refresh_token:result.session.refresh_token}))}catch(err){error=err}}if(error)$('error').textContent='Autentificare eșuată. Verifică numele de utilizator și parola.';else {await adminSession.markLogin();await enter()}};$('logout').onclick=async()=>{try{await adminSession.logout();location.replace('../login/')}catch(err){status(err.message,true)}};
 $('menus').onclick = async event => {
