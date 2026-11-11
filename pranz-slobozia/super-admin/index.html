@@ -209,6 +209,8 @@
 #app .pont-hero-dashboard{flex:0 0 auto!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;min-height:41px!important;max-width:42%!important;margin:0!important;padding:9px 14px!important;border:1px solid rgba(211,244,230,.82)!important;border-radius:12px!important;background:linear-gradient(150deg,#1d6559,#0c3b34)!important;color:#f4fffa!important;font:700 clamp(11px,3vw,14px)/1.2 system-ui!important;text-decoration:none!important;white-space:nowrap!important;box-shadow:inset 0 1px 3px #efffff3d,0 0 9px #d0ffec32!important}
 #app .pont-hero-dashboard[aria-pressed="true"]{border-color:#e9d9ae!important;color:#ffe8b2!important;box-shadow:inset 0 0 0 1px #ffe5aa35,0 0 13px #e9d39d30!important}
 @media(max-width:360px){#app .admin-hero.dashboard-intro{gap:6px!important}#app .pont-hero-dashboard{padding:8px 9px!important;min-height:37px!important}}
+ .pont-live-dot{display:inline-block;vertical-align:middle;width:10px;height:10px;min-width:10px;margin:0 9px 2px 0;border-radius:50%;background:#e25858;box-shadow:0 0 0 3px rgba(226,88,88,.14)}
+ .pont-live-dot.is-online{background:#ffd34f;box-shadow:0 0 0 3px rgba(255,211,79,.18)}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=model-wizard-c31"><style id="pont-auction-period-save-c15">
@@ -746,6 +748,7 @@ function renderMenuRows() {
  }).join('') : emptyMessage('Nu există meniuri active sau programate.');
 }
 
+let restaurantOnlineIds = new Set();
 function renderRestaurants() {
  const result = restaurants;
  $('restaurantRows').innerHTML = result.length ? result.map((restaurant, index) => {
@@ -756,7 +759,7 @@ function renderRestaurants() {
   return '<article class="restaurant-admin-item restaurant-status-' + state + '">' +
    '<div class="restaurant-admin-heading">' +
    '<span class="restaurant-list-number" aria-label="Restaurantul numărul ' + (index + 1) + '">' + number + '</span>' +
-   '<strong class="restaurant-list-name">' + esc(restaurant.name) + '</strong>' +
+   '<strong class="restaurant-list-name">' + '<span class="pont-live-dot ' + (restaurantOnlineIds.has(String(restaurant.id)) ? 'is-online' : 'is-offline') + '" role="img" aria-label="' + (restaurantOnlineIds.has(String(restaurant.id)) ? 'Administrator activ' : 'Administrator inactiv') + '" title="' + (restaurantOnlineIds.has(String(restaurant.id)) ? 'Administrator activ acum' : 'Administrator inactiv sau offline') + '"></span>' + esc(restaurant.name) + '</strong>' +
    '<div class="restaurant-list-meta"><span>Cod ' + esc(restaurant.short_code || '—') + '</span><span>' + esc(restaurant.phone || 'Telefon neconfigurat') + '</span></div>' +
    '<div class="dashboard-badges"><span class="dashboard-badge" data-state="' + (enabled ? 'enabled' : 'disabled') + '">' +
    (enabled ? 'Activ' : 'Suspendat') + '</span>' +
@@ -1436,6 +1439,7 @@ window.addEventListener('hashchange', () => {
  if (!$('app').hidden) selectPlatformPanel(location.hash.slice(1), false);
 });
 
+let stopWatchingRestaurantPresence=null;
 async function enter() {
  $('app').hidden = true;
  $('error').textContent = '';
@@ -1447,6 +1451,9 @@ async function enter() {
   const profiles = await req(db.from('profiles').select('role').eq('user_id',user.id));
   if (profiles[0]?.role !== 'super_admin') throw Error('Acest cont nu are rol Super Admin.');
   await load();
+  if(stopWatchingRestaurantPresence)stopWatchingRestaurantPresence();
+  const {watchRestaurantPresence}=await import('../admin-presence.js?v=20261111a');
+  stopWatchingRestaurantPresence=watchRestaurantPresence(db,online=>{restaurantOnlineIds=online;renderRestaurants();});
   await window.pontOperations?.refresh();
   $('app').hidden = false;
   // Dashboard is the default landing screen for every Super Admin login.
@@ -1468,7 +1475,7 @@ $('auth').onsubmit = async event => {
 };
 $('logout').onclick = async () => {
  if (auctionSaving || (auctionEdits.size && !confirm('Te deconectezi cu modificări nesalvate?'))) return;
- try { await adminSession.logout(); }
+ try { await adminSession.logout(); if(stopWatchingRestaurantPresence){stopWatchingRestaurantPresence();stopWatchingRestaurantPresence=null;} }
  catch (error) { status(error.message,true); return; }
  auctionEdits.clear();
  refreshAuctionSave();
