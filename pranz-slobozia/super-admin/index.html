@@ -211,7 +211,7 @@
 @media(max-width:360px){#app .admin-hero.dashboard-intro{gap:6px!important}#app .pont-hero-dashboard{padding:8px 9px!important;min-height:37px!important}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
-<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=today-c16"><style id="pont-auction-period-save-c15">
+<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=today-c21"><style id="pont-auction-period-save-c15">
 /* Compact control row: date input gets the width it needs, the Save button is deliberately shorter */
 #auctions .auction-save-bar.pont-auction-period-save{
  display:grid!important;
@@ -1781,17 +1781,25 @@ const {initPontDishEditor}=await import('../dish-editor.js?v=week-edit-c11');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
-const {initMenuTemplates,renderMenuArchive,renderPublishedToday}=await import('../menu-templates.js?v=today-c16');
+const {initMenuTemplates,renderMenuArchive,renderPublishedToday}=await import('../menu-templates.js?v=today-c21');
 const renderTodayMenu=(resetExpanded=false)=>renderPublishedToday($('pontTodayMenu'), menus, restaurants, true, resetExpanded);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) renderTodayMenu(); });
 $('pontTodayMenu').addEventListener('click', async event => {
- const button = event.target.closest('[data-today-edit]');
+ const button = event.target.closest('[data-today-edit], [data-today-delete]');
  if (!button) return;
- const menu = menus.find(item => item.id === button.dataset.todayEdit && item.published);
+ const deleting = button.hasAttribute('data-today-delete');
+ const menuId = deleting ? button.dataset.todayDelete : button.dataset.todayEdit;
+ const menu = menus.find(item => item.id === menuId && item.published);
  if (!menu) return;
+ if (deleting && !confirm('Ștergi meniul publicat pentru ' + menu.service_date + '? Această acțiune este definitivă.')) return;
  button.disabled = true;
  try {
-  if (await pontDishUI.open(menu)) $('menuFormWrap').scrollIntoView({block:'start'});
+  if (deleting) {
+   await req(db.from('menus').delete().eq('id',menu.id).eq('restaurant_id',menu.restaurant_id));
+   await load();
+  } else if (await pontDishUI.open(menu)) {
+   $('menuFormWrap').scrollIntoView({block:'start'});
+  }
  } catch (error) {
   status(error.message, true);
  } finally {
