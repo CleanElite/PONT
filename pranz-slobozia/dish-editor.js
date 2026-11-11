@@ -554,7 +554,11 @@ async function open(menu, copy = false, {restaurant = menu?.restaurant_id, date 
   if (menu) restoreMenuDishes(menu);
   choices();
   setEditorOpen(true);
-  if (menu) $('pontDailyDate').focus({preventScroll:true});
+  if (menu) {
+    // Avoid focusing the hidden native date input on iOS (it can summon the old calendar).
+    const visibleDate = $('pontDailyDate').nextElementSibling?.querySelector('.pont-date-part');
+    (visibleDate || $('pontDailyDishes').querySelector('[data-open-course]'))?.focus({preventScroll:true});
+  }
   return true;
 }
 async function refresh() {
