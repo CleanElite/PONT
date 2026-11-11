@@ -516,7 +516,7 @@
         <div class="restaurant-password-input"><input id="restaurantNewPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password"><button id="restaurantPasswordToggle" type="button" aria-label="Afișează sau ascunde parola nouă">Arată</button></div>
         <label for="restaurantConfirmPassword">Confirmă parola nouă</label>
         <input id="restaurantConfirmPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password">
-        <div class="dashboard-actions"><button id="restaurantChangePassword" type="button">Schimbă parola</button></div>
+        <div class="dashboard-actions"><button id="restaurantChangePassword" type="button">Schimbă parola</button><button id="restaurantUnlockLogin" type="button">Deblochează cont</button></div>
         <p class="dashboard-message" id="restaurantPasswordStatus" role="status"></p>
       </section>
     </details>
@@ -700,14 +700,14 @@ async function restaurantAccountAction(action,params={}){
 }
 async function showRestaurantPasswordBox(restaurantId){
  const panel=$('restaurantPasswordBox'),select=$('restaurantPasswordAccount');
- panel.hidden=false;$('restaurantChangePassword').disabled=true;$('restaurantRenameUsername').disabled=true;select.innerHTML='<option value="">Se încarcă utilizatorii…</option>';
+ panel.hidden=false;$('restaurantChangePassword').disabled=true;$('restaurantRenameUsername').disabled=true;$('restaurantUnlockLogin').disabled=true;select.innerHTML='<option value="">Se încarcă utilizatorii…</option>';
  $('restaurantNewPassword').value='';$('restaurantNewPassword').type='password';$('restaurantPasswordToggle').textContent='Arată';$('restaurantConfirmPassword').value='';$('restaurantUsernameNew').value='';$('restaurantPasswordStatus').textContent='';
  try{
   const result=await restaurantAccountAction('accounts_for_restaurant',{restaurant_id:restaurantId});
   if($('editingRestaurant').value!==restaurantId)return;
   select.innerHTML=(result.accounts||[]).length?result.accounts.map(x=>'<option value="'+esc(x.username)+'">'+esc(x.username)+'</option>').join(''):'<option value="">Nu există cont atribuit</option>';
-  $('restaurantChangePassword').disabled=!(result.accounts||[]).length;$('restaurantRenameUsername').disabled=!(result.accounts||[]).length;$('restaurantUsernameNew').value=(result.accounts||[])[0]?.username.replace(/\b\w/g,ch=>ch.toUpperCase())||'';
- }catch(e){if($('editingRestaurant').value!==restaurantId)return;select.innerHTML='<option value="">Eroare la încărcare</option>';$('restaurantChangePassword').disabled=true;$('restaurantRenameUsername').disabled=true;$('restaurantPasswordStatus').textContent=e.message;}
+  $('restaurantChangePassword').disabled=!(result.accounts||[]).length;$('restaurantRenameUsername').disabled=!(result.accounts||[]).length;$('restaurantUnlockLogin').disabled=!(result.accounts||[]).length;$('restaurantUsernameNew').value=(result.accounts||[])[0]?.username.replace(/\b\w/g,ch=>ch.toUpperCase())||'';
+ }catch(e){if($('editingRestaurant').value!==restaurantId)return;select.innerHTML='<option value="">Eroare la încărcare</option>';$('restaurantChangePassword').disabled=true;$('restaurantRenameUsername').disabled=true;$('restaurantUnlockLogin').disabled=true;$('restaurantPasswordStatus').textContent=e.message;}
 }
 const todayRO = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 function menuState(menu, today = todayRO()) {
@@ -1523,13 +1523,15 @@ async function enter() {
   if (!user) return;
   const profiles = await req(db.from('profiles').select('role').eq('user_id',user.id));
   if (profiles[0]?.role !== 'super_admin') throw Error('Acest cont nu are rol Super Admin.');
-  await load();
   $('app').hidden=false;
+  try{await load();}catch(loadError){status('Unele date din dashboard nu au putut fi încărcate: '+loadError.message,true);}
   void refreshPontLoginSecurityAlerts();
   if(stopWatchingRestaurantPresence)stopWatchingRestaurantPresence();
-  const {watchRestaurantPresence}=await import('../admin-presence.js?v=20261111-secure');
-  stopWatchingRestaurantPresence=watchRestaurantPresence(db,online=>{restaurantOnlineIds=online;renderRestaurants();});
-  await window.pontOperations?.refresh();
+  try{
+   const {watchRestaurantPresence}=await import('../admin-presence.js?v=20261111-secure');
+   stopWatchingRestaurantPresence=watchRestaurantPresence(db,online=>{restaurantOnlineIds=online;renderRestaurants();});
+   await window.pontOperations?.refresh();
+  }catch(secondaryError){console.warn('PONT: modul auxiliar indisponibil',secondaryError)}
   $('app').hidden = false;
   // Dashboard is the default landing screen for every Super Admin login.
   history.replaceState(null, '', '#analytics');
@@ -1538,6 +1540,7 @@ async function enter() {
    $('pontDailyError').textContent = error.message;
   });
  } catch (error) {
+  if(!$('app').hidden){status('Eroare la încărcarea dashboardului: '+error.message,true);return;}
   $('login').hidden = false;
   $('error').textContent = error.message;
  }
@@ -1842,6 +1845,17 @@ $('restaurantRenameUsername').onclick=async()=>{
  }catch(e){notice.textContent=e.message}finally{button.disabled=false}
 };
 $('restaurantPasswordToggle').onclick=()=>{const field=$('restaurantNewPassword');const showing=field.type==='password';field.type=showing?'text':'password';$('restaurantPasswordToggle').textContent=showing?'Ascunde':'Arată';};
+$('restaurantUnlockLogin').onclick=async()=>{
+ const button=$('restaurantUnlockLogin'),username=$('restaurantPasswordAccount').value,restaurant_id=$('editingRestaurant').value,notice=$('restaurantPasswordStatus');
+ if(!username||!restaurant_id){notice.textContent='Selectează un cont pentru deblocare.';return}
+ if(!confirm('Deblochezi contul '+username+' și resetezi încercările de conectare eșuate?'))return;
+ button.disabled=true;
+ try{
+  await restaurantAccountAction('unlock_login',{restaurant_id,username});
+  notice.textContent='Contul '+username+' a fost deblocat. Se poate conecta din nou.';
+ }catch(error){notice.textContent=error.message}
+ finally{button.disabled=false}
+};
 $('restaurantChangePassword').onclick=async()=>{
  const btn=$('restaurantChangePassword'),pwd=$('restaurantNewPassword').value,confirmation=$('restaurantConfirmPassword').value,username=$('restaurantPasswordAccount').value;
  const notice=$('restaurantPasswordStatus');
