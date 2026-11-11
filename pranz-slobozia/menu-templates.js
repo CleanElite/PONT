@@ -30,18 +30,41 @@ export function renderDishChecklist(entries, selected, {daily = false, renderDet
   }).join('');
 }
 
+function renderMenuCourses(menu) {
+  const snapshots = Array.isArray(menu.dish_selection) ? menu.dish_selection : [];
+  const legacy = {first:menu.first_course, second:menu.second_course, dessert:menu.dessert};
+  return groups.map(([key, label]) => {
+    const dishes = snapshots.filter(dish => dish?.category === key && dish.name).map(dish => dish.name);
+    if (!dishes.length && legacy[key]) dishes.push(legacy[key]);
+    return dishes.length ? '<div><dt>'+label+'</dt><dd>'+dishes.map(esc).join(' · ')+'</dd></div>' : '';
+  }).join('');
+}
+
+export function renderPublishedToday(target, menus, restaurants, showRestaurantName) {
+  const date = today();
+  const published = menus.filter(menu => menu.published && menu.service_date === date);
+  target.innerHTML = restaurants.map(restaurant => {
+    const current = published.filter(menu => menu.restaurant_id === restaurant.id);
+    if (!current.length) return '';
+    const heading = showRestaurantName ? '<h4>' + esc(restaurant.name) + '</h4>' : '';
+    return current.map(menu => {
+      const price = Number(restaurant.menu_price) > 0 ? Number(restaurant.menu_price) : Number(menu.price);
+      const amount = Number.isFinite(price) && price > 0
+        ? '<strong class="pont-today-price">' + new Intl.NumberFormat('ro-RO',{maximumFractionDigits:2}).format(price) + ' lei</strong>' : '';
+      const courses = renderMenuCourses(menu);
+      return '<article class="pont-archive-row pont-today-card"><div class="pont-today-meta">' +
+        heading + '<time datetime="' + date + '">' + formatDate(date) + '</time>' + amount + '</div>' +
+        (courses ? '<dl>' + courses + '</dl>' : '<p>Detalii indisponibile.</p>') + '</article>';
+    }).join('');
+  }).join('') || '<p class="pont-today-empty">Nu există meniuri publicate azi.</p>';
+}
+
 export function renderMenuArchive(target, menus, restaurants) {
   const names = new Map(restaurants.map(restaurant => [restaurant.id, restaurant.name]));
   const cutoff = today();
   const items = menus.filter(menu => menu.published && menu.service_date && menu.service_date <= cutoff);
   target.innerHTML = items.map(menu => {
-    const snapshots = Array.isArray(menu.dish_selection) ? menu.dish_selection : [];
-    const legacy = {first:menu.first_course, second:menu.second_course, dessert:menu.dessert};
-    const courses = groups.map(([key, label]) => {
-      const dishes = snapshots.filter(dish => dish?.category === key && dish.name).map(dish => dish.name);
-      if (!dishes.length && legacy[key]) dishes.push(legacy[key]);
-      return dishes.length ? '<div><dt>'+label+'</dt><dd>'+dishes.map(esc).join(' · ')+'</dd></div>' : '';
-    }).join('');
+    const courses = renderMenuCourses(menu);
     const restaurant = restaurants.length > 1 ? ' · '+esc(names.get(menu.restaurant_id) || 'Restaurant') : '';
     const price = menu.price == null || menu.price === '' ? '' : ' · '+esc(Number(menu.price).toLocaleString('ro-RO'))+' lei';
     return `<article class="pont-archive-row">
