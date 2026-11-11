@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ro">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="PONT"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/png" sizes="192x192" href="./pont-192.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"><link rel="manifest" href="./manifest.webmanifest?v=iosfix-20261109-2"><script src="./install.js?v=safari-4" defer></script>
-<link rel="preload" as="image" href="./assets/pont-intro.jpg">
+<link rel="preload" as="image" href="./assets/pont-intro-c1.jpg">
 <style>
 :root {
   color-scheme:dark;
@@ -12,6 +12,7 @@
   --ice:#b3e4f3;
   --bronze:#edd1a7;
   --art:url("./assets/pont-intro.jpg");
+  --intro-art:url("./assets/pont-intro-c1.jpg");
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -113,46 +114,9 @@ button{font:inherit}
 .pont-intro__art{position:absolute;inset:0;background:var(--night)}
 .pont-intro__art img{display:block;width:100%;height:100%;object-fit:contain}
 
-.pont-intro__pulse{
-  position:absolute;top:50%;left:50%;width:var(--pulse-width,0px);height:var(--pulse-height,0px);
-  transform:translate(-50%,-50%);pointer-events:none;
-}
-.pont-intro__pulse span{
-  position:absolute;inset:0;background:var(--art) center / 100% 100% no-repeat;
-  -webkit-mask-image:var(--pulse-zone);mask-image:var(--pulse-zone);
-  filter:brightness(var(--pulse-gain));opacity:0;
-}
-.pont-intro__pulse .upper{
-  --pulse-zone:radial-gradient(ellipse 73% 30% at 35% 10%,#000 24%,transparent 91%);
-  --pulse-gain:1.54;--pulse-delay:0ms;
-}
-.pont-intro__pulse .lower{
-  --pulse-zone:radial-gradient(ellipse 74% 31% at 67% 92%,#000 24%,transparent 91%);
-  --pulse-gain:1.58;--pulse-delay:70ms;
-}
-.pont-intro__pulse .brand{
-  --pulse-zone:radial-gradient(ellipse 39% 12% at 51% 47%,#000 60%,transparent 100%);
-  --pulse-gain:1.46;--pulse-delay:115ms;
-}
-.pont-intro.is-lit .pont-intro__pulse span{
-  animation:pont-intro-breath .41s var(--pulse-delay) ease-in-out 2 both;
-}
-.pont-intro__stars{position:absolute;inset:0;width:100%;height:100%;fill:#dcf6ff;opacity:0}
-.pont-intro.is-lit .pont-intro__stars{animation:pont-stars-fade .94s ease-in-out both}
-.pont-intro.is-lit .pont-intro__stars g{animation:pont-stars-drift .94s ease-out both}
-.pont-intro__stars .drift-0{--star-x:1.4px;--star-y:-2.6px}
-.pont-intro__stars .drift-1{--star-x:2.4px;--star-y:1.7px}
-.pont-intro__stars .drift-2{--star-x:-1.8px;--star-y:2.7px}
-@keyframes pont-stars-fade{0%,100%{opacity:0}24%,78%{opacity:.78}}
-@keyframes pont-stars-drift{to{transform:translate(var(--star-x),var(--star-y))}}
-@keyframes pont-intro-breath{
-  0%,100%{opacity:0}
-  50%{opacity:.88}
-}
-
 .pont-intro__panel{
   display:none;position:absolute;inset:0;
-  background:var(--night) var(--art) center / contain no-repeat;
+  background:var(--night) var(--intro-art) center / contain no-repeat;
 }
 .pont-intro__panel.left{clip-path:inset(0 50% 0 0);--curtain-motion:pont-curtain-left}
 .pont-intro__panel.right{clip-path:inset(0 0 0 50%);--curtain-motion:pont-curtain-right}
@@ -174,7 +138,7 @@ button{font:inherit}
   stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
   filter:drop-shadow(0 0 4px #c8e9fa9c);
 }
-.pont-intro__flight{display:none;position:absolute;inset:0 auto auto 0;transform-origin:0 0;filter:url(#pont-logo-alpha);mix-blend-mode:normal}
+.pont-intro__flight{display:none;position:absolute;inset:0 auto auto 0;transform-origin:0 0;filter:url(#pont-logo-alpha);mix-blend-mode:normal;background-image:var(--intro-art);background-size:188.541667% auto;background-position:50% 44.288079%}
 .pont-intro.is-matching .pont-intro__flight{display:block}
 .entry.intro-playing .entry-mark{visibility:hidden}
 html.pont-intro-active{overflow:hidden}
@@ -383,8 +347,7 @@ html.pont-intro-active{overflow:hidden}
 </svg>
 <div class="pont-intro" id="pont-intro" hidden>
   <div class="pont-intro__art" aria-hidden="true">
-    <img src="./assets/pont-intro.jpg" alt="" width="1024" height="1536" fetchpriority="high">
-    <div class="pont-intro__pulse"><span class="upper"></span><span class="lower"></span><span class="brand"></span><svg class="pont-intro__stars" viewBox="0 0 100 150" aria-hidden="true"><g class="drift-0"><circle cx="11.04" cy="30.03" r="0.17" opacity="0.50"/><circle cx="88.96" cy="119.97" r="0.14" opacity="0.41"/><circle cx="14.26" cy="29.20" r="0.06" opacity="0.36"/><circle cx="85.74" cy="120.80" r="0.14" opacity="0.39"/><circle cx="31.25" cy="16.91" r="0.06" opacity="0.30"/><circle cx="68.75" cy="133.09" r="0.14" opacity="0.26"/><circle cx="33.61" cy="16.59" r="0.12" opacity="0.48"/><circle cx="66.39" cy="133.41" r="0.09" opacity="0.27"/><circle cx="10.14" cy="27.41" r="0.10" opacity="0.57"/><circle cx="89.86" cy="122.59" r="0.17" opacity="0.71"/><circle cx="47.60" cy="11.96" r="0.08" opacity="0.64"/><circle cx="52.40" cy="138.04" r="0.10" opacity="0.46"/><circle cx="16.70" cy="27.20" r="0.07" opacity="0.76"/><circle cx="83.30" cy="122.80" r="0.11" opacity="0.46"/><circle cx="3.94" cy="43.38" r="0.06" opacity="0.63"/><circle cx="96.06" cy="106.62" r="0.06" opacity="0.30"/><circle cx="11.53" cy="36.33" r="0.17" opacity="0.30"/><circle cx="88.47" cy="113.67" r="0.12" opacity="0.63"/><circle cx="31.12" cy="13.38" r="0.06" opacity="0.33"/><circle cx="68.88" cy="136.62" r="0.14" opacity="0.29"/><circle cx="16.77" cy="23.98" r="0.11" opacity="0.64"/><circle cx="83.23" cy="126.02" r="0.10" opacity="0.40"/><circle cx="33.87" cy="14.59" r="0.09" opacity="0.74"/><circle cx="66.13" cy="135.41" r="0.14" opacity="0.42"/><circle cx="17.44" cy="20.97" r="0.10" opacity="0.29"/><circle cx="82.56" cy="129.03" r="0.14" opacity="0.27"/><circle cx="9.49" cy="40.40" r="0.14" opacity="0.55"/><circle cx="90.51" cy="109.60" r="0.05" opacity="0.26"/><circle cx="36.31" cy="11.76" r="0.13" opacity="0.64"/><circle cx="63.69" cy="138.24" r="0.05" opacity="0.39"/><circle cx="5.77" cy="37.87" r="0.06" opacity="0.45"/><circle cx="94.23" cy="112.13" r="0.15" opacity="0.74"/><circle cx="49.70" cy="8.83" r="0.10" opacity="0.70"/><circle cx="50.30" cy="141.17" r="0.16" opacity="0.76"/><circle cx="13.01" cy="30.43" r="0.11" opacity="0.67"/><circle cx="86.99" cy="119.57" r="0.06" opacity="0.66"/><circle cx="33.39" cy="13.21" r="0.09" opacity="0.65"/><circle cx="66.61" cy="136.79" r="0.06" opacity="0.48"/><circle cx="28.25" cy="19.69" r="0.06" opacity="0.68"/><circle cx="71.75" cy="130.31" r="0.09" opacity="0.62"/><circle cx="21.85" cy="23.75" r="0.15" opacity="0.50"/><circle cx="78.15" cy="126.25" r="0.13" opacity="0.43"/><circle cx="33.59" cy="15.41" r="0.13" opacity="0.38"/><circle cx="66.41" cy="134.59" r="0.09" opacity="0.37"/></g><g class="drift-1"><circle cx="6.25" cy="35.43" r="0.17" opacity="0.51"/><circle cx="93.75" cy="114.57" r="0.09" opacity="0.49"/><circle cx="7.81" cy="39.35" r="0.12" opacity="0.57"/><circle cx="92.19" cy="110.65" r="0.12" opacity="0.65"/><circle cx="50.22" cy="11.18" r="0.13" opacity="0.28"/><circle cx="49.78" cy="138.82" r="0.11" opacity="0.68"/><circle cx="17.87" cy="21.10" r="0.09" opacity="0.47"/><circle cx="82.13" cy="128.90" r="0.15" opacity="0.49"/><circle cx="16.79" cy="25.63" r="0.05" opacity="0.41"/><circle cx="83.21" cy="124.37" r="0.06" opacity="0.37"/><circle cx="36.89" cy="9.45" r="0.13" opacity="0.26"/><circle cx="63.11" cy="140.55" r="0.15" opacity="0.71"/><circle cx="33.92" cy="16.28" r="0.08" opacity="0.36"/><circle cx="66.08" cy="133.72" r="0.08" opacity="0.56"/><circle cx="43.99" cy="10.35" r="0.17" opacity="0.34"/><circle cx="56.01" cy="139.65" r="0.15" opacity="0.40"/><circle cx="6.68" cy="45.58" r="0.15" opacity="0.47"/><circle cx="93.32" cy="104.42" r="0.17" opacity="0.77"/><circle cx="21.28" cy="23.96" r="0.07" opacity="0.36"/><circle cx="78.72" cy="126.04" r="0.08" opacity="0.48"/><circle cx="38.54" cy="13.20" r="0.10" opacity="0.41"/><circle cx="61.46" cy="136.80" r="0.15" opacity="0.45"/><circle cx="43.31" cy="11.47" r="0.13" opacity="0.41"/><circle cx="56.69" cy="138.53" r="0.05" opacity="0.35"/><circle cx="12.45" cy="24.71" r="0.15" opacity="0.32"/><circle cx="87.55" cy="125.29" r="0.14" opacity="0.27"/><circle cx="14.10" cy="30.07" r="0.11" opacity="0.74"/><circle cx="85.90" cy="119.93" r="0.15" opacity="0.59"/><circle cx="14.08" cy="26.45" r="0.10" opacity="0.74"/><circle cx="85.92" cy="123.55" r="0.15" opacity="0.31"/><circle cx="47.26" cy="6.57" r="0.15" opacity="0.45"/><circle cx="52.74" cy="143.43" r="0.08" opacity="0.63"/><circle cx="34.54" cy="16.37" r="0.13" opacity="0.55"/><circle cx="65.46" cy="133.63" r="0.08" opacity="0.41"/><circle cx="8.55" cy="35.77" r="0.07" opacity="0.46"/><circle cx="91.45" cy="114.23" r="0.17" opacity="0.43"/><circle cx="60.01" cy="8.31" r="0.13" opacity="0.35"/><circle cx="39.99" cy="141.69" r="0.16" opacity="0.27"/><circle cx="4.93" cy="43.37" r="0.12" opacity="0.66"/><circle cx="95.07" cy="106.63" r="0.05" opacity="0.48"/><circle cx="4.77" cy="40.20" r="0.17" opacity="0.53"/><circle cx="95.23" cy="109.80" r="0.08" opacity="0.72"/><circle cx="39.74" cy="9.36" r="0.13" opacity="0.48"/><circle cx="60.26" cy="140.64" r="0.10" opacity="0.52"/></g><g class="drift-2"><circle cx="8.63" cy="35.94" r="0.06" opacity="0.29"/><circle cx="91.37" cy="114.06" r="0.14" opacity="0.60"/><circle cx="15.88" cy="26.63" r="0.17" opacity="0.63"/><circle cx="84.12" cy="123.37" r="0.05" opacity="0.34"/><circle cx="36.47" cy="14.50" r="0.10" opacity="0.43"/><circle cx="63.53" cy="135.50" r="0.06" opacity="0.47"/><circle cx="16.78" cy="27.62" r="0.17" opacity="0.71"/><circle cx="83.22" cy="122.38" r="0.12" opacity="0.75"/><circle cx="7.72" cy="39.44" r="0.14" opacity="0.61"/><circle cx="92.28" cy="110.56" r="0.17" opacity="0.65"/><circle cx="30.74" cy="16.96" r="0.15" opacity="0.59"/><circle cx="69.26" cy="133.04" r="0.07" opacity="0.56"/><circle cx="14.64" cy="28.12" r="0.07" opacity="0.75"/><circle cx="85.36" cy="121.88" r="0.07" opacity="0.38"/><circle cx="56.55" cy="8.25" r="0.15" opacity="0.69"/><circle cx="43.45" cy="141.75" r="0.17" opacity="0.49"/><circle cx="39.98" cy="13.81" r="0.11" opacity="0.32"/><circle cx="60.02" cy="136.19" r="0.10" opacity="0.63"/><circle cx="22.41" cy="23.75" r="0.17" opacity="0.34"/><circle cx="77.59" cy="126.25" r="0.10" opacity="0.29"/><circle cx="53.90" cy="6.76" r="0.16" opacity="0.67"/><circle cx="46.10" cy="143.24" r="0.16" opacity="0.41"/><circle cx="16.90" cy="23.50" r="0.15" opacity="0.58"/><circle cx="83.10" cy="126.50" r="0.16" opacity="0.46"/><circle cx="4.00" cy="44.23" r="0.09" opacity="0.31"/><circle cx="96.00" cy="105.77" r="0.06" opacity="0.27"/><circle cx="25.23" cy="16.99" r="0.05" opacity="0.37"/><circle cx="74.77" cy="133.01" r="0.06" opacity="0.40"/><circle cx="33.25" cy="16.33" r="0.05" opacity="0.27"/><circle cx="66.75" cy="133.67" r="0.13" opacity="0.47"/><circle cx="5.15" cy="46.38" r="0.08" opacity="0.41"/><circle cx="94.85" cy="103.62" r="0.08" opacity="0.34"/><circle cx="55.34" cy="10.59" r="0.14" opacity="0.43"/><circle cx="44.66" cy="139.41" r="0.06" opacity="0.58"/><circle cx="63.36" cy="7.97" r="0.05" opacity="0.65"/><circle cx="36.64" cy="142.03" r="0.07" opacity="0.25"/><circle cx="4.39" cy="42.90" r="0.09" opacity="0.29"/><circle cx="95.61" cy="107.10" r="0.06" opacity="0.25"/><circle cx="43.23" cy="10.05" r="0.17" opacity="0.71"/><circle cx="56.77" cy="139.95" r="0.16" opacity="0.78"/><circle cx="18.69" cy="24.67" r="0.08" opacity="0.66"/><circle cx="81.31" cy="125.33" r="0.16" opacity="0.68"/><circle cx="36.47" cy="14.92" r="0.11" opacity="0.42"/><circle cx="63.53" cy="135.08" r="0.05" opacity="0.57"/></g></svg></div>
+    <img src="./assets/pont-intro-c1.jpg" alt="" width="1086" height="1448" fetchpriority="high">
   </div>
   <div class="pont-intro__panel left" aria-hidden="true"></div>
   <div class="pont-intro__panel right" aria-hidden="true"></div>
@@ -454,17 +417,16 @@ html.pont-intro-active{overflow:hidden}
 
   function onResize() {
     if (leaving) finish();
-    else if (started) sizePulse();
   }
 
   function matchLogo() {
     if (typeof flight.animate !== 'function') return;
-    // The header and the flying wordmark show the same 576 × 240 region of the supplied artwork.
+    // The flight starts at the 576 × 240 wordmark crop in the new intro image.
     const bounds = intro.getBoundingClientRect();
     const target = logo.getBoundingClientRect();
     const scale = Math.min(bounds.width / image.naturalWidth, bounds.height / image.naturalHeight);
-    const left = (bounds.width - image.naturalWidth * scale) / 2 + 236 * scale;
-    const top = (bounds.height - image.naturalHeight * scale) / 2 + 590 * scale;
+    const left = (bounds.width - image.naturalWidth * scale) / 2 + 255 * scale;
+    const top = (bounds.height - image.naturalHeight * scale) / 2 + 535 * scale;
     const sourceWidth = 576 * scale;
     const sourceHeight = 240 * scale;
     if (!target.width || !sourceWidth || target.bottom <= 0) return;
@@ -519,19 +481,10 @@ html.pont-intro-active{overflow:hidden}
     finishTimer = setTimeout(finish, revealDuration);
   }
 
-  function sizePulse() {
-    const bounds = intro.getBoundingClientRect();
-    const scale = Math.min(bounds.width / image.naturalWidth, bounds.height / image.naturalHeight);
-    art.style.setProperty('--pulse-width', image.naturalWidth * scale + 'px');
-    art.style.setProperty('--pulse-height', image.naturalHeight * scale + 'px');
-  }
-
   function ready() {
     if (finished || started) return;
     if (!image.naturalWidth) { finish(); return; }
     started = true;
-    sizePulse();
-    intro.classList.add('is-lit');
     clearTimeout(readyTimer);
     holdTimer = setTimeout(splitCurtain, 950);
   }
