@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="ro">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="PONT"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/png" sizes="192x192" href="./pont-192.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"><link rel="manifest" href="./manifest.webmanifest?v=iosfix-20261109-2"><script src="./install.js?v=safari-4" defer></script>
-<link rel="preload" as="image" href="./assets/pont-intro-c2.jpg">
+<link rel="preload" as="image" href="./assets/pont-intro-c3.jpg">
 <style>
 :root {
   color-scheme:dark;
@@ -12,7 +12,7 @@
   --ice:#b3e4f3;
   --bronze:#edd1a7;
   --art:url("./assets/pont-intro.jpg");
-  --intro-art:url("./assets/pont-intro-c2.jpg");
+  --intro-art:url("./assets/pont-intro-c3.jpg");
 }
 *{box-sizing:border-box}
 [hidden]{display:none!important}
@@ -138,7 +138,7 @@ button{font:inherit}
   stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
   filter:drop-shadow(0 0 4px #c8e9fa9c);
 }
-.pont-intro__flight{display:none;position:absolute;inset:0 auto auto 0;transform-origin:0 0;filter:url(#pont-logo-alpha);mix-blend-mode:normal;background-image:var(--intro-art);background-size:188.541667% auto;background-position:50% 46.357616%}
+.pont-intro__flight{display:none;position:absolute;inset:0 auto auto 0;transform-origin:0 0;filter:url(#pont-logo-alpha);mix-blend-mode:normal;background-image:var(--intro-art);background-size:332.692308% auto;background-position:50% 48.179272%}
 .pont-intro.is-matching .pont-intro__flight{display:block}
 .entry.intro-playing .entry-mark{visibility:hidden}
 html.pont-intro-active{overflow:hidden}
@@ -347,7 +347,7 @@ html.pont-intro-active{overflow:hidden}
 </svg>
 <div class="pont-intro" id="pont-intro" hidden>
   <div class="pont-intro__art" aria-hidden="true">
-    <img src="./assets/pont-intro-c2.jpg" alt="" width="1086" height="1448" fetchpriority="high">
+    <img src="./assets/pont-intro-c3.jpg" alt="" width="865" height="1536" fetchpriority="high">
   </div>
   <div class="pont-intro__panel left" aria-hidden="true"></div>
   <div class="pont-intro__panel right" aria-hidden="true"></div>
@@ -421,14 +421,14 @@ html.pont-intro-active{overflow:hidden}
 
   function matchLogo() {
     if (typeof flight.animate !== 'function') return;
-    // The flight starts at the 576 × 240 wordmark crop in the new intro image.
+    // The flight starts at the 260 × 108 wordmark crop in the new intro image.
     const bounds = intro.getBoundingClientRect();
     const target = logo.getBoundingClientRect();
     const scale = Math.min(bounds.width / image.naturalWidth, bounds.height / image.naturalHeight);
-    const left = (bounds.width - image.naturalWidth * scale) / 2 + 255 * scale;
-    const top = (bounds.height - image.naturalHeight * scale) / 2 + 560 * scale;
-    const sourceWidth = 576 * scale;
-    const sourceHeight = 240 * scale;
+    const left = (bounds.width - image.naturalWidth * scale) / 2 + 302.5 * scale;
+    const top = (bounds.height - image.naturalHeight * scale) / 2 + 688 * scale;
+    const sourceWidth = 260 * scale;
+    const sourceHeight = 108 * scale;
     if (!target.width || !sourceWidth || target.bottom <= 0) return;
 
     intro.style.setProperty('--well-left', left + 'px');
