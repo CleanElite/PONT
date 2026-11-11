@@ -163,13 +163,17 @@ if (!isRestaurantAdmin) {
 const form = document.createElement('form');
 form.id = 'pontDailyBuilder';
 form.innerHTML = `
-  <div class="pont-daily-fields">
-    <label id="pontDailyRestaurantField">Restaurant<select id="pontDailyRestaurant" required></select></label>
-    <label>Data<input id="pontDailyDate" type="date" required></label>
-    <div class="pont-daily-standard-price" role="status"><strong id="pontDailyComboDisplay">Preț nesetat</strong><input id="pontDailyCombo" type="hidden"></div>
-  </div>
   <div id="pontDailyOverview">
+    <div class="pont-daily-fields">
+      <label id="pontDailyRestaurantField">Restaurant<select id="pontDailyRestaurant" required></select></label>
+      <label>Data<input id="pontDailyDate" type="date" required></label>
+      <div class="pont-daily-standard-price" role="status"><strong id="pontDailyComboDisplay">Preț nesetat</strong><input id="pontDailyCombo" type="hidden"></div>
+    </div>
     <div id="pontDailyDishes" class="pont-daily-course-cards" aria-label="Alege preparatele pentru fiecare fel"></div>
+    <section id="pontDailySummary" class="pont-daily-summary" aria-labelledby="pontDailySummaryTitle">
+      <h3 id="pontDailySummaryTitle">Rezumatul meniului</h3>
+      <div id="pontDailySummaryList"></div>
+    </section>
     <p id="pontDailyError" class="pont-dish-error" role="alert"></p>
     <div class="pont-dish-actions">
       <button id="pontDailyCancel" type="button">Anulează</button>
@@ -179,14 +183,13 @@ form.innerHTML = `
   </div>
   <section id="pontDailyPicker" class="pont-daily-picker" hidden aria-label="Selectare preparate">
     <div class="pont-daily-picker-head">
-      <button type="button" id="pontDailyPickerBack" aria-label="Înapoi la meniu">← Înapoi</button>
-      <strong id="pontDailyPickerTitle">Felul 1</strong>
-      <button type="button" class="primary" id="pontDailyPickerConfirm">Confirmă</button>
+      <h3 id="pontDailyPickerTitle">Felul 1</h3>
+      <button type="button" class="primary" id="pontDailyPickerConfirm">Confirmă selecția</button>
     </div>
-    <p class="pont-daily-picker-hint">Bifează preparatele dorite. Modificările sunt vizibile în meniul principal.</p>
+    <p class="pont-daily-picker-hint">Bifează preparatele dorite pentru această categorie.</p>
     <div id="pontDailyPickerList" class="pont-daily-picker-list"></div>
+    <button type="button" id="pontDailyPickerBack" class="pont-daily-picker-back">← Înapoi fără modificări</button>
   </section>
-
 `;
 wrap.append(form);
 
@@ -197,7 +200,7 @@ document.head.append(standardPriceStyles);
 
 
 const wizardStyles = document.createElement('style');
-wizardStyles.textContent = "\n/* C22 — Publishing wizard: category drill-down and selected-dish overview. */\n#pontDailyBuilder .pont-daily-course-cards{display:grid;grid-template-columns:1fr;gap:11px;margin:15px 0}\n#pontDailyBuilder .pont-daily-course-card{min-width:0;overflow:hidden;border:1px solid #487f7a;border-radius:15px;background:linear-gradient(135deg,#103d40,#09292f);box-shadow:inset 0 1px #ffffff12}\n#pontDailyBuilder .pont-daily-course-open{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;min-width:0;margin:0;padding:14px 16px;border:0;border-radius:0;text-align:left;background:transparent;color:#f3fbf8;font-weight:750;font-size:16px;box-shadow:none}\n#pontDailyBuilder .pont-daily-course-count{display:flex;align-items:center;gap:9px;white-space:nowrap;font-size:12px;color:#a9d9d3;font-weight:600}\n#pontDailyBuilder .pont-daily-course-count span{font-size:25px;line-height:.7;color:#e6d19a}\n#pontDailyBuilder .pont-daily-course-summary{padding:0 16px 12px}\n#pontDailyBuilder .pont-daily-none{margin:0;color:#9cb8b9;font-size:12px}\n#pontDailyBuilder .pont-daily-selected-list{display:grid;gap:5px;margin:0;padding-left:21px;color:#e4f2ed;font-size:13px}\n#pontDailyBuilder .pont-daily-selected-list li{padding-left:2px;line-height:1.4}\n#pontDailyBuilder .pont-daily-selected-list li::marker{color:#d9bd7b}\n#pontDailyBuilder .pont-daily-selected-list li{display:list-item}\n#pontDailyBuilder .pont-daily-selected-list li button{float:right;display:inline-grid;place-items:center;width:23px;min-width:23px;height:23px;min-height:23px;margin:-1px 0 0 7px;padding:0;border:1px solid #63877f;border-radius:7px;background:#112f33;color:#f3c8be;font-size:18px;line-height:1}\n#pontDailyBuilder .pont-daily-selected-list li::after{content:\"\";display:block;clear:both}\n#pontDailyBuilder .pont-daily-course-change{display:inline-block;margin:8px 0 0;padding:4px 0;border:0;min-height:25px;background:transparent;color:#d9d0a3;text-decoration:underline;font-size:12px}\n#pontDailyBuilder .pont-daily-picker{margin:14px 0;padding:0;min-width:0;border:1px solid #50847d;border-radius:15px;background:#0a2a2d;overflow:hidden}\n#pontDailyBuilder .pont-daily-picker[hidden],#pontDailyBuilder #pontDailyOverview[hidden]{display:none!important}\n#pontDailyBuilder .pont-daily-picker-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:7px;padding:11px;border-bottom:1px solid #3c6d68;background:#123b3d}\n#pontDailyBuilder .pont-daily-picker-head strong{text-align:center;font-size:15px;min-width:0}\n#pontDailyBuilder .pont-daily-picker-head button{padding:8px 9px;min-height:37px;font-size:12px}\n#pontDailyBuilder .pont-daily-picker-hint{margin:10px 13px;color:#a9d1c8;font-size:12px;line-height:1.4}\n#pontDailyBuilder .pont-daily-picker-list{display:grid;gap:0;max-height:min(52dvh,510px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 12px 9px}\n#pontDailyBuilder .pont-daily-picker-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(50px,auto) 24px;align-items:center;gap:9px;padding:12px 0;border-bottom:1px solid #ffffff1b;min-width:0}\n#pontDailyBuilder .pont-daily-picker-name{font-size:13px;line-height:1.3;overflow-wrap:break-word;min-width:0}\n#pontDailyBuilder .pont-daily-picker-row small{font-size:11px;color:#b9d2c9;white-space:nowrap;text-align:right}\n#pontDailyBuilder .pont-daily-picker-price{display:flex;align-items:center;gap:3px;font-size:11px;margin:0;white-space:nowrap}\n#pontDailyBuilder .pont-daily-picker-price input{width:54px;min-width:0;margin:0;padding:6px 3px;height:32px;min-height:32px;text-align:center;font-size:12px}\n#pontDailyBuilder .pont-daily-picker-row input[type=checkbox]{appearance:auto;-webkit-appearance:checkbox;width:21px;height:21px;min-width:21px;min-height:21px;margin:0;accent-color:#d6ba78;cursor:pointer}\n#pontDailyBuilder .pont-daily-picker-row:has(input:disabled){opacity:.52}\n@media(max-width:430px){#pontDailyBuilder .pont-daily-picker-list{padding-inline:9px}#pontDailyBuilder .pont-daily-picker-head{padding:8px;gap:4px}#pontDailyBuilder .pont-daily-picker-head button{font-size:11px;padding:7px 6px}#pontDailyBuilder .pont-daily-picker-row{gap:5px}#pontDailyBuilder .pont-daily-picker-name{font-size:12px}}\n";
+wizardStyles.textContent = "\n/* C23: three clean category buttons and independent recap; dedicated picker view. */\n#pontDailyBuilder #pontDailyOverview[hidden],#pontDailyBuilder #pontDailyPicker[hidden]{display:none!important}\n#pontDailyBuilder .pont-daily-course-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:17px 0 14px}\n#pontDailyBuilder .pont-daily-course-open{display:grid;place-items:center;min-width:0;width:100%;min-height:55px;margin:0;padding:12px 5px;text-align:center;font:700 clamp(13px,2.5vw,16px)/1.2 system-ui,sans-serif;border:1px solid #6b9990;border-radius:12px;background:linear-gradient(145deg,#16494a,#0b3036);color:#f5fcf8;box-shadow:inset 0 1px #ffffff18;cursor:pointer}\n#pontDailyBuilder .pont-daily-course-open:active{background:#23645e}\n#pontDailyBuilder .pont-daily-summary{padding:15px 16px;border:1px solid #4c7b74;border-radius:14px;background:#0a2e31}\n#pontDailyBuilder .pont-daily-summary h3{font:700 15px system-ui,sans-serif;margin:0 0 12px;color:#e8eee9}\n#pontDailyBuilder .pont-daily-summary-group{padding:9px 0;border-top:1px solid #ffffff20}\n#pontDailyBuilder .pont-daily-summary-group:first-child{border-top:0;padding-top:0}\n#pontDailyBuilder .pont-daily-summary-group:last-child{padding-bottom:0}\n#pontDailyBuilder .pont-daily-summary-group-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}\n#pontDailyBuilder .pont-daily-summary-group-head strong{font:700 13px system-ui,sans-serif;color:#e1d3ad}\n#pontDailyBuilder .pont-daily-summary-group-head button{padding:3px 8px;min-height:27px;margin:0;font:600 11px system-ui,sans-serif;color:#b9e4dd;background:transparent;border:1px solid #557970;border-radius:7px}\n#pontDailyBuilder .pont-daily-selected-list{display:grid;gap:5px;margin:0;padding-left:22px;font-size:13px;color:#e4f2ed}\n#pontDailyBuilder .pont-daily-selected-list li{line-height:1.4;padding-left:2px}\n#pontDailyBuilder .pont-daily-selected-list li::marker{color:#d9bd7b}\n#pontDailyBuilder .pont-daily-selected-list li button{float:right;display:inline-grid;place-items:center;width:23px;min-width:23px;height:23px;min-height:23px;padding:0;margin:-1px 0 0 7px;border:1px solid #63877f;border-radius:7px;background:#112f33;color:#f3c8be;font-size:18px;line-height:1}\n#pontDailyBuilder .pont-daily-selected-list li::after{content:\"\";display:block;clear:both}\n#pontDailyBuilder .pont-daily-none{margin:0;color:#9cb8b9;font-size:12px}\n#pontDailyBuilder .pont-daily-picker{margin:0;min-width:0;border:1px solid #50847d;border-radius:15px;background:#0a2a2d;overflow:hidden}\n#pontDailyBuilder .pont-daily-picker-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 14px;border-bottom:1px solid #3c6d68;background:#123b3d}\n#pontDailyBuilder .pont-daily-picker-head h3{margin:0;text-align:left;font:750 clamp(17px,3vw,21px)/1.2 system-ui,sans-serif;color:#f4f7f0}\n#pontDailyBuilder .pont-daily-picker-head button{flex:none;margin:0;min-height:38px;padding:8px 12px;font:700 12px system-ui,sans-serif}\n#pontDailyBuilder .pont-daily-picker-hint{margin:11px 14px;color:#a9d1c8;font-size:12px;line-height:1.4}\n#pontDailyBuilder .pont-daily-picker-list{display:grid;gap:0;max-height:min(60dvh,620px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding:0 13px 8px}\n#pontDailyBuilder .pont-daily-picker-row{display:grid;grid-template-columns:minmax(0,1fr) auto 24px;align-items:center;gap:9px;padding:12px 0;border-bottom:1px solid #ffffff1b;min-width:0}\n#pontDailyBuilder .pont-daily-picker-name{font-size:13px;line-height:1.3;overflow-wrap:break-word;min-width:0}\n#pontDailyBuilder .pont-daily-picker-row small{font-size:11px;color:#b9d2c9;white-space:nowrap;text-align:right}\n#pontDailyBuilder .pont-daily-picker-price{display:flex;align-items:center;gap:3px;font-size:11px;margin:0;white-space:nowrap}\n#pontDailyBuilder .pont-daily-picker-price input{width:54px;min-width:0;margin:0;padding:6px 3px;height:32px;min-height:32px;text-align:center;font-size:12px}\n#pontDailyBuilder .pont-daily-picker-row input[type=checkbox]{appearance:auto;-webkit-appearance:checkbox;width:21px;height:21px;min-width:21px;min-height:21px;margin:0;accent-color:#d6ba78;cursor:pointer}\n#pontDailyBuilder .pont-daily-picker-row:has(input:disabled){opacity:.52}\n#pontDailyBuilder .pont-daily-picker-back{display:block;margin:10px 13px 15px;min-height:36px;padding:8px 12px;font:600 12px system-ui,sans-serif;color:#c6dfd6;background:transparent;border:1px solid #496e69;border-radius:9px}\n@media(max-width:430px){#pontDailyBuilder .pont-daily-course-cards{gap:6px}#pontDailyBuilder .pont-daily-course-open{min-height:49px;font-size:13px;padding:9px 2px}#pontDailyBuilder .pont-daily-summary{padding:12px}#pontDailyBuilder .pont-daily-picker-head{padding:12px 9px;gap:7px}#pontDailyBuilder .pont-daily-picker-head button{font-size:11px;padding:8px 7px}#pontDailyBuilder .pont-daily-picker-list{padding-inline:9px}#pontDailyBuilder .pont-daily-picker-row{gap:5px}#pontDailyBuilder .pont-daily-picker-name{font-size:12px}}\n";
 document.head.append(wizardStyles);
 
 const dialog = document.createElement('dialog');
@@ -281,7 +284,7 @@ function library() {
 function menuChoices() {
   return [...savedChoices, ...dishes.filter(dish => !savedChoices.has(dish.id)).map(dish => [dish.id, dish])];
 }
-let pickerCategory = null;
+let pickerCategory = null, pickerSnapshot = null;
 function renderPicker() {
   const picker = $('pontDailyPicker');
   if (!pickerCategory) { picker.hidden = true; return; }
@@ -305,36 +308,43 @@ function renderPicker() {
 }
 function showPicker(key) {
   if (!groups.some(([course]) => course === key)) return;
+  pickerSnapshot = new Map([...selected].filter(([,item]) => item.category === key)
+    .map(([id,item]) => [id,{...item}]));
   pickerCategory = key;
   $('pontDailyOverview').hidden = true;
   renderPicker();
-  $('pontDailyPickerConfirm').focus({preventScroll:true});
+  $('pontDailyPicker').scrollIntoView({block:'start',behavior:'instant'});
 }
-function closePicker() {
+function closePicker(confirmed = false) {
+  if (!confirmed && pickerSnapshot && pickerCategory) {
+    for (const [id,item] of selected) if (item.category === pickerCategory) selected.delete(id);
+    for (const [id,item] of pickerSnapshot) selected.set(id,item);
+  }
   pickerCategory = null;
+  pickerSnapshot = null;
   $('pontDailyPicker').hidden = true;
   $('pontDailyOverview').hidden = false;
   choices();
+  $('pontDailyDishes').scrollIntoView({block:'nearest',behavior:'instant'});
 }
 function choices() {
-  $('pontDailyDishes').innerHTML = groups.map(([key,label]) => {
+  $('pontDailyDishes').innerHTML = groups.map(([key,label]) =>
+    '<button type="button" class="pont-daily-course-open" data-open-course="' + key + '">' +
+    label + '</button>').join('');
+  $('pontDailySummaryList').innerHTML = groups.map(([key,label]) => {
     const items = [...selected.entries()].filter(([,item]) => item.category === key);
-    const summary = items.length ? '<ol class="pont-daily-selected-list">' + items.map(([id,item]) =>
+    const list = items.length ? '<ol class="pont-daily-selected-list">' + items.map(([id,item]) =>
       '<li><span>' + esc(item.name) + '</span><button type="button" data-unselect="' + esc(id) +
       '" aria-label="Elimină ' + esc(item.name) + '" title="Elimină preparatul">×</button></li>').join('') + '</ol>' :
       '<p class="pont-daily-none">Niciun preparat selectat</p>';
-    return '<section class="pont-daily-course-card">' +
-      '<button type="button" class="pont-daily-course-open" data-open-course="' + key + '">' +
-      '<span>' + label + '</span><span class="pont-daily-course-count">' +
-      items.length + (items.length === 1 ? ' preparat' : ' preparate') + ' <span aria-hidden="true">›</span></span></button>' +
-      '<div class="pont-daily-course-summary">' + summary +
-      (items.length ? '<button type="button" class="pont-daily-course-change" data-open-course="' + key + '">Editează selecția</button>' : '') +
-      '</div></section>';
+    return '<div class="pont-daily-summary-group"><div class="pont-daily-summary-group-head">' +
+      '<strong>' + label + '</strong><button type="button" data-open-course="' + key +
+      '" aria-label="Modifică selecția pentru ' + label + '">Modifică</button></div>' + list + '</div>';
   }).join('');
   if (pickerCategory) renderPicker();
   syncSaveModelButton();
 }
-$('pontDailyDishes').addEventListener('click', event => {
+function dailyOverviewClick(event) {
   const remove = event.target.closest('[data-unselect]');
   if (remove) {
     selected.delete(remove.dataset.unselect);
@@ -344,9 +354,11 @@ $('pontDailyDishes').addEventListener('click', event => {
   }
   const button = event.target.closest('[data-open-course]');
   if (button) showPicker(button.dataset.openCourse);
-});
-$('pontDailyPickerBack').onclick = closePicker;
-$('pontDailyPickerConfirm').onclick = closePicker;
+}
+$('pontDailyDishes').addEventListener('click', dailyOverviewClick);
+$('pontDailySummaryList').addEventListener('click', dailyOverviewClick);
+$('pontDailyPickerBack').onclick = () => closePicker(false);
+$('pontDailyPickerConfirm').onclick = () => { resetModelSaved(); closePicker(true); };
 async function load() {
   const version = ++loadVersion;
   const restaurant = rid();
@@ -438,6 +450,7 @@ function resetDaily() {
   selected.clear();
   $('pontDailyDate').value = todayRO();
   pickerCategory = null;
+  pickerSnapshot = null;
   $('pontDailyPicker').hidden = true;
   $('pontDailyOverview').hidden = false;
   syncStandardPrice();
