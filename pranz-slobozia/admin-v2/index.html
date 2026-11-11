@@ -44,13 +44,101 @@
   <div class="admin-hero-copy"><h1>Panoul restaurantului</h1><p>Pregătește meniurile zilei și gestionează preparatele.</p></div>
   <div class="admin-context"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#storefront"></use></svg><span id="adminRestaurantContext">Restaurant</span></div>
 </div>
-<nav class="admin-nav" aria-label="Secțiunile panoului">
-  <button type="button" id="showAdd" data-view="add" data-hash="#adauga" aria-controls="addView" aria-pressed="true"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Meniul zilei</button>
-  <button type="button" id="showDishes" data-view="dishes" data-hash="#preparate" aria-controls="dishLibrary" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#fork-knife"></use></svg>Preparate</button>
-  <button type="button" id="showSaved" data-view="saved" data-hash="#meniuri" aria-controls="savedView" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#list-bullets"></use></svg>Meniuri salvate</button>
-  <button type="button" id="showContact" data-view="contact" data-hash="#contact" aria-controls="contactView" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#phone"></use></svg>Setări restaurant</button>
-  <a href="../promovare/?v=grila"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg>Promovare</a>
+<nav class="admin-nav pont-restaurant-grouped-nav" aria-label="Secțiunile panoului">
+  <div class="pont-restaurant-nav-group pont-restaurant-nav-menus" role="group" aria-label="Gestionare meniuri">
+    <button type="button" id="showAdd" data-view="add" data-hash="#adauga" aria-controls="addView" aria-pressed="true"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Meniul zilei</span></button>
+    <button type="button" id="showSaved" data-view="saved" data-hash="#meniuri" aria-controls="savedView" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#list-bullets"></use></svg><span>Meniuri salvate</span></button>
+  </div>
+  <div class="pont-restaurant-nav-group" role="group" aria-label="Gestionare preparate">
+    <button type="button" id="showDishes" data-view="dishes" data-hash="#preparate" aria-controls="dishLibrary" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#fork-knife"></use></svg><span>Preparate</span></button>
+  </div>
+  <div class="pont-restaurant-nav-group" role="group" aria-label="Promovare">
+    <a href="../promovare/?v=grila"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span></a>
+  </div>
+  <button type="button" class="pont-restaurant-nav-settings" id="showContact" data-view="contact" data-hash="#contact" aria-controls="contactView" aria-pressed="false" aria-label="Setări restaurant" title="Setări restaurant"><svg class="admin-settings-icon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8.8a3.2 3.2 0 1 0 0 6.4 3.2 3.2 0 0 0 0-6.4Z"/><path d="M19.4 13.5a7.8 7.8 0 0 0 0-3l1.7-1.3-1.7-3-2 .8a7.5 7.5 0 0 0-2.5-1.5L14.5 3h-3.1L11 5.5A7.5 7.5 0 0 0 8.5 7l-2-.8-1.7 3 1.7 1.3a7.8 7.8 0 0 0 0 3l-1.7 1.3 1.7 3 2-.8a7.5 7.5 0 0 0 2.5 1.5l.4 2.5h3.1l.4-2.5a7.5 7.5 0 0 0 2.5-1.5l2 .8 1.7-3-1.7-1.3Z"/></svg></button>
 </nav>
+<style id="pont-restaurant-nav-c32">
+/* C32: Restaurant navigation — 3 grouped columns + settings icon. */
+.pont-admin--restaurant #app .admin-nav.pont-restaurant-grouped-nav{
+ display:grid!important;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,1fr) 40px!important;
+ align-items:stretch!important;gap:7px!important;width:100%!important;min-width:0!important;
+ overflow:visible!important;margin:0 0 13px!important;padding:7px!important;
+ border:1px solid rgba(138,216,191,.48)!important;border-radius:17px!important;
+ background:linear-gradient(140deg,#0b302c,#071f25 60%,#0c3635)!important;
+ box-shadow:inset 0 1px 1px #ffffff13,0 10px 24px #010b092b!important;
+}
+.pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-group{
+ display:flex!important;flex-direction:column!important;align-items:stretch!important;
+ justify-content:center!important;gap:5px!important;min-width:0!important;
+ padding:6px!important;border:1px solid rgba(163,218,202,.3)!important;
+ border-radius:12px!important;background:linear-gradient(155deg,rgba(29,78,71,.72),rgba(9,40,44,.94))!important;
+}
+.pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group>:is(button,a){
+ display:flex!important;flex:1 1 0!important;flex-direction:row!important;align-items:center!important;
+ justify-content:center!important;gap:5px!important;grid-column:auto!important;
+ min-width:0!important;width:100%!important;min-height:37px!important;height:auto!important;
+ margin:0!important;padding:6px 4px!important;
+ border:1px solid transparent!important;border-radius:9px!important;
+ background:transparent!important;color:#eaf7f1!important;
+ font:700 clamp(10px,1.5vw,13px)/1.15 system-ui,sans-serif!important;
+ text-decoration:none!important;white-space:normal!important;text-align:center!important;overflow-wrap:normal!important;
+}
+.pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group>:is(button,a):hover{
+ background:#20594d!important;
+}
+.pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group>button[aria-pressed="true"]{
+ background:#9bf9d2!important;color:#092920!important;border-color:#9bf9d2!important;
+}
+.pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group .admin-icon{
+ display:inline-block!important;flex:none!important;width:15px!important;height:15px!important;
+}
+.pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-settings{
+ grid-column:4!important;display:flex!important;align-items:center!important;justify-content:center!important;
+ flex:none!important;width:40px!important;height:auto!important;min-height:38px!important;min-width:0!important;
+ margin:0!important;padding:7px!important;gap:0!important;
+ border:1px solid rgba(163,218,202,.36)!important;border-radius:12px!important;
+ background:linear-gradient(155deg,#184c46,#0b3236)!important;color:#eaf7f1!important;
+}
+.pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-settings:hover{
+ background:#20594d!important;
+}
+.pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-settings[aria-pressed="true"]{
+ background:#9bf9d2!important;color:#092920!important;border-color:#9bf9d2!important;
+}
+.pont-admin--restaurant #app .pont-restaurant-grouped-nav .admin-settings-icon{
+ display:block!important;flex:none!important;width:19px!important;height:19px!important;
+}
+@media(max-width:540px){
+ .pont-admin--restaurant #app .admin-nav.pont-restaurant-grouped-nav{
+  grid-template-columns:minmax(0,1.32fr) minmax(0,.95fr) minmax(0,.95fr) 34px!important;
+  gap:4px!important;padding:5px!important;border-radius:13px!important;
+ }
+ .pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-group{
+  gap:4px!important;padding:4px 3px!important;border-radius:9px!important;
+ }
+ .pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group>:is(button,a){
+  min-height:35px!important;padding:4px 1px!important;gap:3px!important;
+  font-size:clamp(9px,2.6vw,11px)!important;
+ }
+ .pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group .admin-icon{
+  width:12px!important;height:12px!important;
+ }
+ .pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-settings{
+  width:34px!important;min-height:34px!important;padding:5px!important;border-radius:9px!important;
+ }
+ .pont-admin--restaurant #app .pont-restaurant-grouped-nav .admin-settings-icon{
+  width:17px!important;height:17px!important;
+ }
+}
+@media(max-width:365px){
+ .pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group .admin-icon{
+  display:none!important;
+ }
+ .pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group>:is(button,a){
+  font-size:9px!important;
+ }
+}
+</style>
 <section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section><section id="contactView" class="card" hidden><h2>Setări restaurant</h2><p>Numărul folosit de clienți pentru apeluri și WhatsApp. Introdu numărul cu prefixul țării, de exemplu +40.</p><form id="contactForm"><label id="contactRestaurantField">Restaurant<select id="contactRestaurant" required></select></label><p id="contactRestaurantName" hidden></p><div class="contact-phone-view" id="contactPhoneView"><span>Telefon comenzi · Apel și WhatsApp</span><div class="contact-phone-line"><strong id="contactPhoneDisplay">Neconfigurat</strong><button type="button" id="editContactPhone">Modifică</button></div></div><div id="contactPhoneEditor" hidden><label>Telefon comenzi (WhatsApp și apel)<input id="contactPhone" type="tel" placeholder="+407..." required></label><div class="contact-edit-actions"><button class="primary" type="submit" id="saveContactPhone">Salvează modificările</button><button type="button" id="cancelContactPhone">Anulează</button></div></div></form><div class="contact-card-settings"><h3>Preț standard meniu complet</h3><p>Prețul este stabilit o singură dată pentru fiecare restaurant și se aplică automat meniurilor noi. Modificarea actualizează și meniurile de astăzi și cele programate.</p><label for="restaurantMenuPrice">Preț meniu complet (lei)<input id="restaurantMenuPrice" type="number" min="0.01" max="10000" step="0.01" inputmode="decimal" placeholder="Ex. 32,00"></label><button type="button" class="primary" id="saveRestaurantMenuPrice">Salvează prețul standard</button></div><div class="contact-card-settings"><h3>Metode de plată acceptate</h3><p>Cash este disponibil implicit. Activează plata cu cardul numai dacă restaurantul poate încasa prin POS sau altă metodă proprie.</p><label style="display:flex;align-items:center;gap:10px"><input type="checkbox" role="switch" id="acceptsCard"> Acceptă plata cu cardul</label><button type="button" id="saveCardSettings" class="primary">Salvează metodele de plată</button></div></section><div id="addView"><section class="card admin-workspace"><section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section><h2>Planifică meniul zilei</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="true" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap"></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section></div><div id="savedView" hidden><section class="card"><div id="pontMenuTemplates"></div><details class="pont-menu-archive">
   <summary>Meniuri active și programate</summary>
   <div id="menus"></div>
