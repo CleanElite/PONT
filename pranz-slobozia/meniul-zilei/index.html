@@ -522,7 +522,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
 </style>
 <link rel="stylesheet" href="./restaurant-page.css?v=restaurant-c10">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
-<style>.pont-promotion-label{align-self:flex-start;width:max-content;padding:3px 8px;border-radius:999px;background:#eacb85;color:#221605;font-size:11px;font-weight:750}</style>
+<style>.pont-menu-price-tag{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;width:max-content;max-width:100%;padding:2px 7px;border:1px solid #eacb8580;border-radius:999px;background:#eacb85;color:#221605;font:750 10px/1.35 system-ui,sans-serif;white-space:nowrap;box-shadow:0 2px 6px #0003}</style>
 <style>
 .pont-analytics-consent:not([hidden]){position:fixed;z-index:99999;left:12px;right:12px;bottom:max(16px,env(safe-area-inset-bottom));width:min(94vw,470px);margin:auto;padding:13px 14px;border:1px solid #8dcdbcae;border-radius:15px;background:linear-gradient(125deg,#082e2b,#103c36);box-shadow:0 9px 28px #001918b8;color:#eaf6f1;font:12px/1.45 system-ui}
 .pont-analytics-consent p{margin:0 0 10px;color:#d0e9e0}.pont-analytics-consent a{color:#8be3cf}
@@ -593,11 +593,11 @@ function render(){
         <img class="menu-card-photo" src="${fallback}" alt="" ${index >= 2 ? 'loading="lazy"' : ''} decoding="async">
         <span class="menu-card-copy">
           <span class="menu-card-name">${name}</span>
-          ${menu.promotionRank?'<span class="pont-promotion-label">Promovat</span>':''}
+          <span class="pont-menu-price-tag">${price}</span>
           <span class="menu-card-location"><span class="menu-icon menu-icon--pin" aria-hidden="true"></span>Slobozia</span>
           <span class="menu-card-action" aria-hidden="true">Vezi meniul<span class="menu-icon menu-icon--arrow"></span></span>
         </span>
-        <span class="menu-card-price">${price}</span>
+        
       </button>
     </article>`;
   }).join('') : '<p class="menu-empty">Nu sunt meniuri disponibile pentru azi.</p>';
