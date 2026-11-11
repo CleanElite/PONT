@@ -859,17 +859,13 @@ const cleanWhatsAppPhone=raw=>{let digits=String(raw||'').replace(/[^0-9]/g,'');
 let submittingOrder=false,orderNoticeAccepted=false;
 $('#orderNoticeCancel').onclick=()=>$('#orderConfirmationNotice').close();
 $('#orderNoticeContinue').onclick=()=>{orderNoticeAccepted=true;$('#orderConfirmationNotice').close();form.requestSubmit()};
-async function reserveOrderNumber(){const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Numerotarea comenzilor nu este configurată.');const response=await fetch(cfg.url+'/rest/v1/rpc/next_pont_order_number',{method:'POST',headers:{'Content-Type':'application/json',apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},body:'{}'});if(!response.ok)throw Error('Nu s-a putut aloca numărul comenzii. Reîncearcă.');const n=await response.json();if(!Number.isSafeInteger(Number(n))||Number(n)<1)throw Error('Număr de comandă invalid.');return 'PONT '+String(n).padStart(2,'0')}
 form.onsubmit=async e=>{e.preventDefault();if(submittingOrder)return;if($('#pontCheckoutOverlay').hidden){openCheckoutPanel();return;}if(!form.reportValidity()){const target=form.querySelector(':invalid');if(target){target.scrollIntoView({behavior:'smooth',block:'center'});target.focus({preventScroll:true})}return}if(!current?.phone){$('#orderMsg').textContent='Acest restaurant nu a activat comenzile online.';return}if(!orderOpen(current)){$('#orderMsg').textContent='Programul comenzilor este închis.';return}if(!hasMinimumMenu()){$('#orderMsg').textContent='Comanda minimă este de '+(current?.min_full_menus||1)+' meniu complet.';return}const details=Object.fromEntries(new FormData(form));details.payment=current?.card?(details.payment||'Cash'):'Cash';details.full_name=String(details.full_name||'').trim();details.phone=String(details.phone||'').trim();details.address=String(details.address||'').trim();if(details.full_name.length<3||!validCustomerPhone(details.phone)||(details.method!=='Ridicare'&&!details.address)){$('#orderMsg').textContent='Completează numele, telefonul și adresa pentru livrare.';return}if(details.method==='Ridicare')details.address='';
 // The button itself initiates the WhatsApp order; no extra confirmation dialog.
 orderNoticeAccepted=true;
-const key=JSON.stringify([qty(),details]);
-submittingOrder=true;$('#send').disabled=true;let id;try{id=draft?.key===key?draft.id:await reserveOrderNumber()}catch(err){$('#orderMsg').textContent=err.message;submittingOrder=false;update();return}
-draft={key,id};
+submittingOrder=true;$('#send').disabled=true;
 const items=selection();
 const itemName=item=>item.label||item.short;
-const msg=[id,'',...items.map((item,i)=>(i+1)+'. '+item.qty+'x '+itemName(item)),'','• Nume: '+details.full_name,'• Număr telefon: '+details.phone,'• Adresă: '+(details.method==='Ridicare'?'Ridicare de la restaurant':details.address),'• Metoda de plată: '+details.payment,'• Total: '+lei(subtotal(items))].join('\n');
-const waPhone=cleanWhatsAppPhone(current.phone);const url=waPhone?'https://wa.me/'+waPhone+'?text='+encodeURIComponent(msg):null;
+const waPhone=cleanWhatsAppPhone(current.phone);
 returnFocus=$('#list').querySelector('[data-menu="'+current.id+'"]');
 if(waPhone){
  const countMenus=items.find(item=>item.short==='meniuri complete')?.qty||0;
@@ -877,12 +873,12 @@ if(waPhone){
  const cfg=window.PONT_CONFIG;
  try{
   if(!current.restaurantId||!cfg?.url||!cfg?.anonKey)throw Error('Nu putem înregistra comanda. Reîncearcă.');
-  const response=await fetch(cfg.url+'/rest/v1/rpc/pont_finalize_whatsapp_order',{
+  const response=await fetch(cfg.url+'/rest/v1/rpc/pont_finalize_whatsapp_order_secure',{
    method:'POST',
    headers:{'Content-Type':'application/json',apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},
    body:JSON.stringify({
     p_restaurant_id:current.restaurantId,
-    p_name:details.full_name,p_phone:details.phone,p_reference:id,
+    p_name:details.full_name,p_phone:details.phone,
     p_menus:countMenus,p_portions:countPortions,
     p_items:items.filter(item=>item.qty>0).map(item=>({name:item.label,quantity:item.qty,category:item.short,dish_ids:item.dish_ids||[]}))
    }),
@@ -893,6 +889,10 @@ if(waPhone){
    try{const err=await response.json();if(err?.message&&response.status!==404)problem=err.message}catch(_){}
    throw Error(problem);
   }
+  const id=await response.json();
+  if(typeof id!=='string'||!/^PONT [0-9]{2,12}$/.test(id))throw Error('Referința comenzii nu a fost confirmată. Reîncearcă.');
+  const msg=[id,'',...items.map((item,i)=>(i+1)+'. '+item.qty+'x '+itemName(item)),'','• Nume: '+details.full_name,'• Număr telefon: '+details.phone,'• Adresă: '+(details.method==='Ridicare'?'Ridicare de la restaurant':details.address),'• Metoda de plată: '+details.payment,'• Total: '+lei(subtotal(items))].join('\\n');
+  const url='https://wa.me/'+waPhone+'?text='+encodeURIComponent(msg);
   $('#orderMsg').textContent='Solicitarea '+id+' a fost inițiată. Trimite mesajul în WhatsApp și așteaptă acceptarea restaurantului.';
   window.location.href=url;
  }catch(err){
