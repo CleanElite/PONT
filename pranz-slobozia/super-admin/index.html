@@ -211,6 +211,12 @@
 @media(max-width:360px){#app .admin-hero.dashboard-intro{gap:6px!important}#app .pont-hero-dashboard{padding:8px 9px!important;min-height:37px!important}}
  .pont-live-dot{display:inline-block;vertical-align:middle;width:10px;height:10px;min-width:10px;margin:0 9px 2px 0;border-radius:50%;background:#e25858;box-shadow:0 0 0 3px rgba(226,88,88,.14)}
  .pont-live-dot.is-online{background:#ffd34f;box-shadow:0 0 0 3px rgba(255,211,79,.18)}
+
+/* Security alerts are absent from the layout until the threshold is reached. */
+.pont-login-security-alerts[hidden]{display:none!important}
+.pont-login-security-alerts{margin:0 0 17px;padding:13px 15px;border:1px solid #d8a06b;border-radius:13px;background:#422b25;color:#ffdfbe;font:500 13px/1.5 system-ui}
+.pont-login-security-alerts strong{display:block;font-size:14px;color:#fff0db;margin-bottom:4px}
+.pont-login-security-alerts p{color:inherit;margin:3px 0}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=4"><link rel="stylesheet" href="../menu-templates.css?v=model-wizard-c31"><style id="pont-auction-period-save-c15">
@@ -600,6 +606,7 @@
 </section>
 
 <section id="analytics" class="card dashboard-panel pont-insights" aria-labelledby="analyticsTitle" hidden>
+ <section id="pontLoginSecurityAlerts" class="pont-login-security-alerts" role="alert" aria-live="polite" hidden></section>
  <div class="dashboard-heading pont-insights-heading">
   <div class="pont-analytics-title-card"><h2 id="analyticsTitle">Statistici</h2><p>Performanța PONT, în timp aproape real.</p></div>
   <div class="pont-analytics-header-actions">
@@ -1439,6 +1446,32 @@ window.addEventListener('hashchange', () => {
  if (!$('app').hidden) selectPlatformPanel(location.hash.slice(1), false);
 });
 
+let pontLoginAlertLoading=false;
+async function refreshPontLoginSecurityAlerts(){
+ if(pontLoginAlertLoading||$('app').hidden)return;
+ pontLoginAlertLoading=true;
+ const panel=$('pontLoginSecurityAlerts');
+ try{
+  const {data,error}=await db.rpc('pont_super_admin_failed_login_alerts');
+  if(error)throw error;
+  panel.replaceChildren();
+  const alerts=Array.isArray(data)?data:[];
+  panel.hidden=alerts.length===0;
+  if(!alerts.length)return;
+  const heading=document.createElement('strong');
+  heading.textContent='Avertizare de securitate · Conectări eșuate';
+  panel.append(heading);
+  for(const item of alerts){
+   const line=document.createElement('p');
+   const restaurant=restaurants.find(r=>r.id===item.restaurant_id)?.name||'Restaurant necunoscut';
+   const when=new Date(item.last_attempt).toLocaleTimeString('ro-RO',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Bucharest'});
+   line.textContent=restaurant+' · administrator '+item.username+': '+Number(item.attempts)+' încercări eșuate în ultimele 15 minute (ultima la '+when+').';
+   panel.append(line);
+  }
+ }catch(error){console.warn('PONT: alertele de conectare nu au putut fi verificate.');panel.hidden=true;}
+ finally{pontLoginAlertLoading=false;}
+}
+setInterval(()=>{if(!$('app').hidden&&!document.hidden)void refreshPontLoginSecurityAlerts();},15000);
 let stopWatchingRestaurantPresence=null;
 async function enter() {
  $('app').hidden = true;
@@ -1451,6 +1484,8 @@ async function enter() {
   const profiles = await req(db.from('profiles').select('role').eq('user_id',user.id));
   if (profiles[0]?.role !== 'super_admin') throw Error('Acest cont nu are rol Super Admin.');
   await load();
+  $('app').hidden=false;
+  void refreshPontLoginSecurityAlerts();
   if(stopWatchingRestaurantPresence)stopWatchingRestaurantPresence();
   const {watchRestaurantPresence}=await import('../admin-presence.js?v=20261111-secure');
   stopWatchingRestaurantPresence=watchRestaurantPresence(db,online=>{restaurantOnlineIds=online;renderRestaurants();});
