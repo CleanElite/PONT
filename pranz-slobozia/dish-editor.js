@@ -162,6 +162,7 @@ if (!isRestaurantAdmin) {
 
 const form = document.createElement('form');
 form.id = 'pontDailyBuilder';
+form.classList.add(isRestaurantAdmin ? 'pont-daily-builder--restaurant' : 'pont-daily-builder--super');
 form.innerHTML = `
   <div id="pontDailyOverview">
     <div class="pont-daily-fields">
@@ -201,6 +202,9 @@ document.body.append(pickerDialog);
 const standardPriceStyles=document.createElement('style');
 standardPriceStyles.textContent='.pont-daily-fields .pont-daily-standard-price{display:flex;align-items:center;justify-content:center;align-self:end;flex:0 1 132px;min-width:0;min-height:40px;height:40px;padding:6px 10px;border:1px solid #447b78;border-radius:9px;background:#0d3438;box-sizing:border-box}.pont-daily-standard-price strong{font-size:13px;line-height:1.2;font-weight:700;color:#ffe5a0;text-align:center;white-space:nowrap}.pont-daily-standard-price strong.is-missing{color:#ffb6a5}@media(max-width:620px){.pont-daily-fields .pont-daily-standard-price{width:100%;flex:auto;padding:6px 5px}.pont-daily-standard-price strong{font-size:12px}}';
 document.head.append(standardPriceStyles);
+const compactPriceAndCategories = document.createElement('style');
+compactPriceAndCategories.textContent = "\n/* C29: panel-specific non-editable compact price and three equal category buttons. */\n#pontDailyBuilder.pont-daily-builder--super .pont-daily-fields .pont-daily-standard-price{\n flex:0 0 auto!important;width:fit-content!important;max-width:90px!important;\n min-width:0!important;min-height:29px!important;height:29px!important;\n padding:4px 8px!important;border-radius:7px!important;\n}\n#pontDailyBuilder.pont-daily-builder--super .pont-daily-standard-price strong{\n font-size:11px!important;line-height:1!important;white-space:nowrap!important;\n}\n#pontDailyBuilder.pont-daily-builder--restaurant .pont-daily-fields .pont-daily-standard-price{\n flex:0 0 76px!important;width:76px!important;max-width:76px!important;\n min-width:0!important;min-height:36px!important;height:36px!important;\n padding:3px 4px!important;border-radius:7px!important;\n}\n#pontDailyBuilder.pont-daily-builder--restaurant .pont-daily-standard-price strong{\n display:flex!important;flex-direction:column!important;align-items:center;justify-content:center;\n font-size:10px!important;line-height:1.12!important;white-space:nowrap!important;gap:2px!important;\n}\n#pontDailyBuilder.pont-daily-builder--restaurant .pont-price-label{\n color:#c6dcd5;font-weight:550;font-size:9px;\n}\n#pontDailyBuilder.pont-daily-builder--restaurant .pont-price-value{\n color:#ffe5a0;font-weight:750;font-size:11px;\n}\n.pont-admin #pontDailyBuilder #pontDailyDishes.pont-daily-course-cards{\n display:grid!important;\n grid-template-columns:repeat(3,minmax(0,1fr))!important;\n grid-template-areas:none!important;\n column-gap:8px!important;row-gap:0!important;\n width:100%!important;max-width:100%!important;\n box-sizing:border-box!important;min-width:0!important;\n}\n.pont-admin #pontDailyBuilder #pontDailyDishes.pont-daily-course-cards .pont-daily-course-open{\n box-sizing:border-box!important;display:flex!important;align-items:center!important;\n justify-content:center!important;min-width:0!important;max-width:100%!important;\n width:100%!important;height:45px!important;min-height:45px!important;\n padding:7px 3px!important;margin:0!important;border-radius:10px!important;\n font-size:12px!important;line-height:1.15!important;font-weight:700!important;\n white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;\n}\n@media(max-width:390px){\n .pont-admin #pontDailyBuilder #pontDailyDishes.pont-daily-course-cards{\n  column-gap:6px!important;\n }\n .pont-admin #pontDailyBuilder #pontDailyDishes.pont-daily-course-cards .pont-daily-course-open{\n  height:42px!important;min-height:42px!important;padding:6px 2px!important;font-size:11px!important;\n }\n}\n";
+document.head.append(compactPriceAndCategories);
 
 
 
@@ -223,7 +227,20 @@ function syncStandardPrice(){
   const value = Number(configured);
   const valid = configured !== null && configured !== undefined && Number.isFinite(value) && value > 0;
   $('pontDailyCombo').value = valid ? String(value) : '';
-  $('pontDailyComboDisplay').textContent = valid ? 'Preț setat ' + new Intl.NumberFormat('ro-RO',{maximumFractionDigits:2}).format(value) + ' lei' : 'Preț nesetat';
+  const shownPrice = valid ? new Intl.NumberFormat('ro-RO',{maximumFractionDigits:2}).format(value) + ' lei' : '—';
+  $('pontDailyComboDisplay').textContent = '';
+  if (isRestaurantAdmin) {
+    const caption = document.createElement('span');
+    caption.className = 'pont-price-label';
+    caption.textContent = 'Preț setat';
+    const amount = document.createElement('span');
+    amount.className = 'pont-price-value';
+    amount.textContent = shownPrice;
+    $('pontDailyComboDisplay').append(caption, amount);
+  } else {
+    $('pontDailyComboDisplay').textContent = shownPrice;
+  }
+  $('pontDailyComboDisplay').setAttribute('aria-label', valid ? 'Preț setat ' + shownPrice : 'Preț nesetat');
   $('pontDailyComboDisplay').classList.toggle('is-missing', !valid);
 }
 
