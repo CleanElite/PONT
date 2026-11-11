@@ -570,3 +570,85 @@
   line-height:1.35;
 }
 #pontTodayMenu .pont-today-dish-list li::marker { font-variant-numeric:tabular-nums; }
+
+
+/* C31 — Menu model editor uses same compact category-and-recap flow as daily publishing. */
+.pont-admin #pontModelDishes.pont-model-course-buttons{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-areas:none!important;gap:8px!important;min-width:0!important;
+  max-width:100%!important;width:100%!important;margin:15px 0 12px!important;
+}
+.pont-admin #pontModelDishes .pont-model-course-button{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  min-width:0!important;width:100%!important;max-width:100%!important;
+  min-height:44px!important;height:44px!important;box-sizing:border-box!important;
+  padding:7px 3px!important;margin:0!important;border:1px solid #6b9990!important;
+  border-radius:10px!important;background:linear-gradient(145deg,#16494a,#0b3036)!important;
+  color:#f5fcf8!important;font:700 12px/1.15 system-ui,sans-serif!important;white-space:nowrap!important;
+}
+.pont-admin .pont-model-selection-summary{
+  padding:14px 16px;border:1px solid #4c7b74;border-radius:14px;background:#0a2e31;
+}
+.pont-admin .pont-model-selection-summary h4{margin:0 0 11px;color:#e8eee9;font:700 15px system-ui,sans-serif}
+.pont-admin .pont-model-summary-group{padding:9px 0;border-top:1px solid #ffffff20}
+.pont-admin .pont-model-summary-group:first-child{border-top:0;padding-top:0}
+.pont-admin .pont-model-summary-group:last-child{padding-bottom:0}
+.pont-admin .pont-model-summary-head{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:5px}
+.pont-admin .pont-model-summary-head strong{color:#e1d3ad;font:700 13px system-ui,sans-serif}
+.pont-admin .pont-model-summary-head button{
+  margin:0;min-height:27px;padding:3px 8px;border:1px solid #557970;
+  border-radius:7px;background:transparent;color:#b9e4dd;font:600 11px system-ui,sans-serif;
+}
+.pont-admin .pont-model-selected-list{display:grid;gap:5px;margin:0;padding-left:22px;color:#e4f2ed;font-size:13px}
+.pont-admin .pont-model-selected-list li{padding-left:2px;line-height:1.4}
+.pont-admin .pont-model-selected-list li::marker{color:#d9bd7b}
+.pont-admin .pont-model-selected-list li button{
+  float:right;display:inline-grid;place-items:center;width:23px;min-width:23px;
+  height:23px;min-height:23px;padding:0;margin:-1px 0 0 7px;
+  border:1px solid #63877f;border-radius:7px;background:#112f33;color:#f3c8be;font-size:18px;line-height:1;
+}
+.pont-admin .pont-model-selected-list li::after{content:"";display:block;clear:both}
+.pont-admin .pont-model-none{margin:0;color:#9cb8b9;font-size:12px}
+.pont-admin #pontModelCourseDialog.pont-model-course-dialog:not([open]){display:none!important}
+.pont-admin #pontModelCourseDialog.pont-model-course-dialog[open]{
+  position:fixed!important;inset:0!important;display:flex!important;flex-direction:column!important;
+  box-sizing:border-box!important;width:min(580px,calc(100vw - 24px))!important;
+  max-width:calc(100vw - 24px)!important;max-height:min(85dvh,760px)!important;
+  margin:auto!important;padding:0!important;border:1px solid #6da398!important;
+  border-radius:19px!important;background:#0b292e!important;color:#f1f9f7!important;
+  box-shadow:0 24px 90px #000b,0 0 0 1px #a0ebd318!important;overflow:hidden!important;
+}
+.pont-admin #pontModelCourseDialog::backdrop{background:rgba(0,8,13,.78);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.pont-admin .pont-model-course-header{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border-bottom:1px solid #406b67;background:#14383d}
+.pont-admin .pont-model-course-header h3{margin:0;color:#f4f7f0;font:750 clamp(17px,4vw,21px)/1.2 system-ui,sans-serif}
+.pont-admin .pont-model-course-hint{flex:none;margin:11px 14px;color:#b8d3cc;font-size:12px;line-height:1.45}
+.pont-admin .pont-model-course-list{flex:1 1 auto;display:grid;align-content:start;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 14px 8px}
+.pont-admin .pont-model-course-choice{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 24px;gap:10px;
+  align-items:center;min-width:0;margin:0!important;padding:12px 0!important;
+  border-bottom:1px solid #ffffff20;color:#f1f9f7;
+}
+.pont-admin .pont-model-course-name{min-width:0;overflow-wrap:break-word;font-size:13px;line-height:1.3}
+.pont-admin .pont-model-course-choice input[type="checkbox"]{
+  appearance:auto!important;-webkit-appearance:checkbox!important;
+  width:21px!important;min-width:21px!important;height:21px!important;min-height:21px!important;
+  margin:0!important;padding:0!important;accent-color:#d6ba78;cursor:pointer;
+}
+.pont-admin .pont-model-course-footer{
+  flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:8px;
+  padding:12px 14px max(14px,env(safe-area-inset-bottom));border-top:1px solid #406b67;background:#10343a;
+}
+.pont-admin .pont-model-course-footer button{
+  display:flex;align-items:center;justify-content:center;min-width:0;width:100%;
+  min-height:43px;margin:0;padding:9px 8px;border-radius:10px;font:700 12px/1.25 system-ui,sans-serif;text-align:center;
+}
+.pont-admin .pont-model-course-footer #pontModelCourseBack{border:1px solid #567973;background:#15373c;color:#d1e2df}
+.pont-admin .pont-model-course-footer #pontModelCourseConfirm{border:1px solid #9be7d5;background:#9be7d5;color:#07332d}
+@media(max-width:430px){
+  .pont-admin #pontModelDishes.pont-model-course-buttons{gap:6px!important}
+  .pont-admin #pontModelDishes .pont-model-course-button{min-height:42px!important;height:42px!important;font-size:11px!important;padding:6px 2px!important}
+  .pont-admin .pont-model-selection-summary{padding:12px}
+  .pont-admin .pont-model-course-footer{gap:6px;padding-inline:10px}
+  .pont-admin .pont-model-course-footer button{font-size:11px;padding-inline:5px}
+  .pont-admin .pont-model-course-list{padding-inline:10px}
+}
