@@ -1203,6 +1203,7 @@ async function pontRefreshPendingPayments(){
   title.append(monthLabel,sum);
   const button=document.createElement('button');
   button.type='button';button.textContent='Finalizează plata';
+  button.dataset.paymentMonth=row.campaign_month;
   button.addEventListener('click',()=>pontOpenPayment(row));
   item.append(title,button);list.append(item);
  }
@@ -1497,6 +1498,19 @@ async function start(){
   if(role==='restaurant'){const access=await db.rpc('my_restaurant_access');if(access.error)throw access.error;me=access.data?.[0]?.restaurant_id;if(!me)throw Error('Restaurant neatribuit')}
   await resolveCampaignMonths();
   await load();
+  // A bell/notification deep link opens the very same Stripe dialog as this page's button.
+  // Only server-approved, currently payable rows can be opened.
+  const paymentMonth=new URLSearchParams(location.search).get('pay');
+  if(paymentMonth){
+   const url=new URL(location.href);
+   url.searchParams.delete('pay');
+   history.replaceState(null,'',url.pathname+url.search+url.hash);
+   if(/^\\d{4}-(0[1-9]|1[0-2])-01$/.test(paymentMonth)){
+    const paymentButton=[...document.querySelectorAll('#pontPendingPaymentItems button[data-payment-month]')]
+     .find(button=>button.dataset.paymentMonth===paymentMonth);
+    if(paymentButton)paymentButton.click();
+   }
+  }
   setInterval(()=>{
    load().catch(e=>{biddingOpen=false;biddingPaused=false;render();renderAuctionStatus();console.error('Actualizare licitații:',e)});
   },15000);
