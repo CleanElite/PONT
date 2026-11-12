@@ -28,49 +28,71 @@ export function initPontAuctionPaymentBell({db,config}) {
  .pont-auction-pay-submit{width:100%;margin-top:17px;padding:12px;border:1px solid #91ffee;background:#028a7b;color:white}
  .pont-auction-pay-msg{font:550 12px/1.4 system-ui;color:#ffc7b8;margin:10px 0 0}
  .pont-auction-pay-note{font:450 11px/1.5 system-ui;color:#accbc7;margin:12px 0 0}
- /* Gold premium bell: perpetual light orbit, only the bell swings when an unpaid auction exists. */
+ /* Premium gold: full gold surface, contrasting midnight-blue bell, continuous movement. */
  .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{
    margin:0!important;flex:0 0 auto!important;width:clamp(68px,19vw,155px);
    max-width:32vw;align-self:center;gap:5px;
  }
  .pont-admin #app .pont-restaurant-premium-heading .pont-auction-bell{
    position:relative!important;isolation:isolate;overflow:hidden;
-   width:49px!important;height:49px!important;min-height:49px!important;
-   padding:0!important;border:1px solid #c7a057!important;border-radius:15px!important;
-   color:#ffd777!important;background:radial-gradient(circle at 25% 14%,#655028 0%,#27291e 43%,#101f25 100%)!important;
-   box-shadow:inset 0 1px 9px #ffdea725,0 0 12px #f9bc4c28!important;
+   width:52px!important;height:52px!important;min-height:52px!important;
+   padding:0!important;border:2px solid #fff0ac!important;border-radius:16px!important;
+   color:#102c47!important;
+   background:linear-gradient(142deg,#fff1b6 0%,#ffd475 25%,#dfa33d 53%,#f7cd70 77%,#a66c26 100%)!important;
+   box-shadow:0 0 0 1px #b77720,0 0 18px #ffd16674,0 4px 14px #0005,inset 0 1px 4px #fff8d5aa!important;
  }
  .pont-admin #app .pont-auction-bell::before{
-   content:'';position:absolute;inset:-60%;z-index:0;pointer-events:none;
-   background:conic-gradient(from 0deg,transparent 0deg,transparent 235deg,#bd8c38 268deg,#fff1b4 294deg,#ffd166 307deg,transparent 337deg);
-   animation:pont-gold-neon-orbit 3.1s linear infinite;
+   content:'';position:absolute;inset:-50%;z-index:0;pointer-events:none;
+   background:conic-gradient(from 0deg,transparent 0deg,transparent 245deg,#fff7d6 275deg,#fffef3 300deg,#ffe49a 316deg,transparent 339deg);
+   opacity:.55;animation:pont-gold-neon-orbit 3.2s linear infinite;
  }
  .pont-admin #app .pont-auction-bell .pont-bell-core{
    position:absolute;inset:2px;border-radius:12px;z-index:1;pointer-events:none;
-   background:radial-gradient(circle at 23% 12%,#604b28 0%,#202b29 56%,#09252b 100%);
+   background:linear-gradient(145deg,#ffe8a0,#e9b44e 50%,#c48b33 100%);
  }
  .pont-admin #app .pont-auction-bell svg{
-   position:relative;z-index:2;width:23px;height:23px;stroke:#ffdc85;
-   filter:drop-shadow(0 0 5px #ffd1669e);
+   position:relative;z-index:2;width:27px;height:27px;
+   stroke:#0c3653!important;fill:#10334e29!important;
+   filter:drop-shadow(0 1px 1px #fff8c9) drop-shadow(0 0 2px #17364c3d);
+   transform-origin:50% 15%;
+   animation:pont-bell-continuous-sway 3.4s ease-in-out infinite!important;
  }
  .pont-admin #app .pont-auction-bell.is-due{
-   border-color:#fff0bd!important;color:#ffe39b!important;
-   box-shadow:inset 0 0 12px #ffe5a438,0 0 18px #ffcd6670!important;
+   border-color:#fff8d4!important;color:#0a3154!important;
+   box-shadow:0 0 0 1px #f3b44d,0 0 24px #ffd166ab,0 0 10px #fff3b88a,inset 0 1px 5px #fff7cb!important;
+ }
+ .pont-admin #app .pont-auction-bell.is-due svg{
+   animation:pont-bell-due-sway 1.45s ease-in-out infinite!important;
  }
  .pont-admin #app .pont-auction-bell.is-due::after{
-   z-index:3;background:#ffe299;box-shadow:0 0 10px #ffdc83;
+   z-index:3;background:#fff9d6;box-shadow:0 0 11px #fff0a4;
  }
  .pont-admin #app .pont-auction-notice{
-   color:#f5dba0!important;font:600 clamp(9px,2.1vw,11px)/1.3 system-ui!important;
+   color:#f8dea2!important;font:650 clamp(9px,2.1vw,11px)/1.3 system-ui!important;
    max-width:100%;text-align:center;cursor:pointer;
  }
  @keyframes pont-gold-neon-orbit{to{transform:rotate(360deg)}}
+ @keyframes pont-bell-continuous-sway{
+   0%,35%,60%,100%{transform:rotate(0deg)}
+   41%{transform:rotate(-13deg)}
+   47%{transform:rotate(12deg)}
+   53%{transform:rotate(-5deg)}
+ }
+ @keyframes pont-bell-due-sway{
+   0%,100%{transform:rotate(0deg)}
+   20%{transform:rotate(-18deg)}
+   42%{transform:rotate(16deg)}
+   64%{transform:rotate(-12deg)}
+   82%{transform:rotate(7deg)}
+ }
  @media(max-width:540px){
    .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{width:clamp(57px,19vw,100px)!important;max-width:29vw}
-   .pont-admin #app .pont-restaurant-premium-heading .pont-auction-bell{width:43px!important;height:43px!important;min-height:43px!important}
+   .pont-admin #app .pont-restaurant-premium-heading .pont-auction-bell{width:45px!important;height:45px!important;min-height:45px!important}
  }
  @media(prefers-reduced-motion:reduce){
-   .pont-admin #app .pont-auction-bell::before{animation:none;background:linear-gradient(130deg,#fff0b5,#ae7939,transparent)}
+   .pont-admin #app .pont-auction-bell::before,
+   .pont-admin #app .pont-auction-bell svg,
+   .pont-admin #app .pont-auction-bell.is-due svg{animation:none!important}
  }
  `;
  document.head.append(styles);
