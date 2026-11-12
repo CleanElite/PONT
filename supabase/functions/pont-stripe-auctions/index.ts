@@ -76,11 +76,21 @@ async function processWebhook(req:Request) {
   return json({received:true,refunded:true});
  }
  if(offer.payment_status==='paid')return json({received:true});
- const {error}=await admin.from('auction_offers').update({
+ const {data:updated,error}=await admin.from('auction_offers').update({
   payment_status:'paid',payment_method:'stripe',payment_reference:intent.id,paid_at:new Date().toISOString(),
   updated_at:new Date().toISOString()
- }).eq('id',offer.id).neq('payment_status','paid');
+ }).eq('id',offer.id).neq('payment_status','paid').select('id');
  if(error)throw error;
+ if(!updated?.length){
+   const {data:current,error:readError}=await admin.from('auction_offers').select('payment_status,payment_reference').eq('id',offer.id).maybeSingle();
+   if(readError)throw readError;
+   if(current?.payment_status==='paid' && current.payment_reference===intent.id)return json({received:true});
+   if(current?.payment_status==='paid' && current.payment_reference!==intent.id){
+     await stripeRequest('refunds',new URLSearchParams({payment_intent:intent.id}), 'pont-invalid-bid-refund-'+intent.id);
+     return json({received:true,refunded:true});
+   }
+   throw Error('Payment reconciliation did not update auction offer');
+ }
  return json({received:true});
 }
 async function createIntent(req:Request) {
@@ -90,11 +100,12 @@ async function createIntent(req:Request) {
  const publicClient=createClient(url,Deno.env.get('SUPABASE_ANON_KEY')||'',{auth:{persistSession:false,autoRefreshToken:false}});
  const {data:{user},error:userError}=await publicClient.auth.getUser(token);
  if(userError||!user)return json({error:'Sesiune expirată'},401);
- const {data:membership,error:memberError}=await admin.from('restaurant_members').select('restaurant_id').eq('user_id',user.id).order('restaurant_id').limit(1).maybeSingle();
- if(memberError||!membership)return json({error:'Restaurant neautorizat'},403);
- const {month}=await req.json().catch(()=>({month:null}));
+ const {month,restaurantId}=await req.json().catch(()=>({month:null,restaurantId:null}));
  if(typeof month!=='string'||!/^\d{4}-(0[1-9]|1[0-2])-01$/.test(month))return json({error:'Campanie invalidă'},400);
- const restaurantId=membership.restaurant_id;
+ if(typeof restaurantId!=='string'||!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(restaurantId))
+   return json({error:'Restaurant invalid'},400);
+ const {data:membership,error:memberError}=await admin.from('restaurant_members').select('restaurant_id').eq('user_id',user.id).eq('restaurant_id',restaurantId).maybeSingle();
+ if(memberError||!membership)return json({error:'Nu ai permisiunea să achiți oferta acestui restaurant'},403);
  const {data:control,error:controlError}=await admin.from('pont_auction_control').select('is_open,final_ranking').eq('campaign_month',month).maybeSingle();
  if(controlError)throw controlError;
  if(!control||control.is_open!==false||!Array.isArray(control.final_ranking)||!control.final_ranking.includes(restaurantId))
