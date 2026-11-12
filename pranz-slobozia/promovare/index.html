@@ -331,6 +331,38 @@ dialog.pont-premium-auction .pont-modal-restaurant-rank{
  font:650 clamp(13px,3.4vw,18px)/1.3 system-ui;
  letter-spacing:0;color:#7affed;
 }
+
+/* Secondary, reversible-with-confirmation bid withdrawal action */
+dialog.pont-premium-auction .pont-withdraw-bid-link{
+ display:block;width:fit-content;max-width:100%;
+ margin:13px auto 0!important;padding:7px 10px!important;
+ border:0!important;background:transparent!important;box-shadow:none!important;
+ color:#c1d7d1!important;font:600 12px/1.35 system-ui!important;
+ text-decoration:underline;text-underline-offset:3px;opacity:.86;
+}
+dialog.pont-premium-auction .pont-withdraw-bid-link:hover{color:#fff!important;opacity:1}
+dialog.pont-premium-auction .pont-withdraw-bid-link[hidden]{display:none!important}
+dialog.pont-withdraw-confirm .pont-withdraw-icon{
+ width:56px;height:56px;margin:0 auto 16px;
+ display:grid;place-items:center;border-radius:16px;
+ border:1px solid #b9e7d2aa;background:#0d4d49;color:#e1f9ee;
+}
+dialog.pont-withdraw-confirm .pont-withdraw-explainer{
+ max-width:330px;margin:0 auto 13px!important;
+ color:#e1f7f2;font:500 clamp(13px,3.5vw,15px)/1.5 system-ui;
+}
+dialog.pont-withdraw-confirm .pont-confirm-note{max-width:310px}
+dialog.pont-withdraw-confirm #pontWithdrawCancel{
+ border:1px solid #77d8c7b0!important;background:linear-gradient(145deg,#053c3d,#022c32)!important;color:#e7faf6!important;
+}
+dialog.pont-withdraw-confirm .pont-withdraw-action{
+ border:1px solid #ebaaa1!important;background:linear-gradient(135deg,#7e3533,#a44640)!important;
+ color:#fff!important;
+}
+dialog.pont-withdraw-confirm .pont-withdraw-action:disabled{opacity:.55}
+dialog.pont-withdraw-confirm .pont-withdraw-error{
+ margin:0 auto 13px!important;color:#ffbdb0;font:600 12px/1.4 system-ui;
+}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -447,6 +479,7 @@ dialog.pont-premium-auction .pont-modal-restaurant-rank{
  <form id="bidForm" novalidate><label for="bidAmount">Oferta ta totală (lei)</label><input id="bidAmount" type="number" min="50" step="10" inputmode="numeric" required placeholder="Minimum 50 lei"><button class="primary-bid" type="submit" id="bidSubmit"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg><span id="bidSubmitText">Confirmă oferta</span></button></form>
  <p class="pont-bid-rank-preview" id="pontBidRankPreview" aria-live="polite"></p><p class="modal-status" id="bidMessage" role="status" aria-live="polite"></p>
  <p class="modal-note"><span class="pont-modal-info-icon" aria-hidden="true">i</span><span id="auctionModalNote">Poți modifica suma cât timp licitația este activă. Poziția se actualizează automat. Plata se verifică separat.</span></p>
+ <button type="button" class="pont-withdraw-bid-link" id="pontWithdrawBid" hidden>Retrage oferta din licitație</button>
 </div></dialog>
 <dialog id="auctionBidConfirmDialog" class="auction-modal pont-premium-confirm" aria-labelledby="auctionBidConfirmTitle" aria-describedby="auctionBidConfirmDescription">
  <div class="pont-confirm-inner">
@@ -461,6 +494,20 @@ dialog.pont-premium-auction .pont-modal-restaurant-rank{
   <div class="pont-confirm-actions">
    <button type="button" id="auctionBidConfirmCancel">Anulează</button>
    <button type="button" id="auctionBidConfirmOK" class="primary-bid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Confirmă</button>
+  </div>
+ </div>
+</dialog>
+<dialog id="pontWithdrawConfirm" class="auction-modal pont-premium-confirm pont-withdraw-confirm" aria-labelledby="pontWithdrawTitle" aria-describedby="pontWithdrawDescription">
+ <div class="pont-confirm-inner">
+  <button type="button" class="auction-modal-close" id="pontWithdrawClose" aria-label="Închide confirmarea">×</button>
+  <div class="pont-withdraw-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5M14 11v5"/></svg></div>
+  <h2 id="pontWithdrawTitle">Retragi oferta?</h2>
+  <p id="pontWithdrawDescription" class="pont-withdraw-explainer">Oferta ta va fi eliminată din clasamentul acestei licitații.</p>
+  <p class="pont-confirm-note">Poți participa din nou cât timp licitația rămâne deschisă. Ofertele achitate nu pot fi retrase.</p>
+  <p class="pont-withdraw-error" id="pontWithdrawError" role="alert" hidden></p>
+  <div class="pont-confirm-actions">
+   <button type="button" id="pontWithdrawCancel">Păstrează oferta</button>
+   <button type="button" id="pontWithdrawConfirmButton" class="pont-withdraw-action">Retrage oferta</button>
   </div>
  </div>
 </dialog>
@@ -612,12 +659,54 @@ function updateModal(){
  $('bidAmount').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
  $('bidSubmit').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
  $('bidSubmitText').textContent=busy?'Se salvează…':isAdmin?'Mod vizualizare':own?.payment_status==='paid'?'Oferta ta este achitată':open?(own?'Modifică oferta':'Confirmă oferta'):'Licitația este închisă';
+ $('pontWithdrawBid').hidden=!(role==='restaurant'&&open&&own&&own.payment_status!=='paid'&&!busy);
+ $('pontWithdrawBid').disabled=busy;
  $('auctionModalNote').textContent=isAdmin?'Contul Super Admin poate consulta licitațiile, fără să liciteze.':!open?'Vei putea modifica oferta când Super Admin reia licitația.':own?.payment_status==='paid'?'Oferta este deja confirmată ca plătită și nu mai poate fi modificată.':own?'Poți reduce sau majora oferta înainte de închiderea licitației. Poziția se recalculează automat, iar plata se confirmă separat.':'Oferta minimă este 50 lei. Poziția se stabilește după valoarea ofertei și se poate schimba. Plata se confirmă separat.';
  refreshBidPreview();
 }
 $('bidAmount').addEventListener('input',refreshBidPreview);
 
 $('list').addEventListener('click',e=>{const button=e.target.closest('[data-slot]');if(!button)return;selectedSlot=Number(button.dataset.slot);$('bidMessage').textContent='';$('bidAmount').value='';updateModal();$('auctionDialog').showModal()});
+$('pontWithdrawBid').addEventListener('click',()=>{
+ if(busy||role!=='restaurant'||!auctionIsOpen()||!ownOffer()||ownOffer()?.payment_status==='paid')return;
+ $('pontWithdrawError').hidden=true;
+ $('pontWithdrawError').textContent='';
+ $('pontWithdrawDescription').textContent='Retragi oferta curentă de '+money(ownOffer().amount)+'? Restaurantul va ieși din clasamentul acestei licitații.';
+ $('pontWithdrawConfirm').showModal();
+});
+$('pontWithdrawClose').onclick=()=>$('pontWithdrawConfirm').close();
+$('pontWithdrawCancel').onclick=()=>$('pontWithdrawConfirm').close();
+$('pontWithdrawConfirm').addEventListener('click',e=>{
+ if(e.target===$('pontWithdrawConfirm')&&!busy)$('pontWithdrawConfirm').close();
+});
+$('pontWithdrawConfirm').addEventListener('cancel',e=>{if(busy)e.preventDefault()});
+$('pontWithdrawConfirmButton').addEventListener('click',async()=>{
+ if(busy||role!=='restaurant'||!auctionIsOpen()||!ownOffer()||ownOffer()?.payment_status==='paid')return;
+ const submittedMonth=month;
+ busy=true;
+ const button=$('pontWithdrawConfirmButton');
+ button.disabled=true;
+ button.textContent='Se retrage…';
+ updateModal();
+ try{
+  const {data,error}=await db.rpc('withdraw_my_auction_bid',{p_month:submittedMonth});
+  if(error)throw error;
+  if(data!==true)throw Error('Retragerea nu a fost confirmată.');
+  await load();
+  $('pontWithdrawConfirm').close();
+  $('bidAmount').value='';
+  $('bidMessage').textContent='Oferta a fost retrasă. Restaurantul nu mai participă în clasament.';
+  updateModal();
+ }catch(error){
+  $('pontWithdrawError').textContent='Retragerea nu a reușit: '+error.message;
+  $('pontWithdrawError').hidden=false;
+ }finally{
+  busy=false;
+  button.disabled=false;
+  button.textContent='Retrage oferta';
+  updateModal();
+ }
+});
 $('auctionClose').onclick=()=>$('auctionDialog').close();
 $('auctionDialog').addEventListener('click',e=>{if(e.target===$('auctionDialog'))$('auctionDialog').close()});
 async function load(){
