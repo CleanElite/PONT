@@ -1258,7 +1258,7 @@ async function start(){
    $('bidForm').hidden=true;
   }
   if(role==='restaurant'){const access=await db.rpc('my_restaurant_access');if(access.error)throw access.error;me=access.data?.[0]?.restaurant_id;if(!me)throw Error('Restaurant neatribuit')}
-  const {initPontAuctionCheckout}=await import('../pont-auction-checkout.js?v=single-checkout-20261112');
+  const {initPontAuctionCheckout}=await import('../pont-auction-checkout.js?v=without-link-20261112');
   pontCheckout=initPontAuctionCheckout({db,config:c,onFinished:()=>pontRefreshPendingPayments()});
   await resolveCampaignMonths();
   await load();
