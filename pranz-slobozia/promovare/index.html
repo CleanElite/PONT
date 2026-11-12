@@ -713,7 +713,7 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
 }
 
 /* PONT secure payment: fixed iOS-friendly modal, opaque backdrop and isolated scrolling. */
-html.pont-payment-scroll-locked{overflow:hidden!important;overscroll-behavior:none!important}
+html.pont-payment-scroll-locked{overflow:hidden!important;overscroll-behavior:none!important;height:100%!important}
 body.pont-payment-scroll-locked{position:fixed!important;width:100%!important;left:0!important;right:0!important;overflow:hidden!important;overscroll-behavior:none!important}
 dialog#pontCardPaymentDialog[open]{
  position:fixed!important;top:0!important;right:0!important;bottom:0!important;left:0!important;
@@ -1048,20 +1048,71 @@ function renderAuctionStatus(){
 
 let pontStripe=null,pontElements=null,pontPaymentMonth=null,pontPaymentBusy=false;
 let pontPaymentRequestId=0,pontPaymentSubmitting=false,pontPaymentScrollY=0,pontPaymentScrollLocked=false;
+let pontPaymentTouchY=0,pontPaymentSavedBodyStyles=null;
+function pontPaymentTouchStart(event){
+ if(!pontPaymentScrollLocked)return;
+ pontPaymentTouchY=event.touches[0]?.clientY??0;
+}
+function pontPaymentPreventBackgroundScroll(event){
+ if(!pontPaymentScrollLocked||!event.cancelable)return;
+ const dialog=$('pontCardPaymentDialog');
+ const target=event.target;
+ // Stripe's card fields remain interactive; the only scrollable area is the dialog itself.
+ if(!(target instanceof Node)||!dialog.contains(target)){
+  event.preventDefault();
+  return;
+ }
+ let node=target instanceof Element?target:target.parentElement;
+ const delta=event.type==='touchmove'?(pontPaymentTouchY-(event.touches[0]?.clientY??pontPaymentTouchY)):event.deltaY;
+ if(event.type==='touchmove')pontPaymentTouchY=event.touches[0]?.clientY??pontPaymentTouchY;
+ while(node&&node!==dialog){
+  if(node.scrollHeight>node.clientHeight+1&&getComputedStyle(node).overflowY!=='hidden'){
+   const atTop=node.scrollTop<=0,atBottom=node.scrollTop+node.clientHeight>=node.scrollHeight-1;
+   if((delta<0&&!atTop)||(delta>0&&!atBottom))return;
+  }
+  node=node.parentElement;
+ }
+ event.preventDefault();
+}
+function pontPaymentEnforceScroll(){
+ if(pontPaymentScrollLocked&&window.scrollY!==pontPaymentScrollY){
+  window.scrollTo({top:pontPaymentScrollY,left:0,behavior:'instant'});
+ }
+}
 function pontLockPaymentBackground(){
  if(pontPaymentScrollLocked)return;
  pontPaymentScrollY=window.scrollY;
+ pontPaymentSavedBodyStyles={
+  position:document.body.style.position,
+  top:document.body.style.top,
+  width:document.body.style.width,
+  left:document.body.style.left,
+  right:document.body.style.right,
+  overflow:document.body.style.overflow
+ };
+ pontPaymentScrollLocked=true;
  document.documentElement.classList.add('pont-payment-scroll-locked');
  document.body.classList.add('pont-payment-scroll-locked');
- document.body.style.top='-'+pontPaymentScrollY+'px';
- pontPaymentScrollLocked=true;
+ Object.assign(document.body.style,{
+  position:'fixed',top:'-'+pontPaymentScrollY+'px',
+  width:'100%',left:'0',right:'0',overflow:'hidden'
+ });
+ document.addEventListener('touchstart',pontPaymentTouchStart,{passive:true,capture:true});
+ document.addEventListener('touchmove',pontPaymentPreventBackgroundScroll,{passive:false,capture:true});
+ document.addEventListener('wheel',pontPaymentPreventBackgroundScroll,{passive:false,capture:true});
+ window.addEventListener('scroll',pontPaymentEnforceScroll,{passive:true});
 }
 function pontUnlockPaymentBackground(){
  if(!pontPaymentScrollLocked)return;
+ pontPaymentScrollLocked=false;
+ document.removeEventListener('touchstart',pontPaymentTouchStart,true);
+ document.removeEventListener('touchmove',pontPaymentPreventBackgroundScroll,true);
+ document.removeEventListener('wheel',pontPaymentPreventBackgroundScroll,true);
+ window.removeEventListener('scroll',pontPaymentEnforceScroll);
  document.documentElement.classList.remove('pont-payment-scroll-locked');
  document.body.classList.remove('pont-payment-scroll-locked');
- document.body.style.top='';
- pontPaymentScrollLocked=false;
+ if(pontPaymentSavedBodyStyles)Object.assign(document.body.style,pontPaymentSavedBodyStyles);
+ pontPaymentSavedBodyStyles=null;
  window.scrollTo(0,pontPaymentScrollY);
 }
 function pontCloseCardPayment(){
@@ -1131,8 +1182,8 @@ async function pontOpenPayment(row){
  submit.disabled=true;message.textContent='Se pregătește formularul de plată…';
  $('pontCardPaymentSummary').textContent='Campania '+new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(row.campaign_month+'T12:00:00Z'))+' · '+money(row.amount);
  $('pontStripePaymentElement').replaceChildren();
- if(!dialog.open)dialog.showModal();
  pontLockPaymentBackground();
+ if(!dialog.open)dialog.showModal();
  try{
   const {data:{session},error:sessionError}=await db.auth.getSession();
   if(sessionError||!session?.access_token)throw Error('Autentificarea a expirat');
