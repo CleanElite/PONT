@@ -958,7 +958,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
     <button type="button" data-tab="auctions" aria-controls="auctions" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg><span>Licitații</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
-    <a href="../promovare/?v=grila"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
+    <a id="pontPromotionNavLink" href="../promovare/?v=grila"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
   </div>
 </nav>
 <section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section>
@@ -1912,7 +1912,13 @@ function nextAuctionMonth(){
 function selectedAuctionMonth(){
  return /^\d{4}-\d{2}$/.test(auctionControlMonth.value)?auctionControlMonth.value+'-01':null;
 }
-auctionControlMonth.value=nextAuctionMonth().slice(0,7);
+const selectedCampaignParam=new URLSearchParams(location.search).get('month');
+auctionControlMonth.value=/^\d{4}-(0[1-9]|1[0-2])$/.test(selectedCampaignParam||'')?selectedCampaignParam:nextAuctionMonth().slice(0,7);
+function syncPromotionCampaignLink(){
+ const link=$('pontPromotionNavLink');
+ if(link&&selectedAuctionMonth())link.href='../promovare/?v=grila&month='+encodeURIComponent(auctionControlMonth.value);
+}
+syncPromotionCampaignLink();
 function displayAuctionControl(month,isOpen,paused,finalized){
  auctionControl={month,isOpen,paused,finalized};
  const label=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'T12:00:00Z'));
@@ -1979,6 +1985,14 @@ async function loadAuctionControl(){
 }
 auctionControlMonth.addEventListener('change',()=>{
  ++auctionControlRequest;
+ syncPromotionCampaignLink();
+ const url=new URL(location.href);
+ if(selectedAuctionMonth())url.searchParams.set('month',auctionControlMonth.value);
+ history.replaceState(null,'',url.pathname+url.search+url.hash);
+ if(!auctionEdits.size&&!auctionSaving&&!activeAuctionRestaurant){
+  $('auctionMonth').value=auctionControlMonth.value;
+  $('auctionMonth').dispatchEvent(new Event('change'));
+ }
  loadAuctionControl();
  loadAuctionBidHistory(selectedAuctionMonth());
 });
@@ -2096,7 +2110,7 @@ function selectPlatformPanel(id, remember = true) {
   tab.setAttribute('aria-pressed', String(active));
  }
  status('');
- if (remember) history.replaceState(null, '', '#' + button.dataset.tab);
+ if (remember) history.replaceState(null, '', location.pathname+location.search+'#' + button.dataset.tab);
  panelLoaders[button.dataset.tab]?.();
 }
 for (const button of platformTabs) button.onclick = () => selectPlatformPanel(button.dataset.tab);
