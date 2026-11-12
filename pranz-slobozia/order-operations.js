@@ -66,6 +66,8 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  #restaurantOrderSettings #pontOpStatus:not(:empty){margin-top:7px;font-size:12px}
  @media(max-width:460px){#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid{gap:6px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label:nth-child(-n+2){width:94px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input[type="time"]{width:94px;max-width:94px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label:nth-child(3){width:104px;margin-left:0}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input{font-size:11px;padding:4px}}
 
+ /* Restaurant admins: preserve the same compact premium planner but never show a restaurant picker. */
+ .pont-operations #pontWeekPanel #pontOpWeekRestaurantWrap[hidden]{display:none!important}
  /* PONT premium weekly planner — visual design matched to approved reference */
  .pont-operations #pontWeekPanel{
    padding:clamp(14px,3.1vw,26px)!important;
@@ -436,8 +438,17 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    if(weekSelector){
      const previousWeekRestaurant=weekSelector.value;
      weekSelector.innerHTML=selector.innerHTML;
-     if(rs.some(r=>r.id===previousWeekRestaurant))weekSelector.value=previousWeekRestaurant;
-     $('pontOpWeekRestaurantWrap').hidden=rs.length<=1;
+     // Restaurant administrators always plan for their assigned restaurant.
+     // Only the Super Admin can choose a restaurant in the weekly planner.
+     if(isRestaurantAdmin){
+       weekSelector.value=rs[0]?.id||'';
+       weekSelector.disabled=true;
+       $('pontOpWeekRestaurantWrap').hidden=true;
+     }else{
+       weekSelector.disabled=false;
+       if(rs.some(r=>r.id===previousWeekRestaurant))weekSelector.value=previousWeekRestaurant;
+       $('pontOpWeekRestaurantWrap').hidden=rs.length<=1;
+     }
    }
  }
  async function loadSettings(){
