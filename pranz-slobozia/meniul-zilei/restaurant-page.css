@@ -1638,3 +1638,49 @@ body #order::backdrop{background:#031c1a}
  #order .pont-checkout-panel .pont-checkout-summary{padding:6px!important}
  #order .pont-checkout-panel .pont-checkout-summary #breakdown{font-size:10px!important}
 }
+
+
+/* Checkout isolation on iOS Safari: the parent modal itself must fill the
+   visual viewport, otherwise a fixed child can reveal the menu underneath. */
+#order.pont-checkout-active[open]{
+  position:fixed!important;
+  inset:0!important;
+  top:0!important;right:0!important;bottom:0!important;left:0!important;
+  box-sizing:border-box!important;
+  margin:0!important;padding:0!important;
+  width:100%!important;max-width:100%!important;min-width:100%!important;
+  height:100dvh!important;max-height:100dvh!important;min-height:100dvh!important;
+  border:0!important;border-radius:0!important;
+  background:#032521!important;box-shadow:none!important;
+  overflow:hidden!important;overscroll-behavior:none!important;
+}
+#order.pont-checkout-active::backdrop{
+  background:#032521!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+#order.pont-checkout-active #checkout{
+  margin:0!important;padding:0!important;
+}
+#order.pont-checkout-active .pont-checkout-overlay:not([hidden]){
+  position:fixed!important;inset:0!important;
+  width:100%!important;height:100dvh!important;
+  margin:0!important;padding:0!important;
+  background:#032521!important;
+  overflow:hidden!important;
+  z-index:2147483000!important;
+}
+#order.pont-checkout-active .pont-checkout-backdrop{
+  background:#032521!important;
+}
+#order.pont-checkout-active .pont-checkout-panel{
+  width:100%!important;height:100dvh!important;
+  min-height:0!important;max-height:100dvh!important;
+  overflow-y:auto!important;
+}
+@supports not (height:100dvh){
+ #order.pont-checkout-active[open],
+ #order.pont-checkout-active .pont-checkout-overlay:not([hidden]),
+ #order.pont-checkout-active .pont-checkout-panel{
+   height:100vh!important;max-height:100vh!important;
+ }
+}
