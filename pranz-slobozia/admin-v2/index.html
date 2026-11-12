@@ -332,11 +332,11 @@ $('pontTodayMenu').addEventListener('click', async event => {
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 showHashView();
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=planner-compact-20261112');
+const {initPontOperations}=await import('../order-operations.js?v=planner-nav-thin-20261112');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();
 }
 </script>
 <script src="../compact-date-picker.js?v=c28b" defer></script>
-<script src="../pont-week-navigation.js?v=20261110a" defer></script></body></html>
+<script src="../pont-week-navigation.js?v=planner-nav-thin-20261112" defer></script></body></html>
