@@ -1,6 +1,184 @@
 <!doctype html><html lang="ro"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate"><title>PONT | Autentificare</title><style>*{box-sizing:border-box}body{margin:0;min-height:100svh;display:grid;place-items:center;background:radial-gradient(ellipse at 50% 10%,#164b57,#071923 72%);font:15px system-ui;color:#eef8f8;padding:18px}main{width:min(100%,460px);border:1px solid #2c5964;border-radius:27px;background:#0d2b36;padding:clamp(22px,5vw,38px);box-shadow:0 25px 90px #0005}.brand{font-weight:850;letter-spacing:.2em;font-size:25px}.brand span{color:#6fe3d5}h1{font-size:30px;margin:25px 0 8px}p{color:#b7cfd1;line-height:1.6}label{display:block;margin:17px 0 7px;color:#c8e1e2}input{width:100%;border:1px solid #416b75;border-radius:12px;background:#08202a;color:#fff;padding:14px;font:16px system-ui}button{border:1px solid #376a73;background:#183f4b;color:#fff;border-radius:12px;padding:13px 17px;font:600 15px system-ui;cursor:pointer}button.primary{background:#74e5d5;border-color:#74e5d5;color:#062b30;width:100%;margin-top:22px}button:disabled{opacity:.6}a{color:#8deadd}.links{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:24px}.error{color:#ffb5b5}.ok{color:#8ff0c4}[hidden]{display:none!important}
 .recovery-dialog{width:min(94vw,460px);max-height:calc(100svh - 32px);overflow:auto;padding:26px;border-radius:24px;border:1px solid #397780;background:#0a2933;color:#edf9f7;box-shadow:0 24px 95px #000b}.recovery-dialog::backdrop{background:#020e15cf;backdrop-filter:blur(6px)}.recovery-head{display:flex;align-items:center;justify-content:space-between;gap:10px}.recovery-head h2{font:600 25px/1.2 Georgia,serif;letter-spacing:-.02em;margin:0}.recovery-close{border:0;background:transparent;font-size:28px;padding:0 5px;color:#a9d7d1}.recovery-intro{font-size:13px;margin:10px 0 18px;color:#a9c8c8}.recovery-call{display:flex;align-items:center;gap:13px;padding:16px;border:1px solid #417077;border-radius:15px;background:#123a42;margin-bottom:18px}.recovery-call-icon{display:grid;place-items:center;width:42px;height:42px;flex:none;border-radius:12px;color:#9cead7;background:#1b5558}.recovery-call strong{display:block;color:#edf9f7;font-size:14px}.recovery-call small{display:block;color:#a7c9c8;font-size:12px;line-height:1.4;margin-top:3px}.recovery-separator{text-align:center;color:#95b9b7;margin:12px 0;font-size:12px}.recovery-dialog form{display:block}.recovery-dialog label{margin:12px 0 6px;font-size:13px}.recovery-dialog input{padding:12px}.recovery-whatsapp{width:100%;display:flex;justify-content:center;gap:10px;align-items:center;background:#b7eee0;border-color:#b7eee0;color:#07363b;margin-top:17px}.recovery-note{font-size:11px;line-height:1.5;color:#9cbeb8;margin:11px 0 0}
-</style><link rel="stylesheet" href="../pont-navigation.css?v=2"><main class="pont-login-surface"><div class="brand">P<span>O</span>NT</div><h1>Acces administratori</h1><p>Completează datele și apasă „Conectare” pentru a intra în panoul tău.</p><form id="form" autocomplete="on"><label for="email">Email sau nume de cont</label><input id="email" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required><label for="password">Parolă</label><input id="password" name="password" type="password" autocomplete="current-password" required><button class="primary" id="submit">Conectare</button></form><p id="status" role="status"></p><div class="links"><button type="button" id="reset">Ai uitat parola?</button><a href="../" class="pont-nav-action" aria-label="Acasă"><span class="pont-nav-action__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></span><span class="pont-nav-action__label">Acasă</span></a></div></main><dialog id="recoveryDialog" class="recovery-dialog" aria-labelledby="recoveryTitle"><div class="recovery-head"><h2 id="recoveryTitle">Recuperare acces</h2><button id="closeRecovery" class="recovery-close" type="button" aria-label="Închide">×</button></div><p class="recovery-intro">Ai uitat parola? Solicită resetarea administratorului PONT.</p><div class="recovery-call" aria-label="Apelează administratorul PONT"><span class="recovery-call-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 4.18 2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72c.12.96.34 1.9.66 2.8a2 2 0 0 1-.45 2.11L8.02 9.9a16 16 0 0 0 6.08 6.08l1.27-1.27a2 2 0 0 1 2.11-.45c.9.32 1.84.54 2.8.66A2 2 0 0 1 22 16.92Z"/></svg></span><span><strong>Apelează administratorul PONT</strong><small>Contactează-l telefonic la numărul pe care îl ai deja.</small></span></div><div class="recovery-separator">SAU TRIMITE O SOLICITARE</div><form id="recoveryForm"><label for="recoveryUser">Nume cont / restaurant</label><input id="recoveryUser" type="text" required maxlength="64" autocomplete="off" placeholder="Ex.: Restaurant Central"><label for="recoveryPhone">Număr de telefon</label><input id="recoveryPhone" type="tel" required inputmode="tel" autocomplete="tel" placeholder="07XXXXXXXX" pattern="(?:07[0-9]{8}|[+]407[0-9]{8})"><button class="recovery-whatsapp" type="submit"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.3 7.6L3 20l.9-5.2A8.5 8.5 0 1 1 20.5 11.5Z"/><path d="M8 8c.2 3.4 3 6.2 6.5 6.5l1.5-1.2-2-1.2-1.1 1c-1.2-.5-2.2-1.5-2.7-2.7l1-1.1L10 7.4Z"/></svg>Trimite pe WhatsApp</button></form><p class="recovery-note">WhatsApp va deschide mesajul pregătit. Alege administratorul PONT din contacte; parola se modifică doar după verificarea identității.</p></dialog><script src="../super-admin/config.js"></script><script type="module">
+
+/* PONT login — approved teal-glass reference, responsive and interactive. */
+html{min-height:100%;background:#031d20}
+body{
+ min-height:100svh;min-height:100dvh;
+ position:relative;isolation:isolate;overflow-x:hidden;
+ display:flex!important;align-items:center;justify-content:center;
+ margin:0!important;
+ padding:clamp(34px,7vh,90px) clamp(15px,4vw,40px)!important;
+ background:
+  radial-gradient(ellipse 85% 75% at 91% -20%,#12c7b855,transparent 58%),
+  radial-gradient(ellipse 72% 56% at 9% 108%,#1ba69e56,transparent 58%),
+  radial-gradient(ellipse 85% 90% at 50% 45%,#08474b 0%,#03272a 43%,#011719 100%)!important;
+ color:#f6ffff!important;
+ font:15px/1.5 system-ui,-apple-system,sans-serif;
+}
+body::before,body::after{
+ content:"";position:fixed;pointer-events:none;z-index:-1;
+ width:125vw;height:33vh;left:-12vw;
+ border-radius:50%;
+ border-top:1px solid rgba(88,255,231,.85);
+ transform:rotate(-19deg);
+ filter:drop-shadow(0 0 12px #24f3dfaa);
+}
+body::before{top:-23vh;left:32vw;transform:rotate(-24deg);box-shadow:0 -19px 50px #08c3af33}
+body::after{bottom:-21vh;top:auto;transform:rotate(14deg);box-shadow:0 -20px 55px #08dbbb22}
+main.pont-login-surface{
+ position:relative;isolation:isolate;overflow:hidden;
+ display:block!important;
+ width:min(100%,460px)!important;
+ max-width:460px!important;
+ padding:clamp(25px,5.5vw,42px) clamp(23px,5.5vw,43px) clamp(29px,6vw,48px)!important;
+ margin:0 auto!important;
+ border:1px solid rgba(128,254,234,.78)!important;
+ border-radius:clamp(27px,6vw,42px)!important;
+ background:
+   radial-gradient(ellipse 80% 35% at 90% 0%,#36dcc824,transparent 85%),
+   radial-gradient(ellipse 90% 48% at 20% 100%,#30cfc621,transparent 80%),
+   linear-gradient(154deg,#043939ee 0%,#002a2cec 45%,#063332f0 100%)!important;
+ box-shadow:0 25px 85px #000a,0 0 27px #3cffe32d,inset 0 1px 15px #92fff31d!important;
+ color:#f8ffff!important;
+}
+main.pont-login-surface::before{
+ content:"";position:absolute;pointer-events:none;z-index:-1;
+ inset:0;border-radius:inherit;
+ background:linear-gradient(125deg,transparent 28%,#57e2d411 51%,transparent 64%);
+}
+.pont-login-back{
+ display:grid!important;place-items:center!important;
+ width:44px;height:44px;
+ border:1px solid #6ee8db91;border-radius:14px!important;
+ background:linear-gradient(145deg,#1d625e,#062e32)!important;
+ box-shadow:inset 0 1px 9px #84efe936,0 6px 17px #001f27aa;
+ color:#edfffe!important;text-decoration:none!important;
+}
+.pont-login-back svg{display:block;width:24px;height:24px}
+main.pont-login-surface .brand{
+ display:inline-block!important;margin:16px 0 0!important;
+ font:800 clamp(29px,8.2vw,43px)/1.2 system-ui,-apple-system,sans-serif!important;
+ letter-spacing:.23em!important;color:#f6faff!important;
+ text-shadow:0 2px 9px #ffffff3a;
+}
+main.pont-login-surface .brand span{color:#68e6d9!important;text-shadow:0 0 12px #69f7eaae}
+main.pont-login-surface .brand::after{
+ content:"";display:block;width:96%;height:1px;margin:13px 0 0;
+ background:linear-gradient(90deg,transparent,#61ffeba8,transparent);
+ box-shadow:0 0 10px #73ffec;
+}
+.pont-login-heading{margin:clamp(19px,5vw,32px) 0 clamp(19px,5vw,30px)}
+main.pont-login-surface h1{
+ margin:0 0 12px!important;
+ color:#fff!important;
+ font:750 clamp(24px,6.65vw,36px)/1.12 system-ui,-apple-system,sans-serif!important;
+ letter-spacing:-.035em!important;
+ text-shadow:0 2px 9px #ffffff22;
+ white-space:nowrap;
+}
+main.pont-login-surface .pont-login-heading p{
+ margin:0!important;
+ color:#c2dddd!important;
+ font:400 clamp(14px,3.6vw,18px)/1.48 system-ui,-apple-system,sans-serif!important;
+}
+main.pont-login-surface form{display:block!important}
+main.pont-login-surface label.pont-login-label{
+ display:flex!important;align-items:center;gap:11px;
+ margin:19px 0 10px!important;
+ color:#edfffc!important;
+ font:500 clamp(14px,3.9vw,18px)/1.3 system-ui,-apple-system,sans-serif!important;
+}
+main.pont-login-surface label.pont-login-label svg{width:20px;height:20px;flex:none;color:#72e9de}
+main.pont-login-surface input{
+ display:block;width:100%!important;
+ height:56px;min-height:56px;
+ padding:12px 17px!important;
+ border:1px solid #83d5d0a6!important;
+ border-radius:15px!important;
+ outline:none;
+ background:linear-gradient(110deg,#062c31,#062d31e8,#0a3b3aa6)!important;
+ box-shadow:inset 0 1px 6px #a1fff71a,0 0 8px #74e8d511!important;
+ color:#fff!important;
+ font:400 16px/1.3 system-ui,-apple-system,sans-serif!important;
+ transition:border-color .2s,box-shadow .2s;
+}
+main.pont-login-surface input:focus{
+ border-color:#85fff0!important;
+ box-shadow:0 0 0 2px #78f6e432,0 0 20px #6beedd56,inset 0 1px 7px #baffed1b!important;
+}
+.pont-password-field{position:relative}
+.pont-password-field input{padding-right:55px!important}
+main.pont-login-surface .pont-password-toggle{
+ position:absolute;right:9px;top:50%;transform:translateY(-50%);
+ border:0!important;background:transparent!important;box-shadow:none!important;
+ width:40px;height:40px;padding:8px!important;
+ display:grid;place-items:center;cursor:pointer;color:#bbdedb!important;
+}
+.pont-password-toggle svg{width:24px;height:24px}
+main.pont-login-surface button.primary{
+ display:block!important;
+ width:100%!important;
+ min-height:59px!important;
+ margin:clamp(25px,6vw,36px) 0 0!important;
+ padding:13px 18px!important;
+ border:1px solid #9cfff0!important;border-radius:16px!important;
+ background:linear-gradient(130deg,#50dcca 0%,#81f3e7 44%,#3fcdbb 100%)!important;
+ box-shadow:0 0 24px #37e6d48a,0 12px 26px #001e1d88,inset 0 3px 7px #ffffff80,inset 0 -4px 10px #139c9466!important;
+ color:#003435!important;
+ font:750 clamp(18px,4.8vw,23px)/1.25 system-ui,-apple-system,sans-serif!important;
+ text-shadow:none!important;
+ cursor:pointer;
+}
+main.pont-login-surface button.primary:disabled{opacity:.65}
+main.pont-login-surface button.primary:focus-visible,.pont-login-back:focus-visible,.pont-password-toggle:focus-visible{
+ outline:2px solid #e8fffc!important;outline-offset:4px!important;
+}
+main.pont-login-surface #status{
+ margin:10px 0 0!important;min-height:0;
+ color:#ffbaba!important;font-size:13px!important;
+}
+main.pont-login-surface #status:empty{display:none!important}
+main.pont-login-surface .links{margin:clamp(24px,5vw,31px) 0 0!important;display:flex!important;justify-content:flex-start!important}
+main.pont-login-surface #reset{
+ padding:12px 21px!important;
+ min-height:49px!important;
+ border:1px solid #75d7ca9c!important;
+ border-radius:17px!important;
+ background:linear-gradient(130deg,#124d4d,#073136 85%)!important;
+ box-shadow:inset 0 1px 9px #8bf4e33a,0 5px 18px #0004!important;
+ color:#f5fffd!important;
+ font:650 clamp(14px,3.9vw,18px)/1.2 system-ui,-apple-system,sans-serif!important;
+}
+@media(max-width:370px){
+ main.pont-login-surface{padding:23px 19px 29px!important}
+ main.pont-login-surface h1{font-size:clamp(21px,6.5vw,24px)!important;letter-spacing:-.05em!important}
+}
+@media(prefers-reduced-motion:reduce){
+ main.pont-login-surface input{transition:none}
+}
+</style><link rel="stylesheet" href="../pont-navigation.css?v=2"><main class="pont-login-surface">
+ <a href="../" class="pont-login-back" aria-label="Înapoi la PONT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></a>
+ <div class="brand" aria-label="PONT">P<span>O</span>NT</div>
+ <div class="pont-login-heading"><h1>Acces administratori</h1><p>Completează datele și apasă „Conectare” pentru a intra în panoul tău.</p></div>
+ <form id="form" autocomplete="on">
+  <label for="email" class="pont-login-label"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg><span>Email sau nume de cont</span></label>
+  <input id="email" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required>
+  <label for="password" class="pont-login-label"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1"/></svg><span>Parolă</span></label>
+  <div class="pont-password-field"><input id="password" name="password" type="password" autocomplete="current-password" required><button type="button" id="togglePassword" class="pont-password-toggle" aria-label="Afișează parola" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+  <button class="primary" id="submit">Conectare</button>
+ </form>
+ <p id="status" role="status" aria-live="polite"></p>
+ <div class="links"><button type="button" id="reset">Ai uitat parola?</button></div>
+</main><dialog id="recoveryDialog" class="recovery-dialog" aria-labelledby="recoveryTitle"><div class="recovery-head"><h2 id="recoveryTitle">Recuperare acces</h2><button id="closeRecovery" class="recovery-close" type="button" aria-label="Închide">×</button></div><p class="recovery-intro">Ai uitat parola? Solicită resetarea administratorului PONT.</p><div class="recovery-call" aria-label="Apelează administratorul PONT"><span class="recovery-call-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2A19.79 19.79 0 0 1 11.19 18.85a19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.09 4.18 2 2 0 0 1 4.08 2h3a2 2 0 0 1 2 1.72c.12.96.34 1.9.66 2.8a2 2 0 0 1-.45 2.11L8.02 9.9a16 16 0 0 0 6.08 6.08l1.27-1.27a2 2 0 0 1 2.11-.45c.9.32 1.84.54 2.8.66A2 2 0 0 1 22 16.92Z"/></svg></span><span><strong>Apelează administratorul PONT</strong><small>Contactează-l telefonic la numărul pe care îl ai deja.</small></span></div><div class="recovery-separator">SAU TRIMITE O SOLICITARE</div><form id="recoveryForm"><label for="recoveryUser">Nume cont / restaurant</label><input id="recoveryUser" type="text" required maxlength="64" autocomplete="off" placeholder="Ex.: Restaurant Central"><label for="recoveryPhone">Număr de telefon</label><input id="recoveryPhone" type="tel" required inputmode="tel" autocomplete="tel" placeholder="07XXXXXXXX" pattern="(?:07[0-9]{8}|[+]407[0-9]{8})"><button class="recovery-whatsapp" type="submit"><svg aria-hidden="true" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.5 11.5a8.5 8.5 0 0 1-12.3 7.6L3 20l.9-5.2A8.5 8.5 0 1 1 20.5 11.5Z"/><path d="M8 8c.2 3.4 3 6.2 6.5 6.5l1.5-1.2-2-1.2-1.1 1c-1.2-.5-2.2-1.5-2.7-2.7l1-1.1L10 7.4Z"/></svg>Trimite pe WhatsApp</button></form><p class="recovery-note">WhatsApp va deschide mesajul pregătit. Alege administratorul PONT din contacte; parola se modifică doar după verificarea identității.</p></dialog><script src="../super-admin/config.js"></script><script type="module">
+const passwordToggle=document.getElementById('togglePassword');
+passwordToggle.addEventListener('click',()=>{
+ const field=document.getElementById('password');
+ const showing=field.type==='password';
+ field.type=showing?'text':'password';
+ passwordToggle.setAttribute('aria-pressed',String(showing));
+ passwordToggle.setAttribute('aria-label',showing?'Ascunde parola':'Afișează parola');
+});
 const c=window.PONT_CONFIG||{},s=document.getElementById('status'),f=document.getElementById('form'),b=document.getElementById('submit');if(!c.url||!c.anonKey){s.textContent='Conexiunea cu serviciul de autentificare nu este configurată.';f.hidden=true}else init().catch(e=>s.textContent=e.message);
 async function init(){const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');const db=createClient(c.url,c.anonKey);const {createPontAdminSession}=await import('../admin-session.js?v=1');const adminSession=createPontAdminSession(db,{onExpired:()=>{s.textContent='Sesiunea de 2 ore a expirat. Autentifică-te din nou.';}});// Only the login identifier is stored; passwords belong to the browser password manager.
 try{const saved=localStorage.getItem('pont_last_login_identifier');if(saved&&!document.getElementById('email').value)document.getElementById('email').value=saved;}catch(_){}
