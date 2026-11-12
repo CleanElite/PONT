@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Informații despre restaurant și meniu · PONT</title>
+<style>*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#0b3e45,#03191e 70%);color:#e9faf6;font:15px/1.6 system-ui}main{width:min(92%,800px);margin:0 auto;padding:28px 0 70px}a{color:#aaf8e8}h1{font:600 clamp(26px,6vw,42px)/1.2 Georgia,serif}h2{font:600 24px Georgia,serif;margin:24px 0 10px}.panel{border:1px solid #36766c;border-radius:18px;background:#092e34;padding:20px;margin:14px 0}.muted{color:#abcac3}.label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#e5cd91}.dish{border-bottom:1px solid #35635e;padding:10px 0}.dish:last-child{border:0}.foot{padding-top:20px;border-top:1px solid #34605a;margin-top:28px}button{background:none;color:inherit;border:0;cursor:pointer;text-decoration:underline}</style>
+<script src="../super-admin/config.js"></script></head>
+<body><main>
+<a href="../meniul-zilei/" id="back">← Înapoi la meniul zilei</a>
+<p class="label">PONT · Informații pentru consumatori</p>
+<h1>Informații despre restaurant și meniu</h1>
+<section class="panel" aria-live="polite"><h2 id="restaurantName">Se încarcă restaurantul…</h2><p id="restaurantContact" class="muted"></p>
+<h2>Identitatea comerciantului</h2><p id="operatorLegal" class="muted">Datele juridice ale restaurantului nu au fost încă furnizate către PONT.</p></section>
+<section class="panel"><h2>Preparatele publicate</h2><p class="muted">Sunt afișate doar informațiile existente în meniul publicat. Lista completă de ingrediente, alergeni, gramaje și informații nutriționale va fi disponibilă după furnizarea și verificarea documentelor de către restaurant.</p><div id="dishes" aria-live="polite">Se încarcă meniul…</div></section>
+<p class="muted">Important: înainte de a confirma o comandă, cere restaurantului informațiile alimentare obligatorii care lipsesc din această pagină, mai ales dacă ai alergii sau intoleranțe. PONT nu verifică în laborator preparatele.</p>
+<div class="foot"><a href="../termeni.html">Termeni și condiții</a> · <a href="../confidentialitate.html">GDPR</a> · <a href="../cookies.html">Cookie-uri</a></div></main>
+<script>
+(async()=>{
+ const qs=new URLSearchParams(location.search),id=qs.get('restaurant');
+ const valid=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id||'');
+ const name=document.getElementById('restaurantName'),dishes=document.getElementById('dishes'),contact=document.getElementById('restaurantContact');
+ if(!valid){name.textContent='Restaurant neidentificat';dishes.textContent='Nu a fost specificat un restaurant valid.';return}
+ const cfg=window.PONT_CONFIG;
+ if(!cfg?.url||!cfg?.anonKey){name.textContent='Date indisponibile';dishes.textContent='Reîncearcă mai târziu.';return}
+ const headers={apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey};
+ try{
+  const response=await fetch(cfg.url+'/rest/v1/restaurants?id=eq.'+encodeURIComponent(id)+'&enabled=eq.true&select=id,name,phone',{headers});
+  if(!response.ok)throw Error('Nu s-au putut încărca datele');
+  const restaurant=(await response.json())[0];
+  if(!restaurant)throw Error('Restaurantul nu este disponibil');
+  name.textContent=restaurant.name;
+  if(restaurant.phone)contact.textContent='Contact comercial: '+restaurant.phone;
+  const today=new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest'}).format(new Date());
+  const menuResponse=await fetch(cfg.url+'/rest/v1/menus?restaurant_id=eq.'+encodeURIComponent(id)+'&service_date=eq.'+today+'&published=eq.true&select=title,price,first_course,second_course,dessert,dish_selection',{headers});
+  if(!menuResponse.ok)throw Error('Meniul nu este disponibil');
+  const menus=await menuResponse.json();
+  dishes.replaceChildren();
+  if(!menus.length){dishes.textContent='Nu există un meniu publicat pentru astăzi.';return}
+  for(const menu of menus){
+   const arr=Array.isArray(menu.dish_selection)?menu.dish_selection:[];
+   const fallback=[menu.first_course,menu.second_course,menu.dessert].filter(Boolean);
+   const names=arr.length?arr.map(d=>String(d?.name||d?.label||d?.title||'').trim()).filter(Boolean):fallback;
+   if(!names.length){let p=document.createElement('p');p.textContent=menu.title||'Meniu publicat fără listă detaliată';dishes.append(p)}
+   else for(const value of names){let p=document.createElement('div');p.className='dish';p.textContent=value;dishes.append(p)}
+   if(menu.price!=null){let p=document.createElement('p');p.textContent='Preț meniu: '+Number(menu.price).toLocaleString('ro-RO')+' lei';dishes.append(p)}
+  }
+ }catch(error){name.textContent='Informații indisponibile';dishes.textContent=error.message}
+})();
+</script><script type="module" src="../pont-privacy-consent.js?v=legal-20261113"></script></body></html>
