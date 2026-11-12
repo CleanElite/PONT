@@ -32,6 +32,13 @@
   }
 }
 
+.pont-admin #app .pont-restaurant-premium-heading .pont-bell-header-slot{
+ display:flex;flex:0 0 auto;align-items:center;justify-content:flex-end;
+ margin-left:auto;min-width:50px;
+}
+.pont-admin #app .pont-restaurant-premium-heading .pont-bell-header-slot .pont-auction-notify{
+ display:flex;position:relative;margin:0!important;flex-direction:column;align-items:center;gap:4px;
+}
 /* Restaurant-only compact premium header: name immediately after heading, bell aligned right. */
 .pont-admin #app .pont-restaurant-premium-heading{
  display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
@@ -65,6 +72,7 @@
   <div class="admin-hero-copy">
     <h1><span class="pont-admin-heading-label">Panoul restaurantului</span><span id="adminRestaurantContext" class="pont-admin-heading-name">Restaurant</span></h1>
   </div>
+  <div id="pontAuctionBellMount" class="pont-bell-header-slot" aria-label="Notificări licitații"></div>
 </div>
 <nav class="admin-nav pont-restaurant-grouped-nav" aria-label="Secțiunile panoului">
   <div class="pont-restaurant-nav-group pont-restaurant-nav-menus" role="group" aria-label="Gestionare meniuri">
@@ -193,7 +201,7 @@
 const $=id=>document.getElementById(id),c=window.PONT_CONFIG||{};if(!c.url||!c.anonKey){$('setup').hidden=false}else start().catch(e=>{$('setup').hidden=false;$('setup').querySelector('p').textContent=e.message});
 async function start(){
 $('menuSuccessOK').onclick=()=>$('menuSuccessDialog').close();
-const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');const db=createClient(c.url,c.anonKey);const {initPontAuctionPaymentBell}=await import('../auction-payment-bell.js?v=20261112');const pontAuctionBell=initPontAuctionPaymentBell({db,config:c});const {createPontAdminSession}=await import('../admin-session.js?v=1');const adminSession=createPontAdminSession(db);let user=null,restaurants=[],menus=[];const esc=s=>String(s??'').replace(/[&<>"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));const req=async q=>{let {data,error}=await q;if(error)throw error;return data||[]};const status=(s,bad=false)=>{$('status').textContent=s;$('status').className=bad?'error':''};
+const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');const db=createClient(c.url,c.anonKey);const {initPontAuctionPaymentBell}=await import('../auction-payment-bell.js?v=gold-header-20261112b');const pontAuctionBell=initPontAuctionPaymentBell({db,config:c});const {createPontAdminSession}=await import('../admin-session.js?v=1');const adminSession=createPontAdminSession(db);let user=null,restaurants=[],menus=[];const esc=s=>String(s??'').replace(/[&<>"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));const req=async q=>{let {data,error}=await q;if(error)throw error;return data||[]};const status=(s,bad=false)=>{$('status').textContent=s;$('status').className=bad?'error':''};
 const restaurantTabs = [...document.querySelectorAll('.admin-nav button[data-view]')];
 function showView(view, updateHash = true) {
  const tab = restaurantTabs.find(button => button.dataset.view === view) || restaurantTabs[0];
