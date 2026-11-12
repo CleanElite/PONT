@@ -712,70 +712,6 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
  }
 }
 
-/* PONT payments: full-screen secure payment surface, independent of the auction page. */
-html.pont-payment-scroll-locked{overflow:hidden!important;overscroll-behavior:none!important;height:100%!important}
-body.pont-payment-scroll-locked{position:fixed!important;width:100%!important;left:0!important;right:0!important;overflow:hidden!important;overscroll-behavior:none!important}
-dialog#pontCardPaymentDialog[open]{
- position:fixed!important;inset:0!important;top:0!important;left:0!important;
- right:0!important;bottom:0!important;
- display:block!important;
- box-sizing:border-box!important;margin:0!important;transform:none!important;
- width:100vw!important;max-width:none!important;min-width:100vw!important;
- height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;
- border:0!important;border-radius:0!important;padding:0!important;
- overflow:hidden!important;overscroll-behavior:none!important;
- background:linear-gradient(165deg,#061d22 0%,#031417 58%,#071f24 100%)!important;
- box-shadow:none!important;z-index:2147483647!important;
-}
-dialog#pontCardPaymentDialog::backdrop{background:#031417!important;opacity:1!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
-dialog#pontCardPaymentDialog .pont-confirm-inner{
- box-sizing:border-box!important;position:relative!important;
- width:100%!important;max-width:none!important;
- height:100%!important;min-height:0!important;max-height:100%!important;
- margin:0!important;padding:clamp(84px,12vh,110px) max(18px,calc((100vw - 490px)/2)) 36px!important;
- overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;
- -webkit-overflow-scrolling:touch;text-align:center!important;
-}
-dialog#pontCardPaymentDialog #pontCardPaymentClose{
- position:fixed!important;top:max(16px,env(safe-area-inset-top))!important;
- right:max(18px,env(safe-area-inset-right))!important;
- display:grid!important;place-items:center!important;float:none!important;
- z-index:100!important;margin:0!important;
- width:46px!important;height:46px!important;min-width:46px!important;
- pointer-events:auto!important;touch-action:manipulation!important;
- border:1px solid rgba(117,252,226,.55)!important;border-radius:50%!important;
- background:#0a4447!important;color:#fff!important;
-}
-dialog#pontCardPaymentDialog #pontCardPaymentForm,
-dialog#pontCardPaymentDialog #pontCardPaymentSummary,
-dialog#pontCardPaymentDialog .pont-card-payment-note{
- width:100%!important;max-width:490px!important;margin-left:auto!important;margin-right:auto!important;
-}
-dialog#pontCardPaymentDialog .pont-save-details{
- margin:13px auto 0!important;border:1px solid rgba(114,225,206,.38)!important;
- border-radius:13px!important;background:rgba(4,40,44,.85)!important;
- text-align:left!important;overflow:hidden!important;
-}
-dialog#pontCardPaymentDialog .pont-save-details>summary{
- display:flex;align-items:center;justify-content:space-between;gap:12px;
- cursor:pointer;list-style:none;padding:14px 15px!important;
- color:#e7faf5!important;font:650 13px/1.35 system-ui,sans-serif!important;
-}
-dialog#pontCardPaymentDialog .pont-save-details>summary::-webkit-details-marker{display:none}
-dialog#pontCardPaymentDialog .pont-save-details>summary::after{
- content:"+";display:grid;place-items:center;flex:0 0 24px;
- width:24px;height:24px;border:1px solid #6bd8c5a6;border-radius:50%;
- font:400 20px/1 system-ui;color:#aef8e9;
-}
-dialog#pontCardPaymentDialog .pont-save-details[open]>summary::after{content:"−"}
-dialog#pontCardPaymentDialog .pont-save-details p{
- margin:0!important;padding:0 15px 15px!important;
- font:450 12px/1.55 system-ui,sans-serif!important;color:#bcded9!important;
-}
-dialog#pontCardPaymentDialog .pont-save-details summary:focus-visible{outline:2px solid #b0faeb;outline-offset:-3px}
-@supports(height:100svh){
- dialog#pontCardPaymentDialog[open]{height:100svh!important;min-height:100svh!important;max-height:100svh!important}
-}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -943,24 +879,7 @@ dialog#pontCardPaymentDialog .pont-save-details summary:focus-visible{outline:2p
   </div>
  </div>
 </dialog>
-<dialog id="pontCardPaymentDialog" class="auction-modal pont-premium-confirm pont-card-payment-dialog" aria-labelledby="pontCardPaymentHeading">
- <div class="pont-confirm-inner">
-  <button type="button" id="pontCardPaymentClose" class="auction-modal-close" aria-label="Închide plata">×</button>
-  <div class="pont-success-kicker">PLATĂ SECURIZATĂ</div>
-  <h2 id="pontCardPaymentHeading">Finalizează plata licitației</h2>
-  <p id="pontCardPaymentSummary" class="pont-card-payment-summary"></p>
-  <form id="pontCardPaymentForm">
-   <div id="pontStripePaymentElement"></div>
-   <details class="pont-save-details" id="pontSavePaymentDetails">
-    <summary>Salvează datele pentru următoarea plată</summary>
-    <p>Pentru a salva datele în siguranță prin Stripe Link, folosește opțiunea de salvare din formularul Stripe de mai sus. PONT nu păstrează datele cardului.</p>
-   </details>
-   <p id="pontCardPaymentMessage" role="status" aria-live="polite"></p>
-   <button type="submit" class="primary-bid" id="pontCardPaymentSubmit" disabled>Autorizează plata</button>
-  </form>
-  <p class="pont-card-payment-note">Datele cardului sunt procesate securizat de Stripe. PONT nu le stochează.</p>
- </div>
-</dialog>
+
 <dialog id="bidSuccess" class="auction-modal auction-success pont-premium-confirm pont-premium-success" aria-labelledby="bidSuccessTitle" aria-describedby="bidSuccessMessage">
   <div class="pont-confirm-inner">
     <div class="pont-confirm-emblem pont-success-emblem" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></div>
@@ -1081,100 +1000,7 @@ function renderAuctionStatus(){
  }
 }
 
-let pontStripe=null,pontElements=null,pontPaymentMonth=null,pontPaymentBusy=false;
-let pontPaymentRequestId=0,pontPaymentSubmitting=false,pontPaymentScrollY=0,pontPaymentScrollLocked=false;
-let pontPaymentTouchY=0,pontPaymentSavedBodyStyles=null;
-function pontPaymentTouchStart(event){
- if(!pontPaymentScrollLocked)return;
- pontPaymentTouchY=event.touches[0]?.clientY??0;
-}
-function pontPaymentPreventBackgroundScroll(event){
- if(!pontPaymentScrollLocked||!event.cancelable)return;
- const dialog=$('pontCardPaymentDialog');
- const target=event.target;
- // Stripe's card fields remain interactive; the only scrollable area is the dialog itself.
- if(!(target instanceof Node)||!dialog.contains(target)){
-  event.preventDefault();
-  return;
- }
- let node=target instanceof Element?target:target.parentElement;
- const delta=event.type==='touchmove'?(pontPaymentTouchY-(event.touches[0]?.clientY??pontPaymentTouchY)):event.deltaY;
- if(event.type==='touchmove')pontPaymentTouchY=event.touches[0]?.clientY??pontPaymentTouchY;
- while(node&&node!==dialog){
-  if(node.scrollHeight>node.clientHeight+1&&getComputedStyle(node).overflowY!=='hidden'){
-   const atTop=node.scrollTop<=0,atBottom=node.scrollTop+node.clientHeight>=node.scrollHeight-1;
-   if((delta<0&&!atTop)||(delta>0&&!atBottom))return;
-  }
-  node=node.parentElement;
- }
- event.preventDefault();
-}
-function pontPaymentEnforceScroll(){
- if(pontPaymentScrollLocked&&window.scrollY!==pontPaymentScrollY){
-  window.scrollTo({top:pontPaymentScrollY,left:0,behavior:'instant'});
- }
-}
-function pontLockPaymentBackground(){
- if(pontPaymentScrollLocked)return;
- pontPaymentScrollY=window.scrollY;
- pontPaymentSavedBodyStyles={
-  position:document.body.style.position,
-  top:document.body.style.top,
-  width:document.body.style.width,
-  left:document.body.style.left,
-  right:document.body.style.right,
-  overflow:document.body.style.overflow
- };
- pontPaymentScrollLocked=true;
- document.documentElement.classList.add('pont-payment-scroll-locked');
- document.body.classList.add('pont-payment-scroll-locked');
- Object.assign(document.body.style,{
-  position:'fixed',top:'-'+pontPaymentScrollY+'px',
-  width:'100%',left:'0',right:'0',overflow:'hidden'
- });
- document.addEventListener('touchstart',pontPaymentTouchStart,{passive:true,capture:true});
- document.addEventListener('touchmove',pontPaymentPreventBackgroundScroll,{passive:false,capture:true});
- document.addEventListener('wheel',pontPaymentPreventBackgroundScroll,{passive:false,capture:true});
- window.addEventListener('scroll',pontPaymentEnforceScroll,{passive:true});
-}
-function pontUnlockPaymentBackground(){
- if(!pontPaymentScrollLocked)return;
- pontPaymentScrollLocked=false;
- document.removeEventListener('touchstart',pontPaymentTouchStart,true);
- document.removeEventListener('touchmove',pontPaymentPreventBackgroundScroll,true);
- document.removeEventListener('wheel',pontPaymentPreventBackgroundScroll,true);
- window.removeEventListener('scroll',pontPaymentEnforceScroll);
- document.documentElement.classList.remove('pont-payment-scroll-locked');
- document.body.classList.remove('pont-payment-scroll-locked');
- if(pontPaymentSavedBodyStyles)Object.assign(document.body.style,pontPaymentSavedBodyStyles);
- pontPaymentSavedBodyStyles=null;
- window.scrollTo(0,pontPaymentScrollY);
-}
-function pontCloseCardPayment(){
- if(pontPaymentSubmitting){
-  $('pontCardPaymentMessage').textContent='Autorizarea plății este în curs. Așteaptă confirmarea Stripe înainte de închidere.';
-  return;
- }
- ++pontPaymentRequestId;
- pontPaymentBusy=false;
- const dialog=$('pontCardPaymentDialog');
- if(dialog.open)dialog.close();
- pontUnlockPaymentBackground();
-}
-
-function pontLoadStripeJS(){
- if(window.Stripe)return Promise.resolve();
- return new Promise((resolve,reject)=>{
-  const existing=document.querySelector('script[data-pont-stripe]');
-  if(existing){existing.addEventListener('load',resolve,{once:true});existing.addEventListener('error',()=>reject(Error('Stripe nu a putut fi încărcat')),{once:true});return}
-  const script=document.createElement('script');
-  script.src='https://js.stripe.com/v3/';
-  script.dataset.pontStripe='true';
-  script.onload=resolve;
-  script.onerror=()=>reject(Error('Stripe nu a putut fi încărcat'));
-  document.head.append(script);
- });
-}
+let pontCheckout=null;
 async function pontRefreshPendingPayments(){
  const panel=$('pontPendingPayments'),list=$('pontPendingPaymentItems');
  if(role!=='restaurant'||!me){panel.hidden=true;return}
@@ -1210,73 +1036,9 @@ async function pontRefreshPendingPayments(){
  panel.hidden=due.length===0;
 }
 async function pontOpenPayment(row){
- if(pontPaymentBusy)return;
- pontPaymentBusy=true;
- const requestId=++pontPaymentRequestId;
- pontPaymentMonth=row.campaign_month;
- const dialog=$('pontCardPaymentDialog'),submit=$('pontCardPaymentSubmit'),message=$('pontCardPaymentMessage');
- submit.disabled=true;message.textContent='Se pregătește formularul de plată…';
- $('pontCardPaymentSummary').textContent='Campania '+new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(row.campaign_month+'T12:00:00Z'))+' · '+money(row.amount);
- $('pontStripePaymentElement').replaceChildren();
- $('pontSavePaymentDetails').open=false;
- pontLockPaymentBackground();
- if(!dialog.open)dialog.showModal();
- try{
-  const {data:{session},error:sessionError}=await db.auth.getSession();
-  if(sessionError||!session?.access_token)throw Error('Autentificarea a expirat');
-  if(requestId!==pontPaymentRequestId||!dialog.open)return;
-  const response=await fetch(window.PONT_CONFIG.url+'/functions/v1/pont-stripe-auctions?action=create',{
-   method:'POST',headers:{'Authorization':'Bearer '+session.access_token,'apikey':window.PONT_CONFIG.anonKey,'content-type':'application/json'},
-   body:JSON.stringify({month:row.campaign_month,restaurantId:row.restaurant_id})
-  });
-  const result=await response.json();
-  if(!response.ok)throw Error(result.error||'Nu s-a putut inițializa plata');
-  if(requestId!==pontPaymentRequestId||!dialog.open)return;
-  await pontLoadStripeJS();
-  if(requestId!==pontPaymentRequestId||!dialog.open)return;
-  pontStripe=window.Stripe(result.publishableKey);
-  pontElements=pontStripe.elements({clientSecret:result.clientSecret,appearance:{theme:'night',variables:{colorPrimary:'#42e5c9',colorBackground:'#072b31',colorText:'#edf9f7',borderRadius:'10px'}}});
-  const element=pontElements.create('payment',{layout:'tabs'});
-  element.mount('#pontStripePaymentElement');
-  submit.disabled=false;message.textContent='';
- }catch(error){if(requestId===pontPaymentRequestId&&dialog.open)message.textContent=error.message}
- finally{if(requestId===pontPaymentRequestId)pontPaymentBusy=false}
+ if(!pontCheckout)throw Error('Formularul Stripe nu este încărcat');
+ await pontCheckout.open(row);
 }
-$('pontCardPaymentClose').addEventListener('click',pontCloseCardPayment);
-$('pontCardPaymentDialog').addEventListener('cancel',e=>{
- e.preventDefault();
- pontCloseCardPayment();
-});
-$('pontCardPaymentDialog').addEventListener('close',()=>{
- ++pontPaymentRequestId;
- pontPaymentBusy=false;
- pontUnlockPaymentBackground();
-});
-$('pontCardPaymentForm').addEventListener('submit',async event=>{
- event.preventDefault();
- if(pontPaymentBusy||!pontStripe||!pontElements)return;
- pontPaymentBusy=true;
- pontPaymentSubmitting=true;
- const button=$('pontCardPaymentSubmit');
- button.disabled=true;
- $('pontCardPaymentMessage').textContent='Se autorizează plata…';
- try{
-  const {error,paymentIntent}=await pontStripe.confirmPayment({
-   elements:pontElements,
-   confirmParams:{return_url:location.origin+location.pathname},
-   redirect:'if_required'
-  });
-  if(error)throw Error(error.message||'Plata nu a fost autorizată');
-  if(paymentIntent?.status==='succeeded'){
-   $('pontCardPaymentMessage').textContent='Plata a fost autorizată. Confirmarea în PONT se actualizează după notificarea Stripe.';
-  }else{
-   $('pontCardPaymentMessage').textContent='Plata este în procesare. Verificăm confirmarea Stripe.';
-  }
-  await pontRefreshPendingPayments();
- }catch(error){$('pontCardPaymentMessage').textContent=error.message;button.disabled=false}
- finally{pontPaymentBusy=false;pontPaymentSubmitting=false}
-});
-
 function minimumPersonalBid(){return minimumBid;}
 function bidInputIssue(value){
  const own=ownOffer();
@@ -1496,6 +1258,8 @@ async function start(){
    $('bidForm').hidden=true;
   }
   if(role==='restaurant'){const access=await db.rpc('my_restaurant_access');if(access.error)throw access.error;me=access.data?.[0]?.restaurant_id;if(!me)throw Error('Restaurant neatribuit')}
+  const {initPontAuctionCheckout}=await import('../pont-auction-checkout.js?v=single-checkout-20261112');
+  pontCheckout=initPontAuctionCheckout({db,config:c,onFinished:()=>pontRefreshPendingPayments()});
   await resolveCampaignMonths();
   await load();
   // A bell/notification deep link opens the very same Stripe dialog as this page's button.
