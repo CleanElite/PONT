@@ -59,7 +59,7 @@ button { cursor: pointer; }
 /* Match PONT menu heading while preserving the campaign month below it. */
 .menu-heading .promotion-campaign-period{margin-top:8px;color:#a9c8cb;font-size:clamp(12px,2.4vw,18px);line-height:1.3}
 .menu-heading .promotion-campaign-period #date{color:#e6eff0;font-weight:600;text-transform:capitalize}
-.promotion-month-picker{display:flex;align-items:center;gap:8px;width:fit-content;margin:9px auto 0;color:#b9d2d2;font:600 12px system-ui}
+ .promotion-month-picker{display:flex;align-items:center;gap:8px;width:fit-content;margin:9px auto 0;color:#b9d2d2;font:600 12px system-ui}
 .promotion-month-picker select{min-height:34px;padding:5px 10px;border-radius:9px;border:1px solid #7affeda3;background:#06282d;color:#f4faf9;font:650 12px system-ui}
 
 /* Premium auction dialogs — same Dark Teal luminous visual family as PONT dashboards. */
@@ -265,6 +265,12 @@ dialog.pont-premium-success .pont-success-actions svg{width:19px;height:19px}
  margin:2px 0 9px;padding:8px 10px;border-left:2px solid #60f1de;
  color:#d4f7ef;font:550 clamp(11px,2.75vw,13px)/1.4 system-ui;
 }
+
+dialog.pont-premium-success .pont-success-amount{
+ margin:0 auto 12px!important;color:#badad3!important;
+ font:500 clamp(12px,3vw,14px)/1.45 system-ui!important;
+}
+dialog.pont-premium-success #bidSuccessRank{color:#78ffe9!important;font-weight:750}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -395,7 +401,8 @@ dialog.pont-premium-success .pont-success-actions svg{width:19px;height:19px}
     <div class="pont-confirm-emblem pont-success-emblem" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></div>
     <div class="pont-success-kicker">OFERTĂ ÎNREGISTRATĂ</div>
     <h2 id="bidSuccessTitle">Felicitări!</h2>
-    <p id="bidSuccessMessage" class="pont-success-message">Oferta ta curentă de <strong id="bidSuccessAmount"></strong> a fost salvată pentru promovare.</p>
+    <p id="bidSuccessMessage" class="pont-success-message">Ai licitat pentru <strong id="bidSuccessRank">o poziție în clasament</strong>.</p>
+    <p class="pont-success-amount">Oferta înregistrată: <strong id="bidSuccessAmount"></strong></p>
     <p class="pont-success-note">Aceasta este oferta ta curentă. Clasamentul se actualizează după sumele înregistrate. Plata se confirmă separat.</p>
     <form method="dialog" class="pont-success-actions"><button class="primary-bid" autofocus><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Am înțeles</button></form>
   </div>
@@ -548,8 +555,9 @@ async function resolveCampaignMonths(){
  const preferred=/^\d{4}-\d{2}$/.test(queryMonth||'')?queryMonth+'-01':null;
  const active=(data||[]).filter(item=>item.is_open);
  const all=[...new Set([...(data||[]).map(row=>row.campaign_month),nextMonth()])].sort().reverse();
- // Always respect an explicitly linked campaign, otherwise show an active one first.
- month=preferred||(active.find(row=>row.campaign_month===nextMonth())||active[0])?.campaign_month||nextMonth();
+ // Restaurant accounts only see the active campaign, not a month selector.
+ // An explicit month in the URL is honored only for Super Admin.
+ month=(role==='super_admin'?preferred:null)||(active.find(row=>row.campaign_month===nextMonth())||active[0])?.campaign_month||nextMonth();
  const chooser=$('promotionMonthSelect'),wrapper=$('promotionMonthSelectWrap');
  const available=[...new Set([month,...all])];
  chooser.replaceChildren();
@@ -560,7 +568,7 @@ async function resolveCampaignMonths(){
   chooser.append(opt);
  }
  chooser.value=month;
- wrapper.hidden=available.length<2;
+ wrapper.hidden=role!=='super_admin'||available.length<2;
  chooser.onchange=async()=>{
   if(busy)return;
   month=chooser.value;
@@ -642,8 +650,19 @@ $('bidForm').onsubmit=async e=>{
  $('bidAmount').value='';
  $('auctionDialog').close();
  $('bidSuccessAmount').textContent=money(value);
+ // Read fresh, server-persisted offers before reporting a placement.
+ let savedRank=null;
+ try{
+  await load();
+  const sorted=orderedOffers();
+  const index=sorted.findIndex(offer=>offer.restaurant_id===me);
+  if(index>=0 && Number(sorted[index].amount)===value)savedRank=index+1;
+ }catch(error){
+  console.error('Actualizare clasament după ofertă:',error);
+ }
+ const rankLabel=$('bidSuccessRank');
+ rankLabel.textContent=savedRank?('poziția a '+savedRank+'-a în clasamentul actual'):'o poziție în clasament';
  $('bidSuccess').showModal();
- await load().catch(e=>console.error('Actualizare clasament:',e));
 };
 start();
 </script></body></html>
