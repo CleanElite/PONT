@@ -1948,7 +1948,7 @@ async function loadAuctionBidHistory(month){
    const item=document.createElement('div');item.className='pont-auction-history-row';
    const left=document.createElement('span');
    const restaurant=restaurants.find(r=>r.id===entry.restaurant_id);
-   const kind=entry.event_type==='initial_snapshot'?'Ofertă existentă la activarea istoricului':entry.event_type==='raised_bid'?'Majorare ofertă':entry.event_type==='lowered_bid'?'Reducere ofertă':'Ofertă nouă';
+   const kind=entry.event_type==='initial_snapshot'?'Ofertă existentă la activarea istoricului':entry.event_type==='raised_bid'?'Majorare ofertă':entry.event_type==='lowered_bid'?'Reducere ofertă':entry.event_type==='withdrawn_bid'?'Ofertă retrasă':'Ofertă nouă';
    left.textContent=(restaurant?.name||'Restaurant')+' · '+kind;
    const right=document.createElement('strong');
    right.textContent=Number(entry.amount).toLocaleString('ro-RO')+' lei';
