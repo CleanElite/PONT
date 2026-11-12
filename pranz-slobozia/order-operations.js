@@ -318,6 +318,52 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
      font-size:9px!important;padding:5px!important;
    }
  }
+
+ /* Thin full-width previous/next weekly navigation: no middle date pill. */
+ .pont-operations #pontWeekPanel .pont-op-week-nav{
+   display:grid!important;
+   grid-template-columns:repeat(2,minmax(0,1fr))!important;
+   align-items:center!important;
+   gap:clamp(5px,1.5vw,10px)!important;
+   width:100%!important;max-width:100%!important;
+   margin:10px 0 13px!important;
+   padding:0!important;box-sizing:border-box!important;
+ }
+ .pont-operations #pontWeekPanel .pont-op-week-nav .pont-op-button{
+   box-sizing:border-box!important;
+   display:flex!important;align-items:center!important;justify-content:center!important;
+   flex:1 1 0!important;
+   grid-row:1!important;
+   min-width:0!important;max-width:100%!important;width:100%!important;
+   min-height:32px!important;height:32px!important;
+   margin:0!important;padding:4px clamp(3px,1vw,8px)!important;
+   border-radius:10px!important;
+   gap:clamp(2px,.7vw,5px)!important;
+   font:600 clamp(9px,2.45vw,12px)/1.05 system-ui,-apple-system,sans-serif!important;
+   letter-spacing:-.04em!important;
+   white-space:nowrap!important;
+   overflow:hidden!important;
+ }
+ .pont-operations #pontWeekPanel .pont-op-week-nav .pont-op-button>span:not(.pont-op-arrow){
+   white-space:nowrap!important;min-width:0!important;
+ }
+ .pont-operations #pontWeekPanel .pont-op-week-nav .pont-op-arrow{
+   font-size:clamp(14px,3.1vw,18px)!important;
+   flex:none!important;line-height:1!important;
+ }
+ .pont-operations #pontWeekPanel #pontOpWeekPrevious{
+   grid-column:1!important;grid-row:1!important;
+ }
+ .pont-operations #pontWeekPanel #pontOpWeekNext{
+   grid-column:2!important;grid-row:1!important;
+ }
+ @media(max-width:360px){
+   .pont-operations #pontWeekPanel .pont-op-week-nav{gap:4px!important}
+   .pont-operations #pontWeekPanel .pont-op-week-nav .pont-op-button{
+     font-size:9px!important;letter-spacing:-.06em!important;
+     padding:4px 2px!important;gap:2px!important;
+   }
+ }
  </style>
  <details id="pontHoursPanel"><summary>${superAdminSettings ? 'Program comenzi' : 'Programul comenzilor și comanda minimă'}</summary>
  <label id="pontOpRestaurantWrap">Restaurant<select id="pontOpRestaurant"></select></label>
@@ -328,7 +374,6 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  <label id="pontOpWeekRestaurantWrap" hidden><span class="pont-week-restaurant-label">Restaurant</span><select id="pontOpWeekRestaurant"></select></label>
  <div class="pont-op-week-nav">
  <button type="button" class="pont-op-button" id="pontOpWeekPrevious"><span class="pont-op-arrow" aria-hidden="true">‹</span><span>Săptămâna anterioară</span></button>
- <span class="pont-week-range" id="pontWeekRange" aria-live="polite"></span>
  <button type="button" class="pont-op-button" id="pontOpWeekNext"><span>Săptămâna următoare</span><span class="pont-op-arrow" aria-hidden="true">›</span></button>
  </div>
  <div id="pontOpDays" class="pont-op-days"></div>
@@ -445,9 +490,6 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    const restaurant=$('pontOpWeekRestaurant').value;
    const menus=typeof window.pontAllMenus==='function'?window.pontAllMenus():[];
    const days=['Luni','Marți','Miercuri','Joi','Vineri','Sâmbătă','Duminică'];
-   const weekEnd=dateAt(weekStart,6);
-   const formatShort=value=>new Intl.DateTimeFormat('ro-RO',{day:'2-digit',month:'short',timeZone:'UTC'}).format(new Date(value+'T12:00:00Z')).replace('.','');
-   $('pontWeekRange').textContent=formatShort(weekStart)+' – '+formatShort(weekEnd)+' '+weekEnd.slice(0,4);
    const abbr=['LUN','MAR','MIE','JOI','VIN','SÂM','DUM'];
    $('pontOpDays').innerHTML=days.map((name,i)=>{
      const date=dateAt(weekStart,i),menu=menus.find(m=>m.restaurant_id===restaurant&&m.service_date===date);
