@@ -132,9 +132,12 @@ export function initPontAuctionPaymentBell({db,config}) {
    });
    if(error)throw Error(error.message||'Nu s-a putut autoriza plata');
    message.textContent=paymentIntent?.status==='succeeded'?'Plata a fost autorizată. Actualizarea apare după confirmarea Stripe.':'Plata este în procesare.';
-   await refresh();
   }catch(err){message.textContent=err.message;submit.disabled=false}
-  finally{busy=false}
+  finally{
+   busy=false;
+   // Stripe confirms server-side via webhook; refresh the notification after the attempt.
+   refresh().catch(e=>console.warn('Stare plată:',e.message));
+  }
  });
  const interval=setInterval(()=>{if(visible&&!document.hidden)refresh().catch(e=>console.warn('Notificare plăți:',e.message))},20000);
  document.addEventListener('visibilitychange',()=>{if(visible&&!document.hidden)refresh().catch(()=>{})});
