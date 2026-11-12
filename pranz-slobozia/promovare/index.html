@@ -485,57 +485,120 @@ dialog.pont-premium-auction.pont-auction-modal-paused #pontWithdrawBid{
  display:none!important;
 }
 
-/* Read-only final auction results; used for every card after the Super Admin closes the auction. */
-dialog.pont-final-summary-dialog{width:min(94vw,540px)!important;max-width:540px!important}
-dialog.pont-final-summary-dialog .pont-confirm-inner{padding:clamp(23px,5.8vw,37px)!important}
+/* Finalized auction: compact luxury ranking cards, responsive with real trophy icons. */
+dialog.pont-final-summary-dialog{
+ width:min(94vw,620px)!important;max-width:620px!important;
+ max-height:min(90dvh,900px)!important;overflow:hidden!important;
+ border:1px solid rgba(231,207,153,.52)!important;border-radius:25px!important;
+ background:radial-gradient(ellipse at 48% -12%,rgba(191,155,79,.20),transparent 58%),linear-gradient(155deg,#112f35 0%,#071a25 66%,#07141e)!important;
+ box-shadow:0 26px 85px #000b,0 0 35px rgba(204,178,105,.12)!important;
+}
+dialog.pont-final-summary-dialog::backdrop{background:rgba(1,9,16,.83)!important;backdrop-filter:blur(9px)!important}
+dialog.pont-final-summary-dialog .pont-confirm-inner{
+ padding:clamp(19px,4vw,32px)!important;text-align:left!important;
+ max-height:min(90dvh,900px)!important;overflow-y:auto!important;
+ scrollbar-width:thin;scrollbar-color:#5b817c transparent;
+}
 dialog.pont-final-summary-dialog .pont-final-summary-kicker{
- text-align:center;color:#f5d6a0;font:750 11px/1.4 system-ui;
- letter-spacing:.19em;margin:4px 35px 10px;
+ color:#f2d59a;font:800 10px/1.4 system-ui;letter-spacing:.22em;
+ text-align:center;margin:3px 36px 8px;
 }
 dialog.pont-final-summary-dialog #pontFinalSummaryTitle{
- color:#f9fffd!important;font:650 clamp(27px,6vw,37px)/1.15 Georgia,'Times New Roman',serif!important;
- margin:0 22px 12px!important;text-align:center;
+ color:#fffdf5!important;font:650 clamp(25px,5.5vw,36px)/1.12 Georgia,'Times New Roman',serif!important;
+ margin:0 28px 11px!important;text-align:center;
 }
 dialog.pont-final-summary-dialog .pont-final-summary-rule{
- width:min(68%,250px);height:2px;margin:0 auto 15px;
- background:linear-gradient(90deg,transparent,#ffe8a5 48%,transparent);
- box-shadow:0 0 12px #ffdc8880;
+ width:130px;height:2px;margin:0 auto 12px;
+ background:linear-gradient(90deg,transparent,#f4d89a,transparent);box-shadow:0 0 13px #ffe4a66e;
 }
 dialog.pont-final-summary-dialog #pontFinalSummaryDescription{
- margin:0 auto 18px!important;max-width:380px;
- text-align:center;color:#c9e5df!important;font:450 13px/1.55 system-ui!important;
+ margin:0 auto 16px!important;max-width:400px;text-align:center;
+ color:#c5dcd7!important;font:500 12px/1.5 system-ui!important;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-meta{
+ display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin:0 0 17px;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-meta span{
+ display:inline-flex;align-items:center;gap:5px;padding:6px 10px;
+ border:1px solid #b5a17b66;border-radius:999px;background:#cfb06d12;
+ color:#e8dabe;font:650 11px/1.25 system-ui;
 }
 dialog.pont-final-summary-dialog .pont-final-summary-list{
- display:grid;gap:8px;max-height:min(55dvh,480px);overflow:auto;
- padding:3px 2px 8px;scrollbar-width:thin;scrollbar-color:#4ca99b transparent;
+ display:grid;gap:10px;max-height:none;overflow:visible;padding:2px 1px 9px;
 }
 dialog.pont-final-summary-dialog .pont-final-summary-row{
- display:grid;grid-template-columns:54px minmax(0,1fr) auto;
- align-items:center;gap:12px;padding:13px 12px;
- border:1px solid #61bca666;border-radius:14px;
- background:linear-gradient(120deg,#0d4141,#08282f);
+ --podium:#699991;--podium-glow:rgba(64,158,143,.08);
+ position:relative;isolation:isolate;
+ display:grid;grid-template-columns:52px minmax(0,1fr) auto;align-items:center;gap:12px;
+ min-width:0;min-height:81px;padding:13px 15px;
+ border:1px solid color-mix(in srgb,var(--podium) 40%,transparent)!important;border-radius:17px;
+ background:linear-gradient(118deg,color-mix(in srgb,var(--podium) 15%,#0c2833),#09232f 68%,#071b26)!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.055),0 9px 24px #0002,0 0 18px var(--podium-glow);
+ overflow:hidden;
 }
-dialog.pont-final-summary-dialog .pont-final-summary-row:nth-child(1){border-color:#f4d37b9c;background:linear-gradient(110deg,#53401d,#163a39 75%)}
-dialog.pont-final-summary-dialog .pont-final-summary-row:nth-child(2){border-color:#bfd3d5a0}
-dialog.pont-final-summary-dialog .pont-final-summary-row:nth-child(3){border-color:#cda57b8f}
-dialog.pont-final-summary-dialog .pont-final-summary-position{
- color:#d4eae5;font:700 12px/1.35 system-ui;white-space:nowrap;
+dialog.pont-final-summary-dialog .pont-final-summary-row::before{
+ content:"";position:absolute;left:0;top:13px;bottom:13px;width:3px;
+ background:var(--podium);border-radius:0 4px 4px 0;box-shadow:0 0 14px var(--podium);
 }
-dialog.pont-final-summary-dialog .pont-final-summary-row:nth-child(1) .pont-final-summary-position{color:#ffe1a1}
+dialog.pont-final-summary-dialog .pont-final-summary-row.pont-rank-gold{--podium:#f6cc69;--podium-glow:rgba(247,196,85,.15)}
+dialog.pont-final-summary-dialog .pont-final-summary-row.pont-rank-silver{--podium:#cadbe4;--podium-glow:rgba(199,222,233,.13)}
+dialog.pont-final-summary-dialog .pont-final-summary-row.pont-rank-bronze{--podium:#d79b69;--podium-glow:rgba(210,142,94,.12)}
+dialog.pont-final-summary-dialog .pont-final-summary-medal{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+ width:48px;min-height:52px;color:var(--podium);
+}
+dialog.pont-final-summary-dialog .pont-final-summary-medal svg{
+ width:31px;height:31px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;
+ filter:drop-shadow(0 0 8px var(--podium-glow));
+}
+dialog.pont-final-summary-dialog .pont-final-summary-medal .pont-final-summary-number{
+ font:800 10px/1.1 system-ui;white-space:nowrap;letter-spacing:.03em;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-medal.pont-medal-number{
+ border:1px solid #73aca34b;border-radius:12px;min-height:42px;background:#ffffff07;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-medal.pont-medal-number .pont-final-summary-number{font-size:13px}
+dialog.pont-final-summary-dialog .pont-final-summary-main{display:flex;flex-direction:column;gap:5px;min-width:0}
+dialog.pont-final-summary-dialog .pont-final-summary-tier{
+ color:var(--podium);font:800 10px/1.2 system-ui;letter-spacing:.11em;text-transform:uppercase;
+}
 dialog.pont-final-summary-dialog .pont-final-summary-restaurant{
- min-width:0;color:#f5fffd;font:650 clamp(13px,3.5vw,16px)/1.4 system-ui;
- overflow-wrap:anywhere;
+ min-width:0;color:#fbfffd;font:700 clamp(13px,3.4vw,17px)/1.26 system-ui;
+ overflow-wrap:break-word;word-break:normal;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
+ display:flex;flex-direction:column;align-items:flex-end;gap:4px;min-width:85px;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-value-label{
+ color:#9fbdb6;font:650 9px/1.2 system-ui;letter-spacing:.06em;text-transform:uppercase;
 }
 dialog.pont-final-summary-dialog .pont-final-summary-value{
- color:#96ffe0;font:750 clamp(13px,3.4vw,16px)/1.35 system-ui;
+ color:#f9f3de;font:800 clamp(14px,3.7vw,19px)/1.2 system-ui;
  font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right;
 }
-dialog.pont-final-summary-dialog .pont-final-summary-empty{
- color:#9cbbb6;font-weight:450;font-style:italic;
+dialog.pont-final-summary-dialog .pont-rank-gold .pont-final-summary-value{color:#ffe3a1}
+dialog.pont-final-summary-dialog .pont-rank-silver .pont-final-summary-value{color:#e0edf5}
+dialog.pont-final-summary-dialog .pont-rank-bronze .pont-final-summary-value{color:#ffd0ac}
+dialog.pont-final-summary-dialog .pont-final-summary-empty-note{
+ padding:13px;text-align:center;border:1px dashed #6e9b9359;border-radius:12px;
+ color:#a9c4bd;font:550 12px/1.5 system-ui;
 }
-@media(max-width:380px){
- dialog.pont-final-summary-dialog .pont-final-summary-row{grid-template-columns:44px minmax(0,1fr);gap:5px 9px}
- dialog.pont-final-summary-dialog .pont-final-summary-value{grid-column:2;text-align:left}
+@media(max-width:470px){
+ dialog.pont-final-summary-dialog .pont-confirm-inner{padding:20px 13px!important}
+ dialog.pont-final-summary-dialog .pont-final-summary-row{
+  grid-template-columns:43px minmax(0,1fr) auto;gap:8px;min-height:75px;padding:11px 10px;
+ }
+ dialog.pont-final-summary-dialog .pont-final-summary-medal{width:40px}
+ dialog.pont-final-summary-dialog .pont-final-summary-medal svg{width:27px;height:27px}
+ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{min-width:69px}
+ dialog.pont-final-summary-dialog .pont-final-summary-value{font-size:clamp(12px,3.3vw,16px)}
+ dialog.pont-final-summary-dialog .pont-final-summary-restaurant{font-size:clamp(12px,3.15vw,15px)}
+}
+@media(prefers-reduced-motion:no-preference){
+ dialog.pont-final-summary-dialog .pont-final-summary-row{animation:pont-final-rank-enter .35s ease both}
+ dialog.pont-final-summary-dialog .pont-final-summary-row:nth-child(2){animation-delay:.04s}
+ dialog.pont-final-summary-dialog .pont-final-summary-row:nth-child(3){animation-delay:.08s}
+ @keyframes pont-final-rank-enter{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
 }
 </style>
 </head>
@@ -756,25 +819,53 @@ function renderAuctionFinalSummary(){
  const rows=$('pontFinalSummaryList');
  const sorted=orderedOffers();
  const period=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'T12:00:00Z'));
- $('pontFinalSummaryDescription').textContent='Clasamentul final pentru '+period+'. Fiecare poziție afișează restaurantul și suma licitată.';
+ const occupied=sorted.filter(offer=>offer&&offer.amount!=null);
+ $('pontFinalSummaryDescription').textContent='Clasamentul final · '+period+' · poziții și sume confirmate la închiderea licitației.';
  rows.replaceChildren();
- const count=Math.max(20,sorted.length);
- for(let i=0;i<count;i++){
-  const offer=sorted[i];
-  const row=document.createElement('div');
-  row.className='pont-final-summary-row';
-  const position=document.createElement('span');
-  position.className='pont-final-summary-position';
-  position.textContent='Locul '+(i+1);
-  const restaurant=document.createElement('span');
-  restaurant.className='pont-final-summary-restaurant';
-  restaurant.textContent=offer?(names[offer.restaurant_id]||'Restaurant'):'Loc neocupat';
-  if(!offer)restaurant.classList.add('pont-final-summary-empty');
-  const amount=document.createElement('strong');
-  amount.className='pont-final-summary-value';
-  amount.textContent=offer&&offer.amount!=null?money(offer.amount):'—';
-  row.append(position,restaurant,amount);
-  rows.append(row);
+ const meta=document.querySelector('.pont-final-summary-meta');
+ if(meta)meta.replaceChildren();
+ const metaHost=meta||document.createElement('div');
+ metaHost.className='pont-final-summary-meta';
+ if(!meta)rows.before(metaHost);
+ for(const text of [occupied.length+' '+(occupied.length===1?'restaurant clasat':'restaurante clasate'),'Licitație încheiată']){
+  const pill=document.createElement('span');pill.textContent=text;metaHost.append(pill);
+ }
+ const trophy='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10v4c0 4.2-2 6.8-5 7.6C9 14.8 7 12.2 7 8V4Z"/><path d="M7 6H4v2c0 2.6 1.7 4.2 4.3 4.2M17 6h3v2c0 2.6-1.7 4.2-4.3 4.2M12 15.6V19m-4 2h8m-6-2h4"/></svg>';
+ if(!occupied.length){
+  const empty=document.createElement('div');empty.className='pont-final-summary-empty-note';
+  empty.textContent='Nu există oferte în clasamentul final pentru această lună.';
+  rows.append(empty);return;
+ }
+ const podium=['Aur · Campionul licitației','Argint · Locul secund','Bronz · Locul trei'];
+ for(const [i,offer] of sorted.entries()){
+  if(!offer||offer.amount==null)continue;
+  const rank=i+1;
+  const row=document.createElement('article');
+  row.className='pont-final-summary-row'+(rank===1?' pont-rank-gold':rank===2?' pont-rank-silver':rank===3?' pont-rank-bronze':'');
+  const medal=document.createElement('div');
+  medal.className='pont-final-summary-medal'+(rank>3?' pont-medal-number':'');
+  if(rank<=3)medal.innerHTML=trophy;
+  const number=document.createElement('span');
+  number.className='pont-final-summary-number';number.textContent='LOC '+rank;
+  medal.append(number);
+  const main=document.createElement('div');main.className='pont-final-summary-main';
+  const tier=document.createElement('span');tier.className='pont-final-summary-tier';
+  tier.textContent=podium[i]||'Poziție finală';
+  const restaurant=document.createElement('strong');restaurant.className='pont-final-summary-restaurant';
+  restaurant.textContent=names[offer.restaurant_id]||'Restaurant';
+  main.append(tier,restaurant);
+  const valueWrap=document.createElement('div');valueWrap.className='pont-final-summary-value-wrap';
+  const label=document.createElement('span');label.className='pont-final-summary-value-label';label.textContent='Ofertă finală';
+  const amount=document.createElement('strong');amount.className='pont-final-summary-value';
+  amount.textContent=money(offer.amount);
+  valueWrap.append(label,amount);
+  row.append(medal,main,valueWrap);rows.append(row);
+ }
+ const unoccupied=Math.max(0,20-sorted.length);
+ if(unoccupied){
+  const note=document.createElement('div');note.className='pont-final-summary-empty-note';
+  note.textContent=unoccupied+' '+(unoccupied===1?'poziție rămasă neocupată':'poziții rămase neocupate')+'.';
+  rows.append(note);
  }
 }
 function restaurantCardStyle(id) {
