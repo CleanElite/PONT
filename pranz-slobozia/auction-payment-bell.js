@@ -72,6 +72,7 @@ export function initPontAuctionPaymentBell({db,config}) {
  .pont-admin #app .pont-auction-bell.is-due::after{
    z-index:4;background:#fff9d6;box-shadow:0 0 11px #fff0a4;
  }
+ .pont-admin #app .pont-auction-notice[hidden]{display:none!important}
  .pont-admin #app .pont-auction-notice{
    display:-webkit-box!important;flex:0 1 172px;min-width:0;max-width:172px;
    overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;
