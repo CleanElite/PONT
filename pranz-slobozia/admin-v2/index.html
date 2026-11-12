@@ -519,4 +519,265 @@ await pontOperations.refresh();
 }
 </script>
 <script src="../compact-date-picker.js?v=c28b" defer></script>
-<script src="../pont-week-navigation.js?v=planner-nav-thin-20261112" defer></script></body></html>
+<script src="../pont-week-navigation.js?v=planner-nav-thin-20261112" defer></script><style id="pont-luxury-reference-20261112">
+/* PONT restaurant dashboard — bespoke reference design, preserving the current brand artwork. */
+body.pont-admin.pont-admin--restaurant{
+ --pont-luxe-gold:#e9be66;--pont-luxe-mint:#70e6d9;--pont-luxe-deep:#001719;
+ background:#00191d!important;
+ background-image:radial-gradient(ellipse 105% 35% at 42% -2%,rgba(3,92,91,.44),transparent 78%),
+ radial-gradient(ellipse 95% 45% at 90% 85%,rgba(2,68,72,.52),transparent 80%),
+ linear-gradient(160deg,#001b20,#001519 65%,#00272c)!important;
+ color:#f6f5f1!important;overflow-x:hidden!important;
+}
+body.pont-admin.pont-admin--restaurant::before{
+ content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;
+ background:radial-gradient(ellipse 105% 60% at -45% 97%,transparent 63%,rgba(232,186,91,.48) 63.2%,transparent 63.6%),
+ radial-gradient(ellipse 95% 56% at 100% 108%,transparent 71%,rgba(37,172,162,.34) 71.2%,transparent 71.6%);
+}
+body.pont-admin.pont-admin--restaurant>main{
+ position:relative;z-index:1;max-width:980px!important;
+ padding:0 clamp(10px,2.25vw,22px) 64px!important;
+}
+body.pont-admin.pont-admin--restaurant .admin-topbar{
+ height:clamp(71px,10vw,88px)!important;min-height:71px!important;
+ border-bottom:1px solid rgba(197,176,126,.22)!important;
+ box-shadow:0 1px 0 rgba(116,232,223,.06)!important;
+}
+body.pont-admin.pont-admin--restaurant .admin-topbar .admin-brand{
+ width:clamp(116px,20vw,161px)!important;max-height:76px!important;
+ object-fit:contain!important;filter:drop-shadow(0 0 7px rgba(71,239,221,.18))!important;
+}
+body.pont-admin.pont-admin--restaurant .admin-topbar .admin-back,
+body.pont-admin.pont-admin--restaurant #app #logout{
+ border:1px solid rgba(225,188,115,.75)!important;
+ color:#f9f7ee!important;border-radius:18px!important;
+ background:linear-gradient(155deg,rgba(16,61,65,.9),rgba(0,23,30,.93))!important;
+ box-shadow:inset 0 1px rgba(255,255,255,.12),0 3px 16px rgba(0,0,0,.18)!important;
+}
+body.pont-admin.pont-admin--restaurant .admin-topbar .admin-back{
+ width:clamp(42px,7vw,54px)!important;height:48px!important;min-height:48px!important;
+}
+body.pont-admin.pont-admin--restaurant #app #logout{
+ top:calc((clamp(71px,10vw,88px) - 43px)/2)!important;
+ right:clamp(10px,2.25vw,22px)!important;
+ min-height:43px!important;height:43px!important;max-width:45%!important;
+ padding:0 clamp(9px,2.2vw,16px)!important;
+ font-weight:720!important;font-size:clamp(10px,2.6vw,14px)!important;
+}
+body.pont-admin.pont-admin--restaurant #app #logout .admin-icon{color:#f7f5ed!important}
+body.pont-admin.pont-admin--restaurant #app #logout .admin-control-text{display:inline!important;white-space:nowrap!important}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-premium-heading{
+ margin:12px 0 16px!important;grid-template-rows:55px!important;
+ gap:clamp(5px,1.3vw,10px)!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-premium-heading .pont-restaurant-title-card{
+ height:55px!important;min-height:55px!important;max-height:55px!important;
+ border:1px solid rgba(232,191,106,.72)!important;border-radius:17px!important;
+ background:linear-gradient(120deg,rgba(4,48,53,.95),rgba(8,36,40,.96))!important;
+ box-shadow:inset 0 1px rgba(255,245,191,.16),0 3px 12px #0005,0 0 8px rgba(235,193,105,.12)!important;
+ padding:4px 9px!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-title-card .pont-admin-heading-label{
+ color:#f0f0e9!important;font:500 clamp(10px,5.5cqw,14px)/1.07 Georgia,serif!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-title-card #adminRestaurantContext{
+ color:#f0d19a!important;font:750 clamp(12px,7.5cqw,19px)/1.1 Georgia,serif!important;
+ text-shadow:0 1px 8px rgba(249,207,123,.12)!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontAuctionBellMount .pont-auction-notice{
+ border-color:rgba(228,182,99,.75)!important;
+ background:linear-gradient(135deg,#143f42,#052b31)!important;
+ color:#f9f6e9!important;
+ box-shadow:inset 0 1px #ffffff24,0 2px 12px #0003!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontAuctionBellMount .pont-auction-notice .pont-pay-month{
+ color:#dedbd1!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontAuctionBellMount .pont-auction-bell{
+ border:1px solid #f7d889!important;
+ border-radius:14px!important;box-shadow:0 0 0 1px #9c752b,0 0 15px #edbb5b80!important;
+}
+/* Five coherent navigation tiles, not the former 3 grouped columns. */
+body.pont-admin.pont-admin--restaurant #app .admin-nav.pont-restaurant-grouped-nav{
+ display:grid!important;grid-template-columns:1.06fr 1.04fr 1fr 1.06fr .46fr!important;
+ align-items:stretch!important;gap:clamp(4px,1vw,9px)!important;
+ width:100%!important;min-width:0!important;margin:0 0 17px!important;
+ padding:clamp(7px,1.2vw,12px)!important;border:1px solid rgba(65,180,172,.48)!important;
+ border-radius:23px!important;
+ background:linear-gradient(155deg,rgba(3,47,52,.84),rgba(0,27,32,.93))!important;
+ box-shadow:inset 0 1px #b7ffff0d,0 12px 28px #0004!important;
+ overflow:visible!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-group{
+ display:contents!important;padding:0!important;border:0!important;background:transparent!important;
+ box-shadow:none!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group>:is(button,a),
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-settings{
+ box-sizing:border-box!important;display:flex!important;flex:initial!important;
+ flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:clamp(6px,1.6vw,12px)!important;
+ width:100%!important;min-width:0!important;min-height:0!important;height:clamp(94px,14vw,142px)!important;
+ margin:0!important;padding:8px 3px!important;
+ border:1px solid rgba(79,217,205,.53)!important;border-radius:17px!important;
+ background:linear-gradient(157deg,rgba(15,73,78,.93),rgba(1,28,35,.98))!important;
+ color:#f3faf7!important;
+ font:700 clamp(9px,2.6vw,15px)/1.18 system-ui,sans-serif!important;
+ text-decoration:none!important;white-space:normal!important;text-align:center!important;overflow-wrap:normal!important;
+ box-shadow:inset 0 1px 3px #b7f9e611,0 3px 14px #0004,0 0 8px rgba(41,206,190,.12)!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group>:is(button,a)>.admin-icon{
+ width:clamp(20px,4.2vw,32px)!important;height:clamp(20px,4.2vw,32px)!important;
+ color:var(--pont-luxe-gold)!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-settings{
+ grid-column:5!important;width:100%!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-settings svg{
+ width:clamp(19px,3.6vw,30px)!important;height:clamp(19px,3.6vw,30px)!important;
+ color:#f8e5b1!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-menus{
+ display:contents!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav #showAdd{grid-column:1!important}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav #showSaved{grid-column:2!important}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav #showDishes{grid-column:3!important}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav a[href*="promovare"]{grid-column:4!important}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav button[aria-pressed="true"]{
+ color:#ffedc3!important;border:1px solid #ffdc80!important;
+ background:radial-gradient(ellipse at 50% 5%,rgba(224,164,71,.3),transparent 75%),linear-gradient(160deg,#3f321b,#142d30 88%)!important;
+ box-shadow:inset 0 1px #fff3c37a,0 0 13px #f3b94f65,0 2px 16px #0005!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav button:focus-visible,
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav a:focus-visible{outline:2px solid #f2dc9d!important;outline-offset:3px!important}
+/* The published menu strip sits outside the planner card in the approved layout. */
+body.pont-admin.pont-admin--restaurant #app #addView>.admin-workspace{
+ position:relative!important;margin:0!important;padding:0 0 15px!important;
+ background:transparent!important;border:0!important;box-shadow:none!important;overflow:visible!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu{
+ margin:8px 0 19px!important;padding:0!important;background:transparent!important;border:0!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ flex-wrap:nowrap!important;gap:clamp(4px,1.1vw,10px)!important;
+ padding:clamp(8px,1.5vw,13px)!important;
+ border:1px solid rgba(79,208,200,.65)!important;border-radius:17px!important;
+ background:linear-gradient(135deg,rgba(12,62,65,.97),rgba(3,35,42,.94))!important;
+ box-shadow:inset 0 1px #ffffff1c,0 6px 19px #0004,0 0 10px rgba(33,207,198,.1)!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header h3{
+ margin:0!important;min-width:0!important;flex:0 1 auto!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-toggle{
+ white-space:nowrap!important;min-height:40px!important;padding:8px clamp(6px,1.8vw,15px)!important;
+ border:1px solid rgba(90,220,210,.72)!important;border-radius:15px!important;
+ background:linear-gradient(130deg,#0a5559,#06363f)!important;color:#fffefa!important;
+ box-shadow:inset 0 1px #ffffff26,0 2px 10px #00181b!important;
+ font-weight:750!important;font-size:clamp(10px,2.7vw,16px)!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header time{
+ color:#f2f0e9!important;font-size:clamp(10px,2.55vw,16px)!important;white-space:nowrap!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-actions{
+ display:flex!important;flex:none!important;align-items:center!important;gap:5px!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-edit,
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-delete{
+ min-height:40px!important;height:40px!important;margin:0!important;padding:5px 10px!important;
+ border:1px solid rgba(236,197,111,.76)!important;border-radius:13px!important;
+ background:linear-gradient(145deg,#264543,#153136)!important;
+ color:#faf7eb!important;font-size:clamp(10px,2.6vw,15px)!important;
+ box-shadow:inset 0 1px #fff0be2b,0 0 10px #e5ad4630!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-delete{width:40px!important;padding:8px!important}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-card{margin-top:10px!important}
+/* Editorial planner heading and matching controls. */
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace>h2{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ position:relative;margin:22px 0 19px!important;padding:0 4px 11px!important;
+ color:#faf6e9!important;font:650 clamp(23px,5vw,34px)/1.13 Georgia,'Times New Roman',serif!important;
+ text-align:center!important;letter-spacing:-.035em!important;
+ text-shadow:0 2px 18px #e9ba5f22!important;
+}
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace>h2::after{
+ content:"";position:absolute;bottom:0;left:25%;width:50%;height:1px;
+ background:linear-gradient(90deg,transparent,#e9be66,transparent);
+}
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace #toggleMenuForm,
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace .pont-luxe-week-trigger{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ width:100%!important;min-width:0!important;height:59px!important;min-height:59px!important;
+ margin:0 0 11px!important;padding:0 clamp(12px,3vw,24px)!important;
+ border:1px solid rgba(229,188,101,.91)!important;border-radius:18px!important;
+ background:linear-gradient(145deg,rgba(14,67,71,.94),rgba(0,30,37,.98) 70%)!important;
+ color:#fbfbf7!important;
+ box-shadow:inset 0 1px #ffffff40,inset 0 -2px #eab95c8a,0 6px 18px #0004,0 0 9px #f2b85020!important;
+ font:750 clamp(12px,3.25vw,18px)/1.17 system-ui,sans-serif!important;
+ text-align:left!important;white-space:normal!important;
+}
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace #toggleMenuForm>span{
+ display:inline-flex!important;align-items:center!important;gap:clamp(9px,2.3vw,18px)!important;
+}
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace #toggleMenuForm .admin-icon{
+ width:25px!important;height:25px!important;color:#f0c36c!important;
+}
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace .pont-luxe-week-trigger{
+ cursor:pointer!important;
+}
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace .pont-luxe-week-trigger::before{
+ content:"▦";flex:0 0 27px;display:grid;place-items:center;margin-right:clamp(9px,2.3vw,18px);
+ font-size:25px;color:#eec36e;line-height:1;
+}
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace .pont-luxe-week-trigger:focus-visible,
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace #toggleMenuForm:focus-visible{
+ outline:2px solid #ffe4a0!important;outline-offset:3px!important;
+}
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace .pont-luxe-week-trigger::after{
+ content:"›";margin-left:auto;padding-left:8px;font:400 29px/1 Georgia,serif;color:#f4ca7f;
+}
+body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace #toggleMenuForm .pont-toggle-chevron{
+ color:#f4ca7f!important;
+}
+@media(max-width:520px){
+ body.pont-admin.pont-admin--restaurant #app .admin-nav.pont-restaurant-grouped-nav{gap:5px!important;padding:7px!important}
+ body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group>:is(button,a),
+ body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-settings{
+  height:100px!important;border-radius:14px!important;padding:7px 2px!important;
+ }
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header{padding:6px!important;gap:4px!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-toggle{min-height:35px!important;padding:5px 6px!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-actions>:is(button){min-height:35px!important;height:35px!important;padding:4px 6px!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-delete{width:34px!important;padding:6px!important}
+ body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace #toggleMenuForm,
+ body.pont-admin.pont-admin--restaurant #app #addView .admin-workspace .pont-luxe-week-trigger{height:62px!important;min-height:62px!important;margin-bottom:11px!important}
+}
+@media(max-width:375px){
+ body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav .pont-restaurant-nav-group>:is(button,a),
+ body.pont-admin.pont-admin--restaurant #app .pont-restaurant-grouped-nav>.pont-restaurant-nav-settings{height:90px!important;font-size:9px!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header{flex-wrap:wrap!important;justify-content:center!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header time{order:2}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-actions{order:3}
+}
+@media(prefers-reduced-motion:reduce){
+ body.pont-admin.pont-admin--restaurant #app :is(.pont-menu-toggle,.pont-luxe-week-trigger){transition:none!important}
+}
+</style>
+<script id="pont-luxe-planner-marker-20261112">
+(()=>{'use strict';
+ const normalize=s=>String(s||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\s+/g,' ').trim();
+ const decorate=()=>{
+  const scope=document.querySelector('#addView .admin-workspace');if(!scope)return;
+  for(const el of scope.querySelectorAll('summary,button,[role="button"]')){
+   if(normalize(el.textContent).includes('planifica meniul pe toata saptamana')&&normalize(el.textContent).length<90){
+    el.classList.add('pont-luxe-week-trigger');
+   }
+  }
+ };
+ let pending=false;
+ const observer=new MutationObserver(()=>{if(pending)return;pending=true;queueMicrotask(()=>{pending=false;decorate()})});
+ const ready=()=>{decorate();const root=document.querySelector('#addView');if(root)observer.observe(root,{childList:true,subtree:true})};
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
+})();
+</script></body></html>
