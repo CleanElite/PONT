@@ -332,7 +332,7 @@ $('pontTodayMenu').addEventListener('click', async event => {
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 showHashView();
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=planner-nav-thin-20261112');
+const {initPontOperations}=await import('../order-operations.js?v=restaurant-planner-20261112');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();
