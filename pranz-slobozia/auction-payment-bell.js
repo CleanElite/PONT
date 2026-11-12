@@ -28,7 +28,7 @@ export function initPontAuctionPaymentBell({db,config}) {
  .pont-auction-pay-submit{width:100%;margin-top:17px;padding:12px;border:1px solid #91ffee;background:#028a7b;color:white}
  .pont-auction-pay-msg{font:550 12px/1.4 system-ui;color:#ffc7b8;margin:10px 0 0}
  .pont-auction-pay-note{font:450 11px/1.5 system-ui;color:#accbc7;margin:12px 0 0}
- /* Solid 24K gold bell: bright metallic case and gold icon with animated highlights. */
+ /* Solid gold finish with a single diagonal neon sweep. Bell stays stationary. */
  .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{
    margin:0!important;flex:0 0 auto!important;width:clamp(68px,19vw,155px);
    max-width:32vw;align-self:center;gap:5px;
@@ -41,58 +41,52 @@ export function initPontAuctionPaymentBell({db,config}) {
    background:linear-gradient(140deg,#fff6b9 0%,#ffe25a 15%,#ffbf00 41%,#f6a900 64%,#ffe477 87%,#e0a100 100%)!important;
    box-shadow:0 0 0 1px #c58700,0 0 16px #ffcd36a6,0 0 29px #ffce3e5c,0 4px 14px #0005,inset 0 2px 4px #fff9d8be!important;
  }
- .pont-admin #app .pont-auction-bell::before{
-   content:'';position:absolute;inset:-50%;z-index:0;pointer-events:none;
-   background:conic-gradient(from 0deg,transparent 0deg,transparent 245deg,#fff7d6 275deg,#fffef3 300deg,#ffe49a 316deg,transparent 339deg);
-   opacity:.55;animation:pont-gold-neon-orbit 3.2s linear infinite;
- }
  .pont-admin #app .pont-auction-bell .pont-bell-core{
    position:absolute;inset:2px;border-radius:12px;z-index:1;pointer-events:none;
    background:linear-gradient(145deg,#ffea75 0%,#ffd026 38%,#f2ac00 75%,#ffdc56 100%);
  }
- .pont-admin #app .pont-auction-bell svg{
+ .pont-admin #app .pont-auction-bell svg,
+ .pont-admin #app .pont-auction-bell.is-due svg{
    position:relative;z-index:2;width:27px;height:27px;
    stroke:#a26800!important;stroke-width:1.15!important;fill:url(#pontBellGoldFill)!important;
    filter:drop-shadow(0 1px 0 #754800) drop-shadow(0 0 5px #fff5a8dd);
-   transform-origin:50% 15%;
-   animation:pont-bell-continuous-sway 3.4s ease-in-out infinite!important;
+   transform:none!important;animation:none!important;
+ }
+ /* A soft luminous beam moves from upper-left to lower-right over the gold. */
+ .pont-admin #app .pont-auction-bell::before{
+   content:'';position:absolute;inset:0;z-index:3;pointer-events:none;
+   border-radius:inherit;
+   background:linear-gradient(115deg,
+     transparent 27%,rgba(255,251,221,.05) 39%,
+     rgba(255,255,241,.67) 47%,rgba(255,255,255,.96) 50%,
+     rgba(255,235,133,.54) 54%,transparent 69%);
+   filter:drop-shadow(0 0 5px rgba(255,244,173,.85));
+   transform:translate3d(-125%,-125%,0);
+   animation:pont-gold-diagonal-neon 3s ease-in-out infinite;
  }
  .pont-admin #app .pont-auction-bell.is-due{
    border-color:#fff8d4!important;color:#ffdf60!important;
    box-shadow:0 0 0 1px #f3b44d,0 0 24px #ffd166ab,0 0 10px #fff3b88a,inset 0 1px 5px #fff7cb!important;
  }
- .pont-admin #app .pont-auction-bell.is-due svg{
-   animation:pont-bell-due-sway 1.45s ease-in-out infinite!important;
- }
  .pont-admin #app .pont-auction-bell.is-due::after{
-   z-index:3;background:#fff9d6;box-shadow:0 0 11px #fff0a4;
+   z-index:4;background:#fff9d6;box-shadow:0 0 11px #fff0a4;
  }
  .pont-admin #app .pont-auction-notice{
    color:#f8dea2!important;font:650 clamp(9px,2.1vw,11px)/1.3 system-ui!important;
    max-width:100%;text-align:center;cursor:pointer;
  }
- @keyframes pont-gold-neon-orbit{to{transform:rotate(360deg)}}
- @keyframes pont-bell-continuous-sway{
-   0%,35%,60%,100%{transform:rotate(0deg)}
-   41%{transform:rotate(-13deg)}
-   47%{transform:rotate(12deg)}
-   53%{transform:rotate(-5deg)}
- }
- @keyframes pont-bell-due-sway{
-   0%,100%{transform:rotate(0deg)}
-   20%{transform:rotate(-18deg)}
-   42%{transform:rotate(16deg)}
-   64%{transform:rotate(-12deg)}
-   82%{transform:rotate(7deg)}
+ @keyframes pont-gold-diagonal-neon{
+   0%{transform:translate3d(-125%,-125%,0);opacity:0}
+   12%{opacity:1}
+   65%{transform:translate3d(125%,125%,0);opacity:1}
+   73%,100%{transform:translate3d(125%,125%,0);opacity:0}
  }
  @media(max-width:540px){
    .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{width:clamp(57px,19vw,100px)!important;max-width:29vw}
    .pont-admin #app .pont-restaurant-premium-heading .pont-auction-bell{width:45px!important;height:45px!important;min-height:45px!important}
  }
  @media(prefers-reduced-motion:reduce){
-   .pont-admin #app .pont-auction-bell::before,
-   .pont-admin #app .pont-auction-bell svg,
-   .pont-admin #app .pont-auction-bell.is-due svg{animation:none!important}
+   .pont-admin #app .pont-auction-bell::before{animation:none!important;opacity:.2;transform:none!important}
  }
  `;
  document.head.append(styles);
