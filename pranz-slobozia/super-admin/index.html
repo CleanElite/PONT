@@ -832,6 +832,42 @@ body.pont-admin--platform #analytics .pont-revenue-note{
  }
  body.pont-admin--platform #analytics .pont-revenue-month-row{gap:5px!important}
 }
+
+/* Premium, explicit confirmation before every auction lifecycle action. */
+body.pont-admin--platform .pont-auction-lifecycle-dialog{
+ width:min(92vw,440px);max-width:440px;max-height:min(86vh,540px);overflow:auto;
+ margin:auto;padding:clamp(17px,4vw,25px);
+ border:1px solid #7affed9c;border-radius:20px;
+ color:#F4FAF9;background:radial-gradient(circle at 50% 0%,#0b55513d,transparent 70%),linear-gradient(145deg,#073b3d,#001c20 75%);
+ box-shadow:inset 0 1px 13px #7affed24,0 23px 75px #000b,0 0 22px #52f6e128;
+ text-align:center;
+}
+body.pont-admin--platform .pont-auction-lifecycle-dialog::backdrop{background:#001014c9;backdrop-filter:blur(5px)}
+body.pont-admin--platform .pont-auction-lifecycle-symbol{
+ display:grid;place-items:center;width:43px;height:43px;margin:0 auto 10px;
+ border-radius:14px;border:1px solid #7affed70;
+ background:linear-gradient(140deg,#105b55,#073438);color:#afffee;
+ font:750 25px/1 system-ui;
+}
+body.pont-admin--platform .pont-auction-lifecycle-dialog h3{
+ margin:0 0 10px;font:750 clamp(18px,4.2vw,23px)/1.2 system-ui;color:#F4FAF9;
+}
+body.pont-admin--platform .pont-auction-lifecycle-dialog p{
+ margin:0;color:#C7E5E1;font:500 13px/1.55 system-ui;
+}
+body.pont-admin--platform .pont-auction-lifecycle-dialog-actions{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-top:19px;
+}
+body.pont-admin--platform .pont-auction-lifecycle-dialog-actions button{
+ min-width:0;min-height:41px;padding:8px 6px;border-radius:11px;
+ font:700 clamp(11px,3vw,13px)/1.2 system-ui;
+}
+body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
+ border-color:#ffc1a8!important;
+ background:linear-gradient(140deg,#91483a,#642c29)!important;
+ color:#fff9f4!important;
+ box-shadow:0 0 12px #e18e7f26!important;
+}
 </style><body class="pont-admin pont-admin--platform">
 <main>
 <header class="admin-topbar">
@@ -980,6 +1016,15 @@ body.pont-admin--platform #analytics .pont-revenue-note{
       <button type="button" id="editAuctionRanking" class="pont-auction-ranking-trigger" aria-haspopup="dialog" aria-controls="auctionRankingDialog">Editează pozițiile</button>
     </div>
   </div>
+  <dialog id="auctionLifecycleDialog" class="pont-auction-lifecycle-dialog" aria-labelledby="auctionLifecycleTitle" aria-describedby="auctionLifecycleDescription">
+    <div class="pont-auction-lifecycle-symbol" aria-hidden="true">?</div>
+    <h3 id="auctionLifecycleTitle">Confirmare licitație</h3>
+    <p id="auctionLifecycleDescription"></p>
+    <div class="pont-auction-lifecycle-dialog-actions">
+      <button type="button" id="auctionLifecycleCancel">Anulează</button>
+      <button type="button" id="auctionLifecycleConfirm" class="primary">Confirmă</button>
+    </div>
+  </dialog>
   <div class="auction-save-bar pont-auction-period-save">
     <label for="auctionMonth">Luna autorizării<input type="month" id="auctionMonth"></label>
     <button type="button" class="primary" id="saveAuctionPayments" aria-label="Salvează modificările" disabled>Salvează</button>
@@ -1818,10 +1863,54 @@ async function loadAuctionControl() {
  }
 }
 
+function confirmAuctionLifecycle(action,month){
+ const dialog=$('auctionLifecycleDialog');
+ const monthLabel=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'T12:00:00Z'));
+ const title={
+  start:'Pornești licitația?',
+  pause:'Pui licitația pe pauză?',
+  resume:'Reiei licitația?',
+  close:'Închei definitiv licitația?'
+ }[action];
+ const description={
+  start:'Ești sigur că vrei să pornești licitația pentru luna '+monthLabel+'? Restaurantele vor putea depune oferte.',
+  pause:'Ești sigur că vrei să pui pe pauză licitația pentru luna '+monthLabel+'? Nu vor mai fi acceptate oferte până la reluare; ofertele existente se păstrează.',
+  resume:'Ești sigur că vrei să reiei licitația pentru luna '+monthLabel+'? Restaurantele vor putea depune și majora din nou ofertele.',
+  close:'Ești sigur că vrei să închei PERMANENT licitația pentru luna '+monthLabel+'? Ofertele vor fi blocate definitiv, clasamentul va fi salvat și licitația nu mai poate fi repornită. Această acțiune NU încasează încă bani prin Stripe.'
+ }[action];
+ $('auctionLifecycleTitle').textContent=title;
+ $('auctionLifecycleDescription').textContent=description;
+ const submit=$('auctionLifecycleConfirm');
+ submit.textContent=action==='close'?'Încheie definitiv':action==='pause'?'Pune pe pauză':action==='resume'?'Reia licitația':'Pornește licitația';
+ submit.dataset.action=action;
+ return new Promise(resolve=>{
+  if(dialog.open){resolve(false);return}
+  const cancel=$('auctionLifecycleCancel');
+  const finish=accepted=>{
+   cancel.removeEventListener('click',onCancel);
+   submit.removeEventListener('click',onConfirm);
+   dialog.removeEventListener('cancel',onCancel);
+   dialog.removeEventListener('close',onClose);
+   if(dialog.open)dialog.close();
+   resolve(accepted);
+  };
+  const onCancel=event=>{event?.preventDefault?.();finish(false)};
+  const onConfirm=()=>finish(true);
+  const onClose=()=>finish(false);
+  cancel.addEventListener('click',onCancel);
+  submit.addEventListener('click',onConfirm);
+  dialog.addEventListener('cancel',onCancel);
+  dialog.addEventListener('close',onClose);
+  dialog.showModal();
+ });
+}
+
 auctionPauseButton.onclick=async()=>{
  if(!auctionControl||auctionControlBusy||!auctionControl.isOpen)return;
  const {month,paused}=auctionControl;
  if(month!==nextAuctionMonth()){await loadAuctionControl();return}
+ if(!await confirmAuctionLifecycle(paused?'resume':'pause',month))return;
+ if(auctionControlBusy||!auctionControl||!auctionControl.isOpen||auctionControl.paused!==paused)return;
  auctionControlBusy=true;
  ++auctionControlRequest;
  auctionControlButton.disabled=true;
@@ -1849,7 +1938,8 @@ auctionControlButton.onclick=async()=>{
  const {month,isOpen,finalized}=auctionControl;
  if(month!==nextAuctionMonth()){await loadAuctionControl();return}
  if(!isOpen&&finalized)return;
- if(isOpen&&!confirm('Închei DEFINITIV licitația pentru această lună și salvezi clasamentul? Ofertele vor fi blocate permanent. Această operațiune NU încasează încă bani prin Stripe.'))return;
+ if(!await confirmAuctionLifecycle(isOpen?'close':'start',month))return;
+ if(auctionControlBusy||!auctionControl||auctionControl.isOpen!==isOpen||auctionControl.finalized!==finalized)return;
  auctionControlBusy=true;
  ++auctionControlRequest;
  auctionControlButton.disabled=true;
