@@ -211,3 +211,98 @@ body.pont-admin {
 }
 .pont-admin #app .contact-card-settings > :is(h3, p) { flex-basis: 100%; margin-block: 0; }
 .pont-admin #app .contact-card-settings > label { flex: 1 1 125px; min-width: 0; margin: 0; }
+
+
+/* PONT Dark Teal Premium v1 — shared administrative visual system.
+   Palette matches the approved weekly planner; layout and behavior untouched. */
+body.pont-admin{
+  --admin-ink:#F4FAF9;
+  --admin-muted:#B9D2D2;
+  --admin-gold:#D8EFC9;
+  --admin-mint:#7AFFED;
+  --admin-line:rgba(82,246,225,.37);
+  --admin-field:#06282D;
+  --admin-surface:linear-gradient(155deg,#041E22 0%,#001C20 55%,#01282A 100%);
+  --admin-accent:linear-gradient(135deg,#70EEDC,#52F6E1 60%,#29CCBE);
+  --pont-premium-border:rgba(82,246,225,.42);
+  --pont-premium-glow:inset 0 1px 11px rgba(92,255,223,.11),0 10px 27px rgba(0,13,17,.22);
+  color:#F4FAF9!important;
+  background:radial-gradient(ellipse 65% 35% at 5% -8%,rgba(5,113,111,.27),transparent 80%),
+    radial-gradient(ellipse 60% 44% at 105% 55%,rgba(3,83,88,.22),transparent 80%),
+    linear-gradient(155deg,#041E22 0%,#001C20 55%,#01282A 100%)!important;
+  background-attachment:fixed!important;
+}
+body.pont-admin :is(.card,.dashboard-panel,.dashboard-form,.dashboard-disclosure,.restaurant-password-box,.contact-card-settings,.contact-phone-view,.saved-menu-card,.menu-group,.restaurant-card-toggle,.pont-auction-ranking,.pont-library-row,.pont-menu-dialog):not(#pontWeekPanel){
+  border-color:var(--pont-premium-border)!important;
+  background:linear-gradient(148deg,#073238 0%,#032429 52%,#012429 100%)!important;
+  box-shadow:var(--pont-premium-glow)!important;
+}
+body.pont-admin #app :is(.card,.dashboard-form,.dashboard-disclosure,.restaurant-password-box,.contact-card-settings,.contact-phone-view,.saved-menu-card,.menu-group):not(#pontWeekPanel){
+  border-radius:clamp(10px,2.25vw,17px)!important;
+}
+body.pont-admin #app :is(.stat,.pont-insight,.dashboard-stats .stat){
+  border:1px solid rgba(82,246,225,.37)!important;
+  background:linear-gradient(125deg,#073C40,#04272B 83%)!important;
+  box-shadow:inset 0 1px 9px rgba(95,255,226,.12),0 3px 13px rgba(0,14,18,.24)!important;
+}
+body.pont-admin #app :is(.stat,.pont-insight) strong{color:#F4FAF9!important}
+body.pont-admin :is(.admin-nav,.admin-categories,#pontDailyTabs){
+  border-color:var(--pont-premium-border)!important;
+  background:linear-gradient(130deg,#052C30,#021D23)!important;
+  box-shadow:inset 0 1px 10px rgba(99,252,229,.1)!important;
+}
+body.pont-admin #app :is(.admin-nav,.admin-categories,#pontDailyTabs)>:is(button,a):not([aria-pressed='true']):not(.active){
+  background:transparent!important;color:#D9EFEB!important;
+}
+body.pont-admin :is(.admin-nav,.admin-categories,#pontDailyTabs) :is(button[aria-pressed='true'],button.active){
+  background:linear-gradient(135deg,#6CE6D6,#52F6E1 60%,#29CABB)!important;
+  border-color:#90FFED!important;color:#003436!important;
+  box-shadow:inset 0 1px 7px rgba(255,255,255,.3),0 0 12px rgba(82,246,225,.22)!important;
+}
+body.pont-admin #app :is(button,.pont-menu-toggle):not(.primary):not(.admin-danger):not(.pont-week-day-action):not(.pont-op-button):not(.pont-week-create-remaining):not(.pont-nav-action):not([aria-pressed='true']):not(.active){
+  border-color:rgba(95,220,206,.48);
+  background:linear-gradient(140deg,#0B4849,#052D33 88%);
+  color:#EFFCFA;
+  box-shadow:inset 0 1px 6px rgba(116,246,226,.12);
+}
+body.pont-admin #app button.primary,
+body.pont-admin #app button[type='submit'].primary{
+  border-color:#83F6E6!important;
+  background:linear-gradient(140deg,#55E2D1,#7AFFED 54%,#36CDBF)!important;
+  color:#003436!important;
+  box-shadow:inset 0 1px 8px rgba(255,255,255,.4),0 0 10px rgba(60,225,203,.2)!important;
+}
+body.pont-admin #app :is(input:not([type='checkbox'],[type='radio'],[type='file']),select,textarea){
+  border-color:rgba(112,218,210,.52);
+  background:#06282D;color:#F4FAF9;
+  box-shadow:inset 0 1px 6px rgba(80,232,219,.08);
+}
+body.pont-admin #app :is(input,select,textarea):focus-visible{
+  outline:2px solid #7AFFED!important;outline-offset:1px!important;
+  border-color:#7AFFED!important;
+}
+body.pont-admin #app :is(label, h2, h3, h4){color:#EAF8F5}
+body.pont-admin #app :is(p,small,.dashboard-cell-label){color:#B9D2D2}
+body.pont-admin #app :is(.admin-hero,.dashboard-heading,.admin-panel-head){
+  border-color:rgba(82,246,225,.22)!important;
+}
+body.pont-admin .admin-topbar{
+  border-bottom-color:rgba(82,246,225,.29)!important;
+}
+body.pont-admin .admin-context{
+  border-color:rgba(82,246,225,.45)!important;
+  background:linear-gradient(140deg,#0A3B3E,#05272D)!important;
+  box-shadow:inset 0 1px 7px rgba(122,255,237,.12)!important;
+}
+body.pont-admin #app :is(.menu-status.active,.menu-pill.active,.dashboard-badge[data-state='enabled']){
+  background:#104E3E!important;color:#C6FFE2!important;border-color:#57CDA3!important;
+}
+body.pont-admin #app :is(.menu-status.scheduled,.menu-pill.scheduled){
+  background:#153B4C!important;color:#C5EAF8!important;border-color:#57A9BC!important;
+}
+/* Preserve red error and destructive-action semantics; do not recolor them teal. */
+body.pont-admin #app :is(.error,.pont-menu-feedback,[role='alert']){color:#FFC2B9!important}
+body.pont-admin #app :is(.admin-danger,button.danger){color:#FFC2B9!important}
+body.pont-admin #app :is(button,input,select,textarea):disabled{cursor:not-allowed}
+/* The weekly planner owns its distinct, already-approved appearance. */
+body.pont-admin #app #pontWeekPanel{background:radial-gradient(ellipse 55% 22% at 75% 0%,rgba(8,134,122,.22),transparent 85%),linear-gradient(165deg,#041e22 0%,#001c20 55%,#01282a 100%)!important}
