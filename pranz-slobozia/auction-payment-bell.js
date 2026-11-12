@@ -125,8 +125,6 @@ export function initPontAuctionPaymentBell({db,config}) {
  host.className='pont-auction-notify';host.hidden=true;
  host.innerHTML='<button type="button" class="pont-auction-bell" aria-label="Notificări plăți licitații" title="Plăți licitații"><span class="pont-bell-core" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="pontBellGoldFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff9c7"/><stop offset=".28" stop-color="#ffe15b"/><stop offset=".58" stop-color="#ffbd00"/><stop offset=".86" stop-color="#d88c00"/><stop offset="1" stop-color="#fff0a1"/></linearGradient></defs><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button><button type="button" class="pont-auction-notice" aria-label="Finalizează plata licitației" hidden></button>';
  header.append(host);
- const bell=host.querySelector('.pont-auction-bell'),notice=host.querySelector('.pont-auction-notice');
- host.insertBefore(notice,bell);
  // All payment entry points use the same full-screen checkout in Promovare.
  // Do not mount a second Stripe Payment Element in the restaurant dashboard.
  const bell=host.querySelector('.pont-auction-bell');
