@@ -395,8 +395,8 @@ dialog.pont-premium-success .pont-success-actions svg{width:19px;height:19px}
     <div class="pont-confirm-emblem pont-success-emblem" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></div>
     <div class="pont-success-kicker">OFERTĂ ÎNREGISTRATĂ</div>
     <h2 id="bidSuccessTitle">Felicitări!</h2>
-    <p id="bidSuccessMessage" class="pont-success-message">Oferta ta de <strong id="bidSuccessAmount"></strong> a fost înregistrată pentru promovare.</p>
-    <p class="pont-success-note">Clasamentul se actualizează în funcție de ofertele depuse. Plata se confirmă separat.</p>
+    <p id="bidSuccessMessage" class="pont-success-message">Oferta ta curentă de <strong id="bidSuccessAmount"></strong> a fost salvată pentru promovare.</p>
+    <p class="pont-success-note">Aceasta este oferta ta curentă. Clasamentul se actualizează după sumele înregistrate. Plata se confirmă separat.</p>
     <form method="dialog" class="pont-success-actions"><button class="primary-bid" autofocus><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Am înțeles</button></form>
   </div>
 </dialog>
@@ -449,31 +449,38 @@ function renderAuctionStatus(){
  $('auctionHint').textContent=role==='super_admin'?'Apasă un card pentru a vedea oferta. Confirmările se gestionează în Licitații.':biddingOpen&&biddingPaused?'Licitația este momentan în pauză. Nu se acceptă oferte până când Super Admin o reia.':auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':(finalRanking!==null?'Licitația este închisă. Poți consulta clasamentul final.':'Licitația este închisă. Poți consulta ofertele existente.');
  if($('auctionDialog').open)updateModal();
 }
-function minimumPersonalBid(){
+function minimumPersonalBid(){return minimumBid;}
+function bidInputIssue(value){
  const own=ownOffer();
- return Math.max(minimumBid,own?Number(own.amount)+10:minimumBid);
+ if(!Number.isInteger(value)||value<minimumBid)return 'Introdu o sumă întreagă de minimum '+money(minimumBid)+'.';
+ if(own&&value===Number(own.amount))return 'Oferta nouă trebuie să fie diferită de oferta ta actuală.';
+ if(own&&value>Number(own.amount)&&value<Number(own.amount)+10)return 'Pentru majorare, oferta trebuie să crească cu cel puțin 10 lei.';
+ return '';
 }
 function projectedBidRank(value){
- if(!Number.isInteger(value)||value<minimumPersonalBid())return null;
- // A new or increased bid comes after earlier bids of the same amount.
+ if(bidInputIssue(value))return null;
  const ahead=offers.filter(offer=>offer.restaurant_id!==me&&Number(offer.amount)>=value).length;
  return ahead+1;
 }
 function suggestedAmountForSlot(slot){
  const others=offers.filter(offer=>offer.restaurant_id!==me).sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at));
- const minimum=minimumPersonalBid();
- // To enter selected rank, outbid the competing offer currently occupying it.
- const amount=others[slot]?Math.max(minimum,Number(others[slot].amount)+1):minimum;
+ const own=ownOffer(),minimum=minimumPersonalBid();
+ // Bid just above the competitor currently at that rank, if possible;
+ // the recommendation is optional and never restricts lowering the bid.
+ let amount=others[slot]?Math.max(minimum,Number(others[slot].amount)+1):minimum;
+ if(own&&amount>Number(own.amount)&&amount<Number(own.amount)+10)amount=Number(own.amount)+10;
+ if(own&&amount===Number(own.amount))amount=Number(own.amount);
  return {amount,rank:projectedBidRank(amount)};
 }
 function refreshBidPreview(){
  const input=$('bidAmount'),preview=$('pontBidRankPreview');
- const value=Number(input.value);
+ const value=Number(input.value),own=ownOffer();
  if(!input.value){preview.textContent='Introdu suma dorită pentru a vedea poziția estimată în clasamentul actual.';return}
- const min=minimumPersonalBid();
- if(!Number.isInteger(value)||value<min){preview.textContent='Oferta minimă permisă pentru restaurantul tău este '+money(min)+'.';return}
+ const issue=bidInputIssue(value);
+ if(issue){preview.textContent=issue;return}
  const rank=projectedBidRank(value);
- preview.textContent='Cu '+money(value)+', poziția estimată acum este '+rank+'. Poziția poate varia când apar alte oferte.';
+ const change=own&&value<Number(own.amount)?'Reduci oferta de la '+money(own.amount)+' la '+money(value)+'. ':own&&value>Number(own.amount)?'Majorezi oferta de la '+money(own.amount)+' la '+money(value)+'. ':'';
+ preview.textContent=change+'Poziția estimată acum: '+rank+'. Poziția poate varia dacă alte restaurante își modifică ofertele.';
 }
 function updateModal(){
  const sorted=orderedOffers(),target=sorted[selectedSlot],own=ownOffer(),isAdmin=role==='super_admin',open=auctionIsOpen();
@@ -481,19 +488,19 @@ function updateModal(){
  const recommended=suggestedAmountForSlot(selectedSlot);
  $('auctionModalPosition').textContent='POZIȚIA '+String(slot).padStart(2,'0')+' · '+new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'T12:00:00Z'));
  $('auctionModalTitle').textContent=target?(names[target.restaurant_id]||'Restaurant'):'Loc disponibil';
- $('auctionModalCurrent').textContent=(target?(target.amount==null?'Poziție atribuită de PONT':'Oferta poziției: '+money(target.amount)):'Nicio ofertă pentru această poziție')+(own?' · Oferta ta: '+money(own.amount):'');
+ $('auctionModalCurrent').textContent=(target?(target.amount==null?'Poziție atribuită de PONT':'Oferta poziției: '+money(target.amount)):'Nicio ofertă pentru această poziție')+(own?' · Oferta ta actuală: '+money(own.amount):'');
  $('bidAmount').min=String(minimum);
  $('bidAmount').placeholder='Minimum '+money(minimum);
  $('bidAmount').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
  $('bidSubmit').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
- $('bidSubmitText').textContent=busy?'Se salvează…':isAdmin?'Mod vizualizare':own?.payment_status==='paid'?'Oferta ta este achitată':open?'Confirmă oferta':'Licitația este închisă';
+ $('bidSubmitText').textContent=busy?'Se salvează…':isAdmin?'Mod vizualizare':own?.payment_status==='paid'?'Oferta ta este achitată':open?(own?'Modifică oferta':'Confirmă oferta'):'Licitația este închisă';
  const targetHint=$('pontBidTargetHint');
  if(recommended.rank===slot){
-  targetHint.textContent='Pentru a ținti locul '+slot+' acum: '+money(recommended.amount)+'. Poți introduce și o sumă mai mică, dacă respectă minimul tău.';
+  targetHint.textContent='Pentru a ținti locul '+slot+' acum: '+money(recommended.amount)+'. Poți alege altă sumă, inclusiv una mai mică decât oferta ta actuală.';
  }else{
-  targetHint.textContent='Ai selectat locul '+slot+'. Suma minimă permisă este '+money(minimum)+'. Poziția nu este rezervată: clasamentul se calculează după oferte.';
+  targetHint.textContent='Ai selectat locul '+slot+'. Poți introduce suma dorită, de la '+money(minimum)+'. Poziția depinde de celelalte oferte.';
  }
- $('auctionModalNote').textContent=isAdmin?'Contul Super Admin poate consulta licitațiile, fără să liciteze.':!open?'Vei putea licita când Super Admin deschide licitația.':own?.payment_status==='paid'?'Oferta este deja confirmată ca plătită.':'Poți licita pentru orice poziție, cu oferta pe care o alegi. Minim '+money(minimum)+(own?' (majorare de cel puțin 10 lei față de oferta ta).':'.')+' Pozițiile se modifică automat după sumă și data ofertei. Plata se confirmă separat.';
+ $('auctionModalNote').textContent=isAdmin?'Contul Super Admin poate consulta licitațiile, fără să liciteze.':!open?'Vei putea modifica oferta când Super Admin reia licitația.':own?.payment_status==='paid'?'Oferta este deja confirmată ca plătită și nu mai poate fi modificată.':own?'Poți reduce oferta până la 50 lei sau o poți majora cu minimum 10 lei. Clasamentul se actualizează după fiecare modificare. Plata se confirmă separat.':'Oferta inițială este de minimum 50 lei. Pozițiile se modifică automat după sumă. Plata se confirmă separat.';
  refreshBidPreview();
 }
 $('bidAmount').addEventListener('input',refreshBidPreview);
@@ -570,7 +577,9 @@ function confirmPontBid(amount,campaignMonth){
  heading.replaceChildren(document.createTextNode('Confirmi oferta de '));
  const sum=document.createElement('strong');sum.textContent=money(amount);
  heading.append(sum,document.createTextNode(' pentru '+period+'?'));
- $('auctionBidConfirmDescription').textContent='Oferta este fermă chiar dacă ulterior poziția ta se modifică. Plata se confirmă separat.';
+ const previous=ownOffer();
+ const direction=previous?(amount<Number(previous.amount)?'reducerea':'majorarea'):'înregistrarea';
+ $('auctionBidConfirmDescription').textContent=(previous?'Confirmi '+direction+' ofertei de la '+money(previous.amount)+' la '+money(amount)+'? ':'')+'Aceasta va fi suma curentă pentru clasament și eventuală plată, dacă nu o modifici din nou înainte de închidere. Plata se confirmă separat.';
  return new Promise(resolve=>{
   const cancel=$('auctionBidConfirmCancel'),close=$('auctionBidConfirmClose'),ok=$('auctionBidConfirmOK');
   let finished=false;
@@ -594,8 +603,9 @@ function confirmPontBid(amount,campaignMonth){
 $('bidForm').onsubmit=async e=>{
  e.preventDefault();
  if(busy||role!=='restaurant'||!auctionIsOpen())return;
- const value=Number($('bidAmount').value),minimum=Number($('bidAmount').min);
- if(!Number.isInteger(value)||value<minimum){$('bidMessage').textContent='Introdu o ofertă de minimum '+money(minimum)+'.';return}
+ const value=Number($('bidAmount').value);
+ const issue=bidInputIssue(value);
+ if(issue){$('bidMessage').textContent=issue;return}
  if(!await confirmPontBid(value,month))return;
  if(busy||role!=='restaurant'||!auctionIsOpen()||month!==$('date').dataset.campaignMonth)return;
  busy=true;updateModal();
