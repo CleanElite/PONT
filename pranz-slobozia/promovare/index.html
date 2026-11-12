@@ -407,19 +407,67 @@ dialog.pont-withdraw-confirm .pont-withdraw-error{
  margin:0 auto 13px!important;color:#ffbdb0;font:600 12px/1.4 system-ui;
 }
 
-/* Closed-auction balance: only visible for unpaid restaurant offers. */
+/* Premium compact payment summary: centered, quiet, distinct from payment dialog. */
 .pont-pending-payments{
- margin:16px auto 22px;padding:15px;
- max-width:700px;border:1px solid #7affed70;border-radius:18px;
- background:linear-gradient(130deg,#053b40,#06282e);
- color:#e8f9f7;
+ box-sizing:border-box;
+ width:min(100% - 24px,440px)!important;max-width:440px!important;
+ margin:15px auto 22px!important;padding:17px 18px 18px!important;
+ border:1px solid rgba(215,192,142,.4)!important;border-radius:18px!important;
+ background:radial-gradient(ellipse at 50% -50%,rgba(220,190,116,.12),transparent 75%),linear-gradient(145deg,#0e3036,#09232b 80%)!important;
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 9px 28px rgba(0,12,21,.16)!important;
+ color:#f5f7f2!important;text-align:center!important;
 }
 .pont-pending-payments[hidden]{display:none!important}
-.pont-pending-payments h2{margin:0 0 11px;font:700 clamp(17px,4vw,22px)/1.3 system-ui;color:#ebfffa}
-.pont-pending-payment-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:10px 0;border-top:1px solid #7affed35}
-.pont-pending-payment-row p{margin:0;color:#d2e6e3;font:500 13px/1.4 system-ui}
-.pont-pending-payment-row strong{color:#8fffe9}
-.pont-pending-payment-row button{flex:none;border:1px solid #a3fff1;background:#048d81;color:white;padding:10px 13px;border-radius:11px;font:700 12px/1.25 system-ui;cursor:pointer}
+.pont-pending-payments h2{
+ margin:0 auto 8px!important;color:#f8f7f0!important;
+ font:650 clamp(18px,4.4vw,22px)/1.22 Georgia,'Times New Roman',serif!important;
+ letter-spacing:-.025em!important;text-align:center!important;
+}
+.pont-pending-payments .pont-pending-payment-intro{
+ margin:0 auto 13px!important;max-width:300px;
+ font:450 11px/1.45 system-ui!important;color:#a9c6c2!important;text-align:center!important;
+}
+.pont-pending-payments #pontPendingPaymentItems{display:grid!important;gap:9px!important;min-width:0!important}
+.pont-pending-payments .pont-pending-payment-row{
+ box-sizing:border-box;min-width:0!important;width:100%!important;
+ display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ gap:8px!important;padding:12px 12px 11px!important;
+ border:1px solid rgba(153,204,191,.23)!important;border-radius:13px!important;
+ background:linear-gradient(145deg,rgba(14,59,62,.5),rgba(7,32,41,.6))!important;
+ text-align:center!important;
+}
+.pont-pending-payments .pont-pending-payment-row p{
+ display:flex!important;flex-direction:column!important;align-items:center!important;gap:3px!important;
+ margin:0!important;text-align:center!important;
+ color:#c3d6d0!important;font:500 12px/1.35 system-ui!important;
+}
+.pont-pending-payments .pont-pending-payment-month{
+ color:#d2ddd7!important;font:550 12px/1.3 system-ui!important;text-transform:capitalize;
+}
+.pont-pending-payments .pont-pending-payment-sum{
+ color:#f4ddaa!important;font:750 clamp(19px,5vw,24px)/1.15 system-ui!important;
+ letter-spacing:-.025em;font-variant-numeric:tabular-nums;
+}
+.pont-pending-payments .pont-pending-payment-row button{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ flex:none!important;width:min(100%,245px)!important;min-height:39px!important;
+ margin:0 auto!important;padding:8px 13px!important;
+ border:1px solid rgba(193,229,214,.55)!important;border-radius:10px!important;
+ background:linear-gradient(130deg,#1b746b,#10564f)!important;
+ color:#f4fffb!important;
+ font:700 12px/1.25 system-ui!important;text-align:center!important;
+ box-shadow:inset 0 1px 0 #ffffff1d!important;cursor:pointer;
+ transition:background .18s ease,border-color .18s ease,transform .18s ease;
+}
+.pont-pending-payments .pont-pending-payment-row button:hover{
+ background:linear-gradient(130deg,#228b7e,#17695f)!important;border-color:#a9e9d5!important;
+}
+.pont-pending-payments .pont-pending-payment-row button:active{transform:scale(.985)}
+.pont-pending-payments .pont-pending-payment-row button:focus-visible{outline:2px solid #eacb89;outline-offset:3px}
+@media(max-width:420px){
+ .pont-pending-payments{width:calc(100% - 16px)!important;padding:14px 12px 15px!important}
+ .pont-pending-payments .pont-pending-payment-row{padding:11px 9px!important}
+}
 .pont-card-payment-dialog{width:min(94vw,465px)!important}
 .pont-card-payment-dialog .pont-confirm-inner{max-height:min(85dvh,750px);overflow-y:auto}
 .pont-card-payment-dialog #pontCardPaymentHeading{font:650 clamp(21px,5vw,29px)/1.2 Georgia,serif!important;margin:0 auto 10px!important}
@@ -683,6 +731,7 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
   </section>
   <section id="pontPendingPayments" class="pont-pending-payments" aria-label="Plăți licitații încheiate" hidden>
    <h2>Plata promovării</h2>
+   <p class="pont-pending-payment-intro">Licitație încheiată · plata poziției câștigate</p>
    <div id="pontPendingPaymentItems"></div>
   </section>
 <style>
@@ -1000,10 +1049,11 @@ async function pontRefreshPendingPayments(){
   const item=document.createElement('div');item.className='pont-pending-payment-row';
   const title=document.createElement('p');
   const period=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(row.campaign_month+'T12:00:00Z'));
-  title.append('Licitația '+period+' · ');
-  const sum=document.createElement('strong');sum.textContent=money(row.amount);title.append(sum);
+  const monthLabel=document.createElement('span');monthLabel.className='pont-pending-payment-month';monthLabel.textContent='Licitația '+period;
+  const sum=document.createElement('strong');sum.className='pont-pending-payment-sum';sum.textContent=money(row.amount);
+  title.append(monthLabel,sum);
   const button=document.createElement('button');
-  button.type='button';button.textContent='Finalizează plata licitației';
+  button.type='button';button.textContent='Finalizează plata';
   button.addEventListener('click',()=>pontOpenPayment(row));
   item.append(title,button);list.append(item);
  }
