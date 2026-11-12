@@ -3,7 +3,7 @@
  const choice='pont_analytics_consent_v1',identifier='pont_analytics_visitor_v1';
  const status=document.getElementById('pontAnalyticsConsentStatus');
  function refresh(){let v;try{v=localStorage.getItem(choice)}catch(e){v=null}status.textContent='Preferință: '+(v==='yes'?'statistici acceptate':v==='no'?'statistici refuzate':'nealeasă')}
- function save(accept){try{localStorage.setItem(choice,accept?'yes':'no');if(!accept)localStorage.removeItem(identifier)}catch(e){status.textContent='Nu se poate salva preferința în acest browser.';return}refresh()}
+ function save(accept){try{localStorage.setItem(choice,accept?'yes':'no');if(!accept){localStorage.removeItem(identifier);for(let i=sessionStorage.length-1;i>=0;i--){const k=sessionStorage.key(i);if(k?.startsWith('pont_visit_'))sessionStorage.removeItem(k)}}}catch(e){status.textContent='Nu se poate salva preferința în acest browser.';return}refresh()}
  document.getElementById('pontAnalyticsAccept').onclick=()=>save(true);
  document.getElementById('pontAnalyticsReject').onclick=()=>save(false);
  refresh();
