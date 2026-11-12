@@ -1,6 +1,6 @@
 // PONT restaurant dashboard payment bell. Shares the existing Stripe PaymentIntent backend/dialog behavior with Promovare.
 export function initPontAuctionPaymentBell({db,config}) {
- const header=document.querySelector('#app .pont-restaurant-premium-heading');
+ const header=document.querySelector('#pontAuctionBellMount');
  if(!header)return {refresh:async()=>{},setVisible:()=>{}};
  const styles=document.createElement('style');
  styles.textContent=`
@@ -41,16 +41,16 @@ export function initPontAuctionPaymentBell({db,config}) {
    box-shadow:inset 0 1px 9px #ffdea725,0 0 12px #f9bc4c28!important;
  }
  .pont-admin #app .pont-auction-bell::before{
-   content:'';position:absolute;inset:-60%;z-index:-1;pointer-events:none;
+   content:'';position:absolute;inset:-60%;z-index:0;pointer-events:none;
    background:conic-gradient(from 0deg,transparent 0deg,transparent 235deg,#bd8c38 268deg,#fff1b4 294deg,#ffd166 307deg,transparent 337deg);
    animation:pont-gold-neon-orbit 3.1s linear infinite;
  }
  .pont-admin #app .pont-auction-bell .pont-bell-core{
-   position:absolute;inset:2px;border-radius:12px;z-index:0;pointer-events:none;
+   position:absolute;inset:2px;border-radius:12px;z-index:1;pointer-events:none;
    background:radial-gradient(circle at 23% 12%,#604b28 0%,#202b29 56%,#09252b 100%);
  }
  .pont-admin #app .pont-auction-bell svg{
-   position:relative;z-index:1;width:23px;height:23px;stroke:#ffdc85;
+   position:relative;z-index:2;width:23px;height:23px;stroke:#ffdc85;
    filter:drop-shadow(0 0 5px #ffd1669e);
  }
  .pont-admin #app .pont-auction-bell.is-due{
@@ -58,7 +58,7 @@ export function initPontAuctionPaymentBell({db,config}) {
    box-shadow:inset 0 0 12px #ffe5a438,0 0 18px #ffcd6670!important;
  }
  .pont-admin #app .pont-auction-bell.is-due::after{
-   background:#ffe299;box-shadow:0 0 10px #ffdc83;
+   z-index:3;background:#ffe299;box-shadow:0 0 10px #ffdc83;
  }
  .pont-admin #app .pont-auction-notice{
    color:#f5dba0!important;font:600 clamp(9px,2.1vw,11px)/1.3 system-ui!important;
