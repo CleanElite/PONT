@@ -306,3 +306,123 @@ body.pont-admin #app :is(.admin-danger,button.danger){color:#FFC2B9!important}
 body.pont-admin #app :is(button,input,select,textarea):disabled{cursor:not-allowed}
 /* The weekly planner owns its distinct, already-approved appearance. */
 body.pont-admin #app #pontWeekPanel{background:radial-gradient(ellipse 55% 22% at 75% 0%,rgba(8,134,122,.22),transparent 85%),linear-gradient(165deg,#041e22 0%,#001c20 55%,#01282a 100%)!important}
+
+
+/* PONT weekly-planner-inspired typography and control system — both dashboards. */
+body.pont-admin #app{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-size:13px;line-height:1.4;
+  -webkit-font-smoothing:antialiased;
+}
+body.pont-admin #app :is(.admin-hero h1,.dashboard-heading h2,.admin-panel-head h2,.admin-workspace>h2,.card>h2,.contact-card-settings>h3){
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif!important;
+  font-weight:750!important;
+  line-height:1.17!important;
+  letter-spacing:-.028em!important;
+  color:#F4FAF9!important;
+  text-shadow:0 1px 8px rgba(115,255,237,.08);
+}
+body.pont-admin #app :is(.dashboard-heading h2,.admin-panel-head h2,.admin-workspace>h2,.card>h2){
+  font-size:clamp(16px,3.25vw,22px)!important;
+}
+body.pont-admin #app :is(.dashboard-form h3,.dashboard-list h3,.card>h3,.contact-card-settings h3){
+  font-family:system-ui,-apple-system,sans-serif!important;
+  font-weight:700!important;
+  letter-spacing:-.018em!important;
+  color:#EAF8F5!important;
+}
+body.pont-admin #app :is(label,.dashboard-cell-label,.saved-menu-courses dt){
+  font-family:system-ui,-apple-system,sans-serif!important;
+  font-weight:550;
+  letter-spacing:.005em;
+}
+body.pont-admin #app :is(.admin-hero p,.dashboard-heading p,.dashboard-form>p,.pont-menu-description){
+  color:#B9D2D2!important;
+  font-size:clamp(11px,2.3vw,13px);
+  line-height:1.45;
+}
+body.pont-admin #app :is(.stat strong,.pont-insight strong,.auction-amount,.saved-menu-heading time){
+  font-family:system-ui,-apple-system,sans-serif!important;
+  font-weight:750!important;
+  letter-spacing:-.025em;
+}
+/* Subtle turquoise outline and slim glass buttons, like the compact weekly rows.
+   Avoid icon-only commands, destructive actions and the approved weekly planner. */
+body.pont-admin #app button:not(.primary):not(.admin-danger):not(.danger):not(.pont-week-day-action):not(.pont-op-button):not(.pont-week-create-remaining):not(.pont-nav-action):not(.admin-logout):not(.admin-row-actions button):not(.pont-daily-switch):not(.pont-password-toggle):not([aria-pressed='true']):not(.active):not([role='switch']){
+  border:1px solid rgba(114,249,227,.59)!important;
+  border-radius:clamp(9px,2vw,13px)!important;
+  background:linear-gradient(145deg,#0B665E 0%,#06443F 55%,#052D33 100%)!important;
+  color:#F5FFFD!important;
+  box-shadow:inset 0 1px 8px rgba(173,255,240,.18),0 0 8px rgba(29,252,233,.14)!important;
+  font-family:system-ui,-apple-system,sans-serif!important;
+  font-weight:650!important;
+  letter-spacing:-.012em!important;
+  transition:border-color .16s ease,filter .16s ease,box-shadow .16s ease;
+}
+body.pont-admin #app button.primary{
+  border-radius:clamp(9px,2vw,13px)!important;
+  font-family:system-ui,-apple-system,sans-serif!important;
+  font-weight:750!important;
+  letter-spacing:-.01em!important;
+}
+body.pont-admin #app button:not(.admin-danger):not(.danger):not(:disabled):hover{
+  filter:brightness(1.12);
+}
+body.pont-admin #app :is(button,a,input,select,textarea):focus-visible{
+  outline:2px solid #7AFFED!important;
+  outline-offset:2px!important;
+}
+body.pont-admin #app button:disabled{opacity:.55!important;box-shadow:none!important}
+/* The tab bar remains compact but gains the approved planner's typography. */
+body.pont-admin #app .admin-nav>:is(button,a){
+  font-family:system-ui,-apple-system,sans-serif!important;
+  font-weight:700!important;
+  letter-spacing:-.012em!important;
+  border-radius:9px!important;
+}
+body.pont-admin #app :is(.admin-categories,#pontDailyTabs) button{
+  font-family:system-ui,-apple-system,sans-serif!important;
+  font-weight:650!important;
+  letter-spacing:-.01em!important;
+}
+body.pont-admin #app :is(input:not([type='checkbox'],[type='radio'],[type='file']),select,textarea){
+  font-family:system-ui,-apple-system,sans-serif!important;
+  border-radius:9px!important;
+  color:#F4FAF9!important;
+}
+body.pont-admin #app :is(input,textarea)::placeholder{color:#88B6B4;opacity:1}
+/* Accordions are kept slim and consistent; the weekly planner is left untouched. */
+body.pont-admin #app :is(.dashboard-disclosure,.menu-group,.dashboard-form) summary,
+body.pont-admin #app .pont-menu-toggle{
+  font-family:system-ui,-apple-system,sans-serif!important;
+  font-weight:700!important;
+  letter-spacing:-.018em!important;
+  color:#F4FAF9!important;
+}
+body.pont-admin #app .pont-menu-toggle{
+  border:1px solid rgba(114,249,227,.48)!important;
+  border-radius:11px!important;
+  background:linear-gradient(135deg,#0A4F4E,#042B32)!important;
+  box-shadow:inset 0 1px 9px rgba(173,255,240,.17),0 0 10px rgba(29,252,233,.1)!important;
+}
+/* Semantic overrides: keep "delete" and other risky actions visibly red. */
+body.pont-admin #app button:is(.admin-danger,.danger){
+  color:#FFC2B9!important;
+  border-color:rgba(246,125,116,.55)!important;
+  background:linear-gradient(135deg,#4B292F,#2F2029)!important;
+  box-shadow:none!important;
+}
+body.pont-admin #app button:is(.admin-danger,.danger):hover{filter:brightness(1.1)}
+/* Do not recolor the tiny planner buttons or alter their bespoke sizes. */
+body.pont-admin #app #pontWeekPanel :is(button,summary){
+  font-family:system-ui,-apple-system,sans-serif!important;
+}
+@media(max-width:620px){
+  body.pont-admin #app :is(.admin-hero h1,.dashboard-heading h2,.admin-panel-head h2){
+    text-wrap:balance;
+  }
+  body.pont-admin #app :is(button,.pont-menu-toggle){-webkit-tap-highlight-color:transparent}
+}
+@media(prefers-reduced-motion:reduce){
+  body.pont-admin #app button{transition:none!important}
+}
