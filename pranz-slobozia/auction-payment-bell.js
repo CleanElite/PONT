@@ -1,5 +1,5 @@
 // PONT restaurant dashboard bell and payment notification; opens the shared full-screen checkout without navigation.
-import {initPontAuctionCheckout} from './pont-auction-checkout.js?v=single-checkout-20261112';
+import {initPontAuctionCheckout} from './pont-auction-checkout.js?v=without-link-20261112';
 export function initPontAuctionPaymentBell({db,config}) {
  const header=document.querySelector('#pontAuctionBellMount');
  if(!header)return {refresh:async()=>{},setVisible:()=>{}};
