@@ -1944,3 +1944,27 @@ body #order::backdrop{background:#031c1a}
 #order .pont-checkout-panel .order-footer #send:disabled{
   cursor:not-allowed!important;
 }
+
+
+/* Larger WhatsApp label and icon, preserving the existing button geometry. */
+#order .pont-checkout-panel .order-footer #send .pont-whatsapp-icon{
+  width:clamp(18px,4.75vw,22px)!important;
+  padding-inline-end:2px!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{
+  font-size:clamp(10.5px,2.85vw,13.5px)!important;
+  line-height:1.12!important;
+  letter-spacing:-.055em!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+@media(max-width:390px){
+  #order .pont-checkout-panel .order-footer #send .pont-whatsapp-icon{
+    width:18px!important;
+    padding-inline-end:2px!important;
+  }
+  #order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{
+    font-size:clamp(10.5px,2.85vw,11.1px)!important;
+    letter-spacing:-.065em!important;
+  }
+}
