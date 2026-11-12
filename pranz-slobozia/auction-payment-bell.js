@@ -203,7 +203,7 @@ export function initPontAuctionPaymentBell({db,config}) {
    if(!session?.access_token)throw Error('Sesiunea a expirat');
    const response=await fetch(config.url+'/functions/v1/pont-stripe-auctions?action=create',{
     method:'POST',headers:{authorization:'Bearer '+session.access_token,apikey:config.anonKey,'content-type':'application/json'},
-    body:JSON.stringify({month:item.campaign_month})
+    body:JSON.stringify({month:item.campaign_month,restaurantId:item.restaurant_id})
    });
    const result=await response.json();
    if(!response.ok)throw Error(result.error||'Plata nu a putut fi inițializată');
