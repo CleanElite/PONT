@@ -215,6 +215,45 @@ dialog.pont-premium-confirm #auctionBidConfirmOK svg{width:18px;height:18px}
  dialog.pont-premium-confirm .pont-confirm-inner{padding:27px 17px!important}
 }
 @media(prefers-reduced-motion:reduce){dialog.pont-premium-auction *,dialog.pont-premium-confirm *{transition:none!important}}
+
+/* Same approved premium style for successful auction submission. */
+dialog.pont-premium-success .pont-success-emblem{
+ width:62px;height:62px;margin:0 auto 13px;
+ border-color:#80ffed!important;
+ background:linear-gradient(145deg,#0a8174,#06433d)!important;
+ box-shadow:inset 0 1px 13px #cafff052,0 0 20px #52f6e151!important;
+}
+dialog.pont-premium-success .pont-success-emblem svg{width:35px;height:35px}
+dialog.pont-premium-success .pont-success-kicker{
+ margin:0 0 10px;font:750 11px/1.3 system-ui;letter-spacing:.19em;color:#e5cc9a;
+}
+dialog.pont-premium-success #bidSuccessTitle{
+ font:650 clamp(27px,6.8vw,37px)/1.15 Georgia,serif!important;
+ color:#f7fffd!important;margin:0 0 12px!important;
+}
+dialog.pont-premium-success .pont-success-message{
+ margin:0 auto 12px!important;max-width:335px;
+ color:#d7eee8!important;font:500 clamp(14px,3.6vw,17px)/1.45 system-ui!important;
+}
+dialog.pont-premium-success #bidSuccessAmount{
+ display:inline-block;color:#78ffe9!important;
+ font:750 inherit;white-space:nowrap;
+ text-shadow:0 0 14px #52f6e158;
+}
+dialog.pont-premium-success .pont-success-note{
+ margin:0 auto 19px!important;max-width:320px;
+ color:#b9d2d2!important;font:450 12px/1.5 system-ui!important;
+}
+dialog.pont-premium-success .pont-success-actions{margin:0!important}
+dialog.pont-premium-success .pont-success-actions .primary-bid{
+ display:flex!important;justify-content:center!important;align-items:center!important;gap:9px!important;
+ width:100%!important;min-height:49px!important;padding:9px 12px!important;
+ border:1px solid #80ffed!important;border-radius:13px!important;
+ background:linear-gradient(135deg,#00bca5,#08796d 60%,#06bda5)!important;
+ color:#fff!important;font:750 clamp(14px,3.7vw,17px)/1.2 system-ui!important;
+ box-shadow:inset 0 1px 10px #d2fff953,0 0 14px #00ecba53!important;
+}
+dialog.pont-premium-success .pont-success-actions svg{width:19px;height:19px}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -340,12 +379,14 @@ dialog.pont-premium-confirm #auctionBidConfirmOK svg{width:18px;height:18px}
   </div>
  </div>
 </dialog>
-<dialog id="bidSuccess" class="auction-modal auction-success" aria-labelledby="bidSuccessTitle" aria-describedby="bidSuccessMessage">
-  <div class="auction-modal-inner">
-    <div class="modal-kicker">Promovare PONT</div>
+<dialog id="bidSuccess" class="auction-modal auction-success pont-premium-confirm pont-premium-success" aria-labelledby="bidSuccessTitle" aria-describedby="bidSuccessMessage">
+  <div class="pont-confirm-inner">
+    <div class="pont-confirm-emblem pont-success-emblem" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4 4L19 6"/></svg></div>
+    <div class="pont-success-kicker">OFERTĂ ÎNREGISTRATĂ</div>
     <h2 id="bidSuccessTitle">Felicitări!</h2>
-    <p id="bidSuccessMessage" class="modal-current">Ai licitat suma de <strong id="bidSuccessAmount"></strong> pentru Promovare.</p>
-    <form method="dialog"><button class="primary-bid" autofocus>Închide</button></form>
+    <p id="bidSuccessMessage" class="pont-success-message">Oferta ta de <strong id="bidSuccessAmount"></strong> a fost înregistrată pentru promovare.</p>
+    <p class="pont-success-note">Clasamentul se actualizează în funcție de ofertele depuse. Plata se confirmă separat.</p>
+    <form method="dialog" class="pont-success-actions"><button class="primary-bid" autofocus><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Am înțeles</button></form>
   </div>
 </dialog>
 <script src="../super-admin/config.js"></script><script type="module">
