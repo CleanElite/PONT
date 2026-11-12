@@ -256,11 +256,36 @@ dialog.pont-premium-success .pont-success-actions .primary-bid{
 dialog.pont-premium-success .pont-success-actions svg{width:19px;height:19px}
 
 /* Position-aware bidding: suggestion is not a mandatory price. */
-.pont-premium-auction .pont-bid-target-hint{
- margin:0 0 12px;padding:10px 12px;border:1px solid #5cddcb80;border-radius:11px;
- background:linear-gradient(135deg,#073e42,#043234);color:#c6f9ef;
- font:600 clamp(11px,2.8vw,13px)/1.45 system-ui;
+/* Compact three-place auction podium, matching premium dark teal. */
+dialog.pont-premium-auction .pont-podium-panel{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px!important;
+ margin:0 0 17px!important;padding:8px!important;border:1px solid #56ebd37c;
+ border-radius:14px;background:linear-gradient(135deg,#063e40,#032c32);
+ box-shadow:inset 0 1px 10px #aaffed17;
 }
+dialog.pont-premium-auction .pont-podium-item{
+ display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+ min-width:0;padding:7px 2px!important;border:1px solid #8ae1d42f;border-radius:10px;
+ background:#062a30;color:#e5f4f0;
+}
+dialog.pont-premium-auction .pont-podium-trophy{
+ display:block;font-size:18px!important;line-height:1!important;
+ filter:drop-shadow(0 1px 3px #0009);
+}
+dialog.pont-premium-auction .pont-podium-silver .pont-podium-trophy{
+ filter:grayscale(1) brightness(1.65) drop-shadow(0 1px 3px #0009);
+}
+dialog.pont-premium-auction .pont-podium-bronze .pont-podium-trophy{
+ filter:sepia(1) saturate(2.7) hue-rotate(335deg) brightness(.85) drop-shadow(0 1px 3px #0009);
+}
+dialog.pont-premium-auction .pont-podium-rank{
+ font:600 10px/1.15 system-ui!important;color:#b6d8d2;
+}
+dialog.pont-premium-auction .pont-podium-item strong{
+ color:#f9fffd;font:750 clamp(12px,3.2vw,15px)/1.25 system-ui!important;
+ white-space:nowrap;font-variant-numeric:tabular-nums;
+}
+
 .pont-premium-auction .pont-bid-rank-preview{
  margin:2px 0 9px;padding:8px 10px;border-left:2px solid #60f1de;
  color:#d4f7ef;font:550 clamp(11px,2.75vw,13px)/1.4 system-ui;
@@ -379,8 +404,12 @@ dialog.pont-premium-success #bidSuccessRank{color:#78ffe9!important;font-weight:
  <h2 id="auctionModalTitle">Licitează pentru vizibilitate</h2>
  <span class="pont-auction-glow-rule" aria-hidden="true"></span>
  <p class="modal-explainer" id="auctionModalExplainer">Ofertele se clasează automat după sumă. Licitezi pentru promovare, nu cumperi o poziție fixă.</p>
- <div class="modal-current"><span class="pont-auction-gavel" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg></span><div id="auctionModalCurrent"></div></div>
- <form id="bidForm" novalidate><div class="pont-bid-target-hint" id="pontBidTargetHint" role="status"></div><label for="bidAmount">Oferta ta totală (lei)</label><input id="bidAmount" type="number" min="50" step="10" inputmode="numeric" required placeholder="Minimum 50 lei"><button class="primary-bid" type="submit" id="bidSubmit"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg><span id="bidSubmitText">Confirmă oferta</span></button></form>
+ <div class="pont-podium-panel" aria-label="Primele trei oferte din clasament">
+  <div class="pont-podium-item pont-podium-gold"><span class="pont-podium-trophy" aria-hidden="true">🏆</span><span class="pont-podium-rank">Locul 1</span><strong id="pontPodiumFirst">—</strong></div>
+  <div class="pont-podium-item pont-podium-silver"><span class="pont-podium-trophy" aria-hidden="true">🏆</span><span class="pont-podium-rank">Locul 2</span><strong id="pontPodiumSecond">—</strong></div>
+  <div class="pont-podium-item pont-podium-bronze"><span class="pont-podium-trophy" aria-hidden="true">🏆</span><span class="pont-podium-rank">Locul 3</span><strong id="pontPodiumThird">—</strong></div>
+ </div>
+ <form id="bidForm" novalidate><label for="bidAmount">Oferta ta totală (lei)</label><input id="bidAmount" type="number" min="50" step="10" inputmode="numeric" required placeholder="Minimum 50 lei"><button class="primary-bid" type="submit" id="bidSubmit"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg><span id="bidSubmitText">Confirmă oferta</span></button></form>
  <p class="pont-bid-rank-preview" id="pontBidRankPreview" aria-live="polite"></p><p class="modal-status" id="bidMessage" role="status" aria-live="polite"></p>
  <p class="modal-note"><span class="pont-modal-info-icon" aria-hidden="true">i</span><span id="auctionModalNote">Poți modifica suma cât timp licitația este activă. Poziția se actualizează automat. Plata se verifică separat.</span></p>
 </div></dialog>
@@ -510,24 +539,22 @@ function refreshBidPreview(){
  if(issue){preview.textContent=issue;return}
  preview.textContent=rankMovementText(value)+' Poziție estimată pe baza ofertelor actuale; se poate schimba dacă apar alte oferte.';
 }
+function renderAuctionPodium(){
+ const sorted=orderedOffers().filter(offer=>Number.isFinite(Number(offer.amount))&&offer.amount!==null);
+ const ids=['pontPodiumFirst','pontPodiumSecond','pontPodiumThird'];
+ for(let i=0;i<3;i++)$(ids[i]).textContent=sorted[i]?money(sorted[i].amount):'—';
+}
 function updateModal(){
  const sorted=orderedOffers(),target=sorted[selectedSlot],own=ownOffer(),isAdmin=role==='super_admin',open=auctionIsOpen();
  const slot=selectedSlot+1,minimum=minimumPersonalBid();
- const recommended=suggestedAmountForSlot(selectedSlot);
  $('auctionModalPosition').textContent='POZIȚIA '+String(slot).padStart(2,'0')+' · '+new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'T12:00:00Z'));
  $('auctionModalTitle').textContent=target?(names[target.restaurant_id]||'Restaurant'):'Loc disponibil';
- $('auctionModalCurrent').textContent=(target?(target.amount==null?'Poziție atribuită de PONT':'Oferta poziției: '+money(target.amount)):'Nicio ofertă pentru această poziție')+(own?' · Oferta ta actuală: '+money(own.amount):'');
+ renderAuctionPodium();
  $('bidAmount').min=String(minimum);
  $('bidAmount').placeholder='Minimum '+money(minimum);
  $('bidAmount').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
  $('bidSubmit').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
  $('bidSubmitText').textContent=busy?'Se salvează…':isAdmin?'Mod vizualizare':own?.payment_status==='paid'?'Oferta ta este achitată':open?(own?'Modifică oferta':'Confirmă oferta'):'Licitația este închisă';
- const targetHint=$('pontBidTargetHint');
- if(recommended.rank===slot){
-  targetHint.textContent='Pentru a ținti locul '+slot+' acum: '+money(recommended.amount)+'. Poți modifica suma și vei vedea imediat pe ce poziție ajungi.';
- }else{
-  targetHint.textContent='Ai selectat locul '+slot+'. Introdu suma dorită pentru a vedea noua poziție în clasament.';
- }
  $('auctionModalNote').textContent=isAdmin?'Contul Super Admin poate consulta licitațiile, fără să liciteze.':!open?'Vei putea modifica oferta când Super Admin reia licitația.':own?.payment_status==='paid'?'Oferta este deja confirmată ca plătită și nu mai poate fi modificată.':own?'Poți reduce sau majora oferta înainte de închiderea licitației. Poziția se recalculează automat, iar plata se confirmă separat.':'Oferta minimă este 50 lei. Poziția se stabilește după valoarea ofertei și se poate schimba. Plata se confirmă separat.';
  refreshBidPreview();
 }
