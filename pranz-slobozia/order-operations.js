@@ -65,6 +65,163 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  #contactView .pont-min-order-settings #pontOpStatus:empty{display:none}
  #restaurantOrderSettings #pontOpStatus:not(:empty){margin-top:7px;font-size:12px}
  @media(max-width:460px){#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid{gap:6px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label:nth-child(-n+2){width:94px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input[type="time"]{width:94px;max-width:94px}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid label:nth-child(3){width:104px;margin-left:0}#restaurantOrderSettings #pontRestaurantSettings .pont-op-grid input{font-size:11px;padding:4px}}
+
+ /* PONT premium weekly planner — visual design matched to approved reference */
+ .pont-operations #pontWeekPanel{
+   padding:clamp(14px,3.1vw,26px)!important;
+   border:1px solid rgba(82,246,225,.45)!important;
+   border-radius:clamp(20px,4vw,30px)!important;
+   background:radial-gradient(ellipse 55% 22% at 75% 0%,rgba(8,134,122,.22),transparent 85%),linear-gradient(165deg,#041e22 0%,#001c20 55%,#01282a 100%)!important;
+   box-shadow:inset 0 1px 13px rgba(92,255,223,.12),0 12px 35px rgba(0,15,18,.26)!important;
+   color:#f4faf9!important;
+ }
+ .pont-operations #pontWeekPanel>summary{
+   display:flex!important;align-items:center!important;gap:clamp(9px,2vw,17px)!important;
+   font:750 clamp(16px,3.65vw,26px)/1.2 system-ui,-apple-system,sans-serif!important;
+   letter-spacing:-.025em!important;
+   border-bottom:1px solid rgba(113,223,211,.15);
+   padding-bottom:13px!important;
+   margin-bottom:0!important;
+   min-width:0;
+ }
+ .pont-operations #pontWeekPanel>summary::after{
+   content:"⌄"!important;
+   flex:none;margin-left:auto;
+   color:#9cf9eb!important;font:500 clamp(23px,4vw,30px)/1 system-ui!important;
+   transition:transform .2s;
+ }
+ .pont-operations #pontWeekPanel[open]>summary::after{transform:rotate(180deg)}
+ .pont-operations #pontWeekPanel[open]>summary{margin-bottom:14px!important}
+ .pont-operations .pont-week-header-icon{
+   display:grid;place-items:center;flex:0 0 clamp(35px,6.2vw,52px);
+   height:clamp(35px,6.2vw,52px);border-radius:50%;
+   border:1px solid #6de8dd82;background:radial-gradient(circle at 40% 20%,#286e71,#06363b 75%);
+   box-shadow:inset 0 2px 8px #b7fffb28,0 0 14px #2ae5d826;
+   color:#a8fcf2;font-size:clamp(20px,3vw,27px);font-weight:400;
+ }
+ .pont-operations .pont-week-header-text{display:block;min-width:0;flex:1 1 auto}
+ .pont-operations .pont-week-header-text small{
+   display:block;margin-top:5px;color:#b9d2d2;font-weight:400;
+   font-size:clamp(10px,2.2vw,14px);line-height:1.4;letter-spacing:0;
+ }
+ .pont-operations #pontOpWeekRestaurantWrap{
+   gap:7px!important;margin:4px 0 16px!important;
+   font:600 clamp(13px,2.7vw,17px)/1.3 system-ui!important;
+   color:#8dece4!important;
+ }
+ .pont-operations #pontOpWeekRestaurant{
+   min-height:48px!important;border-radius:15px!important;
+   background:linear-gradient(110deg,#0a3639,#04292d 80%)!important;
+   border:1px solid #8deee3a1!important;
+   color:#fff!important;font:500 clamp(15px,3.5vw,19px) system-ui!important;
+   padding:9px 13px!important;
+   box-shadow:inset 0 1px 10px #8afde919,0 0 10px #36e9e51b!important;
+ }
+ .pont-operations #pontWeekPanel .pont-op-week-nav{
+   display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
+   align-items:center!important;gap:clamp(6px,1.6vw,13px)!important;
+   margin:18px 0 20px!important;
+   width:100%!important;
+ }
+ .pont-operations #pontWeekPanel .pont-op-week-nav .pont-op-button{
+   display:flex!important;align-items:center!important;justify-content:center!important;
+   width:100%!important;max-width:none!important;min-width:0!important;
+   border:1px solid #4beedbcc!important;border-radius:999px!important;
+   background:linear-gradient(130deg,#074747,#065b55 52%,#053032)!important;
+   box-shadow:inset 0 2px 10px #71ffed28,0 0 7px #16d7c623!important;
+   color:#f7fffe!important;
+   padding:10px clamp(6px,1.3vw,12px)!important;
+   min-height:45px!important;font:600 clamp(10px,1.9vw,15px)/1.2 system-ui!important;
+   white-space:normal!important;letter-spacing:-.02em!important;
+ }
+ .pont-operations #pontWeekPanel .pont-op-arrow{font-size:clamp(20px,3.1vw,28px)!important;line-height:.8!important;opacity:1!important}
+ .pont-operations #pontWeekPanel .pont-week-range{
+   display:flex;align-items:center;justify-content:center;gap:6px;
+   min-height:45px;white-space:nowrap;text-align:center;
+   padding:6px clamp(5px,1.8vw,14px);
+   border:1px solid #32babb80;border-radius:999px;
+   color:#e8f5f4;font:700 clamp(10px,2.1vw,16px)/1.2 system-ui;
+   background:linear-gradient(180deg,#073034,#031c22);
+ }
+ .pont-operations #pontWeekPanel .pont-op-days{display:grid!important;gap:8px!important}
+ .pont-operations #pontWeekPanel .pont-op-day{
+   display:grid!important;grid-template-columns:clamp(58px,12vw,92px) minmax(0,1fr) auto!important;
+   align-items:center!important;gap:clamp(9px,2vw,20px)!important;
+   min-height:66px!important;flex-wrap:nowrap!important;
+   padding:8px clamp(10px,2vw,19px)!important;
+   border:1px solid #3b9a9b75!important;border-radius:17px!important;
+   background:linear-gradient(110deg,#074146c9,#00282c 55%,#052d30)!important;
+   box-shadow:inset 0 1px 9px #8fffea17,0 5px 14px #00171938!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day--published{
+   background:linear-gradient(100deg,#165837,#083d36 48%,#074332)!important;
+   border-color:#76ecb7b5!important;box-shadow:inset 0 1px 9px #baffd42b,0 0 13px #30f69c35!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day-date{
+   display:flex;flex-direction:column;justify-content:center;gap:2px;
+   min-width:0;padding-right:8px;border-right:1px solid #a6dcd858;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day-date strong{
+   font:780 clamp(15px,3.3vw,21px)/1.13 system-ui!important;
+   letter-spacing:.01em;color:#fff!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day-date small{
+   font:450 clamp(10px,2.4vw,14px)/1.2 system-ui!important;
+   color:#e0e9e7!important;margin:0!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day-state{
+   display:flex;align-items:center;gap:clamp(6px,1.4vw,13px);
+   font:600 clamp(11px,2.6vw,16px)/1.2 system-ui;color:#eef4f2;min-width:0;
+ }
+ .pont-operations #pontWeekPanel .pont-week-state-icon{
+   display:grid;place-items:center;flex:0 0 24px;
+   height:24px;color:#b9d5d4;
+   font-size:23px;line-height:1;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day--finished .pont-week-state-icon,
+ .pont-operations #pontWeekPanel .pont-week-day--scheduled .pont-week-state-icon{
+   color:#91e06a;font-weight:750;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day--published .pont-week-state-icon{color:#76f9a2}
+ .pont-operations #pontWeekPanel .pont-week-day-action{
+   display:inline-flex!important;align-items:center;justify-content:center;
+   white-space:nowrap!important;min-height:40px!important;
+   padding:7px clamp(9px,1.8vw,17px)!important;border-radius:999px!important;
+   border:1px solid #72f9e3!important;
+   background:linear-gradient(140deg,#0b6e61,#023f3e)!important;
+   box-shadow:inset 0 1px 8px #adfff04a,0 0 12px #1dfce944!important;
+   font:700 clamp(10px,2.4vw,15px)/1.2 system-ui!important;
+   color:#fff!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day-action span{font-size:19px!important;line-height:1}
+ .pont-operations #pontWeekPanel .pont-week-create-remaining{
+   display:flex;align-items:center;justify-content:center;gap:10px;
+   width:min(100%,550px);min-height:51px;margin:24px auto 4px;
+   padding:10px 18px;border:1.5px solid #7affed;border-radius:999px;
+   background:linear-gradient(145deg,#075952,#002b33 63%,#07635b);
+   box-shadow:inset 0 2px 12px #b3ffef6b,0 0 20px #18edd575,0 7px 20px #00161a;
+   color:#fafffd;font:750 clamp(13px,2.8vw,18px)/1.2 system-ui;cursor:pointer;
+ }
+ .pont-operations #pontWeekPanel .pont-week-create-remaining span{font-size:23px}
+ .pont-operations #pontWeekPanel .pont-week-create-remaining:disabled{opacity:.48;box-shadow:none;cursor:not-allowed}
+ .pont-operations #pontWeekPanel #pontOpWeekStatus:empty{display:none!important}
+ @media(max-width:580px){
+   .pont-operations #pontWeekPanel .pont-op-week-nav{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:7px!important}
+   .pont-operations #pontWeekPanel .pont-week-range{grid-column:1/-1;grid-row:1;margin:0 auto 4px;min-height:36px;padding:7px 15px}
+   .pont-operations #pontWeekPanel #pontOpWeekPrevious{grid-column:1;grid-row:2}
+   .pont-operations #pontWeekPanel #pontOpWeekNext{grid-column:2;grid-row:2}
+   .pont-operations #pontWeekPanel .pont-op-day{grid-template-columns:52px minmax(0,1fr) auto!important;gap:7px!important;padding:8px!important;min-height:61px!important}
+   .pont-operations #pontWeekPanel .pont-week-state-icon{flex-basis:17px;height:20px;font-size:18px}
+   .pont-operations #pontWeekPanel .pont-week-day-action{font-size:10px!important;padding:7px 8px!important;gap:3px!important}
+   .pont-operations #pontWeekPanel .pont-week-day-action span{font-size:16px!important}
+ }
+ @media(max-width:360px){
+   .pont-operations #pontWeekPanel{padding:12px!important}
+   .pont-operations #pontWeekPanel .pont-op-day{grid-template-columns:45px minmax(0,1fr) auto!important;gap:5px!important}
+   .pont-operations #pontWeekPanel .pont-week-day-state{font-size:10px!important;gap:3px}
+   .pont-operations #pontWeekPanel .pont-week-day-date strong{font-size:13px!important}
+   .pont-operations #pontWeekPanel .pont-week-day-action{font-size:9px!important;padding:7px 6px!important}
+ }
  </style>
  <details id="pontHoursPanel"><summary>${superAdminSettings ? 'Program comenzi' : 'Programul comenzilor și comanda minimă'}</summary>
  <label id="pontOpRestaurantWrap">Restaurant<select id="pontOpRestaurant"></select></label>
