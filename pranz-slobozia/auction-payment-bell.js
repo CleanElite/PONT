@@ -77,10 +77,11 @@ export function initPontAuctionPaymentBell({db,config}) {
    display:-webkit-box!important;flex:0 1 138px;min-width:0;max-width:138px;
    overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;
    padding:7px 10px!important;margin:0!important;min-height:0!important;
-   border:1px solid #e5b96e8c!important;border-radius:10px!important;
-   background:linear-gradient(135deg,#45331c,#25302c)!important;
-   color:#ffe1a0!important;font:650 11px/1.35 system-ui!important;
-   text-align:left!important;cursor:pointer;
+   border:1px solid #ffefb4!important;border-radius:10px!important;
+   background:linear-gradient(135deg,#fff0a2 0%,#ffd34f 36%,#efad18 72%,#ffdc6b 100%)!important;
+   color:#533300!important;font:750 11px/1.35 system-ui!important;
+   text-align:center!important;cursor:pointer;
+   box-shadow:0 0 12px #f7c84f55,inset 0 1px 2px #fff9d6!important;
  }
  @keyframes pont-gold-diagonal-neon{
    0%{transform:translate3d(-125%,-125%,0);opacity:0}
