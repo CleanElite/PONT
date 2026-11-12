@@ -1196,22 +1196,22 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
 
 <section id="customers" class="card dashboard-panel" aria-labelledby="customersTitle" hidden>
   <div class="dashboard-heading">
-    <div><h2 id="customersTitle">Clienți</h2><p>Consultă clienții și solicitările trimise spre WhatsApp.</p></div>
+    <div><h2 id="customersTitle">Comenzi WhatsApp</h2><p>Statistici și solicitări fără nume sau telefon al clienților.</p></div>
     <button type="button" id="customersRefresh">Actualizează</button>
   </div>
   <div class="dashboard-tools">
     <label for="customersMonth">Luna istoricului<input type="month" id="customersMonth"></label>
-    <label class="dashboard-search" for="customersSearch">Caută în istoric<input id="customersSearch" placeholder="Nume, telefon sau restaurant" autocomplete="off" type="search"></label>
+    <label class="dashboard-search" for="customersSearch">Caută în istoric<input id="customersSearch" placeholder="Restaurant sau referință" autocomplete="off" type="search"></label>
   </div>
   <div class="pont-customers-summary dashboard-stats">
-    <div class="stat">Clienți<strong id="customersTotal">—</strong></div>
+    <div class="stat">Restaurante cu solicitări<strong id="customersTotal">—</strong></div>
     <div class="stat">Meniuri înregistrate<strong id="customersMenus">—</strong></div>
     <div class="stat">Solicitări WhatsApp<strong id="customersLeads">—</strong></div>
   </div>
   <p id="customersStatus" class="dashboard-message" role="status"></p>
   <div class="pont-analytics-table-wrap">
-    <table class="pont-analytics-table dashboard-table" role="table" aria-label="Clienți și solicitări">
-      <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Client</th><th scope="col" role="columnheader">Telefon</th><th scope="col" role="columnheader">Restaurant preferat</th><th scope="col" role="columnheader">Meniuri</th><th scope="col" role="columnheader">Porții</th><th scope="col" role="columnheader">Solicitări</th></tr></thead>
+    <table class="pont-analytics-table dashboard-table" role="table" aria-label="Solicitări grupate pe restaurante">
+      <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Restaurant</th><th scope="col" role="columnheader">Meniuri</th><th scope="col" role="columnheader">Porții</th><th scope="col" role="columnheader">Solicitări</th></tr></thead>
       <tbody id="customersRows" role="rowgroup"></tbody>
     </table>
   </div>
@@ -1219,7 +1219,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
     <summary>Istoricul solicitărilor</summary>
     <div class="pont-analytics-table-wrap">
       <table class="pont-analytics-table dashboard-table dashboard-orders" role="table" aria-label="Istoricul solicitărilor WhatsApp">
-        <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Client</th><th scope="col" role="columnheader">Restaurant</th><th scope="col" role="columnheader">Referință</th><th scope="col" role="columnheader">Preparate</th><th scope="col" role="columnheader">Data</th><th scope="col" role="columnheader">Acțiune</th></tr></thead>
+        <thead role="rowgroup"><tr role="row"><th scope="col" role="columnheader">Restaurant</th><th scope="col" role="columnheader">Referință</th><th scope="col" role="columnheader">Preparate</th><th scope="col" role="columnheader">Data</th><th scope="col" role="columnheader">Acțiune</th></tr></thead>
         <tbody id="customerOrderRows" role="rowgroup"></tbody>
       </table>
     </div>
@@ -1360,63 +1360,44 @@ renderMenuArchive($('menuArchive'), menus, restaurants);
 }
 
 let customerLeads = [], customerRequest = 0;
-function normalizeCustomerPhone(phone) {
- return String(phone || '').replace(/\D/g, '');
-}
 function customerGroups() {
- const groups = new Map();
- for (const lead of customerLeads) {
-  const phone = normalizeCustomerPhone(lead.customer_phone);
-  if (!phone) continue;
-  if (!groups.has(phone)) groups.set(phone, {name:lead.customer_name, phone:lead.customer_phone, initiatedMenus:0, portions:0, requests:0, restaurants:new Map(), latest:lead.started_at});
-  const group = groups.get(phone);
+ const byRestaurant=new Map();
+ for(const lead of customerLeads){
+  const id=lead.restaurant_id;
+  if(!byRestaurant.has(id))byRestaurant.set(id,{restaurant:restaurantName(id),initiatedMenus:0,portions:0,requests:0});
+  const group=byRestaurant.get(id);
   group.requests++;
-  group.initiatedMenus += Number(lead.menus_count) || 0;
-  group.portions += Number(lead.portions_count) || 0;
-  if (lead.started_at > group.latest) {
-   group.latest = lead.started_at;
-   group.name = lead.customer_name;
-  }
-  const restaurant = group.restaurants.get(lead.restaurant_id) || {initiated:0, requests:0};
-  restaurant.requests++;
-  restaurant.initiated += Number(lead.menus_count) || 0;
-  group.restaurants.set(lead.restaurant_id, restaurant);
+  group.initiatedMenus+=Number(lead.menus_count)||0;
+  group.portions+=Number(lead.portions_count)||0;
  }
- return [...groups.values()].map(group => {
-  const preferred = [...group.restaurants.entries()].sort((a,b) => b[1].initiated - a[1].initiated || b[1].requests - a[1].requests)[0];
-  group.favorite = restaurants.find(restaurant => restaurant.id === preferred?.[0])?.name || '—';
-  return group;
- }).sort((a,b) => b.initiatedMenus - a.initiatedMenus || b.portions - a.portions || b.requests - a.requests);
+ return [...byRestaurant.values()].sort((a,b)=>b.initiatedMenus-a.initiatedMenus||b.portions-a.portions||b.requests-a.requests);
 }
 function renderCustomers() {
- const groups = customerGroups();
- const list = groups.filter(group => matching(group.name + ' ' + group.phone + ' ' + group.favorite, 'customersSearch'));
- $('customersTotal').textContent = formatCount(groups.length);
- $('customersMenus').textContent = formatCount(groups.reduce((sum, group) => sum + group.initiatedMenus, 0));
- $('customersLeads').textContent = formatCount(customerLeads.length);
- $('customersRows').innerHTML = list.length ? list.map(group => '<tr role="row">' + [
-  dataCell('Client', '<strong>' + esc(group.name) + '</strong>'),
-  dataCell('Telefon', '<a class="pont-customer-phone" href="tel:' + esc(group.phone) + '">' + esc(group.phone) + '</a>'),
-  dataCell('Restaurant preferat', esc(group.favorite)),
-  dataCell('Meniuri', formatCount(group.initiatedMenus)),
-  dataCell('Porții', formatCount(group.portions)),
-  dataCell('Solicitări', formatCount(group.requests))
- ].join('') + '</tr>').join('') : emptyRow('Niciun client pentru selecția curentă.');
- const orders = customerLeads.filter(lead => matching(lead.customer_name + ' ' + lead.customer_phone + ' ' + restaurantName(lead.restaurant_id), 'customersSearch'));
- $('customerOrderRows').innerHTML = orders.length ? orders.map(lead => {
-  const date = new Date(lead.started_at).toLocaleDateString('ro-RO', {timeZone:'Europe/Bucharest',day:'2-digit',month:'2-digit',year:'numeric'});
-  const items = Array.isArray(lead.items) && lead.items.length ?
-   lead.items.map(item => String(item.quantity || 0) + ' × ' + String(item.name || 'Preparat')).join(' · ') :
-   formatCount(lead.menus_count) + ' meniuri complete';
-  return '<tr role="row">' + [
-   dataCell('Client', '<strong>' + esc(lead.customer_name) + '</strong>'),
-   dataCell('Restaurant', esc(restaurantName(lead.restaurant_id))),
-   dataCell('Referință', esc(lead.order_reference)),
-   dataCell('Preparate', esc(items)),
-   dataCell('Data', esc(date)),
-   dataCell('Acțiune', '<button type="button" class="admin-danger" data-delete-customer-order="' + esc(lead.id) + '">Șterge</button>')
-  ].join('') + '</tr>';
- }).join('') : emptyRow('Nicio solicitare pentru selecția curentă.');
+ const groups=customerGroups();
+ const list=groups.filter(group=>matching(group.restaurant,'customersSearch'));
+ $('customersTotal').textContent=formatCount(groups.length);
+ $('customersMenus').textContent=formatCount(groups.reduce((sum,group)=>sum+group.initiatedMenus,0));
+ $('customersLeads').textContent=formatCount(customerLeads.length);
+ $('customersRows').innerHTML=list.length?list.map(group=>'<tr role="row">'+[
+  dataCell('Restaurant',esc(group.restaurant)),
+  dataCell('Meniuri',formatCount(group.initiatedMenus)),
+  dataCell('Porții',formatCount(group.portions)),
+  dataCell('Solicitări',formatCount(group.requests))
+ ].join('')+'</tr>').join(''):emptyRow('Nu există solicitări pentru selecția curentă.');
+ const orders=customerLeads.filter(lead=>matching(restaurantName(lead.restaurant_id)+' '+lead.order_reference,'customersSearch'));
+ $('customerOrderRows').innerHTML=orders.length?orders.map(lead=>{
+  const date=new Date(lead.started_at).toLocaleDateString('ro-RO',{timeZone:'Europe/Bucharest',day:'2-digit',month:'2-digit',year:'numeric'});
+  const items=Array.isArray(lead.items)&&lead.items.length?
+   lead.items.map(item=>String(item.quantity||0)+' × '+String(item.name||'Preparat')).join(' · '):
+   formatCount(lead.menus_count)+' meniuri complete';
+  return '<tr role="row">'+[
+   dataCell('Restaurant',esc(restaurantName(lead.restaurant_id))),
+   dataCell('Referință',esc(lead.order_reference)),
+   dataCell('Preparate',esc(items)),
+   dataCell('Data',esc(date)),
+   dataCell('Acțiune','<button type="button" class="admin-danger" data-delete-customer-order="'+esc(lead.id)+'">Șterge</button>')
+  ].join('')+'</tr>';
+ }).join(''):emptyRow('Nicio solicitare pentru selecția curentă.');
 }
 async function loadCustomers() {
  const request = ++customerRequest, month = $('customersMonth').value;
@@ -1443,7 +1424,7 @@ $('customerOrderRows').onclick = async event => {
  const button = event.target.closest('[data-delete-customer-order]');
  if (!button) return;
  const id = Number(button.dataset.deleteCustomerOrder), lead = customerLeads.find(item => item.id === id);
- if (!lead || !confirm('Ștergi definitiv solicitarea clientului ' + lead.customer_name + '?')) return;
+ if (!lead || !confirm('Ștergi definitiv solicitarea ' + lead.order_reference + '?')) return;
  button.disabled = true;
  try {
   await req(db.rpc('pont_admin_delete_whatsapp_lead', {p_id:id}));
