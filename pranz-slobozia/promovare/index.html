@@ -300,6 +300,31 @@ dialog.pont-premium-success .pont-success-amount{
  font:500 clamp(12px,3vw,14px)/1.45 system-ui!important;
 }
 dialog.pont-premium-success #bidSuccessRank{color:#78ffe9!important;font-weight:750}
+
+/* Organized premium bid confirmation: amount change, rank, separate payment note. */
+dialog.pont-premium-confirm .pont-confirm-detail{
+ display:flex;flex-direction:column;align-items:center;gap:10px;
+ max-width:340px;margin:0 auto 13px!important;padding:0 2px;
+}
+dialog.pont-premium-confirm .pont-confirm-change{
+ margin:0!important;color:#d7ebe9;
+ font:500 clamp(13px,3.45vw,15px)/1.55 system-ui!important;text-align:center;
+}
+dialog.pont-premium-confirm .pont-confirm-change strong{
+ color:#f9fffd;font-weight:800;
+}
+dialog.pont-premium-confirm .pont-confirm-rank{
+ width:100%;margin:0!important;padding:11px 10px!important;
+ border:1px solid #67e6d285;border-radius:12px;
+ background:linear-gradient(130deg,#064c48,#063138);
+ color:#e1f8f1;font:650 clamp(13px,3.45vw,15px)/1.4 system-ui!important;text-align:center;
+}
+dialog.pont-premium-confirm .pont-confirm-rank strong{color:#7affed;font-weight:800}
+dialog.pont-premium-confirm .pont-confirm-rank:empty{display:none}
+dialog.pont-premium-confirm .pont-confirm-note{
+ margin:0 auto 19px!important;color:#a8c6c1;
+ font:450 11px/1.45 system-ui!important;text-align:center;
+}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -422,7 +447,11 @@ dialog.pont-premium-success #bidSuccessRank{color:#78ffe9!important;font-weight:
   <button type="button" id="auctionBidConfirmClose" class="auction-modal-close" aria-label="Anulează confirmarea">×</button>
   <div class="pont-confirm-emblem" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg></div>
   <h2 id="auctionBidConfirmTitle">Confirmi oferta?</h2>
-  <p id="auctionBidConfirmDescription">Oferta este fermă. Plata se confirmă separat.</p>
+  <div id="auctionBidConfirmDescription" class="pont-confirm-detail">
+   <p id="auctionBidConfirmChange" class="pont-confirm-change"></p>
+   <p id="auctionBidConfirmRank" class="pont-confirm-rank"></p>
+  </div>
+  <p class="pont-confirm-note">Plata se confirmă separat.</p>
   <div class="pont-confirm-actions">
    <button type="button" id="auctionBidConfirmCancel">Anulează</button>
    <button type="button" id="auctionBidConfirmOK" class="primary-bid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Confirmă</button>
@@ -647,8 +676,22 @@ function confirmPontBid(amount,campaignMonth){
  const sum=document.createElement('strong');sum.textContent=money(amount);
  heading.append(sum,document.createTextNode(' pentru '+period+'?'));
  const previous=ownOffer();
- const direction=previous?(amount<Number(previous.amount)?'reducerea':'majorarea'):'înregistrarea';
- $('auctionBidConfirmDescription').textContent=(previous?'Confirmi '+direction+' ofertei de la '+money(previous.amount)+' la '+money(amount)+'? ':'')+rankMovementText(amount)+' Poziția este estimată după clasamentul actual și se poate modifica înainte de închiderea licitației. Plata se confirmă separat.';
+ const detail=$('auctionBidConfirmChange');
+ if(previous){
+  const action=amount<Number(previous.amount)?'reducerea':'majorarea';
+  const oldAmount=document.createElement('strong');oldAmount.textContent=money(previous.amount);
+  const newAmount=document.createElement('strong');newAmount.textContent=money(amount);
+  detail.replaceChildren('Confirmi '+action+' ofertei de la ',oldAmount,' la ',newAmount,'?');
+ }else{
+  detail.textContent='Confirmi înregistrarea acestei oferte?';
+ }
+ const rank=$('auctionBidConfirmRank'),destination=projectedBidRank(amount),current=currentRestaurantRank();
+ const boldPosition=n=>{const el=document.createElement('strong');el.textContent='locul '+n;return el};
+ if(destination===null)rank.textContent='';
+ else if(current===null)rank.replaceChildren('Vei intra pe ',boldPosition(destination),'.');
+ else if(destination<current)rank.replaceChildren('Vei urca pe ',boldPosition(destination),' de pe ',boldPosition(current),'.');
+ else if(destination>current)rank.replaceChildren('Vei coborî pe ',boldPosition(destination),' de pe ',boldPosition(current),'.');
+ else rank.replaceChildren('Vei rămâne pe ',boldPosition(destination),'.');
  return new Promise(resolve=>{
   const cancel=$('auctionBidConfirmCancel'),close=$('auctionBidConfirmClose'),ok=$('auctionBidConfirmOK');
   let finished=false;
