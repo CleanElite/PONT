@@ -1929,3 +1929,18 @@ body #order::backdrop{background:#031c1a}
    padding-inline-start:5px!important;
  }
 }
+
+
+/* Keep the final WhatsApp CTA as luminous as the menu-page CTA,
+   including while the personal details are incomplete. */
+#order .pont-checkout-panel .order-footer #send,
+#order .pont-checkout-panel .order-footer #send:disabled{
+  opacity:1!important;
+  border:1.5px solid #e6f7f4!important;
+  background:linear-gradient(180deg,#173c39,#021b1b 48%,#123331)!important;
+  box-shadow:inset 0 0 10px #dfffff65,0 0 12px #d5fff982,0 6px 20px #001c19!important;
+  color:#fff!important;
+}
+#order .pont-checkout-panel .order-footer #send:disabled{
+  cursor:not-allowed!important;
+}
