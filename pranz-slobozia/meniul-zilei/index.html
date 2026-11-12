@@ -902,12 +902,11 @@ if(waPhone){
  const cfg=window.PONT_CONFIG;
  try{
   if(!current.restaurantId||!cfg?.url||!cfg?.anonKey)throw Error('Nu putem înregistra comanda. Reîncearcă.');
-  const response=await fetch(cfg.url+'/rest/v1/rpc/pont_finalize_whatsapp_order_secure',{
+  const response=await fetch(cfg.url+'/rest/v1/rpc/pont_finalize_whatsapp_order_private',{
    method:'POST',
    headers:{'Content-Type':'application/json',apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},
    body:JSON.stringify({
     p_restaurant_id:current.restaurantId,
-    p_name:details.full_name,p_phone:details.phone,
     p_menus:countMenus,p_portions:countPortions,
     p_items:items.filter(item=>item.qty>0).map(item=>({name:item.label,quantity:item.qty,category:item.short,dish_ids:item.dish_ids||[]}))
    }),
