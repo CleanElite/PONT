@@ -1822,3 +1822,55 @@ body #order::backdrop{background:#031c1a}
   #order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{font-size:clamp(11px,3vw,14px)!important}
   #order .pont-checkout-panel .order-footer #send .pont-send-total{padding-inline-start:6px!important}
 }
+
+
+/* Refined total block: balanced typography, centred labels, room for prices. */
+#order .pont-checkout-panel .order-footer #send{
+  gap:clamp(5px,1.7vw,10px)!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{
+  flex:1 1 auto!important;
+  min-width:0!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total{
+  box-sizing:border-box!important;
+  flex:0 0 36%!important;
+  width:36%!important;
+  min-width:112px!important;
+  max-width:165px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  gap:3px!important;
+  padding:1px 2px 1px clamp(7px,2.3vw,12px)!important;
+  border-inline-start:1px solid #d6eeea8a!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total small{
+  display:block!important;
+  width:100%!important;
+  font:600 clamp(10px,2.7vw,12px)/1.2 Georgia,serif!important;
+  color:#f1fffc!important;
+  text-align:center!important;
+  letter-spacing:0!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total strong{
+  display:block!important;
+  width:100%!important;
+  font:700 clamp(13px,3.5vw,16px)/1.2 Georgia,serif!important;
+  color:#f6df9d!important;
+  text-align:center!important;
+  letter-spacing:0!important;
+  font-variant-numeric:tabular-nums;
+}
+@media(max-width:390px){
+  #order .pont-checkout-panel .order-footer #send .pont-send-total{
+    flex-basis:37%!important;width:37%!important;min-width:108px!important;
+    padding-inline-start:7px!important;
+  }
+  #order .pont-checkout-panel .order-footer #send .pont-send-total small{
+    font-size:10px!important;
+  }
+  #order .pont-checkout-panel .order-footer #send .pont-send-total strong{
+    font-size:14px!important;
+  }
+}
