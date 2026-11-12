@@ -30,8 +30,9 @@ export function initPontAuctionPaymentBell({db,config}) {
  .pont-auction-pay-note{font:450 11px/1.5 system-ui;color:#accbc7;margin:12px 0 0}
  /* Solid gold finish with a single diagonal neon sweep. Bell stays stationary. */
  .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{
-   margin:0!important;flex:0 0 auto!important;width:clamp(68px,19vw,155px);
-   max-width:32vw;align-self:center;gap:5px;
+   margin:0!important;flex:0 1 auto!important;width:auto!important;
+   max-width:49vw;min-width:45px;align-self:center;gap:8px;
+   flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;
  }
  .pont-admin #app .pont-restaurant-premium-heading .pont-auction-bell{
    position:relative!important;isolation:isolate;overflow:hidden;
@@ -72,8 +73,13 @@ export function initPontAuctionPaymentBell({db,config}) {
    z-index:4;background:#fff9d6;box-shadow:0 0 11px #fff0a4;
  }
  .pont-admin #app .pont-auction-notice{
-   color:#f8dea2!important;font:650 clamp(9px,2.1vw,11px)/1.3 system-ui!important;
-   max-width:100%;text-align:center;cursor:pointer;
+   display:-webkit-box!important;flex:0 1 172px;min-width:0;max-width:172px;
+   overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+   padding:7px 10px!important;margin:0!important;min-height:0!important;
+   border:1px solid #e5b96e8c!important;border-radius:10px!important;
+   background:linear-gradient(135deg,#45331c,#25302c)!important;
+   color:#ffe1a0!important;font:650 11px/1.35 system-ui!important;
+   text-align:left!important;cursor:pointer;
  }
  @keyframes pont-gold-diagonal-neon{
    0%{transform:translate3d(-125%,-125%,0);opacity:0}
@@ -82,7 +88,8 @@ export function initPontAuctionPaymentBell({db,config}) {
    73%,100%{transform:translate3d(125%,125%,0);opacity:0}
  }
  @media(max-width:540px){
-   .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{width:clamp(57px,19vw,100px)!important;max-width:29vw}
+   .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{width:auto!important;max-width:48vw!important;gap:6px!important}
+   .pont-admin #app .pont-auction-notice{flex:0 1 115px;max-width:115px;font-size:10px!important;padding:6px 7px!important}
    .pont-admin #app .pont-restaurant-premium-heading .pont-auction-bell{width:45px!important;height:45px!important;min-height:45px!important}
  }
  @media(prefers-reduced-motion:reduce){
@@ -92,9 +99,10 @@ export function initPontAuctionPaymentBell({db,config}) {
  document.head.append(styles);
  const host=document.createElement('div');
  host.className='pont-auction-notify';host.hidden=true;
- host.innerHTML='<button type="button" class="pont-auction-bell" aria-label="Notificări plăți licitații" title="Plăți licitații"><span class="pont-bell-core" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="pontBellGoldFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff9c7"/><stop offset=".28" stop-color="#ffe15b"/><stop offset=".58" stop-color="#ffbd00"/><stop offset=".86" stop-color="#d88c00"/><stop offset="1" stop-color="#fff0a1"/></linearGradient></defs><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button><span class="pont-auction-notice" hidden></span>';
+ host.innerHTML='<button type="button" class="pont-auction-bell" aria-label="Notificări plăți licitații" title="Plăți licitații"><span class="pont-bell-core" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="pontBellGoldFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff9c7"/><stop offset=".28" stop-color="#ffe15b"/><stop offset=".58" stop-color="#ffbd00"/><stop offset=".86" stop-color="#d88c00"/><stop offset="1" stop-color="#fff0a1"/></linearGradient></defs><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button><button type="button" class="pont-auction-notice" aria-label="Finalizează plata licitației" hidden></button>';
  header.append(host);
- const bell=host.querySelector('button'),notice=host.querySelector('.pont-auction-notice');
+ const bell=host.querySelector('.pont-auction-bell'),notice=host.querySelector('.pont-auction-notice');
+ host.insertBefore(notice,bell);
  const dialog=document.createElement('dialog');
  dialog.className='pont-auction-pay-dialog';
  dialog.innerHTML='<div class="pont-auction-pay-inner"><button type="button" class="pont-auction-pay-close" aria-label="Închide">×</button><h2>Finalizează plata licitației</h2><p class="pont-payment-info"></p><div class="pont-auction-pay-list"></div><form class="pont-auction-pay-form" hidden><div class="pont-auction-pay-element"></div><button class="pont-auction-pay-submit" type="submit" disabled>Autorizează plata</button></form><p class="pont-auction-pay-msg" role="status" aria-live="polite"></p><p class="pont-auction-pay-note">Plata este securizată prin Stripe. Datele cardului nu sunt stocate în PONT.</p></div>';
