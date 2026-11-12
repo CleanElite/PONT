@@ -325,6 +325,29 @@ dialog.pont-premium-confirm .pont-confirm-note{
  margin:0 auto 19px!important;color:#a8c6c1;
  font:450 11px/1.45 system-ui!important;text-align:center;
 }
+
+/* Compact restaurant-specific status under the top-three podium. */
+dialog.pont-premium-auction .pont-my-auction-rank{
+ display:flex;align-items:center;justify-content:space-between;gap:8px;
+ margin:-9px 0 17px!important;padding:9px 12px!important;
+ border:1px solid rgba(122,255,237,.43);border-radius:11px;
+ background:linear-gradient(125deg,#052f35,#064243);
+ box-shadow:inset 0 1px 10px rgba(122,255,237,.07);
+}
+dialog.pont-premium-auction .pont-my-auction-rank[hidden]{display:none!important}
+dialog.pont-premium-auction .pont-my-restaurant-name{
+ flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+ font:650 clamp(11px,2.9vw,13px)/1.3 system-ui;color:#e2faf4;
+}
+dialog.pont-premium-auction .pont-my-rank-detail{
+ flex:none;white-space:nowrap;font:500 clamp(10px,2.6vw,12px)/1.3 system-ui;color:#bddbd4;
+}
+dialog.pont-premium-auction .pont-my-rank-detail strong{
+ font-weight:800;color:#7affed;
+}
+@media(max-width:360px){
+ dialog.pont-premium-auction .pont-my-auction-rank{padding:8px!important;gap:5px}
+}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -437,6 +460,10 @@ dialog.pont-premium-confirm .pont-confirm-note{
   <div class="pont-podium-item pont-podium-gold"><span class="pont-podium-trophy" aria-hidden="true">🏆</span><span class="pont-podium-rank">Locul 1</span><strong id="pontPodiumFirst">—</strong></div>
   <div class="pont-podium-item pont-podium-silver"><span class="pont-podium-trophy" aria-hidden="true">🏆</span><span class="pont-podium-rank">Locul 2</span><strong id="pontPodiumSecond">—</strong></div>
   <div class="pont-podium-item pont-podium-bronze"><span class="pont-podium-trophy" aria-hidden="true">🏆</span><span class="pont-podium-rank">Locul 3</span><strong id="pontPodiumThird">—</strong></div>
+ </div>
+ <div id="pontMyAuctionRank" class="pont-my-auction-rank" role="status" aria-live="polite" hidden>
+  <span id="pontMyRestaurantName" class="pont-my-restaurant-name"></span>
+  <span class="pont-my-rank-detail">Poziția actuală: <strong id="pontMyRankValue">—</strong></span>
  </div>
  <form id="bidForm" novalidate><label for="bidAmount">Oferta ta totală (lei)</label><input id="bidAmount" type="number" min="50" step="10" inputmode="numeric" required placeholder="Minimum 50 lei"><button class="primary-bid" type="submit" id="bidSubmit"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg><span id="bidSubmitText">Confirmă oferta</span></button></form>
  <p class="pont-bid-rank-preview" id="pontBidRankPreview" aria-live="polite"></p><p class="modal-status" id="bidMessage" role="status" aria-live="polite"></p>
@@ -585,6 +612,12 @@ function renderAuctionPodium(){
  const sorted=orderedOffers().filter(offer=>Number.isFinite(Number(offer.amount))&&offer.amount!==null);
  const ids=['pontPodiumFirst','pontPodiumSecond','pontPodiumThird'];
  for(let i=0;i<3;i++)$(ids[i]).textContent=sorted[i]?money(sorted[i].amount):'—';
+ const personal=$('pontMyAuctionRank');
+ personal.hidden=role!=='restaurant'||!me;
+ if(personal.hidden)return;
+ $('pontMyRestaurantName').textContent=names[me]||'Restaurantul tău';
+ const rank=currentRestaurantRank();
+ $('pontMyRankValue').textContent=rank?'Locul '+rank:'Fără ofertă';
 }
 function updateModal(){
  const sorted=orderedOffers(),target=sorted[selectedSlot],own=ownOffer(),isAdmin=role==='super_admin',open=auctionIsOpen();
