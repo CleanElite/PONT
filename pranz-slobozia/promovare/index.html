@@ -692,10 +692,13 @@ $('pontWithdrawConfirmButton').addEventListener('click',async()=>{
   const {data,error}=await db.rpc('withdraw_my_auction_bid',{p_month:submittedMonth});
   if(error)throw error;
   if(data!==true)throw Error('Retragerea nu a fost confirmată.');
-  await load();
+  // A successful RPC is authoritative even if the subsequent refresh fails.
+  offers=offers.filter(offer=>offer.restaurant_id!==me);
   $('pontWithdrawConfirm').close();
   $('bidAmount').value='';
   $('bidMessage').textContent='Oferta a fost retrasă. Restaurantul nu mai participă în clasament.';
+  render();
+  try{await load()}catch(refreshError){console.error('Actualizare clasament după retragere:',refreshError)}
   updateModal();
  }catch(error){
   $('pontWithdrawError').textContent='Retragerea nu a reușit: '+error.message;
