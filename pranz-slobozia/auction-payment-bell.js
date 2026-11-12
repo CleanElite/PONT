@@ -31,7 +31,7 @@ export function initPontAuctionPaymentBell({db,config}) {
  /* Solid gold finish with a single diagonal neon sweep. Bell stays stationary. */
  .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{
    margin:0!important;flex:0 1 auto!important;width:auto!important;
-   max-width:49vw;min-width:45px;align-self:center;gap:8px;
+   max-width:min(220px,43vw);min-width:45px;align-self:center;gap:7px;
    flex-direction:row!important;align-items:center!important;justify-content:flex-end!important;
  }
  .pont-admin #app .pont-restaurant-premium-heading .pont-auction-bell{
@@ -74,7 +74,7 @@ export function initPontAuctionPaymentBell({db,config}) {
  }
  .pont-admin #app .pont-auction-notice[hidden]{display:none!important}
  .pont-admin #app .pont-auction-notice{
-   display:-webkit-box!important;flex:0 1 172px;min-width:0;max-width:172px;
+   display:-webkit-box!important;flex:0 1 138px;min-width:0;max-width:138px;
    overflow:hidden;-webkit-line-clamp:2;-webkit-box-orient:vertical;
    padding:7px 10px!important;margin:0!important;min-height:0!important;
    border:1px solid #e5b96e8c!important;border-radius:10px!important;
@@ -89,8 +89,8 @@ export function initPontAuctionPaymentBell({db,config}) {
    73%,100%{transform:translate3d(125%,125%,0);opacity:0}
  }
  @media(max-width:540px){
-   .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{width:auto!important;max-width:48vw!important;gap:6px!important}
-   .pont-admin #app .pont-auction-notice{flex:0 1 115px;max-width:115px;font-size:10px!important;padding:6px 7px!important}
+   .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{width:auto!important;max-width:44vw!important;gap:5px!important}
+   .pont-admin #app .pont-auction-notice{flex:0 1 96px;max-width:96px;font-size:10px!important;padding:5px 7px!important}
    .pont-admin #app .pont-restaurant-premium-heading .pont-auction-bell{width:45px!important;height:45px!important;min-height:45px!important}
  }
  @media(prefers-reduced-motion:reduce){
@@ -119,7 +119,9 @@ export function initPontAuctionPaymentBell({db,config}) {
   const count=due.length;
   bell.classList.toggle('is-due',count>0);
   notice.hidden=count===0;
-  notice.textContent=count?('Finalizează plata licitației pentru '+formatMonth(due[0].campaign_month)+(count>1?' (+'+(count-1)+')':'')):'';
+  notice.textContent=count?('Finalizează plata · '+formatMonth(due[0].campaign_month)+(count>1?' (+'+(count-1)+')':'')):'';
+  notice.title=count?'Finalizează plata licitației pentru '+formatMonth(due[0].campaign_month):'';
+  notice.setAttribute('aria-label',notice.title||'Nu există plăți restante');
   bell.setAttribute('aria-label',count?'Plăți restante pentru '+count+' licitații':'Nu ai plăți restante');
  }
  async function refresh() {
