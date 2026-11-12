@@ -75,6 +75,43 @@
  .pont-admin #app .pont-admin-heading-label{font-size:16px!important}
  .pont-admin #app .pont-admin-heading-name{font-size:22px!important}
 }
+/* Restaurant header: independent title and payment cluster, responsive without layout jumps. */
+.pont-admin #app .pont-restaurant-premium-heading{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) auto!important;
+ align-items:center!important;column-gap:clamp(10px,2vw,22px)!important;
+ min-width:0!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading .admin-hero-copy{
+ min-width:0!important;width:100%;flex:none!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading h1{
+ display:flex!important;flex-direction:column!important;
+ align-items:flex-start!important;justify-content:center!important;
+ flex-wrap:nowrap!important;gap:2px!important;
+ min-width:0!important;
+}
+.pont-admin #app .pont-admin-heading-label{
+ font:600 clamp(17px,2.25vw,22px)/1.2 Georgia,'Times New Roman',serif!important;
+}
+.pont-admin #app .pont-admin-heading-name{
+ font:750 clamp(21px,3vw,29px)/1.17 Georgia,'Times New Roman',serif!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading .pont-bell-header-slot{
+ width:auto;min-width:0!important;max-width:100%;
+ flex:none!important;margin:0!important;justify-self:end;
+}
+@media(max-width:650px){
+ .pont-admin #app .pont-restaurant-premium-heading{
+  column-gap:9px!important;
+ }
+ .pont-admin #app .pont-admin-heading-label{font-size:clamp(16px,4.4vw,19px)!important}
+ .pont-admin #app .pont-admin-heading-name{font-size:clamp(20px,5.5vw,25px)!important}
+}
+@media(max-width:360px){
+ .pont-admin #app .pont-admin-heading-label{font-size:15px!important}
+ .pont-admin #app .pont-admin-heading-name{font-size:20px!important}
+}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=model-wizard-c31"><body class="pont-admin pont-admin--restaurant">
 <main>
