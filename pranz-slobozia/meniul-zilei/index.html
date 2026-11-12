@@ -729,7 +729,15 @@ function trackPontMetric(type,menu,menusCount=0,portionsCount=0){
  if(!rid||!config?.url||!config?.anonKey)return;
  if(type==='restaurant_view'){
   const key='pont_visit_'+rid+'_'+day();
-  try{if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,'1')}catch(err){if(pontMetricsVisited.has(key))return;pontMetricsVisited.add(key)}
+  // Storage-based visit deduplication is optional analytics, not necessary for the order flow.
+  // Without consent, use only page-lifetime memory and do not access sessionStorage.
+  if(pontVisitorId()){
+   try{if(sessionStorage.getItem(key))return;sessionStorage.setItem(key,'1')}
+   catch(err){if(pontMetricsVisited.has(key))return;pontMetricsVisited.add(key)}
+  }else{
+   if(pontMetricsVisited.has(key))return;
+   pontMetricsVisited.add(key);
+  }
  }
  const isView=type==='restaurant_view';
  const url=config.url+'/rest/v1/rpc/'+(isView?'pont_track_restaurant_visit':'pont_track_restaurant_event');
