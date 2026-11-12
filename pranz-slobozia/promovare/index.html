@@ -712,38 +712,69 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
  }
 }
 
-/* PONT secure payment: fixed iOS-friendly modal, opaque backdrop and isolated scrolling. */
+/* PONT payments: full-screen secure payment surface, independent of the auction page. */
 html.pont-payment-scroll-locked{overflow:hidden!important;overscroll-behavior:none!important;height:100%!important}
 body.pont-payment-scroll-locked{position:fixed!important;width:100%!important;left:0!important;right:0!important;overflow:hidden!important;overscroll-behavior:none!important}
 dialog#pontCardPaymentDialog[open]{
- position:fixed!important;top:0!important;right:0!important;bottom:0!important;left:0!important;
- inset:0!important;margin:auto!important;transform:none!important;
- width:min(calc(100vw - 24px),465px)!important;max-width:465px!important;
- height:max-content!important;max-height:calc(100dvh - 24px)!important;
- padding:0!important;overflow:hidden!important;overscroll-behavior:contain!important;
- z-index:2147483647!important;
+ position:fixed!important;inset:0!important;top:0!important;left:0!important;
+ right:0!important;bottom:0!important;
+ display:block!important;
+ box-sizing:border-box!important;margin:0!important;transform:none!important;
+ width:100vw!important;max-width:none!important;min-width:100vw!important;
+ height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;
+ border:0!important;border-radius:0!important;padding:0!important;
+ overflow:hidden!important;overscroll-behavior:none!important;
+ background:linear-gradient(165deg,#061d22 0%,#031417 58%,#071f24 100%)!important;
+ box-shadow:none!important;z-index:2147483647!important;
 }
-dialog#pontCardPaymentDialog::backdrop{
- background:#021417!important;opacity:1!important;
- backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
-}
+dialog#pontCardPaymentDialog::backdrop{background:#031417!important;opacity:1!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
 dialog#pontCardPaymentDialog .pont-confirm-inner{
- position:relative!important;
- max-height:calc(100dvh - 26px)!important;
- overflow-y:auto!important;overscroll-behavior:contain!important;
- -webkit-overflow-scrolling:touch;
- padding:clamp(24px,5vw,35px) clamp(14px,4vw,30px)!important;
+ box-sizing:border-box!important;position:relative!important;
+ width:100%!important;max-width:none!important;
+ height:100%!important;min-height:0!important;max-height:100%!important;
+ margin:0!important;padding:clamp(84px,12vh,110px) max(18px,calc((100vw - 490px)/2)) 36px!important;
+ overflow-y:auto!important;overflow-x:hidden!important;overscroll-behavior:contain!important;
+ -webkit-overflow-scrolling:touch;text-align:center!important;
 }
 dialog#pontCardPaymentDialog #pontCardPaymentClose{
- position:sticky!important;top:0!important;float:right!important;
- display:grid!important;place-items:center!important;z-index:20!important;
- margin:-8px -5px 0 8px!important;
- width:42px!important;height:42px!important;min-width:42px!important;
+ position:fixed!important;top:max(16px,env(safe-area-inset-top))!important;
+ right:max(18px,env(safe-area-inset-right))!important;
+ display:grid!important;place-items:center!important;float:none!important;
+ z-index:100!important;margin:0!important;
+ width:46px!important;height:46px!important;min-width:46px!important;
  pointer-events:auto!important;touch-action:manipulation!important;
+ border:1px solid rgba(117,252,226,.55)!important;border-radius:50%!important;
+ background:#0a4447!important;color:#fff!important;
 }
+dialog#pontCardPaymentDialog #pontCardPaymentForm,
+dialog#pontCardPaymentDialog #pontCardPaymentSummary,
+dialog#pontCardPaymentDialog .pont-card-payment-note{
+ width:100%!important;max-width:490px!important;margin-left:auto!important;margin-right:auto!important;
+}
+dialog#pontCardPaymentDialog .pont-save-details{
+ margin:13px auto 0!important;border:1px solid rgba(114,225,206,.38)!important;
+ border-radius:13px!important;background:rgba(4,40,44,.85)!important;
+ text-align:left!important;overflow:hidden!important;
+}
+dialog#pontCardPaymentDialog .pont-save-details>summary{
+ display:flex;align-items:center;justify-content:space-between;gap:12px;
+ cursor:pointer;list-style:none;padding:14px 15px!important;
+ color:#e7faf5!important;font:650 13px/1.35 system-ui,sans-serif!important;
+}
+dialog#pontCardPaymentDialog .pont-save-details>summary::-webkit-details-marker{display:none}
+dialog#pontCardPaymentDialog .pont-save-details>summary::after{
+ content:"+";display:grid;place-items:center;flex:0 0 24px;
+ width:24px;height:24px;border:1px solid #6bd8c5a6;border-radius:50%;
+ font:400 20px/1 system-ui;color:#aef8e9;
+}
+dialog#pontCardPaymentDialog .pont-save-details[open]>summary::after{content:"−"}
+dialog#pontCardPaymentDialog .pont-save-details p{
+ margin:0!important;padding:0 15px 15px!important;
+ font:450 12px/1.55 system-ui,sans-serif!important;color:#bcded9!important;
+}
+dialog#pontCardPaymentDialog .pont-save-details summary:focus-visible{outline:2px solid #b0faeb;outline-offset:-3px}
 @supports(height:100svh){
- dialog#pontCardPaymentDialog[open]{max-height:calc(100svh - 24px)!important}
- dialog#pontCardPaymentDialog .pont-confirm-inner{max-height:calc(100svh - 26px)!important}
+ dialog#pontCardPaymentDialog[open]{height:100svh!important;min-height:100svh!important;max-height:100svh!important}
 }
 </style>
 </head>
@@ -920,6 +951,10 @@ dialog#pontCardPaymentDialog #pontCardPaymentClose{
   <p id="pontCardPaymentSummary" class="pont-card-payment-summary"></p>
   <form id="pontCardPaymentForm">
    <div id="pontStripePaymentElement"></div>
+   <details class="pont-save-details" id="pontSavePaymentDetails">
+    <summary>Salvează datele pentru următoarea plată</summary>
+    <p>Pentru a salva datele în siguranță prin Stripe Link, folosește opțiunea de salvare din formularul Stripe de mai sus. PONT nu păstrează datele cardului.</p>
+   </details>
    <p id="pontCardPaymentMessage" role="status" aria-live="polite"></p>
    <button type="submit" class="primary-bid" id="pontCardPaymentSubmit" disabled>Autorizează plata</button>
   </form>
@@ -1182,6 +1217,7 @@ async function pontOpenPayment(row){
  submit.disabled=true;message.textContent='Se pregătește formularul de plată…';
  $('pontCardPaymentSummary').textContent='Campania '+new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(row.campaign_month+'T12:00:00Z'))+' · '+money(row.amount);
  $('pontStripePaymentElement').replaceChildren();
+ $('pontSavePaymentDetails').open=false;
  pontLockPaymentBackground();
  if(!dialog.open)dialog.showModal();
  try{
