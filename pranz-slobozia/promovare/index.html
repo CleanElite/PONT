@@ -484,6 +484,59 @@ dialog.pont-premium-auction.pont-auction-modal-paused .modal-note,
 dialog.pont-premium-auction.pont-auction-modal-paused #pontWithdrawBid{
  display:none!important;
 }
+
+/* Read-only final auction results; used for every card after the Super Admin closes the auction. */
+dialog.pont-final-summary-dialog{width:min(94vw,540px)!important;max-width:540px!important}
+dialog.pont-final-summary-dialog .pont-confirm-inner{padding:clamp(23px,5.8vw,37px)!important}
+dialog.pont-final-summary-dialog .pont-final-summary-kicker{
+ text-align:center;color:#f5d6a0;font:750 11px/1.4 system-ui;
+ letter-spacing:.19em;margin:4px 35px 10px;
+}
+dialog.pont-final-summary-dialog #pontFinalSummaryTitle{
+ color:#f9fffd!important;font:650 clamp(27px,6vw,37px)/1.15 Georgia,'Times New Roman',serif!important;
+ margin:0 22px 12px!important;text-align:center;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-rule{
+ width:min(68%,250px);height:2px;margin:0 auto 15px;
+ background:linear-gradient(90deg,transparent,#ffe8a5 48%,transparent);
+ box-shadow:0 0 12px #ffdc8880;
+}
+dialog.pont-final-summary-dialog #pontFinalSummaryDescription{
+ margin:0 auto 18px!important;max-width:380px;
+ text-align:center;color:#c9e5df!important;font:450 13px/1.55 system-ui!important;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-list{
+ display:grid;gap:8px;max-height:min(55dvh,480px);overflow:auto;
+ padding:3px 2px 8px;scrollbar-width:thin;scrollbar-color:#4ca99b transparent;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-row{
+ display:grid;grid-template-columns:54px minmax(0,1fr) auto;
+ align-items:center;gap:12px;padding:13px 12px;
+ border:1px solid #61bca666;border-radius:14px;
+ background:linear-gradient(120deg,#0d4141,#08282f);
+}
+dialog.pont-final-summary-dialog .pont-final-summary-row:nth-child(1){border-color:#f4d37b9c;background:linear-gradient(110deg,#53401d,#163a39 75%)}
+dialog.pont-final-summary-dialog .pont-final-summary-row:nth-child(2){border-color:#bfd3d5a0}
+dialog.pont-final-summary-dialog .pont-final-summary-row:nth-child(3){border-color:#cda57b8f}
+dialog.pont-final-summary-dialog .pont-final-summary-position{
+ color:#d4eae5;font:700 12px/1.35 system-ui;white-space:nowrap;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-row:nth-child(1) .pont-final-summary-position{color:#ffe1a1}
+dialog.pont-final-summary-dialog .pont-final-summary-restaurant{
+ min-width:0;color:#f5fffd;font:650 clamp(13px,3.5vw,16px)/1.4 system-ui;
+ overflow-wrap:anywhere;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-value{
+ color:#96ffe0;font:750 clamp(13px,3.4vw,16px)/1.35 system-ui;
+ font-variant-numeric:tabular-nums;white-space:nowrap;text-align:right;
+}
+dialog.pont-final-summary-dialog .pont-final-summary-empty{
+ color:#9cbbb6;font-weight:450;font-style:italic;
+}
+@media(max-width:380px){
+ dialog.pont-final-summary-dialog .pont-final-summary-row{grid-template-columns:44px minmax(0,1fr);gap:5px 9px}
+ dialog.pont-final-summary-dialog .pont-final-summary-value{grid-column:2;text-align:left}
+}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -590,6 +643,16 @@ dialog.pont-premium-auction.pont-auction-modal-paused #pontWithdrawBid{
   </section>
 </main>
 <footer class="promotion-footer">PONT Slobozia · Promovare pentru restaurante partenere</footer>
+<dialog id="pontAuctionFinalSummary" class="auction-modal pont-premium-confirm pont-final-summary-dialog" aria-labelledby="pontFinalSummaryTitle" aria-describedby="pontFinalSummaryDescription">
+ <div class="pont-confirm-inner">
+  <button type="button" class="auction-modal-close" id="pontFinalSummaryClose" aria-label="Închide rezumatul">×</button>
+  <div class="pont-final-summary-kicker">CLASAMENT FINAL · PONT</div>
+  <h2 id="pontFinalSummaryTitle">Rezultatele licitației</h2>
+  <div class="pont-final-summary-rule" aria-hidden="true"></div>
+  <p id="pontFinalSummaryDescription">Pozițiile și ofertele finale înregistrate pentru această licitație.</p>
+  <div id="pontFinalSummaryList" class="pont-final-summary-list" aria-label="Pozițiile finale ale licitației"></div>
+ </div>
+</dialog>
 <dialog id="auctionDialog" class="auction-modal pont-premium-auction" aria-labelledby="auctionModalTitle" aria-describedby="auctionModalExplainer"><div class="auction-modal-inner">
  <button type="button" class="auction-modal-close" id="auctionClose" aria-label="Închide"><span aria-hidden="true">×</span></button>
  <div class="modal-kicker" id="auctionModalPosition">LICITAȚIE PONT</div>
@@ -688,6 +751,32 @@ function orderedOffers(){
  }
  return [...offers].sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at))}
 function ownOffer(){return offers.find(o=>o.restaurant_id===me)}
+function isAuctionFinalized(){return !biddingOpen&&Array.isArray(finalRanking)}
+function renderAuctionFinalSummary(){
+ const rows=$('pontFinalSummaryList');
+ const sorted=orderedOffers();
+ const period=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'T12:00:00Z'));
+ $('pontFinalSummaryDescription').textContent='Clasamentul final pentru '+period+'. Fiecare poziție afișează restaurantul și suma licitată.';
+ rows.replaceChildren();
+ const count=Math.max(20,sorted.length);
+ for(let i=0;i<count;i++){
+  const offer=sorted[i];
+  const row=document.createElement('div');
+  row.className='pont-final-summary-row';
+  const position=document.createElement('span');
+  position.className='pont-final-summary-position';
+  position.textContent='Locul '+(i+1);
+  const restaurant=document.createElement('span');
+  restaurant.className='pont-final-summary-restaurant';
+  restaurant.textContent=offer?(names[offer.restaurant_id]||'Restaurant'):'Loc neocupat';
+  if(!offer)restaurant.classList.add('pont-final-summary-empty');
+  const amount=document.createElement('strong');
+  amount.className='pont-final-summary-value';
+  amount.textContent=offer&&offer.amount!=null?money(offer.amount):'—';
+  row.append(position,restaurant,amount);
+  rows.append(row);
+ }
+}
 function restaurantCardStyle(id) {
  let hash=0;
  for(const character of String(id))hash=(Math.imul(hash,31)+character.charCodeAt(0))>>>0;
@@ -714,6 +803,10 @@ function render(){
 function renderAuctionStatus(){
  $('auctionHint').textContent=role==='super_admin'?'Apasă un card pentru a vedea oferta. Confirmările se gestionează în Licitații.':biddingOpen&&biddingPaused?'Licitația este momentan în pauză. Nu se acceptă oferte până când Super Admin o reia.':auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':(finalRanking!==null?'Licitația este închisă. Poți consulta clasamentul final.':'Licitația este închisă. Poți consulta ofertele existente.');
  if($('auctionDialog').open)updateModal();
+ if($('pontAuctionFinalSummary').open){
+  if(isAuctionFinalized())renderAuctionFinalSummary();
+  else $('pontAuctionFinalSummary').close();
+ }
 }
 
 let pontStripe=null,pontElements=null,pontPaymentMonth=null,pontPaymentBusy=false;
@@ -924,12 +1017,19 @@ $('bidAmount').addEventListener('input',refreshBidPreview);
 
 $('list').addEventListener('click',e=>{
  const button=e.target.closest('[data-slot]');if(!button)return;
+ if(isAuctionFinalized()){
+  renderAuctionFinalSummary();
+  if(!$('pontAuctionFinalSummary').open)$('pontAuctionFinalSummary').showModal();
+  return;
+ }
  selectedSlot=Number(button.dataset.slot);
  $('bidMessage').textContent='';
  $('bidAmount').value='';
  updateModal();
  $('auctionDialog').showModal();
 });
+$('pontFinalSummaryClose').onclick=()=>$('pontAuctionFinalSummary').close();
+$('pontAuctionFinalSummary').addEventListener('click',e=>{if(e.target===$('pontAuctionFinalSummary'))e.target.close()});
 $('pontWithdrawBid').addEventListener('click',()=>{
  if(busy||role!=='restaurant'||!auctionIsOpen()||!ownOffer()||ownOffer()?.payment_status==='paid')return;
  $('pontWithdrawError').hidden=true;
