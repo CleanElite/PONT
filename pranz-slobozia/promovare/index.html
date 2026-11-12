@@ -287,8 +287,12 @@ dialog.pont-premium-auction .pont-podium-item strong{
 }
 
 .pont-premium-auction .pont-bid-rank-preview{
- margin:2px 0 9px;padding:8px 10px;border-left:2px solid #60f1de;
+ margin:2px 0 9px;padding:8px 10px!important;
+ border-left:0!important;text-align:center!important;
  color:#d4f7ef;font:550 clamp(11px,2.75vw,13px)/1.4 system-ui;
+}
+.pont-premium-auction .pont-bid-rank-preview strong{
+ font-weight:800!important;color:#7affed!important;
 }
 
 dialog.pont-premium-success .pont-success-amount{
@@ -515,11 +519,10 @@ function rankMovementText(value){
  const destination=projectedBidRank(value);
  if(destination===null)return '';
  const current=currentRestaurantRank();
- const prefix=current===null?'Cu această ofertă vei intra, conform clasamentului actual, pe'
-  :destination<current?'Cu această modificare vei urca de pe locul '+current+' pe'
-  :destination>current?'Cu această modificare vei coborî de pe locul '+current+' pe'
-  :'Cu această modificare vei rămâne pe';
- return prefix+' locul '+destination+'.';
+ if(current===null)return 'Cu această ofertă vei ajunge pe locul '+destination+'.';
+ if(destination<current)return 'Cu această modificare vei urca pe locul '+destination+' de pe locul '+current+'.';
+ if(destination>current)return 'Cu această modificare vei coborî pe locul '+destination+' de pe locul '+current+'.';
+ return 'Cu această modificare vei rămâne pe locul '+destination+'.';
 }
 function suggestedAmountForSlot(slot){
  const others=offers.filter(offer=>offer.restaurant_id!==me).sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at));
@@ -537,7 +540,17 @@ function refreshBidPreview(){
  if(!raw){preview.textContent='Introdu suma dorită pentru a vedea noua poziție în clasament.';return}
  const value=Number(raw),issue=bidInputIssue(value);
  if(issue){preview.textContent=issue;return}
- preview.textContent=rankMovementText(value)+' Poziție estimată pe baza ofertelor actuale; se poate schimba dacă apar alte oferte.';
+ const destination=projectedBidRank(value),current=currentRestaurantRank();
+ const boldRank=n=>{const strong=document.createElement('strong');strong.textContent='locul '+n;return strong};
+ if(current===null){
+  preview.replaceChildren('Cu această ofertă vei ajunge pe ',boldRank(destination),'.');
+ }else if(destination<current){
+  preview.replaceChildren('Cu această modificare vei urca pe ',boldRank(destination),' de pe ',boldRank(current),'.');
+ }else if(destination>current){
+  preview.replaceChildren('Cu această modificare vei coborî pe ',boldRank(destination),' de pe ',boldRank(current),'.');
+ }else{
+  preview.replaceChildren('Cu această modificare vei rămâne pe ',boldRank(destination),'.');
+ }
 }
 function renderAuctionPodium(){
  const sorted=orderedOffers().filter(offer=>Number.isFinite(Number(offer.amount))&&offer.amount!==null);
