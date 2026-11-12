@@ -43,21 +43,6 @@ dialog.pont-checkout::backdrop{background:#031417!important;backdrop-filter:none
 .pont-checkout .pont-checkout-summary{color:#e8faf6;font:650 14px/1.5 system-ui;margin:0 auto 22px;max-width:490px}
 .pont-checkout form{max-width:490px;margin:0 auto;text-align:left}
 .pont-checkout .pont-checkout-element{min-height:45px}
-.pont-checkout .pont-checkout-save{
- margin:14px 0 0;border:1px solid rgba(114,225,206,.38);border-radius:13px;background:rgba(4,40,44,.85);overflow:hidden;
-}
-.pont-checkout .pont-checkout-save>summary{
- display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;list-style:none;
- padding:14px 15px;color:#e7faf5;font:650 13px/1.35 system-ui;
-}
-.pont-checkout .pont-checkout-save>summary::-webkit-details-marker{display:none}
-.pont-checkout .pont-checkout-save>summary::after{
- content:"+";display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;border:1px solid #6bd8c5a6;
- border-radius:50%;font:400 20px/1 system-ui;color:#aef8e9;
-}
-.pont-checkout .pont-checkout-save[open]>summary::after{content:"−"}
-.pont-checkout .pont-checkout-save p{margin:0;padding:0 15px 15px;color:#bcded9;font:450 12px/1.55 system-ui}
-.pont-checkout .pont-checkout-save summary:focus-visible{outline:2px solid #b0faeb;outline-offset:-3px}
 .pont-checkout .pont-checkout-message{min-height:19px;color:#ffd0c4;font:550 12px/1.45 system-ui;text-align:center;margin:11px auto}
 .pont-checkout .pont-checkout-submit{
  display:block;width:100%;min-height:50px;margin-top:14px;border:1px solid #85e6d6;border-radius:12px;
@@ -78,10 +63,6 @@ export function initPontAuctionCheckout({db,config,onFinished}){
   <p class="pont-checkout-summary"></p>
   <form class="pont-checkout-form">
    <div class="pont-checkout-element"></div>
-   <details class="pont-checkout-save">
-    <summary>Salvează datele pentru următoarea plată</summary>
-    <p>Pentru salvarea securizată prin Stripe Link, utilizează opțiunea din formularul Stripe de mai sus. PONT nu stochează datele cardului.</p>
-   </details>
    <p class="pont-checkout-message" role="status" aria-live="polite"></p>
    <button type="submit" class="pont-checkout-submit" disabled>Autorizează plata</button>
   </form>
@@ -141,7 +122,7 @@ export function initPontAuctionCheckout({db,config,onFinished}){
   busy=true;const id=++requestId;stripe=null;elements=null;
   submit.disabled=true;message.textContent='Se pregătește formularul de plată…';
   $('.pont-checkout-summary').textContent='Campania '+formatMonth(item.campaign_month)+' · '+money(item.amount);
-  $('.pont-checkout-save').open=false;elementHost.replaceChildren();scrollArea.scrollTop=0;
+  elementHost.replaceChildren();scrollArea.scrollTop=0;
   lock();dialog.showModal();
   try{
    const {data:{session},error:authError}=await db.auth.getSession();
@@ -158,7 +139,7 @@ export function initPontAuctionCheckout({db,config,onFinished}){
    if(id!==requestId||!dialog.open)return;
    stripe=window.Stripe(result.publishableKey);
    elements=stripe.elements({clientSecret:result.clientSecret,appearance:{theme:'night',variables:{colorPrimary:'#42e5c9',colorBackground:'#072b31',colorText:'#edf9f7',borderRadius:'10px'}}});
-   elements.create('payment',{layout:'tabs'}).mount(elementHost);
+   elements.create('payment',{layout:'tabs',wallets:{link:'never'}}).mount(elementHost);
    submit.disabled=false;message.textContent='';
   }catch(error){if(id===requestId&&dialog.open)message.textContent=error.message||'Eroare Stripe'}
   finally{if(id===requestId)busy=false}
