@@ -1030,7 +1030,7 @@ async function pontRefreshPendingPayments(){
  const panel=$('pontPendingPayments'),list=$('pontPendingPaymentItems');
  if(role!=='restaurant'||!me){panel.hidden=true;return}
  const {data:rows,error}=await db.from('auction_offers')
-  .select('id,campaign_month,amount,payment_status')
+  .select('id,restaurant_id,campaign_month,amount,payment_status')
   .eq('restaurant_id',me).neq('payment_status','paid')
   .order('campaign_month',{ascending:false});
  if(error)throw error;
