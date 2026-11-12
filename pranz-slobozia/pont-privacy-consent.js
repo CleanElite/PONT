@@ -22,7 +22,10 @@
   banner.hidden=['yes','no'].includes(get());
   document.body.append(banner);
   const footer=document.querySelector('footer');
-  if(footer&&!footer.querySelector('[data-pont-gdpr]')){
+  // The public restaurant listings use their existing legal-document links in the footer;
+  // avoid adding extra GDPR / cookie-settings controls to those primary screens.
+  const isMainListing=/\/(?:meniul-zilei|iesire-in-oras)\/?(?:index\.html)?$/.test(location.pathname);
+  if(!isMainListing&&footer&&!footer.querySelector('[data-pont-gdpr]')){
    const nav=footer.querySelector('nav')||footer;
    const link=document.createElement('a');link.href=new URL('confidentialitate.html',import.meta.url).href;
    link.textContent='GDPR';link.dataset.pontGdpr='true';
@@ -33,7 +36,7 @@
   const toggle=document.createElement('button');toggle.type='button';toggle.textContent='Preferințe cookie';toggle.dataset.pontCookieSettings='true';
   toggle.style.cssText='background:none;color:inherit;border:0;text-decoration:underline;cursor:pointer;padding:6px 10px;font:inherit';
   toggle.addEventListener('click',()=>{banner.hidden=false});
-  (footer?.querySelector('nav')||footer||document.body).append(toggle);
+  if(!isMainListing)(footer?.querySelector('nav')||footer||document.body).append(toggle);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
 })();
