@@ -31,6 +31,28 @@
     font-size: 16px !important;
   }
 }
+
+/* Restaurant-only compact premium header: name immediately after heading, bell aligned right. */
+.pont-admin #app .pont-restaurant-premium-heading{
+ display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+ justify-content:space-between!important;gap:clamp(8px,2vw,17px)!important;
+ margin:11px 0 12px!important;min-width:0;
+}
+.pont-admin #app .pont-restaurant-premium-heading .admin-hero-copy{
+ min-width:0!important;flex:1 1 auto!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading h1{
+ display:flex;flex-wrap:wrap;align-items:baseline;
+ gap:5px 9px;margin:0!important;font:600 clamp(16px,2.7vw,22px)/1.25 Georgia,'Times New Roman',serif!important;
+ letter-spacing:-.025em;
+}
+.pont-admin #app .pont-admin-heading-label{font:inherit;color:#cbded8}
+.pont-admin #app .pont-admin-heading-name{
+ font:inherit;font-weight:750;color:#f9fffa;min-width:0;overflow-wrap:anywhere;
+}
+@media(max-width:540px){
+ .pont-admin #app .pont-restaurant-premium-heading h1{font-size:clamp(14px,3.8vw,18px)!important;gap:3px 7px}
+}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=model-wizard-c31"><body class="pont-admin pont-admin--restaurant">
 <main>
@@ -39,10 +61,10 @@
   <a href="../" aria-label="PONT – pagina de început" title="Acasă"><img class="admin-brand" src="../meniul-zilei/showcase/pont-wordmark.webp" alt="PONT" width="576" height="240"></a>
 </header>
 <section id="setup" class="card" hidden><h1>Configurare necesară</h1><p>Panoul este instalat. Pentru autentificare reală, conectează-l la Supabase și atribuie restaurantul contului.</p></section><section id="login" class="card" hidden><h1>Cont restaurant</h1><p>Fiecare partener își gestionează exclusiv propriile meniuri.</p><form id="auth" autocomplete="on"><label for="email">Email sau nume de utilizator</label><input id="email" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required><label for="password">Parolă</label><input id="password" name="password" type="password" autocomplete="current-password" required><p><button class="primary">Conectare</button></p></form><p id="error" class="error"></p></section><section id="app" hidden><button type="button" id="logout" class="admin-logout" aria-label="Deconectare"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#sign-out"></use></svg><span class="admin-control-text">Deconectare</span></button>
-<div class="admin-hero">
-  <svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#chef-hat"></use></svg>
-  <div class="admin-hero-copy"><h1>Panoul restaurantului</h1><p>Pregătește meniurile zilei și gestionează preparatele.</p></div>
-  <div class="admin-context"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#storefront"></use></svg><span id="adminRestaurantContext">Restaurant</span></div>
+<div class="admin-hero pont-restaurant-premium-heading">
+  <div class="admin-hero-copy">
+    <h1><span class="pont-admin-heading-label">Panoul restaurantului</span><span id="adminRestaurantContext" class="pont-admin-heading-name">Restaurant</span></h1>
+  </div>
 </div>
 <nav class="admin-nav pont-restaurant-grouped-nav" aria-label="Secțiunile panoului">
   <div class="pont-restaurant-nav-group pont-restaurant-nav-menus" role="group" aria-label="Gestionare meniuri">
