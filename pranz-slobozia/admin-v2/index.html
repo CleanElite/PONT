@@ -340,7 +340,7 @@
 <p id="selfPasswordFeedback" role="status" aria-live="polite"></p>
 <button type="submit" class="primary" id="selfPasswordSubmit">Schimbă parola</button>
 </form>
-</div></section><div id="addView"><section class="card admin-workspace"><section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section><h2>Planifică meniul zilei</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="true" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap"></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section></div><div id="savedView" hidden><section class="card"><div id="pontMenuTemplates"></div><details class="pont-menu-archive">
+</div></section><div id="addView"><section class="card admin-workspace"><section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section><h2>Planifică meniul zilei</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="false" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap" hidden></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section></div><div id="savedView" hidden><section class="card"><div id="pontMenuTemplates"></div><details class="pont-menu-archive">
   <summary>Meniuri active și programate</summary>
   <div id="menus"></div>
 </details>
@@ -450,7 +450,14 @@ selfPasswordForm.addEventListener('submit', async event => {
 });
 
 let stopRestaurantPresence=null;
-async function enter(){const {data}=await db.auth.getUser();user=data.user;$('login').hidden=!!user;$('app').hidden=!user;pontAuctionBell.setVisible(!!user);if(user){try{await load();
+// Both menu-planning sections start collapsed whenever a restaurant administrator signs in.
+function collapseRestaurantMenuPlanners(){
+ const publish=$('toggleMenuForm'),publishBody=$('menuFormWrap'),weekly=$('pontWeekPanel');
+ if(publishBody)publishBody.hidden=true;
+ if(publish)publish.setAttribute('aria-expanded','false');
+ if(weekly)weekly.open=false;
+}
+async function enter(){const {data}=await db.auth.getUser();user=data.user;$('login').hidden=!!user;$('app').hidden=!user;pontAuctionBell.setVisible(!!user);if(user){collapseRestaurantMenuPlanners();try{await load();
 if(stopRestaurantPresence)stopRestaurantPresence();
 const {startRestaurantPresence}=await import('../admin-presence.js?v=20261111-secure');
 stopRestaurantPresence=startRestaurantPresence(db,()=>user,()=>restaurants);if(!$('savedView').hidden) await window.pontMenuModels?.refresh();await window.pontDishUI?.refresh();await window.pontOperations?.refresh()}catch(e){status(e.message,true)}}}
@@ -516,6 +523,7 @@ const {initPontOperations}=await import('../order-operations.js?v=restaurant-pla
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();
+collapseRestaurantMenuPlanners();
 }
 </script>
 <script src="../compact-date-picker.js?v=c28b" defer></script>
