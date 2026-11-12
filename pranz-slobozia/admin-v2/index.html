@@ -49,16 +49,31 @@
  min-width:0!important;flex:1 1 auto!important;
 }
 .pont-admin #app .pont-restaurant-premium-heading h1{
- display:flex;flex-wrap:wrap;align-items:baseline;
- gap:5px 9px;margin:0!important;font:600 clamp(16px,2.7vw,22px)/1.25 Georgia,'Times New Roman',serif!important;
- letter-spacing:-.025em;
+ display:flex!important;flex-wrap:wrap!important;align-items:baseline;
+ column-gap:clamp(8px,1.5vw,14px);row-gap:2px;
+ margin:0!important;max-width:100%;line-height:1.17!important;
+ letter-spacing:-.025em!important;
 }
-.pont-admin #app .pont-admin-heading-label{font:inherit;color:#cbded8}
+.pont-admin #app .pont-admin-heading-label{
+ display:inline-block;
+ font:600 clamp(18px,2.5vw,24px)/1.2 Georgia,'Times New Roman',serif!important;
+ color:#dcece6;letter-spacing:-.028em;
+}
 .pont-admin #app .pont-admin-heading-name{
- font:inherit;font-weight:750;color:#f9fffa;min-width:0;overflow-wrap:anywhere;
+ display:inline-block;min-width:0;max-width:100%;overflow-wrap:anywhere;
+ font:750 clamp(22px,3.05vw,30px)/1.16 Georgia,'Times New Roman',serif!important;
+ color:#f9fffa;letter-spacing:-.035em;
+ text-shadow:0 1px 12px rgba(180,255,235,.12);
 }
-@media(max-width:540px){
- .pont-admin #app .pont-restaurant-premium-heading h1{font-size:clamp(14px,3.8vw,18px)!important;gap:3px 7px}
+@media(max-width:650px){
+ .pont-admin #app .pont-restaurant-premium-heading{gap:9px!important}
+ .pont-admin #app .pont-restaurant-premium-heading h1{display:flex!important;flex-direction:column;align-items:flex-start;gap:3px!important}
+ .pont-admin #app .pont-admin-heading-label{font-size:clamp(17px,4.4vw,21px)!important}
+ .pont-admin #app .pont-admin-heading-name{font-size:clamp(22px,5.8vw,28px)!important}
+}
+@media(max-width:360px){
+ .pont-admin #app .pont-admin-heading-label{font-size:16px!important}
+ .pont-admin #app .pont-admin-heading-name{font-size:22px!important}
 }
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=model-wizard-c31"><body class="pont-admin pont-admin--restaurant">
