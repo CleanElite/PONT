@@ -428,6 +428,30 @@ dialog.pont-withdraw-confirm .pont-withdraw-error{
 .pont-card-payment-dialog #pontCardPaymentSubmit{width:100%;margin-top:15px!important;min-height:49px;border-radius:12px}
 .pont-card-payment-dialog #pontCardPaymentMessage{color:#ffd0c4;font:550 12px/1.4 system-ui;margin:10px auto!important}
 .pont-card-payment-dialog .pont-card-payment-note{margin:14px auto 0!important;color:#a3c5bf;font:450 11px/1.4 system-ui}
+
+/* Premium suspended-auction information dialog. Offers remain visible behind it. */
+dialog.pont-auction-paused-dialog .pont-confirm-inner{text-align:center!important;padding:clamp(27px,6vw,39px)!important}
+dialog.pont-auction-paused-dialog .pont-auction-pause-emblem{
+ width:60px;height:60px;margin:5px auto 18px;display:grid;place-items:center;
+ border:1px solid #ffdea07f;border-radius:18px;color:#ffe4a4;
+ background:radial-gradient(circle at 35% 20%,#9b703452,#234346 80%);
+ box-shadow:0 0 18px #f9c36b29,inset 0 1px 8px #fff0a820;
+}
+dialog.pont-auction-paused-dialog .pont-auction-pause-kicker{
+ color:#f6d797;font:750 10px/1.4 system-ui;letter-spacing:.18em;margin-bottom:12px;
+}
+dialog.pont-auction-paused-dialog #pontAuctionPausedTitle{
+ font:650 clamp(24px,6vw,32px)/1.18 Georgia,'Times New Roman',serif!important;
+ margin:0 15px 16px!important;color:#f5fffb!important;
+}
+dialog.pont-auction-paused-dialog #pontAuctionPausedDescription{
+ font:450 clamp(13px,3.4vw,15px)/1.65 system-ui!important;
+ color:#c6e3dd!important;margin:0 0 23px!important;
+}
+dialog.pont-auction-paused-dialog #pontAuctionPausedOK{
+ width:100%;min-height:48px;border-radius:12px!important;background:linear-gradient(130deg,#138475,#0b5957)!important;
+ color:#f7fffd!important;border:1px solid #8bfae5a1!important;font-weight:700!important;
+}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -534,6 +558,16 @@ dialog.pont-withdraw-confirm .pont-withdraw-error{
   </section>
 </main>
 <footer class="promotion-footer">PONT Slobozia · Promovare pentru restaurante partenere</footer>
+<dialog id="pontAuctionPausedDialog" class="auction-modal pont-premium-confirm pont-auction-paused-dialog" aria-labelledby="pontAuctionPausedTitle" aria-describedby="pontAuctionPausedDescription">
+ <div class="pont-confirm-inner">
+  <button type="button" id="pontAuctionPausedClose" class="auction-modal-close" aria-label="Închide">×</button>
+  <div class="pont-auction-pause-emblem" aria-hidden="true"><svg viewBox="0 0 24 24" width="29" height="29" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg></div>
+  <div class="pont-auction-pause-kicker">LICITAȚIE SUSPENDATĂ TEMPORAR</div>
+  <h2 id="pontAuctionPausedTitle">Licitația este momentan în pauză</h2>
+  <p id="pontAuctionPausedDescription">Poți consulta în continuare ofertele și clasamentul actual. Licitarea și modificarea ofertelor vor fi disponibile imediat ce administratorul reia licitația.</p>
+  <button type="button" id="pontAuctionPausedOK" class="primary-bid">Am înțeles</button>
+ </div>
+</dialog>
 <dialog id="auctionDialog" class="auction-modal pont-premium-auction" aria-labelledby="auctionModalTitle" aria-describedby="auctionModalExplainer"><div class="auction-modal-inner">
  <button type="button" class="auction-modal-close" id="auctionClose" aria-label="Închide"><span aria-hidden="true">×</span></button>
  <div class="modal-kicker" id="auctionModalPosition">LICITAȚIE PONT</div>
@@ -638,12 +672,13 @@ function render(){
  const focusedSlot=list.contains(document.activeElement)?document.activeElement.dataset.slot:undefined;
  const sorted=orderedOffers(),count=Math.max(20,sorted.length);
  const canBid=role==='restaurant'&&auctionIsOpen()&&ownOffer()?.payment_status!=='paid';
+ const pausedForRestaurant=role==='restaurant'&&biddingOpen&&biddingPaused;
  list.innerHTML=Array.from({length:count},(_,i)=>{
   const offer=sorted[i],name=offer?(names[offer.restaurant_id]||'Restaurant'):'Loc disponibil';
-  const action=canBid?'Apasă pentru a licita':'Vezi oferta';
+  const action=canBid?'Apasă pentru a licita':pausedForRestaurant?'Licitație în pauză, vezi detalii':'Vezi oferta';
   const cardClass=offer?'menu-card menu-card--restaurant':'menu-card';
   const design=offer?' style="'+restaurantCardStyle(offer.restaurant_id)+'"':'';
-  const prompt=canBid?'<span class="menu-card-action promotion-action">Apasă pentru a licita</span>':'';
+  const prompt=canBid?'<span class="menu-card-action promotion-action">Apasă pentru a licita</span>':pausedForRestaurant?'<span class="menu-card-action promotion-action">Licitație în pauză</span>':'';
   return '<article class="menu-tile"><button type="button" class="'+cardClass+'"'+design+' data-slot="'+i+
    '" aria-label="Poziția '+(i+1)+', '+esc(name)+'. '+action+'"><span class="menu-card-copy"><span class="menu-card-name">'+
    esc(name)+'</span>'+prompt+'</span><span class="menu-card-price">'+(offer?(offer.amount==null?'Aprobat':money(offer.amount)):'De la '+money(minimumBid))+'</span></button></article>';
@@ -858,7 +893,17 @@ function updateModal(){
 }
 $('bidAmount').addEventListener('input',refreshBidPreview);
 
-$('list').addEventListener('click',e=>{const button=e.target.closest('[data-slot]');if(!button)return;selectedSlot=Number(button.dataset.slot);$('bidMessage').textContent='';$('bidAmount').value='';updateModal();$('auctionDialog').showModal()});
+$('list').addEventListener('click',e=>{
+ const button=e.target.closest('[data-slot]');if(!button)return;
+ if(role==='restaurant'&&biddingOpen&&biddingPaused){
+  $('pontAuctionPausedDialog').showModal();
+  return;
+ }
+ selectedSlot=Number(button.dataset.slot);$('bidMessage').textContent='';$('bidAmount').value='';updateModal();$('auctionDialog').showModal();
+});
+$('pontAuctionPausedClose').onclick=()=>$('pontAuctionPausedDialog').close();
+$('pontAuctionPausedOK').onclick=()=>$('pontAuctionPausedDialog').close();
+$('pontAuctionPausedDialog').addEventListener('click',e=>{if(e.target===$('pontAuctionPausedDialog'))e.target.close()});
 $('pontWithdrawBid').addEventListener('click',()=>{
  if(busy||role!=='restaurant'||!auctionIsOpen()||!ownOffer()||ownOffer()?.payment_status==='paid')return;
  $('pontWithdrawError').hidden=true;
