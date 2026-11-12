@@ -3,7 +3,7 @@
  const KEY='pont_analytics_consent_v1',VISITOR='pont_analytics_visitor_v1';
  function get(){try{return localStorage.getItem(KEY)}catch(_){return null}}
  function choose(yes){
-  try{localStorage.setItem(KEY,yes?'yes':'no');if(!yes)localStorage.removeItem(VISITOR)}
+  try{localStorage.setItem(KEY,yes?'yes':'no');if(!yes){localStorage.removeItem(VISITOR);for(let i=sessionStorage.length-1;i>=0;i--){const k=sessionStorage.key(i);if(k?.startsWith('pont_visit_'))sessionStorage.removeItem(k)}}}
   catch(_){/* consent denied if browser does not permit saving */}
   const banner=document.getElementById('pontGlobalPrivacyBanner');if(banner)banner.hidden=true;
   const legacy=document.getElementById('pontAnalyticsConsent');if(legacy)legacy.hidden=true;
