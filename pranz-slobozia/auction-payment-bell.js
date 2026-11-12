@@ -28,7 +28,7 @@ export function initPontAuctionPaymentBell({db,config}) {
  .pont-auction-pay-submit{width:100%;margin-top:17px;padding:12px;border:1px solid #91ffee;background:#028a7b;color:white}
  .pont-auction-pay-msg{font:550 12px/1.4 system-ui;color:#ffc7b8;margin:10px 0 0}
  .pont-auction-pay-note{font:450 11px/1.5 system-ui;color:#accbc7;margin:12px 0 0}
- /* Premium gold: full gold surface, contrasting midnight-blue bell, continuous movement. */
+ /* Solid 24K gold bell: bright metallic case and gold icon with animated highlights. */
  .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{
    margin:0!important;flex:0 0 auto!important;width:clamp(68px,19vw,155px);
    max-width:32vw;align-self:center;gap:5px;
@@ -37,9 +37,9 @@ export function initPontAuctionPaymentBell({db,config}) {
    position:relative!important;isolation:isolate;overflow:hidden;
    width:52px!important;height:52px!important;min-height:52px!important;
    padding:0!important;border:2px solid #fff0ac!important;border-radius:16px!important;
-   color:#102c47!important;
-   background:linear-gradient(142deg,#fff1b6 0%,#ffd475 25%,#dfa33d 53%,#f7cd70 77%,#a66c26 100%)!important;
-   box-shadow:0 0 0 1px #b77720,0 0 18px #ffd16674,0 4px 14px #0005,inset 0 1px 4px #fff8d5aa!important;
+   color:#ffde68!important;
+   background:linear-gradient(140deg,#fff6b9 0%,#ffe25a 15%,#ffbf00 41%,#f6a900 64%,#ffe477 87%,#e0a100 100%)!important;
+   box-shadow:0 0 0 1px #c58700,0 0 16px #ffcd36a6,0 0 29px #ffce3e5c,0 4px 14px #0005,inset 0 2px 4px #fff9d8be!important;
  }
  .pont-admin #app .pont-auction-bell::before{
    content:'';position:absolute;inset:-50%;z-index:0;pointer-events:none;
@@ -48,17 +48,17 @@ export function initPontAuctionPaymentBell({db,config}) {
  }
  .pont-admin #app .pont-auction-bell .pont-bell-core{
    position:absolute;inset:2px;border-radius:12px;z-index:1;pointer-events:none;
-   background:linear-gradient(145deg,#ffe8a0,#e9b44e 50%,#c48b33 100%);
+   background:linear-gradient(145deg,#ffea75 0%,#ffd026 38%,#f2ac00 75%,#ffdc56 100%);
  }
  .pont-admin #app .pont-auction-bell svg{
    position:relative;z-index:2;width:27px;height:27px;
-   stroke:#0c3653!important;fill:#10334e29!important;
-   filter:drop-shadow(0 1px 1px #fff8c9) drop-shadow(0 0 2px #17364c3d);
+   stroke:#a26800!important;stroke-width:1.15!important;fill:url(#pontBellGoldFill)!important;
+   filter:drop-shadow(0 1px 0 #754800) drop-shadow(0 0 5px #fff5a8dd);
    transform-origin:50% 15%;
    animation:pont-bell-continuous-sway 3.4s ease-in-out infinite!important;
  }
  .pont-admin #app .pont-auction-bell.is-due{
-   border-color:#fff8d4!important;color:#0a3154!important;
+   border-color:#fff8d4!important;color:#ffdf60!important;
    box-shadow:0 0 0 1px #f3b44d,0 0 24px #ffd166ab,0 0 10px #fff3b88a,inset 0 1px 5px #fff7cb!important;
  }
  .pont-admin #app .pont-auction-bell.is-due svg{
@@ -98,7 +98,7 @@ export function initPontAuctionPaymentBell({db,config}) {
  document.head.append(styles);
  const host=document.createElement('div');
  host.className='pont-auction-notify';host.hidden=true;
- host.innerHTML='<button type="button" class="pont-auction-bell" aria-label="Notificări plăți licitații" title="Plăți licitații"><span class="pont-bell-core" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button><span class="pont-auction-notice" hidden></span>';
+ host.innerHTML='<button type="button" class="pont-auction-bell" aria-label="Notificări plăți licitații" title="Plăți licitații"><span class="pont-bell-core" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><defs><linearGradient id="pontBellGoldFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff9c7"/><stop offset=".28" stop-color="#ffe15b"/><stop offset=".58" stop-color="#ffbd00"/><stop offset=".86" stop-color="#d88c00"/><stop offset="1" stop-color="#fff0a1"/></linearGradient></defs><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button><span class="pont-auction-notice" hidden></span>';
  header.append(host);
  const bell=host.querySelector('button'),notice=host.querySelector('.pont-auction-notice');
  const dialog=document.createElement('dialog');
