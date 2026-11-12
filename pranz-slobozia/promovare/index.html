@@ -177,8 +177,8 @@ const nextMonth=()=>{const [y,m]=localDate().split('-').map(Number);return new D
 const money=v=>Number(v).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
 const month=nextMonth();let db,me,role,offers=[],names={},selectedSlot=0,busy=false;
 const minimumBid=50;
-let biddingOpen=false, finalRanking=null;
-const auctionIsOpen=()=>biddingOpen && nextMonth()===month;
+let biddingOpen=false, biddingPaused=false, finalRanking=null;
+const auctionIsOpen=()=>biddingOpen && !biddingPaused && nextMonth()===month;
 $('date').textContent=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month));
 function orderedOffers(){
  if(!auctionIsOpen()&&finalRanking!==null){
@@ -210,7 +210,7 @@ function render(){
  if(focusedSlot!==undefined)list.querySelector('[data-slot="'+focusedSlot+'"]')?.focus({preventScroll:true});
 }
 function renderAuctionStatus(){
- $('auctionHint').textContent=role==='super_admin'?'Apasă un card pentru a vedea oferta. Confirmările se gestionează în Licitații.':auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':(finalRanking!==null?'Licitația este închisă. Poți consulta clasamentul final.':'Licitația este închisă. Poți consulta ofertele existente.');
+ $('auctionHint').textContent=role==='super_admin'?'Apasă un card pentru a vedea oferta. Confirmările se gestionează în Licitații.':biddingOpen&&biddingPaused?'Licitația este momentan în pauză. Nu se acceptă oferte până când Super Admin o reia.':auctionIsOpen()?'Apasă pe orice card pentru a licita. Clasamentul se actualizează automat.':(finalRanking!==null?'Licitația este închisă. Poți consulta clasamentul final.':'Licitația este închisă. Poți consulta ofertele existente.');
  if($('auctionDialog').open)updateModal();
 }
 function updateModal(){
@@ -230,10 +230,11 @@ $('list').addEventListener('click',e=>{const button=e.target.closest('[data-slot
 $('auctionClose').onclick=()=>$('auctionDialog').close();
 $('auctionDialog').addEventListener('click',e=>{if(e.target===$('auctionDialog'))$('auctionDialog').close()});
 async function load(){
- const [a,b,control]=await Promise.all([db.from('auction_offers').select('*').eq('campaign_month',month).order('amount',{ascending:false}),db.from('restaurants').select('id,name'),db.from('pont_auction_control').select('is_open,final_ranking').eq('campaign_month',month).maybeSingle()]);
+ const [a,b,control]=await Promise.all([db.from('auction_offers').select('*').eq('campaign_month',month).order('amount',{ascending:false}),db.from('restaurants').select('id,name'),db.from('pont_auction_control') .select('is_open,is_paused,final_ranking').eq('campaign_month',month).maybeSingle()]);
  if(a.error)throw a.error;if(b.error)throw b.error;
  if(control.error)throw control.error;
  biddingOpen=control.data?.is_open===true;
+ biddingPaused=control.data?.is_paused===true;
  finalRanking=Array.isArray(control.data?.final_ranking)?control.data.final_ranking:null;
  offers=a.data||[];names=Object.fromEntries((b.data||[]).map(r=>[r.id,r.name]));
  render();
@@ -256,7 +257,7 @@ async function start(){
   if(role==='restaurant'){const access=await db.rpc('my_restaurant_access');if(access.error)throw access.error;me=access.data?.[0]?.restaurant_id;if(!me)throw Error('Restaurant neatribuit')}
   await load();
   setInterval(()=>{
-   load().catch(e=>{biddingOpen=false;render();renderAuctionStatus();console.error('Actualizare licitații:',e)});
+   load().catch(e=>{biddingOpen=false;biddingPaused=false;render();renderAuctionStatus();console.error('Actualizare licitații:',e)});
   },15000);
  }catch(e){$('list').textContent='Nu se pot încărca licitațiile: '+e.message}
 }
