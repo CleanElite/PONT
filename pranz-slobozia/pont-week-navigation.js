@@ -14,6 +14,8 @@ function update(){
  const headers=[...document.querySelectorAll('summary,h2,h3,h4,button')].filter(x=>has(x.textContent,'Planifică meniul pe toată săptămâna')&&n(x.textContent).length<60);
  for(const header of headers){
   const panel=header.closest('details')||header.closest('section')||header.parentElement;if(!panel)continue;
+  // The premium planner owns its two-button grid; do not relocate or duplicate arrows.
+  if(panel.id==='pontWeekPanel')continue;
   const buttons=[...panel.querySelectorAll('button,[role="button"]')];
   const prev=buttons.find(x=>has(x.textContent,'Săptămâna anterioară'));
   const next=buttons.find(x=>has(x.textContent,'Săptămâna următoare'));
