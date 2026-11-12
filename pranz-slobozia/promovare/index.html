@@ -431,7 +431,7 @@ function restaurantCardStyle(id) {
 function render(){
  const list=$('list');
  const focusedSlot=list.contains(document.activeElement)?document.activeElement.dataset.slot:undefined;
- const sorted=orderedOffers(),count=Math.max(6,sorted.length);
+ const sorted=orderedOffers(),count=Math.max(10,sorted.length);
  const canBid=role==='restaurant'&&auctionIsOpen()&&ownOffer()?.payment_status!=='paid';
  list.innerHTML=Array.from({length:count},(_,i)=>{
   const offer=sorted[i],name=offer?(names[offer.restaurant_id]||'Restaurant'):'Loc disponibil';
