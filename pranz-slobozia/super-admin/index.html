@@ -423,6 +423,14 @@
  #auctions .pont-auction-action-cell>button svg{display:none!important}
  #auctions .pont-auction-control-status{font-size:9px!important}
 }
+/* Two controls inside the existing auction control cell — compact and mobile-safe. */
+#auctions .pont-auction-lifecycle-buttons{display:flex!important;flex:0 0 auto!important;gap:4px!important;min-width:0!important;width:100%!important}
+#auctions .pont-auction-lifecycle-buttons>button{flex:1 1 0!important;min-width:0!important;width:0!important;min-height:43px!important;padding:5px 3px!important;margin:0!important;border-radius:9px!important;font:700 clamp(9px,2.25vw,12px)/1.1 system-ui!important;white-space:normal!important}
+#auctions .pont-auction-lifecycle-buttons>#toggleAuctionPause{border:1px solid #87e4d5a8!important;background:linear-gradient(140deg,#0a4b4f,#063238)!important;color:#eafffc!important;box-shadow:inset 0 1px 6px #7affed30!important}
+#auctions .pont-auction-lifecycle-buttons>#toggleAuctionPause[data-state="paused"]{border-color:#f1d08d!important;background:linear-gradient(140deg,#755d2c,#453d27)!important;color:#fff3ce!important}
+#auctions .pont-auction-control-status[data-state="paused"]{color:#f7d78d!important}
+#auctions .pont-auction-control-status[data-state="final"]{color:#e4cbad!important}
+#auctions .pont-auction-lifecycle-buttons>button:disabled{opacity:.55!important}
 </style><style id="pont-supreme-reference-design">
 /* PONT Supreme dashboard 2026 — approved reference, Dark Teal palette; no business logic changes */
 body.pont-admin--platform #app .dashboard-intro{
@@ -959,7 +967,10 @@ body.pont-admin--platform #analytics .pont-revenue-note{
   <h2 id="auctionsTitle" class="pont-auction-page-title">Licitații și încasări</h2>
   <div class="pont-auction-action-grid" role="group" aria-label="Control și clasament licitații">
     <div class="pont-auction-action-cell pont-auction-control-cell">
-      <button type="button" id="toggleAuctionControl" class="primary" disabled>Pornește licitația</button>
+      <div class="pont-auction-lifecycle-buttons">
+        <button type="button" id="toggleAuctionControl" class="primary" disabled>Pornește licitația</button>
+        <button type="button" id="toggleAuctionPause" disabled hidden>Pauză licitație</button>
+      </div>
       <p id="auctionControlStatus" class="pont-auction-control-status" role="status" aria-live="polite">Se verifică…</p>
     </div>
     <div class="pont-auction-action-cell">
@@ -1764,6 +1775,7 @@ $('saveAuctionPayments').onclick = async () => {
  await loadAuctions();
 };
 const auctionControlButton = $('toggleAuctionControl');
+const auctionPauseButton = $('toggleAuctionPause');
 let auctionControl = null;
 let auctionControlBusy = false;
 let auctionControlRequest = 0;
@@ -1773,51 +1785,92 @@ function nextAuctionMonth() {
  return new Date(Date.UTC(year, month, 1)).toISOString().slice(0, 10);
 }
 
-function displayAuctionControl(month, isOpen, finalized) {
- auctionControl = {month, isOpen, finalized};
+function displayAuctionControl(month, isOpen, paused, finalized) {
+ auctionControl = {month, isOpen, paused, finalized};
  const label = new Intl.DateTimeFormat('ro-RO', {month:'long', year:'numeric', timeZone:'UTC'}).format(new Date(month));
- const controlStatus=$('auctionControlStatus');
- controlStatus.textContent=(isOpen ? 'Deschisă' : 'Închisă')+' · '+label;
- controlStatus.dataset.state=isOpen?'open':'closed';
- auctionControlButton.textContent = isOpen ? 'Închide licitația' : 'Pornește licitația';
- auctionControlButton.disabled = auctionControlBusy;
+ const state = isOpen ? (paused ? 'paused' : 'open') : (finalized ? 'final' : 'closed');
+ const controlStatus = $('auctionControlStatus');
+ controlStatus.textContent = (state==='paused'?'În pauză':state==='open'?'Deschisă':state==='final'?'Închisă definitiv':'Nepornită')+' · '+label;
+ controlStatus.dataset.state=state;
+ auctionControlButton.textContent=isOpen?'Încheie licitația':finalized?'Licitație încheiată':'Pornește licitația';
+ auctionControlButton.disabled=auctionControlBusy||(!isOpen&&finalized);
+ auctionPauseButton.hidden=!isOpen;
+ auctionPauseButton.textContent=paused?'Reia licitația':'Pauză licitație';
+ auctionPauseButton.dataset.state=paused?'paused':'open';
+ auctionPauseButton.disabled=auctionControlBusy||!isOpen;
 }
 
 async function loadAuctionControl() {
  if (auctionControlBusy) return;
- const request = ++auctionControlRequest, month = nextAuctionMonth();
- try {
-  const {data, error} = await db.from('pont_auction_control').select('is_open,final_ranking').eq('campaign_month', month).maybeSingle();
-  if (error) throw error;
-  if (request === auctionControlRequest) displayAuctionControl(month, data?.is_open === true, Array.isArray(data?.final_ranking));
- } catch (error) {
-  if (request !== auctionControlRequest) return;
-  auctionControl = null;
-  auctionControlButton.disabled = true;
-  showMessage('auctionControlStatus', 'Nu s-a putut verifica starea licitației.', true);
+ const request=++auctionControlRequest, month=nextAuctionMonth();
+ try{
+  const {data,error}=await db.from('pont_auction_control')
+   .select('is_open,is_paused,final_ranking').eq('campaign_month',month).maybeSingle();
+  if(error)throw error;
+  if(request===auctionControlRequest)displayAuctionControl(month,data?.is_open===true,data?.is_paused===true,Array.isArray(data?.final_ranking));
+ }catch(error){
+  if(request!==auctionControlRequest)return;
+  auctionControl=null;
+  auctionControlButton.disabled=true;
+  auctionPauseButton.disabled=true;
+  auctionPauseButton.hidden=true;
+  showMessage('auctionControlStatus','Nu s-a putut verifica starea licitației. '+error.message,true);
  }
 }
 
-auctionControlButton.onclick = async () => {
- if (!auctionControl || auctionControlBusy) return;
- const {month, isOpen} = auctionControl;
- if (month !== nextAuctionMonth()) { await loadAuctionControl(); return; }
- if(isOpen&&!confirm('Închizi licitația și salvezi clasamentul pe baza ofertelor?'))return;
- if(!isOpen&&auctionControl.finalized&&!confirm('Pornești licitația? La închidere, ofertele vor stabili primele poziții. Restaurantele adăugate manual fără ofertă rămân după ele.'))return;
- auctionControlBusy = true;
+auctionPauseButton.onclick=async()=>{
+ if(!auctionControl||auctionControlBusy||!auctionControl.isOpen)return;
+ const {month,paused}=auctionControl;
+ if(month!==nextAuctionMonth()){await loadAuctionControl();return}
+ auctionControlBusy=true;
  ++auctionControlRequest;
- auctionControlButton.disabled = true;
- try {
-  const {data, error} = await db.from('pont_auction_control')
-   .upsert({campaign_month:month, is_open:!isOpen}, {onConflict:'campaign_month'}).select('is_open,final_ranking').single();
-  if (error) throw error;
-  displayAuctionControl(month, data.is_open, Array.isArray(data.final_ranking));
-  if(!data.is_open) $('auctionControlStatus').textContent='Închisă · Clasament salvat';
- } catch (error) {
-  showMessage('auctionControlStatus', 'Starea licitației nu a putut fi actualizată. ' + error.message, true);
- } finally {
-  auctionControlBusy = false;
-  auctionControlButton.disabled = !auctionControl;
+ auctionControlButton.disabled=true;
+ auctionPauseButton.disabled=true;
+ try{
+  // Conditional update prevents stale buttons from reverting another admin's change.
+  const {data,error}=await db.from('pont_auction_control')
+   .update({is_paused:!paused})
+   .eq('campaign_month',month).eq('is_open',true).eq('is_paused',paused)
+   .select('is_open,is_paused,final_ranking').maybeSingle();
+  if(error)throw error;
+  if(!data)throw Error('Starea s-a schimbat între timp. Actualizează și încearcă din nou.');
+  displayAuctionControl(month,data.is_open,data.is_paused,Array.isArray(data.final_ranking));
+ }catch(error){
+  showMessage('auctionControlStatus','Pauza nu a putut fi actualizată. '+error.message,true);
+  await loadAuctionControl();
+ }finally{
+  auctionControlBusy=false;
+  await loadAuctionControl();
+ }
+};
+
+auctionControlButton.onclick=async()=>{
+ if(!auctionControl||auctionControlBusy)return;
+ const {month,isOpen,finalized}=auctionControl;
+ if(month!==nextAuctionMonth()){await loadAuctionControl();return}
+ if(!isOpen&&finalized)return;
+ if(isOpen&&!confirm('Închei DEFINITIV licitația pentru această lună și salvezi clasamentul? Ofertele vor fi blocate permanent. Această operațiune NU încasează încă bani prin Stripe.'))return;
+ auctionControlBusy=true;
+ ++auctionControlRequest;
+ auctionControlButton.disabled=true;
+ auctionPauseButton.disabled=true;
+ try{
+  const {data,error}=isOpen
+   ?await db.from('pont_auction_control')
+     .update({is_open:false,is_paused:false})
+     .eq('campaign_month',month).eq('is_open',true)
+     .select('is_open,is_paused,final_ranking').maybeSingle()
+   :await db.from('pont_auction_control')
+     .upsert({campaign_month:month,is_open:true,is_paused:false},{onConflict:'campaign_month'})
+     .select('is_open,is_paused,final_ranking').single();
+  if(error)throw error;
+  if(!data)throw Error('Licitația a fost schimbată între timp. Reîncarcă starea.');
+  displayAuctionControl(month,data.is_open,data.is_paused,Array.isArray(data.final_ranking));
+ }catch(error){
+  showMessage('auctionControlStatus','Starea licitației nu a putut fi actualizată. '+error.message,true);
+ }finally{
+  auctionControlBusy=false;
+  await loadAuctionControl();
  }
 };
 
