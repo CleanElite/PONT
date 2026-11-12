@@ -127,33 +127,30 @@ export function initPontAuctionPaymentBell({db,config}) {
  header.append(host);
  const bell=host.querySelector('.pont-auction-bell'),notice=host.querySelector('.pont-auction-notice');
  host.insertBefore(notice,bell);
- const dialog=document.createElement('dialog');
- dialog.className='pont-auction-pay-dialog';
- dialog.innerHTML='<div class="pont-auction-pay-inner"><button type="button" class="pont-auction-pay-close" aria-label="Închide">×</button><h2>Finalizează plata licitației</h2><p class="pont-payment-info"></p><div class="pont-auction-pay-list"></div><form class="pont-auction-pay-form" hidden><div class="pont-auction-pay-element"></div><button class="pont-auction-pay-submit" type="submit" disabled>Autorizează plata</button></form><p class="pont-auction-pay-msg" role="status" aria-live="polite"></p><p class="pont-auction-pay-note">Plata este securizată prin Stripe. Datele cardului nu sunt stocate în PONT.</p></div>';
- document.body.append(dialog);
- const close=dialog.querySelector('.pont-auction-pay-close'),info=dialog.querySelector('.pont-payment-info');
- const list=dialog.querySelector('.pont-auction-pay-list'),form=dialog.querySelector('form');
- const elementHost=dialog.querySelector('.pont-auction-pay-element'),submit=form.querySelector('button');
- const message=dialog.querySelector('.pont-auction-pay-msg');
- let due=[],busy=false,stripe=null,elements=null,visible=false;
+ // All payment entry points use the same full-screen checkout in Promovare.
+ // Do not mount a second Stripe Payment Element in the restaurant dashboard.
+ const bell=host.querySelector('.pont-auction-bell');
+ const notice=host.querySelector('.pont-auction-notice');
+ host.insertBefore(notice,bell);
+ let due=[],visible=false;
  const formatMonth=month=>new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'T12:00:00Z'));
- const money=value=>Number(value).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
- function render() {
+ function render(){
   const count=due.length;
   bell.classList.toggle('is-due',count>0);
   notice.hidden=count===0;
   notice.replaceChildren();
   if(count){
    const action=document.createElement('span');action.className='pont-pay-action';action.textContent='Finalizează plata';
-   const month=document.createElement('span');month.className='pont-pay-month';month.textContent=formatMonth(due[0].campaign_month)+(count>1?' (+'+(count-1)+')':'');
+   const month=document.createElement('span');month.className='pont-pay-month';
+   month.textContent=formatMonth(due[0].campaign_month)+(count>1?' (+'+(count-1)+')':'');
    notice.append(action,month);
   }
   notice.title=count?'Finalizează plata licitației pentru '+formatMonth(due[0].campaign_month):'';
   notice.setAttribute('aria-label',notice.title||'Nu există plăți restante');
   bell.setAttribute('aria-label',count?'Plăți restante pentru '+count+' licitații':'Nu ai plăți restante');
  }
- async function refresh() {
-  if(!visible||busy)return;
+ async function refresh(){
+  if(!visible)return;
   const {data:{user}}=await db.auth.getUser();
   if(!user){due=[];render();return}
   const {data:member,error:memberError}=await db.rpc('my_restaurant_access');
@@ -172,72 +169,16 @@ export function initPontAuctionPaymentBell({db,config}) {
   due=offers.filter(o=>{const ctrl=map.get(o.campaign_month);return ctrl?.is_open===false&&Array.isArray(ctrl.final_ranking)&&ctrl.final_ranking.includes(o.restaurant_id)});
   render();
  }
- function showList(){
-  form.hidden=true;list.hidden=false;info.textContent='Licitații încheiate, cu plată de finalizat';
-  message.textContent='';
-  list.replaceChildren();
-  if(!due.length){const p=document.createElement('p');p.textContent='Nu ai plăți de finalizat.';list.append(p);return}
-  for(const item of due){
-   const row=document.createElement('div');row.className='pont-auction-pay-row';
-   const caption=document.createElement('span');caption.textContent=formatMonth(item.campaign_month)+' · '+money(item.amount);
-   const btn=document.createElement('button');btn.type='button';btn.textContent='Plătește';
-   btn.addEventListener('click',()=>openPayment(item));
-   row.append(caption,btn);list.append(row);
-  }
+ function goToCheckout(){
+  const month=due[0]?.campaign_month;
+  if(!month){location.assign('../promovare/');return}
+  const destination=new URL('../promovare/',location.href);
+  destination.searchParams.set('pay',month);
+  location.assign(destination.href);
  }
- async function loadStripe(){
-  if(window.Stripe)return;
-  await new Promise((resolve,reject)=>{
-   const s=document.createElement('script');
-   s.src='https://js.stripe.com/v3/';s.onload=resolve;s.onerror=()=>reject(Error('Stripe nu s-a putut încărca'));
-   document.head.append(s);
-  });
- }
- async function openPayment(item){
-  if(busy)return;
-  busy=true;form.hidden=false;list.hidden=true;submit.disabled=true;elementHost.replaceChildren();
-  info.textContent='Campania '+formatMonth(item.campaign_month)+' · '+money(item.amount);
-  message.textContent='Se pregătește formularul de card…';
-  try{
-   const {data:{session}}=await db.auth.getSession();
-   if(!session?.access_token)throw Error('Sesiunea a expirat');
-   const response=await fetch(config.url+'/functions/v1/pont-stripe-auctions?action=create',{
-    method:'POST',headers:{authorization:'Bearer '+session.access_token,apikey:config.anonKey,'content-type':'application/json'},
-    body:JSON.stringify({month:item.campaign_month,restaurantId:item.restaurant_id})
-   });
-   const result=await response.json();
-   if(!response.ok)throw Error(result.error||'Plata nu a putut fi inițializată');
-   await loadStripe();
-   if(!dialog.open)return;
-   stripe=window.Stripe(result.publishableKey);
-   elements=stripe.elements({clientSecret:result.clientSecret,appearance:{theme:'night',variables:{colorPrimary:'#42e5c9',colorBackground:'#072b31',colorText:'#edf9f7',borderRadius:'10px'}}});
-   const payment=elements.create('payment',{layout:'tabs'});
-   payment.mount(elementHost);
-   submit.disabled=false;message.textContent='';
-  }catch(err){message.textContent=err.message}
-  finally{busy=false}
- }
- bell.addEventListener('click',()=>{showList();if(!dialog.open)dialog.showModal();if(due.length===1)openPayment(due[0])});
- notice.addEventListener('click',()=>bell.click());
- close.addEventListener('click',()=>{if(!busy)dialog.close()});
- dialog.addEventListener('cancel',e=>{if(busy)e.preventDefault()});
- form.addEventListener('submit',async e=>{
-  e.preventDefault();if(busy||!stripe||!elements)return;
-  busy=true;submit.disabled=true;message.textContent='Se autorizează plata…';
-  try{
-   const {error,paymentIntent}=await stripe.confirmPayment({
-    elements,confirmParams:{return_url:location.origin+location.pathname},redirect:'if_required'
-   });
-   if(error)throw Error(error.message||'Nu s-a putut autoriza plata');
-   message.textContent=paymentIntent?.status==='succeeded'?'Plata a fost autorizată. Actualizarea apare după confirmarea Stripe.':'Plata este în procesare.';
-  }catch(err){message.textContent=err.message;submit.disabled=false}
-  finally{
-   busy=false;
-   // Stripe confirms server-side via webhook; refresh the notification after the attempt.
-   refresh().catch(e=>console.warn('Stare plată:',e.message));
-  }
- });
+ bell.addEventListener('click',goToCheckout);
+ notice.addEventListener('click',goToCheckout);
  const interval=setInterval(()=>{if(visible&&!document.hidden)refresh().catch(e=>console.warn('Notificare plăți:',e.message))},20000);
  document.addEventListener('visibilitychange',()=>{if(visible&&!document.hidden)refresh().catch(()=>{})});
- return {setVisible(value){visible=Boolean(value);host.hidden=!visible;if(visible)refresh().catch(e=>console.warn('Plăți licitații:',e.message));else{due=[];render()}},refresh,destroy(){clearInterval(interval);host.remove();dialog.remove();styles.remove()}};
+ return {setVisible(value){visible=Boolean(value);host.hidden=!visible;if(visible)refresh().catch(e=>console.warn('Plăți licitații:',e.message));else{due=[];render()}},refresh,destroy(){clearInterval(interval);host.remove();styles.remove()}};
 }
