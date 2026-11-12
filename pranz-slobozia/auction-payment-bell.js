@@ -91,8 +91,30 @@ export function initPontAuctionPaymentBell({db,config}) {
  }
  @media(max-width:540px){
    .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{width:auto!important;max-width:44vw!important;gap:5px!important}
-   .pont-admin #app .pont-auction-notice{flex:0 1 96px;max-width:96px;font-size:10px!important;padding:5px 7px!important}
+   .pont-admin #app .pont-auction-notice{flex:0 0 112px!important;width:112px!important;max-width:112px!important;font-size:11px!important;padding:3px 6px!important}
    .pont-admin #app .pont-restaurant-premium-heading .pont-auction-bell{width:45px!important;height:45px!important;min-height:45px!important}
+ }
+ /* A single compact header line: the bell sets height; the payment label uses two deliberate lines. */
+ .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{
+   flex:0 0 auto!important;width:auto!important;max-width:none!important;min-width:0!important;
+   flex-direction:row!important;align-items:center!important;gap:6px!important;
+ }
+ .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notice{
+   display:flex!important;flex:0 0 120px!important;width:120px!important;max-width:120px!important;
+   height:45px!important;min-height:0!important;max-height:45px!important;
+   padding:3px 5px!important;box-sizing:border-box!important;overflow:hidden!important;
+   flex-direction:column!important;justify-content:center!important;align-items:center!important;gap:1px!important;
+   white-space:normal!important;text-align:center!important;
+   font:750 11px/1.12 system-ui!important;overflow-wrap:normal!important;
+ }
+ .pont-admin #app .pont-auction-notice .pont-pay-action{display:block;font-weight:800;font-size:11px;line-height:1.12}
+ .pont-admin #app .pont-auction-notice .pont-pay-month{display:block;font-weight:650;font-size:10px;line-height:1.12}
+ @media(max-width:540px){
+  .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{max-width:none!important;gap:5px!important}
+  .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notice{flex-basis:110px!important;width:110px!important;max-width:110px!important}
+ }
+ @media(max-width:365px){
+  .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notice{flex-basis:100px!important;width:100px!important;max-width:100px!important}
  }
  @media(prefers-reduced-motion:reduce){
    .pont-admin #app .pont-auction-bell::before{animation:none!important;opacity:.2;transform:none!important}
@@ -120,7 +142,12 @@ export function initPontAuctionPaymentBell({db,config}) {
   const count=due.length;
   bell.classList.toggle('is-due',count>0);
   notice.hidden=count===0;
-  notice.textContent=count?('Finalizează plata · '+formatMonth(due[0].campaign_month)+(count>1?' (+'+(count-1)+')':'')):'';
+  notice.replaceChildren();
+  if(count){
+   const action=document.createElement('span');action.className='pont-pay-action';action.textContent='Finalizează plata';
+   const month=document.createElement('span');month.className='pont-pay-month';month.textContent=formatMonth(due[0].campaign_month)+(count>1?' (+'+(count-1)+')':'');
+   notice.append(action,month);
+  }
   notice.title=count?'Finalizează plata licitației pentru '+formatMonth(due[0].campaign_month):'';
   notice.setAttribute('aria-label',notice.title||'Nu există plăți restante');
   bell.setAttribute('aria-label',count?'Plăți restante pentru '+count+' licitații':'Nu ai plăți restante');
