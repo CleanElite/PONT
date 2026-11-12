@@ -928,7 +928,11 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
  font:500 11px/1.3 system-ui;color:#eaf8f5;
 }
 #auctions .pont-auction-history-row strong{font-size:12px;color:#aaffed}
-#auctions .pont-auction-history-row small{grid-column:1/-1;color:#91bab6;font-size:10px}
+#auctions .pont-auction-history-row .pont-auction-history-time{
+ grid-column:1/-1;display:block;width:fit-content;
+ color:#f4d797;font:700 12px/1.35 system-ui;
+ font-variant-numeric:tabular-nums;letter-spacing:.01em;
+}
 #auctions .pont-auction-action-grid{
  grid-template-columns:repeat(2,minmax(0,1fr))!important;
 }
@@ -1952,8 +1956,13 @@ async function loadAuctionBidHistory(month){
    left.textContent=(restaurant?.name||'Restaurant')+' · '+kind;
    const right=document.createElement('strong');
    right.textContent=Number(entry.amount).toLocaleString('ro-RO')+' lei';
-   const time=document.createElement('small');
-   time.textContent=new Intl.DateTimeFormat('ro-RO',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Europe/Bucharest'}).format(new Date(entry.occurred_at));
+   const timestamp=new Date(entry.occurred_at);
+   const time=document.createElement('time');
+   time.className='pont-auction-history-time';
+   time.dateTime=entry.occurred_at;
+   const hour=new Intl.DateTimeFormat('ro-RO',{hour:'2-digit',minute:'2-digit',second:'2-digit',hourCycle:'h23',timeZone:'Europe/Bucharest'}).format(timestamp);
+   const date=new Intl.DateTimeFormat('ro-RO',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'Europe/Bucharest'}).format(timestamp);
+   time.textContent='Ora '+hour+' · '+date;
    item.append(left,right,time);rows.append(item);
   }
  }catch(error){
