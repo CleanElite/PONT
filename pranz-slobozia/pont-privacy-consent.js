@@ -24,7 +24,7 @@
   const footer=document.querySelector('footer');
   // The public restaurant listings use their existing legal-document links in the footer;
   // avoid adding extra GDPR / cookie-settings controls to those primary screens.
-  const isMainListing=/\/(?:meniul-zilei|iesire-in-oras)\/?(?:index\.html)?$/.test(location.pathname);
+  const isMainListing=/\/pranz-slobozia\/(?:index\.html)?$/.test(location.pathname)||/\/(?:meniul-zilei|iesire-in-oras)\/?(?:index\.html)?$/.test(location.pathname);
   if(!isMainListing&&footer&&!footer.querySelector('[data-pont-gdpr]')){
    const nav=footer.querySelector('nav')||footer;
    const link=document.createElement('a');link.href=new URL('confidentialitate.html',import.meta.url).href;
