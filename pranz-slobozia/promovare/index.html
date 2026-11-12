@@ -327,10 +327,32 @@ dialog.pont-premium-confirm .pont-confirm-note{
 }
 
 /* Inline status beside the restaurant name, without a separate card. */
-dialog.pont-premium-auction .pont-modal-restaurant-rank{
+dialog.pont-premium-auction h2.pont-restaurant-title{
+ display:flex!important;
+ flex-direction:column!important;
+ align-items:center!important;
+ justify-content:center!important;
+ gap:7px!important;
+ text-align:center!important;
+ padding:22px 0 0!important;
+ margin:0 0 7px!important;
+ max-width:100%!important;
+ overflow-wrap:anywhere;
+}
+dialog.pont-premium-auction .pont-restaurant-name{
+ display:block;
+ max-width:100%;
  font:inherit;
  letter-spacing:inherit;
  color:inherit;
+}
+dialog.pont-premium-auction .pont-modal-restaurant-rank{
+ display:block;
+ max-width:100%;
+ font:inherit;
+ letter-spacing:inherit;
+ color:inherit;
+ text-align:center;
 }
 
 /* Secondary, reversible-with-confirmation bid withdrawal action */
@@ -646,12 +668,17 @@ function updateModal(){
  $('auctionModalPosition').textContent='POZIȚIA '+String(slot).padStart(2,'0')+' · '+new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'T12:00:00Z'));
  const title=$('auctionModalTitle');
  if(role==='restaurant'&&me){
+  title.classList.add('pont-restaurant-title');
   const rank=currentRestaurantRank();
+  const restaurantName=document.createElement('span');
+  restaurantName.className='pont-restaurant-name';
+  restaurantName.textContent=names[me]||'Restaurantul tău';
   const status=document.createElement('span');
   status.className='pont-modal-restaurant-rank';
-  status.textContent=' – Poziția actuală: '+(rank??'Fără ofertă');
-  title.replaceChildren(names[me]||'Restaurantul tău',status);
+  status.textContent='Poziția actuală: '+(rank??'Fără ofertă');
+  title.replaceChildren(restaurantName,status);
  }else{
+  title.classList.remove('pont-restaurant-title');
   title.textContent=target?(names[target.restaurant_id]||'Restaurant'):'Loc disponibil';
  }
  renderAuctionPodium();
