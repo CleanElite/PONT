@@ -112,6 +112,42 @@
  .pont-admin #app .pont-admin-heading-label{font-size:15px!important}
  .pont-admin #app .pont-admin-heading-name{font-size:20px!important}
 }
+/* Long restaurant names get full-width line; notification never compresses or overlaps them. */
+.pont-admin #app .pont-restaurant-premium-heading{
+ grid-template-columns:minmax(0,1fr) minmax(45px,auto)!important;
+ grid-template-rows:auto auto!important;
+ align-content:center!important;
+ row-gap:3px!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading .admin-hero-copy{
+ grid-column:1!important;grid-row:1!important;
+ min-width:0!important;align-self:center!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading .pont-bell-header-slot{
+ grid-column:2!important;grid-row:1!important;
+ align-self:center!important;justify-self:end!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading #adminRestaurantContext{
+ grid-column:1 / -1!important;grid-row:2!important;
+ display:block!important;width:100%;max-width:100%;min-width:0;
+ margin:2px 0 0!important;
+ font:750 clamp(22px,3vw,29px)/1.18 Georgia,'Times New Roman',serif!important;
+ letter-spacing:-.025em;overflow-wrap:break-word;word-break:normal;
+ color:#f9fffa;
+}
+.pont-admin #app .pont-restaurant-premium-heading .pont-admin-heading-label{
+ margin:0!important;
+ font:600 clamp(17px,2.3vw,22px)/1.2 Georgia,'Times New Roman',serif!important;
+ color:#dcece6;
+}
+@media(max-width:650px){
+ .pont-admin #app .pont-restaurant-premium-heading #adminRestaurantContext{
+  font-size:clamp(22px,5.6vw,27px)!important;
+ }
+ .pont-admin #app .pont-restaurant-premium-heading .pont-admin-heading-label{
+  font-size:clamp(17px,4.5vw,20px)!important;
+ }
+}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=model-wizard-c31"><body class="pont-admin pont-admin--restaurant">
 <main>
@@ -122,9 +158,10 @@
 <section id="setup" class="card" hidden><h1>Configurare necesară</h1><p>Panoul este instalat. Pentru autentificare reală, conectează-l la Supabase și atribuie restaurantul contului.</p></section><section id="login" class="card" hidden><h1>Cont restaurant</h1><p>Fiecare partener își gestionează exclusiv propriile meniuri.</p><form id="auth" autocomplete="on"><label for="email">Email sau nume de utilizator</label><input id="email" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required><label for="password">Parolă</label><input id="password" name="password" type="password" autocomplete="current-password" required><p><button class="primary">Conectare</button></p></form><p id="error" class="error"></p></section><section id="app" hidden><button type="button" id="logout" class="admin-logout" aria-label="Deconectare"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#sign-out"></use></svg><span class="admin-control-text">Deconectare</span></button>
 <div class="admin-hero pont-restaurant-premium-heading">
   <div class="admin-hero-copy">
-    <h1><span class="pont-admin-heading-label">Panoul restaurantului</span><span id="adminRestaurantContext" class="pont-admin-heading-name">Restaurant</span></h1>
+    <h1 class="pont-admin-heading-label">Panoul restaurantului</h1>
   </div>
   <div id="pontAuctionBellMount" class="pont-bell-header-slot" aria-label="Notificări licitații"></div>
+  <div id="adminRestaurantContext" class="pont-admin-heading-name">Restaurant</div>
 </div>
 <nav class="admin-nav pont-restaurant-grouped-nav" aria-label="Secțiunile panoului">
   <div class="pont-restaurant-nav-group pont-restaurant-nav-menus" role="group" aria-label="Gestionare meniuri">
