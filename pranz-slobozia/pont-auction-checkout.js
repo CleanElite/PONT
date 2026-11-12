@@ -139,7 +139,7 @@ export function initPontAuctionCheckout({db,config,onFinished}){
    if(id!==requestId||!dialog.open)return;
    stripe=window.Stripe(result.publishableKey);
    elements=stripe.elements({clientSecret:result.clientSecret,appearance:{theme:'night',variables:{colorPrimary:'#42e5c9',colorBackground:'#072b31',colorText:'#edf9f7',borderRadius:'10px'}}});
-   elements.create('payment',{layout:'tabs',wallets:{link:'never'}}).mount(elementHost);
+   elements.create('payment',{layout:'tabs'}).mount(elementHost);
    submit.disabled=false;message.textContent='';
   }catch(error){if(id===requestId&&dialog.open)message.textContent=error.message||'Eroare Stripe'}
   finally{if(id===requestId)busy=false}
