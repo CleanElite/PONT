@@ -1,7 +1,7 @@
 // PONT restaurant dashboard payment bell. Shares the existing Stripe PaymentIntent backend/dialog behavior with Promovare.
 export function initPontAuctionPaymentBell({db,config}) {
- const topbar=document.querySelector('.admin-topbar');
- if(!topbar)return {refresh:async()=>{},setVisible:()=>{}};
+ const header=document.querySelector('#app .pont-restaurant-premium-heading');
+ if(!header)return {refresh:async()=>{},setVisible:()=>{}};
  const styles=document.createElement('style');
  styles.textContent=`
  .pont-auction-notify{margin-left:auto;display:flex;flex-direction:column;align-items:center;gap:3px;max-width:min(230px,43vw);position:relative;z-index:2}
@@ -28,13 +28,56 @@ export function initPontAuctionPaymentBell({db,config}) {
  .pont-auction-pay-submit{width:100%;margin-top:17px;padding:12px;border:1px solid #91ffee;background:#028a7b;color:white}
  .pont-auction-pay-msg{font:550 12px/1.4 system-ui;color:#ffc7b8;margin:10px 0 0}
  .pont-auction-pay-note{font:450 11px/1.5 system-ui;color:#accbc7;margin:12px 0 0}
- @media(max-width:600px){.admin-topbar{gap:8px!important}.pont-auction-notify{max-width:40vw}.pont-auction-notice{font-size:10px}}
+ /* Gold premium bell: perpetual light orbit, only the bell swings when an unpaid auction exists. */
+ .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{
+   margin:0!important;flex:0 0 auto!important;width:clamp(68px,19vw,155px);
+   max-width:32vw;align-self:center;gap:5px;
+ }
+ .pont-admin #app .pont-restaurant-premium-heading .pont-auction-bell{
+   position:relative!important;isolation:isolate;overflow:hidden;
+   width:49px!important;height:49px!important;min-height:49px!important;
+   padding:0!important;border:1px solid #c7a057!important;border-radius:15px!important;
+   color:#ffd777!important;background:radial-gradient(circle at 25% 14%,#655028 0%,#27291e 43%,#101f25 100%)!important;
+   box-shadow:inset 0 1px 9px #ffdea725,0 0 12px #f9bc4c28!important;
+ }
+ .pont-admin #app .pont-auction-bell::before{
+   content:'';position:absolute;inset:-60%;z-index:-1;pointer-events:none;
+   background:conic-gradient(from 0deg,transparent 0deg,transparent 235deg,#bd8c38 268deg,#fff1b4 294deg,#ffd166 307deg,transparent 337deg);
+   animation:pont-gold-neon-orbit 3.1s linear infinite;
+ }
+ .pont-admin #app .pont-auction-bell .pont-bell-core{
+   position:absolute;inset:2px;border-radius:12px;z-index:0;pointer-events:none;
+   background:radial-gradient(circle at 23% 12%,#604b28 0%,#202b29 56%,#09252b 100%);
+ }
+ .pont-admin #app .pont-auction-bell svg{
+   position:relative;z-index:1;width:23px;height:23px;stroke:#ffdc85;
+   filter:drop-shadow(0 0 5px #ffd1669e);
+ }
+ .pont-admin #app .pont-auction-bell.is-due{
+   border-color:#fff0bd!important;color:#ffe39b!important;
+   box-shadow:inset 0 0 12px #ffe5a438,0 0 18px #ffcd6670!important;
+ }
+ .pont-admin #app .pont-auction-bell.is-due::after{
+   background:#ffe299;box-shadow:0 0 10px #ffdc83;
+ }
+ .pont-admin #app .pont-auction-notice{
+   color:#f5dba0!important;font:600 clamp(9px,2.1vw,11px)/1.3 system-ui!important;
+   max-width:100%;text-align:center;cursor:pointer;
+ }
+ @keyframes pont-gold-neon-orbit{to{transform:rotate(360deg)}}
+ @media(max-width:540px){
+   .pont-admin #app .pont-restaurant-premium-heading .pont-auction-notify{width:clamp(57px,19vw,100px)!important;max-width:29vw}
+   .pont-admin #app .pont-restaurant-premium-heading .pont-auction-bell{width:43px!important;height:43px!important;min-height:43px!important}
+ }
+ @media(prefers-reduced-motion:reduce){
+   .pont-admin #app .pont-auction-bell::before{animation:none;background:linear-gradient(130deg,#fff0b5,#ae7939,transparent)}
+ }
  `;
  document.head.append(styles);
  const host=document.createElement('div');
  host.className='pont-auction-notify';host.hidden=true;
- host.innerHTML='<button type="button" class="pont-auction-bell" aria-label="Notificări plăți licitații" title="Plăți licitații"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button><span class="pont-auction-notice" hidden></span>';
- topbar.append(host);
+ host.innerHTML='<button type="button" class="pont-auction-bell" aria-label="Notificări plăți licitații" title="Plăți licitații"><span class="pont-bell-core" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg></button><span class="pont-auction-notice" hidden></span>';
+ header.append(host);
  const bell=host.querySelector('button'),notice=host.querySelector('.pont-auction-notice');
  const dialog=document.createElement('dialog');
  dialog.className='pont-auction-pay-dialog';
