@@ -71,14 +71,16 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  
  <div class="pont-op-grid"><label><span ${superAdminSettings ? 'class="pont-op-visually-hidden"' : ''}>${superAdminSettings ? 'Ora de început' : 'Comenzi de la ora'}</span><input id="pontOpStart" type="time" aria-label="Ora de început"></label><label><span ${superAdminSettings ? 'class="pont-op-visually-hidden"' : ''}>${superAdminSettings ? 'Ora de încheiere' : 'Comenzi până la ora'}</span><input id="pontOpEnd" type="time" aria-label="Ora de încheiere"></label><label>${superAdminSettings ? 'Comandă minimă · meniuri' : 'Comandă minimă'}<span class="pont-op-min-row"><input id="pontOpMin" type="number" min="1" max="20" step="1" value="1" required><span>meniu</span></span></label></div>
  ${superAdminSettings ? '' : '<button type="button" id="pontOpSave" class="' + (settingsHost ? 'primary' : 'pont-op-button') + '">' + (settingsHost ? 'Salvează setările comenzilor' : 'Salvează programul') + '</button>'}<p id="pontOpStatus" role="status"></p></details>
- <details id="pontWeekPanel"><summary>Planifică meniul pe toată săptămâna</summary>
- <p>Alegi săptămâna și planifici fiecare zi separat. Meniurile programate apar automat la data aleasă.</p>
- <label id="pontOpWeekRestaurantWrap" hidden>Restaurant<select id="pontOpWeekRestaurant"></select></label>
+ <details id="pontWeekPanel"><summary><span class="pont-week-header-icon" aria-hidden="true">▣</span><span class="pont-week-header-text">Planifică meniul pe toată săptămâna<small>Organizează rapid meniul zilnic. Se publică automat la data aleasă.</small></span></summary>
+ <label id="pontOpWeekRestaurantWrap" hidden><span class="pont-week-restaurant-label">Restaurant</span><select id="pontOpWeekRestaurant"></select></label>
  <div class="pont-op-week-nav">
- <button type="button" class="pont-op-button" id="pontOpWeekPrevious"><span class="pont-op-arrow" aria-hidden="true">←</span>Săptămâna anterioară</button>
- <button type="button" class="pont-op-button" id="pontOpWeekNext">Săptămâna următoare<span class="pont-op-arrow" aria-hidden="true">→</span></button>
+ <button type="button" class="pont-op-button" id="pontOpWeekPrevious"><span class="pont-op-arrow" aria-hidden="true">‹</span><span>Săptămâna anterioară</span></button>
+ <span class="pont-week-range" id="pontWeekRange" aria-live="polite"></span>
+ <button type="button" class="pont-op-button" id="pontOpWeekNext"><span>Săptămâna următoare</span><span class="pont-op-arrow" aria-hidden="true">›</span></button>
  </div>
- <div id="pontOpDays" class="pont-op-days"></div><p id="pontOpWeekStatus" role="status"></p></details>`;
+ <div id="pontOpDays" class="pont-op-days"></div>
+ <button type="button" class="pont-week-create-remaining" id="pontWeekPlanRemaining"><span aria-hidden="true">▣</span> Planifică zilele fără meniu</button>
+ <p id="pontOpWeekStatus" role="status"></p></details>`;
  parent.append(section);
  if(settingsHost){
    const settings=document.createElement('div');
@@ -191,13 +193,24 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    const restaurant=$('pontOpWeekRestaurant').value;
    const menus=typeof window.pontAllMenus==='function'?window.pontAllMenus():[];
    const days=['Luni','Marți','Miercuri','Joi','Vineri','Sâmbătă','Duminică'];
+   const weekEnd=dateAt(weekStart,6);
+   const formatShort=value=>new Intl.DateTimeFormat('ro-RO',{day:'2-digit',month:'short',timeZone:'UTC'}).format(new Date(value+'T12:00:00Z')).replace('.','');
+   $('pontWeekRange').textContent=formatShort(weekStart)+' – '+formatShort(weekEnd)+' '+weekEnd.slice(0,4);
+   const abbr=['LUN','MAR','MIE','JOI','VIN','SÂM','DUM'];
    $('pontOpDays').innerHTML=days.map((name,i)=>{
      const date=dateAt(weekStart,i),menu=menus.find(m=>m.restaurant_id===restaurant&&m.service_date===date);
-     const past=date<today;
-     const label=!menu?'Fără meniu':past?'Finalizat':date===today?'Publicat':'Programat';
-     const action=past?'':'<button type="button" class="pont-op-button" data-week-date="'+date+'">'+(menu?'Editează meniul':'Creează meniul')+'</button>';
-     return '<div class="pont-op-day"><div><strong>'+name+' · '+date.split('-').reverse().join('.')+'</strong><small>'+label+'</small></div>'+action+'</div>';
+     const past=date<today, hasMenu=Boolean(menu);
+     const label=!hasMenu?'Fără meniu':past?'Finalizat':date===today?'Publicat':'Programat';
+     const statusClass=!hasMenu?'empty':past?'finished':date===today?'published':'scheduled';
+     const action=past?'':'<button type="button" class="pont-op-button pont-week-day-action" data-week-date="'+date+'"><span aria-hidden="true">'+(hasMenu?'✎':'+')+'</span>'+(hasMenu?'Editează':'Creează meniu')+'</button>';
+     const d=String(Number(date.slice(8))),monthLabel=new Intl.DateTimeFormat('ro-RO',{month:'short',timeZone:'UTC'}).format(new Date(date+'T12:00:00Z')).replace('.','');
+     const icon=hasMenu?(past?'✓':date===today?'◉':'✓'):'▯';
+     return '<div class="pont-op-day pont-week-day--'+statusClass+'"><div class="pont-week-day-date"><strong>'+abbr[i]+'</strong><small>'+d+' '+monthLabel+'</small></div><div class="pont-week-day-state"><span class="pont-week-state-icon" aria-hidden="true">'+icon+'</span><span>'+label+'</span></div>'+action+'</div>';
    }).join('');
+   const plan=$('pontWeekPlanRemaining');
+   const available=[...$('pontOpDays').querySelectorAll('[data-week-date]')].filter(button=>button.textContent.includes('Creează'));
+   plan.disabled=!restaurant||available.length===0;
+   plan.title=available.length?'Deschide prima zi fără meniu, apoi planifică zilele pe rând.':'Nu există zile viitoare fără meniu în această săptămână.';
  }
  function selectWeek(start){
    weekStart=start;
@@ -206,6 +219,10 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  }
  $('pontOpWeekPrevious').onclick=()=>selectWeek(dateAt(weekStart,-7));
  $('pontOpWeekNext').onclick=()=>selectWeek(dateAt(weekStart,7));
+ $('pontWeekPlanRemaining').addEventListener('click',()=>{
+   const button=[...$('pontOpDays').querySelectorAll('[data-week-date]')].find(el=>el.textContent.includes('Creează'));
+   if(button)button.click();
+ });
  function updateDay(){
    if(formatDate(new Date())!==renderedDay)renderWeek();
  }
