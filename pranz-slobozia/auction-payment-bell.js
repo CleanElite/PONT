@@ -1,4 +1,5 @@
-// PONT restaurant dashboard payment bell. Shares the existing Stripe PaymentIntent backend/dialog behavior with Promovare.
+// PONT restaurant dashboard bell and payment notification; opens the shared full-screen checkout without navigation.
+import {initPontAuctionCheckout} from './pont-auction-checkout.js?v=single-checkout-20261112';
 export function initPontAuctionPaymentBell({db,config}) {
  const header=document.querySelector('#pontAuctionBellMount');
  if(!header)return {refresh:async()=>{},setVisible:()=>{}};
@@ -131,6 +132,7 @@ export function initPontAuctionPaymentBell({db,config}) {
  const notice=host.querySelector('.pont-auction-notice');
  host.insertBefore(notice,bell);
  let due=[],visible=false;
+ const checkout=initPontAuctionCheckout({db,config,onFinished:()=>refresh()});
  const formatMonth=month=>new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'T12:00:00Z'));
  function render(){
   const count=due.length;
@@ -168,15 +170,13 @@ export function initPontAuctionPaymentBell({db,config}) {
   render();
  }
  function goToCheckout(){
-  const month=due[0]?.campaign_month;
-  if(!month){location.assign('../promovare/');return}
-  const destination=new URL('../promovare/',location.href);
-  destination.searchParams.set('pay',month);
-  location.assign(destination.href);
+  const item=due[0];
+  if(!item)return;
+  checkout.open(item).catch(error=>console.error('Plată PONT:',error));
  }
  bell.addEventListener('click',goToCheckout);
  notice.addEventListener('click',goToCheckout);
  const interval=setInterval(()=>{if(visible&&!document.hidden)refresh().catch(e=>console.warn('Notificare plăți:',e.message))},20000);
  document.addEventListener('visibilitychange',()=>{if(visible&&!document.hidden)refresh().catch(()=>{})});
- return {setVisible(value){visible=Boolean(value);host.hidden=!visible;if(visible)refresh().catch(e=>console.warn('Plăți licitații:',e.message));else{due=[];render()}},refresh,destroy(){clearInterval(interval);host.remove();styles.remove()}};
+ return {setVisible(value){visible=Boolean(value);host.hidden=!visible;if(visible)refresh().catch(e=>console.warn('Plăți licitații:',e.message));else{due=[];render()}},refresh,destroy(){clearInterval(interval);host.remove();checkout.destroy();styles.remove()}};
 }
