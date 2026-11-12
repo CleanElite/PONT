@@ -151,7 +151,54 @@
  }
 }
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
-<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=model-wizard-c31"><body class="pont-admin pont-admin--restaurant">
+<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=model-wizard-c31"><style id="pont-header-bell-fit-20261112">
+/* Headerul urmeaza inaltimea clopotelului; titlul si numele nu pot mari randul. */
+.pont-admin #app .pont-restaurant-premium-heading{
+ display:grid!important;
+ grid-template-columns:minmax(0,1fr) minmax(0,max-content)!important;
+ grid-template-rows:minmax(0,auto) minmax(0,auto)!important;
+ align-items:center!important;align-content:center!important;
+ column-gap:clamp(5px,1.5vw,12px)!important;row-gap:1px!important;
+ min-width:0!important;width:100%;
+ padding:4px 0!important;margin:8px 0 10px!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading .admin-hero-copy{
+ grid-column:1!important;grid-row:1!important;
+ min-width:0!important;width:100%!important;align-self:end!important;
+ overflow:hidden!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading .pont-admin-heading-label{
+ display:block!important;max-width:100%;margin:0!important;
+ font:600 clamp(11px,2.7vw,14px)/1.12 Georgia,'Times New Roman',serif!important;
+ white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading #adminRestaurantContext{
+ grid-column:1!important;grid-row:2!important;align-self:start!important;
+ display:block!important;width:100%!important;min-width:0!important;max-width:100%!important;
+ margin:0!important;padding:3px 6px!important;
+ border:1px solid rgba(224,195,130,.62)!important;border-radius:6px!important;
+ font:650 clamp(12px,3.3vw,18px)/1.12 Georgia,'Times New Roman',serif!important;
+ letter-spacing:-.02em!important;white-space:nowrap!important;
+ overflow:hidden!important;text-overflow:ellipsis!important;overflow-wrap:normal!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading #pontAuctionBellMount{
+ grid-column:2!important;grid-row:1 / 3!important;
+ align-self:center!important;justify-self:end!important;
+ min-width:0!important;max-width:min(54vw,230px)!important;
+ margin:0!important;padding:0!important;
+ display:flex!important;align-items:center!important;justify-content:flex-end!important;
+}
+.pont-admin #app .pont-restaurant-premium-heading #pontAuctionBellMount .pont-auction-notify{
+ min-width:0!important;max-width:100%!important;
+ display:flex!important;flex-direction:row!important;
+ align-items:center!important;justify-content:flex-end!important;
+ gap:clamp(3px,1vw,7px)!important;margin:0!important;
+}
+@media(max-width:420px){
+ .pont-admin #app .pont-restaurant-premium-heading #pontAuctionBellMount{max-width:52vw!important}
+ .pont-admin #app .pont-restaurant-premium-heading #adminRestaurantContext{font-size:clamp(11px,3.3vw,14px)!important;padding:3px 5px!important}
+}
+</style><body class="pont-admin pont-admin--restaurant">
 <main>
 <header class="admin-topbar">
   <a class="admin-back pont-nav-action" href="../" aria-label="Acasă"><span class="pont-nav-action__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></span><span class="pont-nav-action__label">Acasă</span></a>
