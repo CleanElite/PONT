@@ -61,6 +61,160 @@ button { cursor: pointer; }
 .menu-heading .promotion-campaign-period #date{color:#e6eff0;font-weight:600;text-transform:capitalize}
 .promotion-month-picker{display:flex;align-items:center;gap:8px;width:fit-content;margin:9px auto 0;color:#b9d2d2;font:600 12px system-ui}
 .promotion-month-picker select{min-height:34px;padding:5px 10px;border-radius:9px;border:1px solid #7affeda3;background:#06282d;color:#f4faf9;font:650 12px system-ui}
+
+/* Premium auction dialogs — same Dark Teal luminous visual family as PONT dashboards. */
+dialog.pont-premium-auction,dialog.pont-premium-confirm{
+ color:#f4faf9!important;color-scheme:dark!important;
+ width:min(90vw,470px)!important;max-width:470px!important;
+ max-height:calc(100dvh - 42px)!important;margin:auto!important;padding:0!important;
+ border:1px solid rgba(122,255,237,.65)!important;border-radius:clamp(22px,5vw,31px)!important;
+ background:
+  radial-gradient(ellipse 70% 18% at 60% -2%,rgba(19,236,205,.19),transparent 95%),
+  radial-gradient(ellipse 42% 26% at 102% 100%,rgba(4,175,145,.2),transparent 85%),
+  linear-gradient(158deg,#003135 0%,#001c20 48%,#002c30 100%)!important;
+ box-shadow:inset 0 1px 0 rgba(201,255,250,.17),inset 0 -1px 7px #52f6e126,0 24px 90px #000b,0 0 22px #52f6e12a!important;
+ overflow-y:auto!important;overflow-x:hidden!important;
+ scrollbar-width:thin;scrollbar-color:#267c76 transparent;
+}
+dialog.pont-premium-auction::backdrop,dialog.pont-premium-confirm::backdrop{
+ background:rgba(0,15,19,.79)!important;backdrop-filter:blur(7px)!important;-webkit-backdrop-filter:blur(7px)!important;
+}
+dialog.pont-premium-auction .auction-modal-inner,dialog.pont-premium-confirm .pont-confirm-inner{
+ position:relative;isolation:isolate;padding:clamp(25px,5.8vw,37px)!important;
+}
+dialog.pont-premium-auction .auction-modal-inner::before,dialog.pont-premium-confirm .pont-confirm-inner::before{
+ content:"";position:absolute;top:0;left:21%;width:58%;height:2px;
+ background:linear-gradient(90deg,transparent,#89ffed,transparent);box-shadow:0 0 18px 2px #52f6e16b;pointer-events:none;
+}
+dialog.pont-premium-auction .auction-modal-inner::after,dialog.pont-premium-confirm .pont-confirm-inner::after{
+ content:"";position:absolute;pointer-events:none;z-index:-1;
+ right:-24%;bottom:-21%;width:68%;height:41%;
+ border:1px solid rgba(68,239,199,.39);border-radius:50%;transform:rotate(-22deg);
+ box-shadow:0 -6px 26px #00e9bb2d;
+}
+dialog.pont-premium-auction .auction-modal-close,dialog.pont-premium-confirm .auction-modal-close{
+ position:absolute!important;top:clamp(19px,4vw,26px)!important;right:clamp(18px,4vw,26px)!important;
+ display:grid!important;place-items:center!important;
+ width:35px!important;height:35px!important;min-width:35px!important;margin:0!important;padding:0!important;
+ border:1px solid #8affed88!important;border-radius:50%!important;background:rgba(7,62,64,.72)!important;
+ color:#f4faf9!important;font:400 26px/1 system-ui!important;
+}
+dialog.pont-premium-auction .modal-kicker{
+ max-width:calc(100% - 42px);
+ margin:1px 0 13px!important;
+ font:750 clamp(10px,2.65vw,12px)/1.3 system-ui!important;letter-spacing:.2em!important;
+ color:#e4ca97!important;text-transform:uppercase!important;
+}
+dialog.pont-premium-auction h2{
+ margin:0 0 7px!important;max-width:100%;
+ font:650 clamp(27px,7vw,40px)/1.09 Georgia,'Times New Roman',serif!important;
+ letter-spacing:-.035em!important;color:#f8fffd!important;
+}
+dialog.pont-premium-auction .pont-auction-glow-rule{
+ display:block;width:42px;height:2px;margin:13px 0 16px;
+ background:#52f6e1;box-shadow:0 0 13px 2px #52f6e17a;
+}
+dialog.pont-premium-auction .modal-explainer{
+ margin:0 0 18px!important;color:#c4dfdd!important;
+ font:450 clamp(12px,3.1vw,15px)/1.48 system-ui!important;
+}
+dialog.pont-premium-auction .modal-current{
+ display:grid!important;grid-template-columns:48px minmax(0,1fr)!important;align-items:center;gap:13px!important;
+ margin:0 0 18px!important;padding:12px!important;
+ border:1px solid #56ebd3a8!important;border-radius:15px!important;
+ background:linear-gradient(140deg,#074b4b,#053039 67%,#0c5f57)!important;
+ box-shadow:inset 0 1px 13px #aaffed23,0 0 12px #52f6e118!important;
+ color:#effffb!important;font:520 clamp(12px,3vw,15px)/1.55 system-ui!important;
+}
+dialog.pont-premium-auction .pont-auction-gavel,dialog.pont-premium-confirm .pont-confirm-emblem{
+ display:grid;place-items:center;
+ border:1px solid #62e7d49c;border-radius:13px;
+ background:linear-gradient(140deg,#0b6057,#042c32);
+ box-shadow:inset 0 1px 12px #aaffed31,0 0 9px #52f6e122;
+ color:#72ffee;
+}
+dialog.pont-premium-auction .pont-auction-gavel{width:48px;height:48px}
+dialog.pont-premium-auction .pont-auction-gavel svg{width:27px;height:27px}
+dialog.pont-premium-auction #auctionModalCurrent{min-width:0;overflow-wrap:anywhere}
+dialog.pont-premium-auction #bidForm{margin:0!important}
+dialog.pont-premium-auction #bidForm label{
+ display:block!important;margin:0 0 7px!important;
+ font:600 clamp(14px,3.4vw,17px)/1.3 system-ui!important;color:#ecfffb!important;
+}
+dialog.pont-premium-auction #bidAmount{
+ display:block!important;width:100%!important;min-height:60px!important;height:60px!important;
+ margin:0 0 12px!important;padding:10px 17px!important;
+ border:1px solid #91e9dce0!important;border-radius:13px!important;
+ background:linear-gradient(145deg,#062f33,#053c3c)!important;color:#fff!important;
+ font:750 clamp(26px,7vw,34px)/1 system-ui!important;
+ box-shadow:inset 0 1px 10px #95ffed18!important;outline-offset:3px;
+}
+dialog.pont-premium-auction #bidAmount:focus{outline:2px solid #75ffee!important;border-color:#adfff3!important}
+dialog.pont-premium-auction #bidAmount::placeholder{font-size:14px;font-weight:500;color:#91bdb8;opacity:1}
+dialog.pont-premium-auction #bidSubmit{
+ display:flex!important;align-items:center!important;justify-content:center!important;gap:11px!important;
+ width:100%!important;min-height:57px!important;margin:0!important;padding:10px!important;
+ border:1px solid #80ffed!important;border-radius:14px!important;
+ background:linear-gradient(145deg,#02ad9c,#006f69 55%,#03bda2)!important;
+ box-shadow:inset 0 1px 10px #e7fff853,0 0 20px #00e6be38!important;
+ color:#fff!important;font:750 clamp(16px,4vw,19px)/1.2 system-ui!important;
+}
+dialog.pont-premium-auction #bidSubmit svg{width:22px;height:22px;flex:none}
+dialog.pont-premium-auction #bidSubmit:disabled{opacity:.58!important;box-shadow:none!important}
+dialog.pont-premium-auction .modal-status{
+ min-height:0!important;margin:5px 0 0!important;color:#ffc9bd!important;font:650 12px/1.3 system-ui!important;
+}
+dialog.pont-premium-auction .modal-status:empty{display:none!important}
+dialog.pont-premium-auction .modal-note{
+ display:grid!important;grid-template-columns:24px 1fr!important;align-items:start;gap:12px!important;
+ margin:19px 0 0!important;color:#bfd7d4!important;
+ font:450 clamp(11px,2.8vw,13px)/1.52 system-ui!important;
+}
+dialog.pont-premium-auction .pont-modal-info-icon{
+ display:grid;place-items:center;width:22px;height:22px;margin-top:1px;
+ border:1px solid #c6ebe2;border-radius:50%;
+ color:#d8f3ee;font:750 13px/1 system-ui;
+}
+dialog.pont-premium-confirm{
+ width:min(87vw,410px)!important;border-radius:26px!important;
+}
+dialog.pont-premium-confirm .pont-confirm-inner{padding:clamp(27px,6.8vw,38px) clamp(21px,5vw,32px)!important;text-align:center}
+dialog.pont-premium-confirm .pont-confirm-emblem{
+ width:60px;height:60px;margin:0 auto 18px;border-radius:18px;
+}
+dialog.pont-premium-confirm .pont-confirm-emblem svg{width:34px;height:34px}
+dialog.pont-premium-confirm h2{
+ margin:0 auto 12px!important;max-width:330px;
+ color:#f5fffd!important;font:650 clamp(22px,5.3vw,28px)/1.22 Georgia,serif!important;
+}
+dialog.pont-premium-confirm h2 strong{color:#70ffee}
+dialog.pont-premium-confirm #auctionBidConfirmDescription{
+ margin:0 auto 20px!important;max-width:335px;color:#bfdbd7!important;font:450 12px/1.5 system-ui!important;
+}
+dialog.pont-premium-confirm .pont-confirm-actions{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;
+}
+dialog.pont-premium-confirm .pont-confirm-actions button{
+ display:flex!important;align-items:center!important;justify-content:center!important;gap:7px!important;
+ width:100%!important;min-width:0!important;min-height:46px!important;margin:0!important;padding:8px 5px!important;
+ border-radius:12px!important;font:700 clamp(12px,3.5vw,15px)/1.15 system-ui!important;
+}
+dialog.pont-premium-confirm #auctionBidConfirmCancel{
+ border:1px solid #77d8c7b0!important;background:linear-gradient(145deg,#053c3d,#022c32)!important;color:#e7faf6!important;
+}
+dialog.pont-premium-confirm #auctionBidConfirmOK{
+ border:1px solid #80ffed!important;background:linear-gradient(135deg,#00bca5,#08796d 60%,#06bda5)!important;
+ color:#fff!important;box-shadow:inset 0 1px 9px #d2fff953,0 0 12px #00ecba53!important;
+}
+dialog.pont-premium-confirm #auctionBidConfirmOK svg{width:18px;height:18px}
+@media(max-width:380px){
+ dialog.pont-premium-auction .auction-modal-inner{padding:21px!important}
+ dialog.pont-premium-auction .modal-current{grid-template-columns:38px minmax(0,1fr)!important;gap:9px!important}
+ dialog.pont-premium-auction .pont-auction-gavel{width:38px;height:38px}
+ dialog.pont-premium-auction .pont-auction-gavel svg{width:22px;height:22px}
+ dialog.pont-premium-confirm .pont-confirm-inner{padding:27px 17px!important}
+}
+@media(prefers-reduced-motion:reduce){dialog.pont-premium-auction *,dialog.pont-premium-confirm *{transition:none!important}}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -163,7 +317,29 @@ button { cursor: pointer; }
   </section>
 </main>
 <footer class="promotion-footer">PONT Slobozia · Promovare pentru restaurante partenere</footer>
-<dialog id="auctionDialog" class="auction-modal" aria-labelledby="auctionModalTitle"><div class="auction-modal-inner"><button type="button" class="auction-modal-close" id="auctionClose" aria-label="Închide">×</button><div class="modal-kicker" id="auctionModalPosition">LICITAȚIE PONT</div><h2 id="auctionModalTitle">Licitează pentru vizibilitate</h2><p class="modal-explainer">Ofertele se clasează automat după sumă. Licitezi pentru promovare, nu cumperi o poziție fixă.</p><div class="modal-current" id="auctionModalCurrent"></div><form id="bidForm"><label for="bidAmount">Oferta ta totală (lei)</label><input id="bidAmount" type="number" min="50" step="1" inputmode="numeric" required placeholder="Minimum 50 lei"><button class="primary-bid" type="submit" id="bidSubmit">Confirmă oferta</button></form><p class="modal-status" id="bidMessage" role="status" aria-live="polite"></p><p class="modal-note" id="auctionModalNote">Oferta minimă este 50 lei. Fiecare majorare trebuie să fie de cel puțin 10 lei. Plata este verificată separat.</p></div></dialog>
+<dialog id="auctionDialog" class="auction-modal pont-premium-auction" aria-labelledby="auctionModalTitle" aria-describedby="auctionModalExplainer"><div class="auction-modal-inner">
+ <button type="button" class="auction-modal-close" id="auctionClose" aria-label="Închide"><span aria-hidden="true">×</span></button>
+ <div class="modal-kicker" id="auctionModalPosition">LICITAȚIE PONT</div>
+ <h2 id="auctionModalTitle">Licitează pentru vizibilitate</h2>
+ <span class="pont-auction-glow-rule" aria-hidden="true"></span>
+ <p class="modal-explainer" id="auctionModalExplainer">Ofertele se clasează automat după sumă. Licitezi pentru promovare, nu cumperi o poziție fixă.</p>
+ <div class="modal-current"><span class="pont-auction-gavel" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg></span><div id="auctionModalCurrent"></div></div>
+ <form id="bidForm"><label for="bidAmount">Oferta ta totală (lei)</label><input id="bidAmount" type="number" min="50" step="1" inputmode="numeric" required placeholder="Minimum 50 lei"><button class="primary-bid" type="submit" id="bidSubmit"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg><span id="bidSubmitText">Confirmă oferta</span></button></form>
+ <p class="modal-status" id="bidMessage" role="status" aria-live="polite"></p>
+ <p class="modal-note"><span class="pont-modal-info-icon" aria-hidden="true">i</span><span id="auctionModalNote">Oferta minimă este 50 lei. Fiecare majorare trebuie să fie de cel puțin 10 lei. Plata este verificată separat.</span></p>
+</div></dialog>
+<dialog id="auctionBidConfirmDialog" class="auction-modal pont-premium-confirm" aria-labelledby="auctionBidConfirmTitle" aria-describedby="auctionBidConfirmDescription">
+ <div class="pont-confirm-inner">
+  <button type="button" id="auctionBidConfirmClose" class="auction-modal-close" aria-label="Anulează confirmarea">×</button>
+  <div class="pont-confirm-emblem" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg></div>
+  <h2 id="auctionBidConfirmTitle">Confirmi oferta?</h2>
+  <p id="auctionBidConfirmDescription">Oferta este fermă. Plata se confirmă separat.</p>
+  <div class="pont-confirm-actions">
+   <button type="button" id="auctionBidConfirmCancel">Anulează</button>
+   <button type="button" id="auctionBidConfirmOK" class="primary-bid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Confirmă</button>
+  </div>
+ </div>
+</dialog>
 <dialog id="bidSuccess" class="auction-modal auction-success" aria-labelledby="bidSuccessTitle" aria-describedby="bidSuccessMessage">
   <div class="auction-modal-inner">
     <div class="modal-kicker">Promovare PONT</div>
@@ -184,6 +360,7 @@ let biddingOpen=false, biddingPaused=false, finalRanking=null;
 const auctionIsOpen=()=>biddingOpen && !biddingPaused;
 function showCampaignMonth(){
  $('date').textContent=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'T12:00:00Z'));
+ $('date').dataset.campaignMonth=month;
  if(role==='super_admin')$('back').href='../super-admin/?month='+month.slice(0,7)+'#auctions';
 }
 showCampaignMonth();
@@ -230,7 +407,7 @@ function updateModal(){
  $('bidAmount').placeholder='Minimum '+money(minimum);
  $('bidAmount').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
  $('bidSubmit').disabled=!open||isAdmin||own?.payment_status==='paid'||busy;
- $('bidSubmit').textContent=busy?'Se salvează…':isAdmin?'Mod vizualizare':own?.payment_status==='paid'?'Oferta ta este achitată':open?'Confirmă oferta':'Licitația este închisă';
+ $('bidSubmitText').textContent=busy?'Se salvează…':isAdmin?'Mod vizualizare':own?.payment_status==='paid'?'Oferta ta este achitată':open?'Confirmă oferta':'Licitația este închisă';
  $('auctionModalNote').textContent=isAdmin?'Contul Super Admin poate consulta licitațiile, fără să liciteze.':!open?'Vei putea licita când Super Admin deschide licitația.':own?.payment_status==='paid'?'Oferta este deja confirmată ca plătită.':'Oferta minimă din acest formular este '+money(minimum)+'. Dacă altcineva licitează mai mult, poziția ta se modifică. Plata se confirmă separat.';
 }
 $('list').addEventListener('click',e=>{const button=e.target.closest('[data-slot]');if(!button)return;selectedSlot=Number(button.dataset.slot);$('bidMessage').textContent='';$('bidAmount').value='';updateModal();$('auctionDialog').showModal()});
@@ -297,12 +474,42 @@ async function start(){
   },15000);
  }catch(e){$('list').textContent='Nu se pot încărca licitațiile: '+e.message}
 }
+function confirmPontBid(amount,campaignMonth){
+ const dialog=$('auctionBidConfirmDialog');
+ if(dialog.open)return Promise.resolve(false);
+ const period=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(campaignMonth+'T12:00:00Z'));
+ const heading=$('auctionBidConfirmTitle');
+ heading.replaceChildren(document.createTextNode('Confirmi oferta de '));
+ const sum=document.createElement('strong');sum.textContent=money(amount);
+ heading.append(sum,document.createTextNode(' pentru '+period+'?'));
+ $('auctionBidConfirmDescription').textContent='Oferta este fermă chiar dacă ulterior poziția ta se modifică. Plata se confirmă separat.';
+ return new Promise(resolve=>{
+  const cancel=$('auctionBidConfirmCancel'),close=$('auctionBidConfirmClose'),ok=$('auctionBidConfirmOK');
+  let finished=false;
+  const finish=accepted=>{
+   if(finished)return;finished=true;
+   cancel.removeEventListener('click',onCancel);close.removeEventListener('click',onCancel);
+   ok.removeEventListener('click',onOK);dialog.removeEventListener('cancel',onCancel);
+   dialog.removeEventListener('close',onClose);
+   if(dialog.open)dialog.close();resolve(accepted);
+  };
+  const onCancel=e=>{e?.preventDefault?.();finish(false)};
+  const onOK=()=>finish(true);
+  const onClose=()=>finish(false);
+  cancel.addEventListener('click',onCancel);close.addEventListener('click',onCancel);
+  ok.addEventListener('click',onOK);
+  dialog.addEventListener('cancel',onCancel);
+  dialog.addEventListener('close',onClose);
+  dialog.showModal();
+ });
+}
 $('bidForm').onsubmit=async e=>{
  e.preventDefault();
  if(busy||role!=='restaurant'||!auctionIsOpen())return;
  const value=Number($('bidAmount').value),minimum=Number($('bidAmount').min);
  if(!Number.isInteger(value)||value<minimum){$('bidMessage').textContent='Introdu o ofertă de minimum '+money(minimum)+'.';return}
- if(!confirm('Confirmi oferta fermă de '+money(value)+' pentru '+month.slice(0,7)+'? Suma este datorată chiar dacă ulterior cobori în clasament. Plata va fi solicitată separat.'))return;
+ if(!await confirmPontBid(value,month))return;
+ if(busy||role!=='restaurant'||!auctionIsOpen()||month!==$('date').dataset.campaignMonth)return;
  busy=true;updateModal();
  try{
   const {error}=await db.rpc('place_my_auction_bid',{p_month:month,p_amount:value});
