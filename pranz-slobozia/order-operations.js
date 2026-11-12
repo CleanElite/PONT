@@ -222,13 +222,109 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    .pont-operations #pontWeekPanel .pont-week-day-date strong{font-size:13px!important}
    .pont-operations #pontWeekPanel .pont-week-day-action{font-size:9px!important;padding:7px 6px!important}
  }
+
+ /* Refined compact planner — keeps the approved lighting and all day actions. */
+ .pont-operations #pontWeekPanel{
+   padding:clamp(11px,2.25vw,20px)!important;
+   border-radius:clamp(15px,3.5vw,24px)!important;
+ }
+ .pont-operations #pontWeekPanel>summary{
+   min-height:43px!important;
+   padding:3px 0 9px!important;
+   gap:clamp(7px,1.55vw,12px)!important;
+   font-size:clamp(13px,3vw,20px)!important;
+   line-height:1.25!important;
+ }
+ .pont-operations #pontWeekPanel:not([open])>summary{
+   border-bottom:0!important;padding:2px 0!important;
+ }
+ .pont-operations #pontWeekPanel[open]>summary{margin-bottom:10px!important}
+ .pont-operations #pontWeekPanel>summary::after{
+   font-size:clamp(20px,3vw,25px)!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-header-icon{
+   flex-basis:clamp(27px,5.1vw,38px)!important;
+   height:clamp(27px,5.1vw,38px)!important;
+   font-size:clamp(15px,2.5vw,20px)!important;
+ }
+ .pont-operations #pontWeekPanel #pontOpWeekRestaurantWrap{
+   margin:2px 0 11px!important;
+ }
+ .pont-operations #pontWeekPanel #pontOpWeekRestaurant{
+   min-height:41px!important;font-size:clamp(13px,3vw,17px)!important;
+   padding:6px 10px!important;border-radius:12px!important;
+ }
+ .pont-operations #pontWeekPanel .pont-op-week-nav{
+   margin:12px 0 14px!important;gap:6px!important;
+ }
+ .pont-operations #pontWeekPanel .pont-op-week-nav .pont-op-button{
+   min-height:39px!important;padding:7px clamp(5px,1.1vw,10px)!important;
+   font-size:clamp(10px,1.8vw,13px)!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-range{
+   min-height:39px!important;
+   padding:5px clamp(6px,1.3vw,11px)!important;
+ }
+ .pont-operations #pontWeekPanel .pont-op-days{gap:6px!important}
+ .pont-operations #pontWeekPanel .pont-op-day{
+   min-height:52px!important;
+   padding:6px clamp(8px,1.5vw,13px)!important;
+   gap:clamp(7px,1.45vw,12px)!important;
+   border-radius:13px!important;
+   grid-template-columns:clamp(49px,10vw,75px) minmax(0,1fr) auto!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day-date strong{
+   font-size:clamp(13px,2.9vw,18px)!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day-date small{
+   font-size:clamp(10px,2vw,12px)!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day-state{
+   font-size:clamp(10.5px,2.35vw,14px)!important;gap:6px!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-state-icon{
+   flex-basis:19px!important;height:19px!important;font-size:19px!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day-action{
+   min-height:34px!important;
+   padding:5px clamp(7px,1.45vw,12px)!important;
+   font-size:clamp(10px,2.1vw,13px)!important;
+   border-radius:11px!important;
+   box-shadow:inset 0 1px 6px #adfff033,0 0 7px #1dfce933!important;
+ }
+ .pont-operations #pontWeekPanel .pont-week-day-action span{
+   font-size:15px!important;
+ }
+ @media(max-width:580px){
+   .pont-operations #pontWeekPanel .pont-op-day{
+     min-height:49px!important;grid-template-columns:46px minmax(0,1fr) auto!important;
+     gap:5px!important;padding:5px 7px!important;
+   }
+   .pont-operations #pontWeekPanel .pont-week-day-action{
+     font-size:10px!important;padding:5px 7px!important;
+   }
+   .pont-operations #pontWeekPanel .pont-week-state-icon{
+     flex-basis:15px!important;height:16px!important;font-size:16px!important;
+   }
+   .pont-operations #pontWeekPanel .pont-week-day-state{
+     font-size:10.5px!important;gap:3px!important;
+   }
+ }
+ @media(max-width:360px){
+   .pont-operations #pontWeekPanel .pont-op-day{
+     grid-template-columns:40px minmax(0,1fr) auto!important;
+   }
+   .pont-operations #pontWeekPanel .pont-week-day-action{
+     font-size:9px!important;padding:5px!important;
+   }
+ }
  </style>
  <details id="pontHoursPanel"><summary>${superAdminSettings ? 'Program comenzi' : 'Programul comenzilor și comanda minimă'}</summary>
  <label id="pontOpRestaurantWrap">Restaurant<select id="pontOpRestaurant"></select></label>
  
  <div class="pont-op-grid"><label><span ${superAdminSettings ? 'class="pont-op-visually-hidden"' : ''}>${superAdminSettings ? 'Ora de început' : 'Comenzi de la ora'}</span><input id="pontOpStart" type="time" aria-label="Ora de început"></label><label><span ${superAdminSettings ? 'class="pont-op-visually-hidden"' : ''}>${superAdminSettings ? 'Ora de încheiere' : 'Comenzi până la ora'}</span><input id="pontOpEnd" type="time" aria-label="Ora de încheiere"></label><label>${superAdminSettings ? 'Comandă minimă · meniuri' : 'Comandă minimă'}<span class="pont-op-min-row"><input id="pontOpMin" type="number" min="1" max="20" step="1" value="1" required><span>meniu</span></span></label></div>
  ${superAdminSettings ? '' : '<button type="button" id="pontOpSave" class="' + (settingsHost ? 'primary' : 'pont-op-button') + '">' + (settingsHost ? 'Salvează setările comenzilor' : 'Salvează programul') + '</button>'}<p id="pontOpStatus" role="status"></p></details>
- <details id="pontWeekPanel"><summary><span class="pont-week-header-icon" aria-hidden="true">▣</span><span class="pont-week-header-text">Planifică meniul pe toată săptămâna<small>Organizează rapid meniul zilnic. Se publică automat la data aleasă.</small></span></summary>
+ <details id="pontWeekPanel"><summary><span class="pont-week-header-icon" aria-hidden="true">▣</span><span class="pont-week-header-text">Planifică meniul pe toată săptămâna</span></summary>
  <label id="pontOpWeekRestaurantWrap" hidden><span class="pont-week-restaurant-label">Restaurant</span><select id="pontOpWeekRestaurant"></select></label>
  <div class="pont-op-week-nav">
  <button type="button" class="pont-op-button" id="pontOpWeekPrevious"><span class="pont-op-arrow" aria-hidden="true">‹</span><span>Săptămâna anterioară</span></button>
@@ -236,7 +332,6 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  <button type="button" class="pont-op-button" id="pontOpWeekNext"><span>Săptămâna următoare</span><span class="pont-op-arrow" aria-hidden="true">›</span></button>
  </div>
  <div id="pontOpDays" class="pont-op-days"></div>
- <button type="button" class="pont-week-create-remaining" id="pontWeekPlanRemaining"><span aria-hidden="true">▣</span> Planifică zilele fără meniu</button>
  <p id="pontOpWeekStatus" role="status"></p></details>`;
  parent.append(section);
  if(settingsHost){
@@ -364,10 +459,6 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
      const icon=hasMenu?(past?'✓':date===today?'◉':'✓'):'▯';
      return '<div class="pont-op-day pont-week-day--'+statusClass+'"><div class="pont-week-day-date"><strong>'+abbr[i]+'</strong><small>'+d+' '+monthLabel+'</small></div><div class="pont-week-day-state"><span class="pont-week-state-icon" aria-hidden="true">'+icon+'</span><span>'+label+'</span></div>'+action+'</div>';
    }).join('');
-   const plan=$('pontWeekPlanRemaining');
-   const available=[...$('pontOpDays').querySelectorAll('[data-week-date]')].filter(button=>button.textContent.includes('Creează'));
-   plan.disabled=!restaurant||available.length===0;
-   plan.title=available.length?'Deschide prima zi fără meniu, apoi planifică zilele pe rând.':'Nu există zile viitoare fără meniu în această săptămână.';
  }
  function selectWeek(start){
    weekStart=start;
@@ -376,10 +467,6 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  }
  $('pontOpWeekPrevious').onclick=()=>selectWeek(dateAt(weekStart,-7));
  $('pontOpWeekNext').onclick=()=>selectWeek(dateAt(weekStart,7));
- $('pontWeekPlanRemaining').addEventListener('click',()=>{
-   const button=[...$('pontOpDays').querySelectorAll('[data-week-date]')].find(el=>el.textContent.includes('Creează'));
-   if(button)button.click();
- });
  function updateDay(){
    if(formatDate(new Date())!==renderedDay)renderWeek();
  }
