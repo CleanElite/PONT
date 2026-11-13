@@ -48,6 +48,7 @@ dialog.pont-checkout::backdrop{background:#031417!important;backdrop-filter:none
  position:absolute;top:0;left:0;width:100%;visibility:hidden;pointer-events:none;
 }
 .pont-checkout .pont-checkout-payment-stage:not(.is-loading) .pont-checkout-loader{display:none!important}
+.pont-checkout .pont-checkout-loader[hidden]{display:none!important}
 .pont-checkout .pont-checkout-loader{display:flex;min-height:150px;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:#c3e9e2;font:550 13px/1.4 system-ui;text-align:center}
 .pont-checkout .pont-checkout-spinner{display:block;width:36px;height:36px;border:3px solid #4e8985;border-top-color:#80f5df;border-radius:50%;animation:pont-checkout-spin .8s linear infinite}
 @keyframes pont-checkout-spin{to{transform:rotate(360deg)}}
