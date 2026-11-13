@@ -30,18 +30,50 @@ export function renderDishChecklist(entries, selected, {daily = false, renderDet
   }).join('');
 }
 
-function renderMenuCourses(menu, numbered = false) {
+function renderMenuCourses(menu, numbered = false, editableAvailability = false) {
   const snapshots = Array.isArray(menu.dish_selection) ? menu.dish_selection : [];
   const legacy = {first:menu.first_course, second:menu.second_course, dessert:menu.dessert};
   return groups.map(([key, label]) => {
-    const dishes = snapshots.filter(dish => dish?.category === key && dish.name).map(dish => dish.name);
-    if (!dishes.length && legacy[key]) dishes.push(legacy[key]);
+    const dishes = snapshots.map((dish, index) => ({dish, index}))
+      .filter(({dish}) => dish?.category === key && dish.name);
+    if (!dishes.length && legacy[key]) dishes.push({dish:{name:legacy[key], available:true}, index:-1});
     if (!dishes.length) return '';
     const content = numbered
-      ? '<ol class="pont-today-dish-list">' + dishes.map(dish => '<li>' + esc(dish) + '</li>').join('') + '</ol>'
-      : dishes.map(esc).join(' · ');
+      ? '<ol class="pont-today-dish-list">' + dishes.map(({dish,index}) => {
+          const soldOut = dish.available === false;
+          const toggle = editableAvailability && index >= 0
+            ? '<button type="button" class="pont-today-availability' + (soldOut ? ' is-soldout' : '') +
+              '" data-today-availability="' + esc(menu.id) + '" data-dish-index="' + index +
+              '" aria-pressed="' + String(soldOut) + '" aria-label="' + esc((soldOut ? 'Marchează disponibil: ' : 'Marchează epuizat: ') + dish.name) +
+              '" title="' + (soldOut ? 'Marchează disponibil' : 'Marchează epuizat') + '">' +
+              (soldOut ? '✓ Epuizat' : 'Epuizat') + '</button>' : '';
+          return '<li class="' + (soldOut ? 'pont-today-soldout' : '') + '"><div class="pont-today-dish-line"><span class="pont-today-dish-name">' +
+            esc(dish.name) + '</span>' + toggle + '</div></li>';
+        }).join('') + '</ol>'
+      : dishes.map(({dish}) => esc(dish.name)).join(' · ');
     return '<div><dt>' + label + '</dt><dd>' + content + '</dd></div>';
   }).join('');
+}
+
+export async function toggleTodayDishAvailability(db, menu, index) {
+  if (!menu?.id || !menu.published || menu.service_date !== today()) throw Error('Meniul nu mai este activ astăzi.');
+  if (!Number.isInteger(index) || index < 0) throw Error('Preparatul selectat este invalid.');
+  const {data:latest, error:readError} = await db.from('menus')
+    .select('id,restaurant_id,service_date,published,dish_selection')
+    .eq('id', menu.id).eq('restaurant_id',menu.restaurant_id).single();
+  if (readError) throw readError;
+  if (!latest?.published || latest.service_date !== today()) throw Error('Meniul nu mai este activ astăzi.');
+  const dishes = Array.isArray(latest.dish_selection) ? latest.dish_selection : [];
+  const dish = dishes[index];
+  if (!dish?.name || !['first','second','dessert'].includes(dish.category)) throw Error('Preparatul nu mai există în meniul publicat.');
+  const available = dish.available === false;
+  const updated = dishes.map((entry,i) => i === index ? {...entry,available} : entry);
+  const {data:saved,error:saveError} = await db.from('menus').update({dish_selection:updated})
+    .eq('id',menu.id).eq('restaurant_id',menu.restaurant_id)
+    .eq('published',true).eq('service_date',today()).select('id').maybeSingle();
+  if (saveError) throw saveError;
+  if (!saved) throw Error('Nu am putut salva disponibilitatea. Reîncarcă pagina și încearcă din nou.');
+  return {available,dishName:dish.name};
 }
 
 export function renderPublishedToday(target, menus, restaurants, showRestaurantName, resetExpanded = false) {
@@ -64,7 +96,7 @@ export function renderPublishedToday(target, menus, restaurants, showRestaurantN
   const cards = published.map(({menu, restaurant}) => {
     const heading = showRestaurantName ? '<h4>' + esc(restaurant.name) + '</h4>' : '';
     const action = published.length > 1 ? menuActions(menu) : '';
-    const courses = renderMenuCourses(menu, true);
+    const courses = renderMenuCourses(menu, true, true);
     return '<article class="pont-archive-row pont-today-card">' +
       (heading || action ? '<div class="pont-today-meta">' + heading + action + '</div>' : '') +
       (courses ? '<dl>' + courses + '</dl>' : '<p>Detalii indisponibile.</p>') + '</article>';
