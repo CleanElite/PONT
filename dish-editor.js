@@ -1,5 +1,6 @@
 // PONT: library of reusable restaurant dishes and daily menu selector.
 import {renderDishChecklist} from './menu-templates.js?v=7';
+import {toggleTodayDishAvailability} from './menu-templates-stock-v2.js?v=editor-stock-20261113c';
 export function initPontDishEditor({db, getRestaurants, refreshMenus, isRestaurantAdmin = false}) {
 const $ = id => document.getElementById(id);
 const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -13,7 +14,7 @@ const photoValidationMessage = 'Fotografia trebuie să fie JPG, PNG sau WebP, ma
 const selected = new Map(), savedChoices = new Map();
 let dishes = [], category = 'first';
 let editorVersion = 0, menuDescription = '', pendingMenu = null, savingModel = false;
-let editingDish = null, editingMenu = null, loadedRid = '', loadVersion = 0, saving = false, previewURL = '', dishPhotoRemoved = false;
+let editingDish = null, editingMenu = null, editingMenuRecord = null, loadedRid = '', loadVersion = 0, saving = false, previewURL = '', dishPhotoRemoved = false;
 const icon = name => '<svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#' + name + '"></use></svg>';
 
 catalog.innerHTML = `
@@ -128,6 +129,16 @@ compactDishLayoutStyle.textContent=`
 `;
 document.head.append(compactDishLayoutStyle);
 
+const editorStockStyle = document.createElement('style');
+editorStockStyle.textContent = `
+#pontDailySummaryList .pont-editor-dish-row{display:flex;align-items:center;gap:7px;min-width:0;padding:4px 0}
+#pontDailySummaryList .pont-editor-dish-name{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
+#pontDailySummaryList .pont-editor-dish-row.is-soldout .pont-editor-dish-name{color:#f4a9ad;text-decoration:line-through;text-decoration-color:#fa4251;text-decoration-thickness:2px}
+#pontDailySummaryList .pont-editor-stock{float:none!important;flex:none!important;width:auto!important;min-width:54px!important;min-height:26px!important;height:26px!important;padding:3px 6px!important;border:1px solid #a97f83!important;border-radius:7px!important;color:#e8b6b9!important;background:#3d282c!important;font:700 10px/1.1 system-ui,sans-serif!important;white-space:nowrap}
+#pontDailySummaryList .pont-editor-stock.is-soldout{background:#9e2431!important;border-color:#ed5665!important;color:#fff!important}
+#pontDailySummaryList [data-unselect]{float:none!important;flex:none}
+`;
+document.head.append(editorStockStyle);
 const availabilityStyle = document.createElement('style');
 availabilityStyle.textContent = `
 .pont-availability { display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap; }
@@ -372,15 +383,29 @@ function closePicker(confirmed = false) {
   unlockPickerBackground();
   choices();
 }
+function stockIndexForItem(item) {
+  if (!editingMenuRecord || editingMenuRecord.service_date !== todayRO()) return -1;
+  const entries = Array.isArray(editingMenuRecord.dish_selection) ? editingMenuRecord.dish_selection : [];
+  return entries.findIndex(saved => saved?.category === item.category &&
+    (saved.id && item.id ? saved.id === item.id : saved.name === item.name));
+}
 function choices() {
   $('pontDailyDishes').innerHTML = groups.map(([key,label]) =>
     '<button type="button" class="pont-daily-course-open" data-open-course="' + key + '">' +
     label + '</button>').join('');
   $('pontDailySummaryList').innerHTML = groups.map(([key,label]) => {
     const items = [...selected.entries()].filter(([,item]) => item.category === key);
-    const list = items.length ? '<ol class="pont-daily-selected-list">' + items.map(([id,item]) =>
-      '<li><span>' + esc(item.name) + '</span><button type="button" data-unselect="' + esc(id) +
-      '" aria-label="Elimină ' + esc(item.name) + '" title="Elimină preparatul">×</button></li>').join('') + '</ol>' :
+    const list = items.length ? '<ol class="pont-daily-selected-list">' + items.map(([id,item]) => {
+      const stockIndex = stockIndexForItem(item), soldOut = item.available === false;
+      const stockButton = stockIndex < 0 ? '' : '<button type="button" class="pont-editor-stock' +
+        (soldOut ? ' is-soldout' : '') + '" data-editor-stock="' + stockIndex + '" aria-pressed="' +
+        String(soldOut) + '" aria-label="' + esc((soldOut ? 'Marchează disponibil: ' : 'Marchează epuizat: ') + item.name) +
+        '">' + (soldOut ? '✓ Epuizat' : 'Epuizat') + '</button>';
+      return '<li class="pont-editor-dish-row' + (soldOut && stockIndex >= 0 ? ' is-soldout' : '') +
+        '"><span class="pont-editor-dish-name">' + esc(item.name) + '</span>' + stockButton +
+        '<button type="button" data-unselect="' + esc(id) +
+        '" aria-label="Elimină ' + esc(item.name) + '" title="Elimină preparatul">×</button></li>';
+    }).join('') + '</ol>' :
       '<p class="pont-daily-none">Niciun preparat selectat</p>';
     return '<div class="pont-daily-summary-group"><div class="pont-daily-summary-group-head">' +
       '<strong>' + label + '</strong><button type="button" data-open-course="' + key +
@@ -389,7 +414,32 @@ function choices() {
   if (pickerCategory) renderPicker();
   syncSaveModelButton();
 }
+async function toggleEditorStock(button) {
+  if (!editingMenuRecord) return;
+  const index = Number(button.dataset.editorStock);
+  if (!Number.isInteger(index) || index < 0) return;
+  button.disabled = true;
+  try {
+    const result = await toggleTodayDishAvailability(db, editingMenuRecord, index);
+    const snapshot = editingMenuRecord.dish_selection[index];
+    editingMenuRecord.dish_selection[index] = {...snapshot, available:result.available};
+    for (const map of [selected,savedChoices]) {
+      for (const [key,item] of map) {
+        if (stockIndexForItem(item) === index) map.set(key,{...item,available:result.available});
+      }
+    }
+    choices();
+    $('pontDailyError').textContent = result.dishName + (result.available
+      ? ' este din nou disponibil.' : ' a fost marcat ca epuizat.');
+    await refreshMenus();
+  } catch (error) {
+    $('pontDailyError').textContent = error.message;
+    if (button.isConnected) button.disabled = false;
+  }
+}
 function dailyOverviewClick(event) {
+  const stock = event.target.closest('[data-editor-stock]');
+  if (stock) { void toggleEditorStock(stock); return; }
   const remove = event.target.closest('[data-unselect]');
   if (remove) {
     selected.delete(remove.dataset.unselect);
@@ -497,6 +547,7 @@ function resetDaily() {
   resetModelSaved();
   editorVersion++;
   editingMenu = null;
+  editingMenuRecord = null;
   syncMenuAction();
   menuDescription = '';
   savedChoices.clear();
@@ -549,6 +600,7 @@ async function open(menu, copy = false, {restaurant = menu?.restaurant_id, date 
   if (!copy && date) $('pontDailyDate').value = date;
   if (menu) {
     editingMenu = copy ? null : menu.id;
+    editingMenuRecord = copy ? null : {...menu, dish_selection:Array.isArray(menu.dish_selection) ? menu.dish_selection.map(item=>({...item})) : []};
     syncMenuAction();
     menuDescription = menu.description ?? '';
   }
