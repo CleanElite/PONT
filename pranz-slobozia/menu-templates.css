@@ -652,3 +652,24 @@
   .pont-admin .pont-model-course-footer button{font-size:11px;padding-inline:5px}
   .pont-admin .pont-model-course-list{padding-inline:10px}
 }
+
+
+/* Published today: compact stock toggle, with a clear red strike on sold-out dishes. */
+#pontTodayMenu .pont-today-dish-list{padding-left:20px;margin:3px 0 5px}
+#pontTodayMenu .pont-today-dish-list>li{margin:0;padding:3px 0}
+#pontTodayMenu .pont-today-dish-line{display:flex;align-items:center;justify-content:space-between;gap:7px;min-width:0}
+#pontTodayMenu .pont-today-dish-name{position:relative;flex:1 1 auto;min-width:0;overflow-wrap:anywhere;font-size:12px;line-height:1.35}
+#pontTodayMenu .pont-today-soldout .pont-today-dish-name{color:#f1aaaa;text-decoration:line-through;text-decoration-color:#ff3b4b;text-decoration-thickness:2px}
+#pontTodayMenu .pont-today-availability{
+ display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
+ min-height:25px!important;height:25px;padding:3px 7px!important;margin:0;
+ border:1px solid rgba(210,163,163,.52)!important;border-radius:7px!important;
+ background:rgba(83,47,50,.12)!important;color:#d4b5b5!important;
+ font:700 10px/1.1 system-ui,sans-serif!important;white-space:nowrap;cursor:pointer
+}
+#pontTodayMenu .pont-today-availability.is-soldout{
+ background:#9e2431!important;color:#fff!important;border-color:#e95865!important;
+ box-shadow:0 0 0 1px rgba(255,83,96,.18)!important
+}
+#pontTodayMenu .pont-today-availability:disabled{opacity:.5;cursor:wait}
+#pontTodayMenu .pont-today-availability:focus-visible{outline:2px solid #fda6ad;outline-offset:2px}
