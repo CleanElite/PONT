@@ -1,5 +1,6 @@
 // PONT: library of reusable restaurant dishes and daily menu selector.
 import {renderDishChecklist} from './menu-templates.js?v=7';
+import {toggleTodayDishAvailability} from './menu-templates-stock-v2.js?v=editor-stock-20261113c';
 export function initPontDishEditor({db, getRestaurants, refreshMenus, isRestaurantAdmin = false}) {
 const $ = id => document.getElementById(id);
 const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -417,27 +418,27 @@ function choices() {
   syncSaveModelButton();
 }
 async function toggleEditorStock(button) {
-  // Keep stock edits as an isolated draft. Only the final Save action writes to menus.
   if (!editingMenuRecord) return;
   const index = Number(button.dataset.editorStock);
-  const entries = editingMenuRecord.dish_selection;
-  if (!Number.isInteger(index) || index < 0 || !Array.isArray(entries) || !entries[index]) return;
-  const snapshot = entries[index];
-  const available = snapshot.available === false;
-  const matchingKeys = new Set();
-  for (const [key,item] of selected) {
-    if (stockIndexForItem(item) === index) matchingKeys.add(key);
-  }
-  entries[index] = {...snapshot, available};
-  for (const map of [selected,savedChoices]) {
-    for (const [key,item] of map) {
-      if (matchingKeys.has(key) || stockIndexForItem(item) === index) {
-        map.set(key,{...item,available});
+  if (!Number.isInteger(index) || index < 0) return;
+  button.disabled = true;
+  try {
+    const result = await toggleTodayDishAvailability(db, editingMenuRecord, index);
+    const snapshot = editingMenuRecord.dish_selection[index];
+    editingMenuRecord.dish_selection[index] = {...snapshot, available:result.available};
+    for (const map of [selected,savedChoices]) {
+      for (const [key,item] of map) {
+        if (stockIndexForItem(item) === index) map.set(key,{...item,available:result.available});
       }
     }
+    choices();
+    $('pontDailyError').textContent = result.dishName + (result.available
+      ? ' este din nou disponibil.' : ' a fost marcat ca epuizat.');
+    await refreshMenus();
+  } catch (error) {
+    $('pontDailyError').textContent = error.message;
+    if (button.isConnected) button.disabled = false;
   }
-  choices();
-  $('pontDailyError').textContent = 'Apasă Salvează pentru a salva modificările.';
 }
 function dailyOverviewClick(event) {
   const stock = event.target.closest('[data-editor-stock]');
