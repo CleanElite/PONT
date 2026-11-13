@@ -528,7 +528,19 @@ const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMe
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
 const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=20261113b');
-const renderTodayMenu=(resetExpanded=false)=>renderPublishedToday($('pontTodayMenu'), menus, restaurants, restaurants.length > 1, resetExpanded);
+const dailyExhaustedButton=$('toggleDailyExhausted');
+ const dailyExhaustedHolder=dailyExhaustedButton?.parentElement;
+ const renderTodayMenu=(resetExpanded=false)=>{
+  renderPublishedToday($('pontTodayMenu'), menus, restaurants, restaurants.length > 1, resetExpanded);
+  const actions=$('pontTodayMenu').querySelector('.pont-today-header .pont-today-actions');
+  if(actions && dailyExhaustedButton){
+   dailyExhaustedButton.classList.add('pont-today-exhausted-inline');
+   actions.insertBefore(dailyExhaustedButton,actions.querySelector('.pont-today-delete'));
+  }else if(dailyExhaustedButton && dailyExhaustedHolder){
+   dailyExhaustedHolder.appendChild(dailyExhaustedButton);
+  }
+ };
+
 document.addEventListener('visibilitychange', () => { if (!document.hidden) renderTodayMenu(); });
 $('pontTodayMenu').addEventListener('click', async event => {
  const button = event.target.closest('[data-today-availability], [data-today-edit], [data-today-delete]');
@@ -570,7 +582,7 @@ $('pontTodayMenu').addEventListener('click', async event => {
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 showHashView();
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=no-order-hours-daily-stock-20261113');
+const {initPontOperations}=await import('../order-operations.js?v=fix-duplicated-hours-panel-20261113b');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();
@@ -1007,4 +1019,55 @@ body.pont-admin.pont-admin--restaurant #app #toggleMenuForm:focus-visible{outlin
  body.pont-admin.pont-admin--restaurant #app #pontWeekPanel>summary,
  body.pont-admin.pont-admin--restaurant #app #toggleMenuForm{transition:none!important}
 }
-</style><script defer src="../../pont-navigation-history.js?v=stack-v2-20261113"></script></body></html>
+</style><script defer src="../../pont-navigation-history.js?v=stack-v2-20261113"></script><style id="pont-today-inline-exhausted-x6">
+/* Keep the restaurant's daily-exhausted control beside Edit, without explanatory text. */
+body.pont-admin.pont-admin--restaurant #app .pont-day-exhausted-panel{display:none!important}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header{
+ display:flex!important;align-items:center!important;flex-wrap:nowrap!important;
+ gap:clamp(2px,.7vw,7px)!important;min-width:0!important;
+ padding:clamp(5px,1.2vw,10px)!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header h3{flex:0 1 auto!important;min-width:0!important}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header h3 .pont-today-toggle{white-space:nowrap!important}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-toggle{
+ padding:5px 4px!important;min-height:34px!important;
+ font-size:clamp(9px,2.45vw,13px)!important;letter-spacing:-.035em!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header time{
+ flex:0 1 auto!important;min-width:0!important;font-size:clamp(8px,2vw,12px)!important;
+ letter-spacing:-.035em!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-actions{
+ flex:0 0 auto!important;min-width:0!important;gap:3px!important;margin-left:auto!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-edit,
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-delete{
+ height:34px!important;min-height:34px!important;padding:3px 5px!important;
+ border-radius:8px!important;font-size:clamp(9px,2.2vw,12px)!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-delete{
+ width:30px!important;min-width:30px!important;padding:5px!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-exhausted-inline{
+ display:inline-flex!important;align-items:center!important;justify-content:center!important;
+ width:clamp(86px,24vw,128px)!important;min-width:0!important;
+ height:34px!important;min-height:34px!important;
+ padding:3px 5px!important;margin:0!important;border-radius:8px!important;
+ font:700 clamp(8px,2vw,11px)/1.12 system-ui,sans-serif!important;
+ text-align:center!important;white-space:normal!important;letter-spacing:-.02em!important;
+}
+@media(max-width:410px){
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header{gap:2px!important;padding:5px!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-actions{gap:2px!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-edit{padding:3px!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-delete{width:26px!important;min-width:26px!important}
+}
+
+@media(max-width:600px){
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header time{display:none!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-actions{margin-left:auto!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-exhausted-inline{
+  width:clamp(88px,25vw,116px)!important;
+ }
+}
+</style></body></html>
