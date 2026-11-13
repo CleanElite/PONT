@@ -2676,7 +2676,16 @@ function updatePontClock(){const now=new Date(),minute=timeFmt.format(now),day=d
 document.querySelectorAll('[data-pont-clock-date]').forEach(el=>{el.textContent=day});
 document.querySelectorAll('[data-pont-clock-time]').forEach(el=>{el.textContent=minute;el.setAttribute('datetime',new Intl.DateTimeFormat('sv-SE',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).format(now)+'T'+minute)});
 }
-updatePontClock();setInterval(updatePontClock,30000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){last='';updatePontClock()}});window.addEventListener('pageshow',()=>{last='';updatePontClock()});
+let pontClockTimer;
+function schedulePontClock(){
+ clearTimeout(pontClockTimer);
+ const delay=60000-(Date.now()%60000)+40;
+ pontClockTimer=setTimeout(()=>{if(!document.hidden)updatePontClock();schedulePontClock()},delay);
+}
+function syncPontClock(){last='';updatePontClock();schedulePontClock()}
+syncPontClock();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncPontClock()});
+window.addEventListener('pageshow',syncPontClock);
 })();
 </script><style id="pont-restaurant-auction-payment-status">
 #restaurantRows .pont-restaurant-payment{display:inline-flex;align-items:center;justify-content:center;max-width:100%;padding:5px 10px;border-radius:9px;border:1px solid #8c9b99;background:#173c42;color:#e7f3f2;font:750 11px/1.2 system-ui,sans-serif;letter-spacing:.005em;text-align:center;white-space:normal}
