@@ -7,7 +7,19 @@ const groups = [['first','Felul 1','bowl-food'], ['second','Felul 2','fork-knife
 const todayRO = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Bucharest', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date());
 const priceRO = new Intl.NumberFormat('ro-RO', {minimumFractionDigits:2, maximumFractionDigits:2});
 const host = $('toggleMenuForm'), wrap = $('menuFormWrap'), catalog = $('dishLibrary');
+// Return to the top of the current "Meniul zilei" view after closing an editor.
+const scrollMenuPageTop = () => {
+  const move = () => {
+    window.scrollTo({top:0,left:0,behavior:'instant'});
+    if (document.scrollingElement) document.scrollingElement.scrollTop=0;
+  };
+  move();
+  requestAnimationFrame(()=>requestAnimationFrame(move));
+};
 if (!host || !wrap || !catalog) return;
+const menuSuccessDialog=$('menuSuccessDialog');
+if (menuSuccessDialog) menuSuccessDialog.addEventListener('close',scrollMenuPageTop);
+
 
 const photoValidationMessage = 'Fotografia trebuie să fie JPG, PNG sau WebP, maximum 2 MB.';
 const selected = new Map(), savedChoices = new Map();
@@ -652,14 +664,7 @@ $('pontDailyCancel').onclick = () => {
   resetDaily();
   choices();
   setEditorOpen(false);
-  // After cancelling an edit, return to the published-today menu, not the bottom of the page.
-  const todayPanel = document.getElementById('pontTodayMenu');
-  if (todayPanel && !todayPanel.hidden) {
-    todayPanel.scrollIntoView({block:'start',behavior:'smooth'});
-    todayPanel.querySelector('.pont-today-toggle')?.focus({preventScroll:true});
-  } else {
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
+  scrollMenuPageTop();
 };
 $('pontDailyPickerList').onchange = event => {
   const checkbox = event.target.closest('[data-select]');
@@ -806,6 +811,7 @@ $('pontDishPublish').onclick = async () => {
     } catch {
       $('menuSuccessMessage').textContent += ' Reîncarcă pagina pentru a actualiza lista.';
     }
+    scrollMenuPageTop();
     $('menuSuccessDialog').showModal();
   } catch (error) {
     $('pontDishConfirmError').textContent = error.message;
