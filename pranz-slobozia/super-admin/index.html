@@ -222,6 +222,9 @@
 .pont-login-security-alerts .pont-login-security-detail{min-width:0;flex:1;overflow-wrap:anywhere}
 .pont-login-security-alerts .pont-login-security-age{flex:0 0 auto;text-align:right;color:#ffddb7;font-weight:650;white-space:nowrap;font-size:12px;font-variant-numeric:tabular-nums}
 @media(max-width:430px){.pont-login-security-alerts .pont-login-security-row{gap:7px}.pont-login-security-alerts .pont-login-security-age{font-size:11px}}
+
+#restaurantRows .restaurant-admin-actions .restaurant-day-toggle{grid-column:1/-1;min-height:36px;padding:7px 12px;border:1px solid #c9a76a;background:rgba(20,58,59,.85);color:#f6ddb2;font-size:12px;font-weight:750}
+#restaurantRows .restaurant-admin-actions .restaurant-day-toggle[aria-pressed="true"]{background:#e4c17d;color:#103132;border-color:#f8e0ae}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-auction-period-save-c15">
@@ -1300,6 +1303,7 @@ function renderMenuRows() {
 }
 
 let restaurantOnlineIds = new Set();
+let dailyMenuStatuses=[],dailyMenuExhaustedIds=new Set();
 function renderRestaurants() {
  const result = restaurants;
  $('restaurantRows').innerHTML = result.length ? result.map((restaurant, index) => {
@@ -1320,7 +1324,9 @@ function renderRestaurants() {
    '<button type="button" data-edit-restaurant="' + id + '">Editează</button>' +
    (access ? '' : '<button type="button" class="restaurant-create-access" data-create-access="' + id + '">Creează acces</button>') +
    '<button type="button" data-toggle="' + id + '">' + (enabled ? 'Suspendă' : 'Activează') + '</button>' +
-   '<button type="button" class="admin-danger" data-delete-restaurant="' + id + '">Șterge</button></div></article>';
+   '<button type="button" class="admin-danger" data-delete-restaurant="' + id + '">Șterge</button>' +
+   '<button type="button" class="restaurant-day-toggle" data-exhausted-restaurant="' + id + '" aria-pressed="' + dailyMenuExhaustedIds.has(restaurant.id) + '">' +
+   (dailyMenuExhaustedIds.has(restaurant.id) ? 'Reactivează meniul zilei' : 'Meniul zilei epuizat') + '</button></div></article>';
  }).join('') : emptyMessage('Nu există restaurante înregistrate.');
 }
 
@@ -1336,11 +1342,13 @@ function renderMembers() {
 $('memberSearch').addEventListener('input', renderMembers);
 
 async function load() {
- [restaurants, menus, members] = await Promise.all([
+ [restaurants, menus, members, dailyMenuStatuses] = await Promise.all([
   req(db.from('restaurants').select('*').order('name')),
   req(db.from('menus').select('*').eq('published',true).order('service_date', {ascending:false}).limit(200)),
-  req(db.from('restaurant_members').select('*'))
+  req(db.from('restaurant_members').select('*')),
+  req(db.from('pont_daily_menu_status').select('restaurant_id,exhausted').eq('service_date',todayRO()))
  ]);
+ dailyMenuExhaustedIds=new Set(dailyMenuStatuses.filter(r=>r.exhausted===true).map(r=>r.restaurant_id));
  const today = todayRO();
  const [activeCount, scheduledCount] = await Promise.all([
   db.from('menus').select('id', {count:'exact', head:true}).eq('published',true).eq('service_date',today),
@@ -2323,9 +2331,20 @@ $('restaurantForm').onsubmit = async event => {
 $('restaurantRows').onclick = async event => {
  const button = event.target.closest('button');
  if (!button) return;
- const {toggle,editRestaurant,deleteRestaurant,createAccess} = button.dataset;
- const restaurant = restaurants.find(item => item.id === (toggle || editRestaurant || deleteRestaurant || createAccess));
+ const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant} = button.dataset;
+ const restaurant = restaurants.find(item => item.id === (toggle || editRestaurant || deleteRestaurant || createAccess || exhaustedRestaurant));
  if (!restaurant) return;
+ if (exhaustedRestaurant) {
+  button.disabled=true;
+  const exhausted=!dailyMenuExhaustedIds.has(restaurant.id);
+  try{
+   await req(db.rpc('pont_set_daily_menu_exhausted',{p_restaurant_id:restaurant.id,p_exhausted:exhausted}));
+   if(exhausted)dailyMenuExhaustedIds.add(restaurant.id);else dailyMenuExhaustedIds.delete(restaurant.id);
+   renderRestaurants();
+   status(exhausted?'Meniul zilei a fost marcat ca epuizat pentru '+restaurant.name+'.':'Meniul zilei a fost reactivat pentru '+restaurant.name+'.');
+  }catch(error){button.disabled=false;status(error.message,true)}
+  return;
+ }
  if (editRestaurant) {
   openRestaurantEditor(restaurant);
   return;
