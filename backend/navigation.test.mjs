@@ -111,8 +111,8 @@ test('auction transparency opens in same tab from the correct administrator and 
    assert.doesNotMatch(html,/termeni\\.html\\?from=(?:admin-v2|super-admin)#transparenta-licitatii"\\s+target="_blank"/);
    const terms=readFileSync(new URL('../'+prefix+'termeni.html',import.meta.url),'utf8');
    assert.match(terms,/id="pontLegalBack"/);
-   assert.match(terms,/'admin-v2':'\\.\\/admin-v2\\/'/);
-   assert.match(terms,/'super-admin':'\\.\\/super-admin\\/'/);
+   assert.ok(terms.includes("'admin-v2':'./admin-v2/'"));
+   assert.ok(terms.includes("'super-admin':'./super-admin/'"));
   }
  }
 });
