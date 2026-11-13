@@ -28,6 +28,11 @@ draw.rounded_rectangle(
     radius=round(35 * unit), fill=255
 )
 mask = mask.filter(ImageFilter.GaussianBlur(max(1, round(31 * unit))))
+# Gaussian blur lowers the alpha even in the center (about 250/255).
+# That leaked 1–3% of the original white letters as a visible shadow on
+# the near-black sky. Restore completely opaque coverage over all logo
+# strokes while retaining a smooth, narrower gradient at the perimeter.
+mask = mask.point([min(255, round(v * 255 / 155)) for v in range(256)])
 
 # The surrounding sky is a smooth, dark blue gradient. Reconstruct every
 # pixel touched by the *blurred* mask from unaffected scanline boundaries.
