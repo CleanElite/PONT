@@ -527,7 +527,7 @@ const {initPontDishEditor}=await import('../dish-editor.js?v=return-menu-top-202
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:true});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
-const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=20261113b');
+const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=daily-status-icons-20261114');
 const dailyExhaustedButton=$('toggleDailyExhausted');
  const dailyExhaustedHolder=dailyExhaustedButton?.parentElement;
  const renderTodayMenu=(resetExpanded=false)=>{
@@ -1117,5 +1117,30 @@ body.pont-admin.pont-admin--restaurant #app .pont-restaurant-card-clock .pont-li
 }
 body.pont-admin.pont-admin--restaurant #app .pont-restaurant-card-clock .pont-live-datetime__time{
  font:800 clamp(11px,6cqw,15px)/1 system-ui,sans-serif!important;color:#f4d18d!important;letter-spacing:0!important;
+}
+</style><style id="pont-daily-status-icons-20261114">
+/* The published status is based on an actual published menu for today, not CSS alone. */
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-toggle[data-published-today="false"]::before{
+ content:"×"!important;background:radial-gradient(circle at 30% 20%,#ff9d94,#bc3038)!important;
+ color:#fff!important;box-shadow:0 1px 7px #d82e4055!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-toggle[data-published-today="true"]::before{
+ content:"✓"!important;background:radial-gradient(circle at 30% 20%,#b8fc83,#338e3f)!important;
+ color:#efffec!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-exhausted-inline[data-exhausted]::before{
+ display:inline-grid!important;place-items:center!important;flex:0 0 auto!important;
+ width:17px!important;height:17px!important;border-radius:50%!important;
+ font:900 12px/1 system-ui,sans-serif!important;color:white!important;
+ margin-right:4px!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-exhausted-inline[data-exhausted="false"]::before{
+ content:"✓"!important;background:#23894c!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-exhausted-inline[data-exhausted="true"]::before{
+ content:"×"!important;background:#ce343d!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-exhausted-inline{
+ gap:2px!important;white-space:normal!important;overflow:hidden!important;
 }
 </style></body></html>
