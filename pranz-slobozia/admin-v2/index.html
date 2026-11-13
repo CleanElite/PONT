@@ -487,11 +487,11 @@ $('menus').onclick = async event => {
   status(error.message,true);
  }
 };
-const {initPontDishEditor}=await import('../dish-editor.js?v=today-availability-20261113');
+const {initPontDishEditor}=await import('../dish-editor.js?v=cancel-scroll-20261113b');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:true});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
-const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates.js?v=soldout-today-20261113');
+const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=20261113b');
 const renderTodayMenu=(resetExpanded=false)=>renderPublishedToday($('pontTodayMenu'), menus, restaurants, restaurants.length > 1, resetExpanded);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) renderTodayMenu(); });
 $('pontTodayMenu').addEventListener('click', async event => {
