@@ -119,11 +119,6 @@ button{font:inherit}
 .pont-intro.is-splitting .pont-intro__panel{
   display:block;animation:var(--curtain-motion) 1.32s linear both;
 }
-.pont-intro.is-matching :is(.pont-intro__art,.pont-intro__panel)::before{
-  content:"";position:absolute;left:var(--well-left);top:var(--well-top);
-  width:var(--well-width);height:var(--well-height);
-  background:#03090f;border-radius:25%;box-shadow:0 0 12px 6px #03090f;
-}
 .pont-intro__led{
   position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;
 }
@@ -137,7 +132,6 @@ button{font:inherit}
 /* During the curtain split, screen-blend the luminous wordmark so its dark
    rectangular PNG background doesn't travel into the header on Android. */
 .entry.intro-reveal .entry-mark{mix-blend-mode:screen!important}
-.pont-intro.is-splitting :is(.pont-intro__art,.pont-intro__panel)::before{display:none!important}
 html.pont-intro-active{overflow:hidden}
 .entry.intro-reveal{overflow-x:clip}
 .entry.intro-reveal .choice-card{
@@ -437,17 +431,12 @@ html.pont-intro-active{overflow:hidden}
     const sourceHeight = 108 * scale;
     if (!sourceWidth) return;
 
-    intro.style.setProperty('--well-left', (left - 9 * scale) + 'px');
-    intro.style.setProperty('--well-top', (top - 9 * scale) + 'px');
-    intro.style.setProperty('--well-width', (sourceWidth + 18 * scale) + 'px');
-    intro.style.setProperty('--well-height', (sourceHeight + 18 * scale) + 'px');
     // During the lift the logo is already moving relative to its live header position.
     if (leaving) return;
     logo.style.removeProperty('transform');
     const target = logo.getBoundingClientRect();
     if (!target.width || target.bottom <= 0) return;
     logo.style.transform = `translate(${left - target.left}px,${top - target.top}px) scale(${sourceWidth / target.width})`;
-    intro.classList.add('is-matching');
     page.classList.add('intro-playing');
   }
 
