@@ -36,8 +36,10 @@ dialog.pont-checkout::backdrop{background:#031417!important;backdrop-filter:none
  position:fixed!important;top:max(16px,env(safe-area-inset-top))!important;right:max(18px,env(safe-area-inset-right))!important;
  z-index:50!important;display:grid!important;place-items:center!important;width:46px!important;height:46px!important;
  border:1px solid #80e4d1a3!important;border-radius:50%!important;background:#0a4447!important;color:#fff!important;
- font:400 27px/1 system-ui!important;cursor:pointer;touch-action:manipulation;
+ padding:0!important;line-height:0!important;cursor:pointer;touch-action:manipulation;appearance:none!important;-webkit-appearance:none!important;
 }
+.pont-checkout .pont-checkout-close svg{display:block!important;width:18px!important;height:18px!important;stroke:currentColor!important;fill:none!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important;flex:none!important;pointer-events:none!important}
+.pont-checkout .pont-checkout-close:focus-visible{outline:2px solid #b2fff1!important;outline-offset:3px!important}
 .pont-checkout .pont-checkout-kicker{color:#e7c98b;letter-spacing:.19em;text-transform:uppercase;font:750 11px/1.5 system-ui;margin:0 auto 8px}
 .pont-checkout h2{color:#f7fffb!important;font:650 clamp(24px,6vw,32px)/1.2 Georgia,serif!important;margin:0 auto 14px!important;max-width:490px}
 .pont-checkout .pont-checkout-summary{color:#e8faf6;font:650 14px/1.5 system-ui;margin:0 auto 22px;max-width:490px}
@@ -73,7 +75,7 @@ export function initPontAuctionCheckout({db,config,onFinished}){
  const css=document.createElement('style');css.textContent=sheet;document.head.append(css);
  const dialog=document.createElement('dialog');dialog.className='pont-checkout';dialog.setAttribute('aria-labelledby','pontCheckoutTitle');
  dialog.innerHTML=`<div class="pont-checkout-content">
-  <button type="button" class="pont-checkout-close" aria-label="Închide plata">×</button>
+  <button type="button" class="pont-checkout-close" aria-label="Închide plata"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
   <p class="pont-checkout-kicker">PLATĂ SECURIZATĂ</p>
   <h2 id="pontCheckoutTitle">Finalizează plata licitației</h2>
   <p class="pont-checkout-summary"></p>
