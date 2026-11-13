@@ -2535,12 +2535,27 @@ const {initPontDishEditor}=await import('../dish-editor.js?v=menu-save-edit-2026
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
-const {initMenuTemplates,renderMenuArchive,renderPublishedToday}=await import('../menu-templates.js?v=calendar-fix-c33');
+const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates.js?v=soldout-today-20261113');
 const renderTodayMenu=(resetExpanded=false)=>renderPublishedToday($('pontTodayMenu'), menus, restaurants, true, resetExpanded);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) renderTodayMenu(); });
 $('pontTodayMenu').addEventListener('click', async event => {
- const button = event.target.closest('[data-today-edit], [data-today-delete]');
+ const button = event.target.closest('[data-today-availability], [data-today-edit], [data-today-delete]');
  if (!button) return;
+ if (button.hasAttribute('data-today-availability')) {
+  const menu = menus.find(item => item.id === button.dataset.todayAvailability && item.published);
+  if (!menu) { status('Meniul nu mai este disponibil. Reîncarcă pagina.', true); return; }
+  button.disabled = true;
+  try {
+   const result = await toggleTodayDishAvailability(db, menu, Number(button.dataset.dishIndex));
+   await load();
+   status(result.dishName + (result.available ? ' este din nou disponibil.' : ' a fost marcat ca epuizat.'));
+  } catch (error) {
+   status(error.message, true);
+  } finally {
+   if (button.isConnected) button.disabled = false;
+  }
+  return;
+ }
  const deleting = button.hasAttribute('data-today-delete');
  const menuId = deleting ? button.dataset.todayDelete : button.dataset.todayEdit;
  const menu = menus.find(item => item.id === menuId && item.published);
