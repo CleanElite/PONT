@@ -45,8 +45,14 @@ dialog.pont-checkout::backdrop{background:#031417!important;backdrop-filter:none
 .pont-checkout .pont-checkout-element{min-height:45px}
 .pont-checkout .pont-checkout-payment-stage{position:relative;max-width:490px;margin:0 auto}
 .pont-checkout .pont-checkout-payment-stage.is-loading .pont-checkout-payment-fields{
- position:absolute;top:0;left:0;width:100%;visibility:hidden;pointer-events:none;
+ position:absolute!important;top:0!important;left:0!important;width:100%!important;
+ visibility:hidden!important;opacity:0!important;pointer-events:none!important;
 }
+.pont-checkout .pont-checkout-payment-stage:not(.is-loading) .pont-checkout-payment-fields{
+ position:relative!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+}
+.pont-checkout .pont-checkout-submit[hidden]{display:none!important}
+.pont-checkout .pont-checkout-loader:not([hidden]){display:flex!important}
 .pont-checkout .pont-checkout-payment-stage:not(.is-loading) .pont-checkout-loader{display:none!important}
 .pont-checkout .pont-checkout-loader[hidden]{display:none!important}
 .pont-checkout .pont-checkout-loader{display:flex;min-height:150px;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:#c3e9e2;font:550 13px/1.4 system-ui;text-align:center}
@@ -79,7 +85,7 @@ export function initPontAuctionCheckout({db,config,onFinished}){
     </div>
     <div class="pont-checkout-payment-fields">
      <div class="pont-checkout-element"></div>
-     <button type="submit" class="pont-checkout-submit" disabled>Autorizează plata</button>
+     <button type="submit" class="pont-checkout-submit" hidden disabled>Autorizează plata</button>
     </div>
    </div>
    <p class="pont-checkout-message" role="status" aria-live="polite"></p>
@@ -90,24 +96,35 @@ export function initPontAuctionCheckout({db,config,onFinished}){
  const $=selector=>dialog.querySelector(selector);
  const scrollArea=$('.pont-checkout-content'),elementHost=$('.pont-checkout-element');
  const submit=$('.pont-checkout-submit'),message=$('.pont-checkout-message');
- const paymentStage=$('.pont-checkout-payment-stage'),loader=$('.pont-checkout-loader');
+ const paymentStage=$('.pont-checkout-payment-stage'),loader=$('.pont-checkout-loader'),paymentFields=$('.pont-checkout-payment-fields');
  let busy=false,submitting=false,requestId=0,stripe=null,elements=null,paymentElement=null,locked=false,scrollY=0,savedStyles=null,touchY=0;
  function resetPaymentStage(){
+  // Explicit DOM and inline guards prevent slow WebKit/CSS from revealing the button early.
   paymentStage.classList.add('is-loading');
+  paymentFields.style.setProperty('visibility','hidden','important');
+  paymentFields.style.setProperty('opacity','0','important');
+  paymentFields.style.setProperty('pointer-events','none','important');
   loader.hidden=false;
+  submit.hidden=true;
   submit.disabled=true;
  }
  function paymentReady(id){
   if(id!==requestId||!dialog.open)return;
+  // Stripe's Payment Element ready event is the only path that reveals payment controls.
+  paymentFields.style.removeProperty('visibility');
+  paymentFields.style.removeProperty('opacity');
+  paymentFields.style.removeProperty('pointer-events');
   paymentStage.classList.remove('is-loading');
-  loader.hidden=true;
+  submit.hidden=false;
   submit.disabled=false;
+  loader.hidden=true;
   busy=false;
   message.textContent='';
  }
  function paymentLoadError(id,error){
   if(id!==requestId||!dialog.open)return;
   loader.hidden=true;
+  submit.hidden=true;
   submit.disabled=true;
   busy=false;
   message.textContent=error?.message||'Formularul Stripe nu a putut fi încărcat. Închide și reîncearcă.';
