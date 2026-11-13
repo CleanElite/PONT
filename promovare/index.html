@@ -964,7 +964,7 @@ dialog.pont-premium-auction.pont-keyboard-active[open]{overflow-y:auto!important
   </div>
 </dialog>
 <script src="../super-admin/config.js"></script><script type="module">
-import {initPontAuctionRules,AUCTION_RULES_VERSION} from '../pont-auction-rules.js?v=manual-removal-48h-20261113';
+import {initPontAuctionRules,AUCTION_RULES_VERSION} from '../pont-auction-rules.js?v=centered-close-20261113';
 const auctionRulesUI=initPontAuctionRules();
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
@@ -1352,7 +1352,7 @@ async function start(){
    $('bidForm').hidden=true;
   }
   if(role==='restaurant'){const access=await db.rpc('my_restaurant_access');if(access.error)throw access.error;me=access.data?.[0]?.restaurant_id;if(!me)throw Error('Restaurant neatribuit')}
-  const {initPontAuctionCheckout}=await import('../pont-auction-checkout.js?v=slow-iphone-ready-20261113b');
+  const {initPontAuctionCheckout}=await import('../pont-auction-checkout.js?v=centered-close-20261113');
   pontCheckout=initPontAuctionCheckout({db,config:c,onFinished:()=>pontRefreshPendingPayments()});
   await resolveCampaignMonths();
   await load();
