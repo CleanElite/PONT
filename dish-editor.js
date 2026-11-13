@@ -490,10 +490,14 @@ function selectedModelIds() {
 function modelSignature() {
   return rid() + '|' + (selectedModelIds() || []).join(',');
 }
+function syncMenuAction() {
+  $('pontDailyNext').textContent = editingMenu ? 'Salvează' : 'Publică';
+}
 function resetDaily() {
   resetModelSaved();
   editorVersion++;
   editingMenu = null;
+  syncMenuAction();
   menuDescription = '';
   savedChoices.clear();
   selected.clear();
@@ -545,6 +549,7 @@ async function open(menu, copy = false, {restaurant = menu?.restaurant_id, date 
   if (!copy && date) $('pontDailyDate').value = date;
   if (menu) {
     editingMenu = copy ? null : menu.id;
+    syncMenuAction();
     menuDescription = menu.description ?? '';
   }
   syncStandardPrice();
@@ -686,6 +691,9 @@ form.onsubmit = event => {
       return chosen.length ? '<div class="pont-dish-recap"><strong>' + name + '</strong>' + chosen.map(item =>
         '<div>' + esc(item.name) + ' · ' + (key === 'dessert' ? 'inclus' : priceRO.format(item.price) + ' lei') + '</div>').join('') + '</div>' : '';
     }).join('') + '<p>Preț meniu complet · ' + priceRO.format(price) + ' lei</p>';
+  const isEdit = Boolean(pendingMenu.id);
+  $('pontDishConfirmTitle').textContent = isEdit ? 'Confirmă salvarea' : 'Confirmă publicarea';
+  $('pontDishPublish').textContent = isEdit ? 'Salvează' : 'Publică';
   $('pontDishConfirmError').textContent = '';
   dialog.showModal();
 };
@@ -721,7 +729,9 @@ $('pontDishPublish').onclick = async () => {
     resetDaily();
     choices();
     setEditorOpen(false);
-    const message = date > todayRO() ? 'Meniul zilei a fost programat pentru ' : 'Meniul zilei a fost publicat pentru ';
+    const message = id
+      ? 'Meniul zilei a fost salvat pentru '
+      : date > todayRO() ? 'Meniul zilei a fost programat pentru ' : 'Meniul zilei a fost publicat pentru ';
     $('menuSuccessMessage').textContent = message + date.split('-').reverse().join('.') + '.';
     try {
       await refreshMenus();
@@ -735,7 +745,7 @@ $('pontDishPublish').onclick = async () => {
     saving = false;
     button.disabled = false;
     $('pontDishBack').disabled = false;
-    button.textContent = 'Publică';
+    button.textContent = pendingMenu?.id ? 'Salvează' : 'Publică';
   }
 };
 
