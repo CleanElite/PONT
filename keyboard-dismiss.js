@@ -1,56 +1,47 @@
-// PONT – explicit dismissal for iOS numeric and text keyboards.
+// PONT: unobtrusive keyboard dismissal when swiping the page on iOS.
+// A website cannot receive touch events occurring on the native iOS keyboard.
 (() => {
   'use strict';
-  const selector = 'input:not([type]),input[type="text"],input[type="search"],input[type="email"],input[type="url"],input[type="password"],input[type="number"],input[type="tel"],input[inputmode="numeric"],input[inputmode="decimal"],input[inputmode="tel"],textarea';
-  let active = null;
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.textContent = 'Gata';
-  button.setAttribute('aria-label', 'Închide tastatura');
-  button.setAttribute('data-pont-keyboard-done', '');
-  button.style.cssText = 'position:fixed;right:12px;bottom:16px;z-index:2147483000;display:none;min-width:66px;min-height:38px;padding:7px 14px;border:1px solid #69dfd0;border-radius:12px;background:#103c42;color:#e9fffc;font:700 14px/1 system-ui,-apple-system,sans-serif;box-shadow:0 3px 18px #0008;cursor:pointer;touch-action:manipulation;';
-  const updatePosition = () => {
-    const viewport = window.visualViewport;
-    const extra = viewport ? Math.max(0, window.innerHeight - viewport.height - viewport.offsetTop) : 0;
-    button.style.bottom = Math.round(extra + 12) + 'px';
+  const editable = 'input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]),textarea,[contenteditable="true"]';
+  let start = null;
+  const activeEditor = () => {
+    const element = document.activeElement;
+    return element instanceof HTMLElement && element.matches(editable) && !element.matches('[readonly],[disabled]')
+      ? element : null;
   };
-  const hide = () => {
-    active = null;
-    button.style.display = 'none';
-  };
-  const dismiss = () => {
-    const input = active && document.activeElement === active ? active : document.activeElement;
-    if (input instanceof HTMLElement && input.matches(selector)) input.blur();
-    hide();
-  };
-  document.addEventListener('focusin', event => {
-    const input = event.target;
-    if (!(input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) || !input.matches(selector) || input.readOnly || input.disabled) {
-      hide();
-      return;
-    }
-    active = input;
-    if (!button.isConnected) document.body.appendChild(button);
-    updatePosition();
-    button.style.display = 'block';
-  });
-  document.addEventListener('focusout', event => {
-    if (event.target === active) window.setTimeout(() => {
-      if (document.activeElement !== active) hide();
-    }, 0);
-  });
+  const dismiss = () => { const element = activeEditor(); if (element) element.blur(); };
+  const reset = () => { start = null; };
+
+  // Keep the browser's native scrolling/swiping behavior. Do not preventDefault.
+  document.addEventListener('touchstart', event => {
+    if (event.touches.length !== 1 || !activeEditor()) { reset(); return; }
+    const target = event.target;
+    // Allow caret selection, text editing and scrolling inside a textarea.
+    if (target instanceof Element && target.closest(editable)) { reset(); return; }
+    const touch = event.touches[0];
+    start = { x: touch.clientX, y: touch.clientY };
+  }, {capture:true, passive:true});
+
+  document.addEventListener('touchmove', event => {
+    if (!start || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    const dx = touch.clientX - start.x;
+    const dy = touch.clientY - start.y;
+    // Downward swipe on the PAGE, not a simple tap or horizontal gesture.
+    if (dy > 48 && dy > Math.abs(dx) * 1.35) { dismiss(); reset(); }
+  }, {capture:true, passive:true});
+  document.addEventListener('touchend',reset,{capture:true,passive:true});
+  document.addEventListener('touchcancel',reset,{capture:true,passive:true});
+
+  // Keyboard-only dismissal: Enter finishes single-line numeric/telephone fields;
+  // never intercept Enter in a textarea or normal text form submission.
   document.addEventListener('keydown', event => {
-    if (event.key === 'Enter' && event.target instanceof HTMLInputElement && (event.target.matches('input[type="number"],input[type="tel"],input[inputmode="numeric"],input[inputmode="decimal"],input[inputmode="tel"]')) && !event.isComposing) {
+    if (event.isComposing) return;
+    if (event.key === 'Escape') dismiss();
+    if (event.key === 'Enter' && event.target instanceof HTMLInputElement &&
+        event.target.matches('input[type="number"],input[type="tel"],input[inputmode="numeric"],input[inputmode="decimal"]')) {
       event.preventDefault();
       dismiss();
     }
-    if (event.key === 'Escape' && active) dismiss();
   }, true);
-  // pointerdown works even if iOS's keyboard resizes the viewport during the tap.
-  button.addEventListener('pointerdown', event => { event.preventDefault(); dismiss(); });
-  button.addEventListener('click', dismiss);
-  window.visualViewport?.addEventListener('resize', updatePosition);
-  window.visualViewport?.addEventListener('scroll', updatePosition);
-  window.addEventListener('resize', updatePosition);
-  window.addEventListener('pagehide', hide);
 })();
