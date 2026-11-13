@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <title>Promovare · PONT Slobozia</title>
 <link rel="stylesheet" href="../meniul-zilei/menu-showcase.css?v=4">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
@@ -892,7 +894,7 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
   </div>
 </dialog>
 <script src="../super-admin/config.js"></script><script type="module">
-import {initPontAuctionRules,AUCTION_RULES_VERSION} from '../pont-auction-rules.js?v=20261113b';
+import {initPontAuctionRules,AUCTION_RULES_VERSION} from '../pont-auction-rules.js?v=bid-consent-before-submit-20261113c';
 const auctionRulesUI=initPontAuctionRules();
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
@@ -1308,7 +1310,6 @@ function confirmPontBid(amount,campaignMonth){
  else if(destination>current)rank.replaceChildren('Vei coborî pe ',boldPosition(destination),' de pe ',boldPosition(current),'.');
  else rank.replaceChildren('Vei rămâne pe ',boldPosition(destination),'.');
  return new Promise(resolve=>{
-  auctionRulesUI.resetConsent();
   const cancel=$('auctionBidConfirmCancel'),close=$('auctionBidConfirmClose'),ok=$('auctionBidConfirmOK');
   let finished=false;
   const finish=accepted=>{
@@ -1319,7 +1320,7 @@ function confirmPontBid(amount,campaignMonth){
    if(dialog.open)dialog.close();resolve(accepted);
   };
   const onCancel=e=>{e?.preventDefault?.();finish(false)};
-  const onOK=()=>{if(!auctionRulesUI.isAccepted()){auctionRulesUI.showConsentError();return}finish(true)};
+  const onOK=()=>finish(true);
   const onClose=()=>finish(false);
   cancel.addEventListener('click',onCancel);close.addEventListener('click',onCancel);
   ok.addEventListener('click',onOK);
@@ -1334,6 +1335,7 @@ $('bidForm').onsubmit=async e=>{
  const value=Number($('bidAmount').value);
  const issue=bidInputIssue(value);
  if(issue){$('bidMessage').textContent=issue;refreshBidPreview();return}
+ if(!auctionRulesUI.isAccepted()){auctionRulesUI.showConsentError();return}
  if(!await confirmPontBid(value,month))return;
  if(busy||role!=='restaurant'||!auctionIsOpen()||month!==$('date').dataset.campaignMonth)return;
  busy=true;updateModal();
@@ -1347,6 +1349,8 @@ $('bidForm').onsubmit=async e=>{
   busy=false;updateModal();
  }
  $('bidAmount').value='';
+ auctionRulesUI.resetConsent();
+ $('bidMessage').textContent='';
  $('auctionDialog').close();
  $('bidSuccessAmount').textContent=money(value);
  // Read fresh, server-persisted offers before reporting a placement.
