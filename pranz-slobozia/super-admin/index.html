@@ -1302,6 +1302,41 @@ function renderMenuRows() {
  }).join('') : emptyMessage('Nu există meniuri active sau programate.');
 }
 
+let restaurantAuctionPayments=new Map(), restaurantAuctionPaymentsLoaded=false, restaurantAuctionPaymentsRequest=0;
+async function refreshRestaurantAuctionPayments(){
+ const request=++restaurantAuctionPaymentsRequest;
+ try{
+  const {data,error}=await db.from('auction_offers')
+   .select('restaurant_id,campaign_month,amount,payment_status,payment_method,payment_reference,paid_at')
+   .order('campaign_month',{ascending:false}).limit(1000);
+  if(error)throw error;
+  if(request!==restaurantAuctionPaymentsRequest)return;
+  const byRestaurant=new Map();
+  for(const offer of data||[]){
+   if(!byRestaurant.has(offer.restaurant_id))byRestaurant.set(offer.restaurant_id,offer);
+  }
+  restaurantAuctionPayments=byRestaurant;
+  restaurantAuctionPaymentsLoaded=true;
+ }catch(error){
+  if(request!==restaurantAuctionPaymentsRequest)return;
+  console.warn('PONT: Nu se poate verifica statusul plăților licitației',error);
+  restaurantAuctionPaymentsLoaded=false;
+  restaurantAuctionPayments=new Map();
+ }
+ renderRestaurants();
+}
+function restaurantAuctionPaymentBadge(restaurantId){
+ if(!restaurantAuctionPaymentsLoaded)return '<span class="pont-restaurant-payment pont-restaurant-payment-unknown" title="Nu s-a putut verifica statusul plății">Plată neverificată</span>';
+ const offer=restaurantAuctionPayments.get(restaurantId);
+ if(!offer)return '<span class="pont-restaurant-payment pont-restaurant-payment-none">Licitație: fără ofertă</span>';
+ const month=String(offer.campaign_month||'').slice(0,7);
+ const monthText=/^\d{4}-\d{2}$/.test(month)?month.slice(5)+'/'+month.slice(0,4):'';
+ const stripeConfirmed=offer.payment_status==='paid' && offer.payment_method==='stripe' && /^pi_/.test(offer.payment_reference||'');
+ const manuallyPaid=offer.payment_status==='paid' && !stripeConfirmed;
+ const label=stripeConfirmed?'Plătit Stripe':manuallyPaid?'Plătit · altă metodă':'Neplătit';
+ const kind=offer.payment_status==='paid'?'paid':'pending';
+ return '<span class="pont-restaurant-payment pont-restaurant-payment-'+kind+'" title="Plata licitației '+esc(monthText)+'">'+label+' · '+esc(monthText)+'</span>';
+}
 let restaurantOnlineIds = new Set();
 let dailyMenuStatuses=[],dailyMenuExhaustedIds=new Set();
 function renderRestaurants() {
@@ -1320,6 +1355,7 @@ function renderRestaurants() {
    (enabled ? 'Activ' : 'Suspendat') + '</span>' +
    (restaurant.accepts_card ? '<span class="dashboard-badge">Acceptă card</span>' : '') +
    (access ? '' : '<span class="dashboard-badge">Fără cont</span>') +
+   restaurantAuctionPaymentBadge(restaurant.id) +
    '</div></div><div class="restaurant-admin-actions">' +
    '<button type="button" data-edit-restaurant="' + id + '">Editează</button>' +
    (access ? '' : '<button type="button" class="restaurant-create-access" data-create-access="' + id + '">Creează acces</button>') +
@@ -1364,9 +1400,13 @@ async function load() {
 renderMenuArchive($('menuArchive'), menus, restaurants);
  window.pontOperations?.refreshWeek();
  renderRestaurants();
+ void refreshRestaurantAuctionPayments();
  renderMembers();
 }
 
+// Recheck completed Stripe webhook updates without reloading the page.
+setInterval(()=>{if(!document.hidden && !$('app').hidden)void refreshRestaurantAuctionPayments()},60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden && !$('app').hidden)void refreshRestaurantAuctionPayments()});
 let customerLeads = [], customerRequest = 0;
 function customerGroups() {
  const byRestaurant=new Map();
@@ -2620,4 +2660,10 @@ document.querySelectorAll('[data-pont-clock-time]').forEach(el=>{el.textContent=
 }
 updatePontClock();setInterval(updatePontClock,15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){last='';updatePontClock()}});window.addEventListener('pageshow',()=>{last='';updatePontClock()});
 })();
-</script></body></html>
+</script><style id="pont-restaurant-auction-payment-status">
+#restaurantRows .pont-restaurant-payment{display:inline-flex;align-items:center;justify-content:center;max-width:100%;padding:5px 10px;border-radius:9px;border:1px solid #8c9b99;background:#173c42;color:#e7f3f2;font:750 11px/1.2 system-ui,sans-serif;letter-spacing:.005em;text-align:center;white-space:normal}
+#restaurantRows .pont-restaurant-payment-paid{border-color:#68d9a4;background:#113e30;color:#bbffda}
+#restaurantRows .pont-restaurant-payment-pending{border-color:#ecb477;background:#49301e;color:#ffe0b1}
+#restaurantRows .pont-restaurant-payment-none{border-color:#66868c;background:#142d36;color:#bfd2d5}
+#restaurantRows .pont-restaurant-payment-unknown{border-color:#b8a0a0;background:#322a32;color:#e5cbd0}
+</style></body></html>
