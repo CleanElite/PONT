@@ -1,12 +1,12 @@
-// PONT – explicit dismissal for iOS numeric and telephone keyboards.
+// PONT – explicit dismissal for iOS numeric and text keyboards.
 (() => {
   'use strict';
-  const selector = 'input[type="number"],input[type="tel"],input[inputmode="numeric"],input[inputmode="decimal"],input[inputmode="tel"]';
+  const selector = 'input:not([type]),input[type="text"],input[type="search"],input[type="email"],input[type="url"],input[type="password"],input[type="number"],input[type="tel"],input[inputmode="numeric"],input[inputmode="decimal"],input[inputmode="tel"],textarea';
   let active = null;
   const button = document.createElement('button');
   button.type = 'button';
   button.textContent = 'Gata';
-  button.setAttribute('aria-label', 'Închide tastatura numerică');
+  button.setAttribute('aria-label', 'Închide tastatura');
   button.setAttribute('data-pont-keyboard-done', '');
   button.style.cssText = 'position:fixed;right:12px;bottom:16px;z-index:2147483000;display:none;min-width:66px;min-height:38px;padding:7px 14px;border:1px solid #69dfd0;border-radius:12px;background:#103c42;color:#e9fffc;font:700 14px/1 system-ui,-apple-system,sans-serif;box-shadow:0 3px 18px #0008;cursor:pointer;touch-action:manipulation;';
   const updatePosition = () => {
@@ -25,7 +25,7 @@
   };
   document.addEventListener('focusin', event => {
     const input = event.target;
-    if (!(input instanceof HTMLInputElement) || !input.matches(selector) || input.readOnly || input.disabled) {
+    if (!(input instanceof HTMLInputElement || input instanceof HTMLTextAreaElement) || !input.matches(selector) || input.readOnly || input.disabled) {
       hide();
       return;
     }
@@ -40,7 +40,7 @@
     }, 0);
   });
   document.addEventListener('keydown', event => {
-    if (event.key === 'Enter' && event.target instanceof HTMLInputElement && event.target.matches(selector) && !event.isComposing) {
+    if (event.key === 'Enter' && event.target instanceof HTMLInputElement && (event.target.matches('input[type="number"],input[type="tel"],input[inputmode="numeric"],input[inputmode="decimal"],input[inputmode="tel"]')) && !event.isComposing) {
       event.preventDefault();
       dismiss();
     }
