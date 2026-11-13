@@ -1131,7 +1131,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
       <select id="auctionRankingRestaurant"></select>
       <button type="button" id="addAuctionRank">Adaugă în clasament</button>
     </div>
-    <div class="pont-auction-ranking-footer"><span id="auctionRankingNote">Ofertele mai mari au prioritate. La egalitate contează oferta mai veche.</span><button type="button" id="refreshAuctionRanking">Actualizează</button><button type="button" class="primary" id="saveAuctionRanking" hidden disabled>Salvează pozițiile</button></div>
+    <div class="pont-auction-ranking-footer"><span id="auctionRankingNote">Ofertele mai mari au prioritate. La egalitate la 50 lei contează prima ofertă minimă; peste 50 lei, primul care a ajuns la suma respectivă.</span><button type="button" id="refreshAuctionRanking">Actualizează</button><button type="button" class="primary" id="saveAuctionRanking" hidden disabled>Salvează pozițiile</button></div>
   </dialog>
   <dialog id="auctionChoiceDialog" class="auction-choice-dialog" aria-labelledby="auctionChoiceTitle">
     <div class="auction-choice-header"><h3 id="auctionChoiceTitle">Confirmare restaurant</h3><button type="button" id="auctionChoiceClose" aria-label="Închide">×</button></div>
@@ -1598,11 +1598,12 @@ function rankedAuctionOffers(offers){
   const key=offer.restaurant_id;
   const prior=best.get(key);
   const amount=Number(offer.amount);
-  const earlier=offer.created_at||'';
-  if(!prior||amount>Number(prior.amount)||(amount===Number(prior.amount)&&earlier<(prior.created_at||'')))best.set(key,offer);
+  const earlier=offer.bid_rank_at||offer.created_at||'';
+  if(!prior||amount>Number(prior.amount)||(amount===Number(prior.amount)&&earlier<(prior.bid_rank_at||prior.created_at||'')))best.set(key,offer);
  }
  return [...best.values()].sort((a,b)=>Number(b.amount)-Number(a.amount)||
-  (a.created_at||'').localeCompare(b.created_at||'')||
+  (a.bid_rank_at||a.created_at||'').localeCompare(b.bid_rank_at||b.created_at||'')||
+   (a.created_at||'').localeCompare(b.created_at||'')||
   (restaurantName(a.restaurant_id)||'').localeCompare(restaurantName(b.restaurant_id)||'','ro'));
 }
 async function renderAuctionRanking(){
@@ -1619,7 +1620,7 @@ async function renderAuctionRanking(){
  try{
   if(!/^\d{4}-\d{2}$/.test(month))throw Error('Selectează o lună validă.');
   const [offers,control,approvals]=await Promise.all([
-   req(db.from('auction_offers').select('restaurant_id,amount,created_at,round,payment_status').eq('campaign_month',month+'-01')),
+   req(db.from('auction_offers').select('restaurant_id,amount,created_at,bid_rank_at,round,payment_status').eq('campaign_month',month+'-01')),
    db.from('pont_auction_control').select('is_open,final_ranking').eq('campaign_month',month+'-01').maybeSingle(),
    rankingEditor?req(db.from('pont_manual_payment_approvals').select('restaurant_id').eq('campaign_month',month+'-01')):[]
   ]);
@@ -1633,7 +1634,7 @@ async function renderAuctionRanking(){
    $('auctionRankingInfo').textContent=ranked.length
     ?'Au licitat '+ranked.length+' '+(ranked.length===1?'restaurant':'restaurante')+' · Total oferte: '+auctionMoney(ranked.reduce((sum,offer)=>sum+Number(offer.amount||0),0))
     :'Nu există oferte depuse pentru luna selectată.';
-   $('auctionRankingNote').textContent='Locurile sunt calculate exclusiv din sumele licitate: oferta cea mai mare ocupă locul 1. La egalitate, are prioritate oferta depusă mai devreme. Adăugările și repoziționările manuale nu sunt incluse.';
+   $('auctionRankingNote').textContent='Locurile sunt calculate exclusiv din sumele licitate: oferta cea mai mare ocupă locul 1. La egalitate la 50 lei contează prima ofertă de 50 lei; peste 50 lei, prima ofertă depusă la suma actuală. Adăugările și repoziționările manuale nu sunt incluse.';
    showRankingRows(ranked.map(offer=>offer.restaurant_id),false);
    return;
   }
@@ -1764,7 +1765,7 @@ async function loadAuctions() {
  try {
   if (!/^\d{4}-\d{2}$/.test(month)) throw Error('Alege o lună validă.');
   const [offers, approvals] = await Promise.all([
-   req(db.from('auction_offers').select('*').eq('campaign_month', month + '-01').order('amount', {ascending:false}).order('created_at', {ascending:true})),
+   req(db.from('auction_offers').select('*').eq('campaign_month', month + '-01').order('amount', {ascending:false}).order('bid_rank_at', {ascending:true})),
    req(db.from('pont_manual_payment_approvals').select('restaurant_id,campaign_month,approval_type').eq('campaign_month', month + '-01'))
   ]);
   if (request !== auctionRequest || month !== $('auctionMonth').value || auctionEdits.size || auctionSaving || activeAuctionRestaurant) return;
