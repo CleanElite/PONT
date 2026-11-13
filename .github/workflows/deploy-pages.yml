@@ -37,7 +37,7 @@ jobs:
           test -s assets/pont-intro-clean.jpg
       - name: Save verified curtain artwork for visual inspection
         run: |
-          git add -f assets/pont-intro-clean.jpg
+          git add -f assets/pont-intro-clean.jpg assets/pont-intro-build-info.txt
           if ! git diff --cached --quiet; then
             git -c user.name="PONT Build Bot" -c user.email="github-actions[bot]@users.noreply.github.com" commit -m "Update generated logo-free intro curtain image"
             git push origin HEAD:main
