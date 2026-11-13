@@ -659,7 +659,7 @@
 #pontTodayMenu .pont-today-dish-list>li{margin:0;padding:3px 0}
 #pontTodayMenu .pont-today-dish-line{display:flex;align-items:center;justify-content:space-between;gap:7px;min-width:0}
 #pontTodayMenu .pont-today-dish-name{position:relative;flex:1 1 auto;min-width:0;overflow-wrap:anywhere;font-size:12px;line-height:1.35}
-#pontTodayMenu .pont-today-soldout .pont-today-dish-name{color:#f1aaaa;text-decoration:line-through;text-decoration-color:#ff3b4b;text-decoration-thickness:2px}
+#pontTodayMenu .pont-today-soldout .pont-today-dish-name{color:#f1aaaa;text-decoration:line-through;text-decoration-color:#d95a63;text-decoration-thickness:1px}
 #pontTodayMenu .pont-today-availability{
  display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;
  min-height:25px!important;height:25px;padding:3px 7px!important;margin:0;
