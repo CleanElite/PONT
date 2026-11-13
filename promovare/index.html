@@ -608,10 +608,15 @@ dialog.pont-final-summary-dialog .pont-final-summary-medal svg{
 dialog.pont-final-summary-dialog .pont-final-summary-medal .pont-final-summary-number{
  font:800 10px/1.1 system-ui;white-space:nowrap;letter-spacing:.03em;
 }
+/* From place 4 onward show only the bare rank number: no badge/frame. */
 dialog.pont-final-summary-dialog .pont-final-summary-medal.pont-medal-number{
- border:1px solid #73aca34b;border-radius:12px;min-height:42px;background:#ffffff07;
+ border:0!important;border-radius:0!important;min-height:0;background:none!important;
+ box-shadow:none!important;padding:0!important;
 }
-dialog.pont-final-summary-dialog .pont-final-summary-medal.pont-medal-number .pont-final-summary-number{font-size:13px}
+dialog.pont-final-summary-dialog .pont-final-summary-medal.pont-medal-number .pont-final-summary-number{
+ font:750 clamp(16px,3.8vw,20px)/1 system-ui!important;
+ letter-spacing:0!important;
+}
 dialog.pont-final-summary-dialog .pont-final-summary-main{display:flex;flex-direction:column;gap:5px;min-width:0}
 dialog.pont-final-summary-dialog .pont-final-summary-tier{
  color:var(--podium);font:800 10px/1.2 system-ui;letter-spacing:.11em;text-transform:uppercase;
@@ -1024,7 +1029,7 @@ function renderAuctionFinalSummary(){
   medal.className='pont-final-summary-medal'+(rank>3?' pont-medal-number':'');
   if(rank<=3)medal.innerHTML=trophy;
   const number=document.createElement('span');
-  number.className='pont-final-summary-number';number.textContent='LOC '+rank;
+  number.className='pont-final-summary-number';number.textContent=rank<=3?'LOC '+rank:String(rank);
   medal.append(number);
   const main=document.createElement('div');main.className='pont-final-summary-main';
   const tier=document.createElement('span');tier.className='pont-final-summary-tier';
