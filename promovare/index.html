@@ -858,7 +858,7 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
    <p id="auctionBidConfirmChange" class="pont-confirm-change"></p>
    <p id="auctionBidConfirmRank" class="pont-confirm-rank"></p>
   </div>
-  <p class="pont-confirm-note">Plata se confirmă separat.</p>
+  <p class="pont-confirm-note">Nu se solicită nicio plată până la încheierea licitației.</p>
   <div class="pont-confirm-actions">
    <button type="button" id="auctionBidConfirmCancel">Anulează</button>
    <button type="button" id="auctionBidConfirmOK" class="primary-bid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg>Confirmă</button>
@@ -892,6 +892,8 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
   </div>
 </dialog>
 <script src="../super-admin/config.js"></script><script type="module">
+import {initPontAuctionRules,AUCTION_RULES_VERSION} from '../pont-auction-rules.js?v=20261113b';
+const auctionRulesUI=initPontAuctionRules();
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
 const localDate=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
@@ -1306,6 +1308,7 @@ function confirmPontBid(amount,campaignMonth){
  else if(destination>current)rank.replaceChildren('Vei coborî pe ',boldPosition(destination),' de pe ',boldPosition(current),'.');
  else rank.replaceChildren('Vei rămâne pe ',boldPosition(destination),'.');
  return new Promise(resolve=>{
+  auctionRulesUI.resetConsent();
   const cancel=$('auctionBidConfirmCancel'),close=$('auctionBidConfirmClose'),ok=$('auctionBidConfirmOK');
   let finished=false;
   const finish=accepted=>{
@@ -1316,7 +1319,7 @@ function confirmPontBid(amount,campaignMonth){
    if(dialog.open)dialog.close();resolve(accepted);
   };
   const onCancel=e=>{e?.preventDefault?.();finish(false)};
-  const onOK=()=>finish(true);
+  const onOK=()=>{if(!auctionRulesUI.isAccepted()){auctionRulesUI.showConsentError();return}finish(true)};
   const onClose=()=>finish(false);
   cancel.addEventListener('click',onCancel);close.addEventListener('click',onCancel);
   ok.addEventListener('click',onOK);
@@ -1335,7 +1338,7 @@ $('bidForm').onsubmit=async e=>{
  if(busy||role!=='restaurant'||!auctionIsOpen()||month!==$('date').dataset.campaignMonth)return;
  busy=true;updateModal();
  try{
-  const {error}=await db.rpc('place_my_auction_bid',{p_month:month,p_amount:value});
+  const {error}=await db.rpc('place_my_auction_bid_v2',{p_month:month,p_amount:value,p_terms_accepted:true,p_rules_version:AUCTION_RULES_VERSION});
   if(error)throw error;
  }catch(e){
   $('bidMessage').textContent='Oferta nu a fost salvată: '+e.message;
