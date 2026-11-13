@@ -1275,9 +1275,15 @@ async function start(){
     if(paymentButton)paymentButton.click();
    }
   }
-  setInterval(()=>{
-   load().catch(e=>{biddingOpen=false;biddingPaused=false;render();renderAuctionStatus();console.error('Actualizare licitații:',e)});
+  // Preserve 15-second auction freshness while avoiding hidden-tab and overlapping requests.
+  let promotionPolling=false;
+  setInterval(async()=>{
+   if(document.hidden || promotionPolling)return;
+   promotionPolling=true;
+   try{await load()}catch(e){console.error('Actualizare licitații:',e)}
+   finally{promotionPolling=false}
   },15000);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!promotionPolling)void load().catch(e=>console.error('Actualizare licitații:',e))});
  }catch(e){$('list').textContent='Nu se pot încărca licitațiile: '+e.message}
 }
 function confirmPontBid(amount,campaignMonth){
