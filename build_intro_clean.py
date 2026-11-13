@@ -40,9 +40,9 @@ replacement = base.copy()
 output = replacement.load()
 alpha = mask.load()
 
-for y in range(h):
-    if mask.getbbox() is None:
-        break
+mask_bounds = mask.getbbox()
+assert mask_bounds is not None
+for y in range(mask_bounds[1], mask_bounds[3]):
     a = source[max(0, left_sample), y]
     b = source[min(w - 1, right_sample), y]
     for x in range(max(0, left_sample), min(w, right_sample + 1)):
