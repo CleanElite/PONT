@@ -35,4 +35,4 @@ jobs:
           }
           NODE
       - name: Run backend and navigation tests
-        run: node --test backend/worker.test.mjs backend/navigation.test.mjs
+        run: node --test backend/worker.test.mjs backend/navigation.test.mjs backend/daily-menu-availability.test.mjs
