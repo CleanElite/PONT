@@ -3,28 +3,17 @@
 (()=>{
  const back=document.getElementById('pontPrivacyBack');
  const checkout=new URLSearchParams(location.search).get('from')==='checkout';
- let source=null;
- try{
-  if(document.referrer){
-   const ref=new URL(document.referrer);
-   if(ref.origin===location.origin&&ref.href!==location.href&&ref.pathname!==location.pathname){
-    source=ref.href;
-   }
-  }
- }catch(_){}
- if(source)back.href=source;
  back.addEventListener('click',event=>{
   if(event.button!==0||event.metaKey||event.ctrlKey||event.shiftKey||event.altKey)return;
   event.preventDefault();
   if(checkout&&window.opener&&!window.opener.closed){
-   try{window.opener.focus();}catch(_){}
+   try{window.opener.focus()}catch(_){}
    window.close();
-   // If closing is restricted by the browser, navigate to the originating page.
-   setTimeout(()=>{if(!window.closed)location.replace(source||'./');},150);
+   setTimeout(()=>{if(!window.closed)window.PontNavigation?.goBack('./')},200);
    return;
   }
-  if(source&&history.length>1){history.back();return}
-  location.replace(source||'./');
+  if(window.PontNavigation)window.PontNavigation.goBack('./');
+  else location.assign('./');
  });
 })();
-</script><script type="module" src="./pont-privacy-consent.js?v=consent-audit-20261113-v3"></script></body></html>
+</script><script type="module" src="./pont-privacy-consent.js?v=consent-audit-20261113-v3"></script><script defer src="../pont-navigation-history.js?v=origin-aware-20261113"></script></body></html>
