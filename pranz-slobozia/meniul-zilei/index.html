@@ -810,10 +810,11 @@ function openOrder(m,trigger){
   $('#orderMsg').textContent='';
   $('#order').showModal();update();
 }
+let pontRestaurantRoutePushed=false;
 function enterRestaurant(id,trigger=null,changeUrl=true){
  const m=menus().find(x=>x.id===id);
  if(!m)return false;
- if(changeUrl){const u=new URL(location.href);u.searchParams.set('restaurant',id);history.pushState({restaurant:id},'',u);}
+ if(changeUrl){const u=new URL(location.href);u.searchParams.set('restaurant',id);history.pushState({restaurant:id},'',u);pontRestaurantRoutePushed=true;}
  if($('#order').open)$('#order').close();
  openOrder(m,trigger);
  return true;
@@ -823,13 +824,23 @@ function returnToRestaurants(updateUrl=true){
  if($('#order').open)$('#order').close();
  document.body.classList.remove('pont-restaurant-page');
  document.title='Meniul zilei · PONT Slobozia';
- if(updateUrl){const u=new URL(location.href);u.searchParams.delete('restaurant');history.pushState({},'',u);}
+ if(updateUrl){
+   if(pontRestaurantRoutePushed&&history.state?.restaurant){
+     // Unwind the in-page restaurant entry; never create a phantom history
+     // entry which would reopen the modal on the next Back press.
+     pontRestaurantRoutePushed=false;
+     history.back();
+   }else{
+     const u=new URL(location.href);u.searchParams.delete('restaurant');
+     history.replaceState({},'',u);
+   }
+  }
  window.scrollTo({top:0,behavior:'instant'});
 }
 function routeRestaurantFromURL(){
  const id=new URLSearchParams(location.search).get('restaurant');
  if(id){if(!current||current.id!==id||!$('#order').open)enterRestaurant(id,null,false);}
- else if($('#order').open)returnToRestaurants(false);
+ else if($('#order').open){pontRestaurantRoutePushed=false;returnToRestaurants(false)}
 }
 $('#list').onclick=e=>{const trigger=e.target.closest('[data-menu]');if(trigger)enterRestaurant(trigger.dataset.menu,trigger)};
 // Open the privacy policy as a script-opened separate tab, so its Back button
