@@ -51,7 +51,21 @@ installButton.addEventListener('click', async () => {
     confirmation.textContent = 'În fereastra care apare, confirmă cu „Adaugă”.';
     guide.append(confirmation);
   } else {
-    guide.textContent = 'În Chrome, apasă ⋮ → Instalează aplicația.';
+    const steps = [
+      'Deschide pont.city în Google Chrome',
+      'Apasă ⋮ (meniul Chrome)',
+      'Alege „Instalează aplicația” sau „Adaugă pe ecranul principal”'
+    ];
+    steps.forEach((step, index) => {
+      const line = document.createElement('strong');
+      line.style.display = 'block';
+      line.style.padding = '8px 0';
+      line.textContent = (index + 1) + '. ' + step;
+      guide.append(line);
+    });
+    const confirmation = document.createElement('small');
+    confirmation.textContent = 'Confirmă instalarea când apare fereastra Chrome.';
+    guide.append(confirmation);
   }
   installHelp.showModal();
 });
