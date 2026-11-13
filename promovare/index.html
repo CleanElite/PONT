@@ -766,6 +766,9 @@ dialog.pont-premium-auction .modal-note{margin:5px 0 0!important;gap:6px!importa
 dialog.pont-premium-auction .pont-modal-info-icon{width:17px!important;height:17px!important;font-size:10px!important}
 dialog.pont-premium-auction .pont-withdraw-bid-link{margin:5px auto 0!important;padding:3px 6px!important;font-size:10px!important}
 dialog.pont-premium-auction .modal-status{margin:2px 0!important;font-size:11px!important}
+/* While the keyboard is displayed, accessibility and keyboard dismissal take priority. */
+dialog.pont-premium-auction.pont-keyboard-active[open]{overflow-y:auto!important;overscroll-behavior:contain!important}
+
 @media(max-height:700px){
  dialog.pont-premium-auction .auction-modal-inner{padding:9px 13px!important}
  dialog.pont-premium-auction .modal-explainer{font-size:10px!important;line-height:1.15!important}
