@@ -1015,13 +1015,21 @@ async function refreshLiveMenus(){
   $('#menuPhotoNote').hidden=true;
  }
 }
+// One refresh at a time; inactive browser tabs do not consume Supabase requests.
+let liveMenuRefreshInFlight=false;
+async function refreshLiveMenusSafely(){
+ if(document.hidden || liveMenuRefreshInFlight)return;
+ liveMenuRefreshInFlight=true;
+ try{await refreshLiveMenus()}finally{liveMenuRefreshInFlight=false}
+}
 if (isMenuPreview) {
   $('#menuPreviewLabel').hidden = false;
   render();
 } else {
-  refreshLiveMenus();
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshLiveMenus(); });
-  setInterval(refreshLiveMenus, 60000);
-  setInterval(()=>{if($('#order').open)update()},30000);
+  void refreshLiveMenusSafely();
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) void refreshLiveMenusSafely(); });
+  window.addEventListener('pageshow',event=>{if(event.persisted)void refreshLiveMenusSafely()});
+  setInterval(()=>{if(!document.hidden)void refreshLiveMenusSafely()},60000);
+  setInterval(()=>{if(!document.hidden && $('#order').open)update()},30000);
 }
 </script><script type="module" src="../pont-privacy-consent.js?v=consent-audit-20261113-v4"></script><script defer src="../../pont-navigation-history.js?v=stack-v2-20261113"></script></html>
