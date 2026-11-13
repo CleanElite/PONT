@@ -31,6 +31,10 @@ jobs:
         run: |
           python -m pip install --quiet cairosvg pillow
           python pranz-slobozia/build_icons.py
+      - name: Generate logo-free curtain image
+        run: |
+          python build_intro_clean.py
+          test -s assets/pont-intro-clean.jpg
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
