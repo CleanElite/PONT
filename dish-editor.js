@@ -592,7 +592,14 @@ $('pontDailyCancel').onclick = () => {
   resetDaily();
   choices();
   setEditorOpen(false);
-  host.focus();
+  // After cancelling an edit, return to the published-today menu, not the bottom of the page.
+  const todayPanel = document.getElementById('pontTodayMenu');
+  if (todayPanel && !todayPanel.hidden) {
+    todayPanel.scrollIntoView({block:'start',behavior:'smooth'});
+    todayPanel.querySelector('.pont-today-toggle')?.focus({preventScroll:true});
+  } else {
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
 };
 $('pontDailyPickerList').onchange = event => {
   const checkbox = event.target.closest('[data-select]');
