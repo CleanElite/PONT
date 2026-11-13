@@ -150,6 +150,11 @@
   font-size:clamp(17px,4.5vw,20px)!important;
  }
 }
+
+.pont-day-exhausted-panel{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px;margin:10px auto 16px;max-width:680px}
+.pont-day-exhausted-button{padding:9px 16px!important;border:1px solid #dfbd73!important;border-radius:12px!important;background:#163839!important;color:#fff1ce!important;font:700 13px/1.2 system-ui!important;min-height:40px!important;cursor:pointer!important}
+.pont-day-exhausted-button[data-exhausted="true"]{background:#e6bc73!important;color:#183233!important}
+.pont-day-exhausted-panel span{font-size:11px;color:#d4cbaa;text-align:center}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-header-bell-fit-20261112">
 /* Restaurant title card fills the remaining width; bell/payment cluster keeps intrinsic width. */
@@ -340,7 +345,7 @@
 <p id="selfPasswordFeedback" role="status" aria-live="polite"></p>
 <button type="submit" class="primary" id="selfPasswordSubmit">Schimbă parola</button>
 </form>
-</div></section><div id="addView"><section class="card admin-workspace"><section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section><h2>Planifică meniul zilei</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="false" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap" hidden></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section></div><div id="savedView" hidden><section class="card"><div id="pontMenuTemplates"></div><details class="pont-menu-archive">
+</div></section><div id="addView"><section class="card admin-workspace"><section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section><div class="pont-day-exhausted-panel"><button type="button" class="pont-day-exhausted-button" id="toggleDailyExhausted" disabled>Meniul zilei epuizat</button><span id="pontDayExhaustedNote" role="status" aria-live="polite"></span></div><h2>Planifică meniul zilei</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="false" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap" hidden></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section></div><div id="savedView" hidden><section class="card"><div id="pontMenuTemplates"></div><details class="pont-menu-archive">
   <summary>Meniuri active și programate</summary>
   <div id="menus"></div>
 </details>
@@ -401,9 +406,39 @@ const group=(title,items,empty)=>'<div class="menu-group"><h3>'+title+' ('+items
 renderTodayMenu();
 renderMenuArchive($('menuArchive'), menus, restaurants);
 window.pontOperations?.refreshWeek();
+await refreshDailyExhausted();
 }
+const currentDayRO=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest'}).format(new Date());
+async function refreshDailyExhausted(){
+ const id=$('contactRestaurant').value,button=$('toggleDailyExhausted');
+ if(!id||!button)return;
+ button.disabled=true;
+ const date=currentDayRO();
+ try{
+  const {data,error}=await db.from('pont_daily_menu_status').select('exhausted').eq('restaurant_id',id).eq('service_date',date).maybeSingle();
+  if(error)throw error;
+  if($('contactRestaurant').value!==id)return;
+  const exhausted=data?.exhausted===true;button.dataset.exhausted=String(exhausted);
+  button.textContent=exhausted?'Reactivează meniul zilei':'Meniul zilei epuizat';
+  $('pontDayExhaustedNote').textContent=exhausted?'Indisponibil astăzi · Se resetează automat mâine.':'';
+ }catch(error){$('pontDayExhaustedNote').textContent=error.message}
+ finally{if($('contactRestaurant').value===id)button.disabled=false}
+}
+$('toggleDailyExhausted').onclick=async()=>{
+ const button=$('toggleDailyExhausted'),id=$('contactRestaurant').value;
+ if(!id||button.disabled)return;
+ const exhausted=button.dataset.exhausted!=='true';
+ button.disabled=true;
+ try{
+  await req(db.rpc('pont_set_daily_menu_exhausted',{p_restaurant_id:id,p_exhausted:exhausted}));
+  button.dataset.exhausted=String(exhausted);
+  button.textContent=exhausted?'Reactivează meniul zilei':'Meniul zilei epuizat';
+  $('pontDayExhaustedNote').textContent=exhausted?'Meniul este indisponibil până la sfârșitul zilei.':'Meniul este disponibil.';
+  status(exhausted?'Meniul zilei a fost marcat ca epuizat.':'Meniul zilei a fost reactivat.');
+ }catch(error){status(error.message,true)}finally{button.disabled=false}
+};
 function syncContactPhone(){const r=restaurants.find(r=>r.id===$('contactRestaurant').value);const phone=r?.phone||'';$('restaurantMenuPrice').value=r?.menu_price??'';$('acceptsCard').checked=!!r?.accepts_card;$('offersDelivery').checked=!!r?.offers_delivery;$('contactPhone').value=phone;$('contactPhoneDisplay').textContent=phone||'Număr neconfigurat';$('contactPhoneView').hidden=false;$('contactPhoneEditor').hidden=true;$('editContactPhone').textContent=phone?'Modifică':'Adaugă număr';}
-$('contactRestaurant').onchange=syncContactPhone;
+$('contactRestaurant').onchange=()=>{syncContactPhone();refreshDailyExhausted()};
 $('editContactPhone').onclick=()=>{$('contactPhoneView').hidden=true;$('contactPhoneEditor').hidden=false;$('contactPhone').focus()};
 $('cancelContactPhone').onclick=syncContactPhone;
 $('contactForm').onsubmit=async e=>{e.preventDefault();const save=$('saveContactPhone');save.disabled=true;save.textContent='Se salvează…';try{const phone=$('contactPhone').value.trim();await req(db.rpc('set_my_restaurant_phone',{p_restaurant_id:$('contactRestaurant').value,p_phone:phone}));const r=restaurants.find(r=>r.id===$('contactRestaurant').value);if(r)r.phone=phone;syncContactPhone();status('Numărul pentru comenzi a fost actualizat.')}catch(err){status(err.message,true)}finally{save.disabled=false;save.textContent='Salvează modificările'}};
