@@ -15,7 +15,7 @@ export function initPontAuctionRules(){
  .pont-rules-done{min-height:40px;padding:8px 25px;border:1px solid #92ddc9;border-radius:10px;background:#13796d;color:white}
  .pont-rules-accept{display:flex!important;align-items:flex-start!important;gap:10px!important;text-align:left!important;margin:13px 0!important;color:#f2f4ef!important;font:550 12px/1.5 system-ui!important;cursor:pointer!important}
  .pont-rules-accept input{flex:none!important;appearance:auto!important;-webkit-appearance:checkbox!important;width:19px!important;height:19px!important;margin:0!important;accent-color:#90d9c8!important}
- #auctionBidConfirmOK:disabled{opacity:.45;cursor:not-allowed}.pont-rules-warning{color:#ffd2ba;font:550 11px/1.4 system-ui}
+ #bidForm .pont-rules-warning{margin:0 0 10px!important;min-height:0!important;text-align:left!important}#bidForm .pont-rules-accept{margin-top:17px!important;margin-bottom:7px!important}.pont-rules-warning{color:#ffd2ba;font:550 11px/1.4 system-ui}
  `;
  document.head.append(style);
  const dialog=document.createElement('dialog');dialog.className='pont-rules-dialog';dialog.setAttribute('aria-labelledby','pontRulesTitle');
@@ -35,13 +35,26 @@ export function initPontAuctionRules(){
  function addButton(parent){if(!parent)return;const slot=document.createElement('div');slot.className='pont-rules-slot';const button=document.createElement('button');button.type='button';button.className='pont-rules-trigger';button.textContent='Regulament licitație';button.onclick=()=>{if(!dialog.open)dialog.showModal()};slot.append(button);parent.append(slot)}
  addButton(document.getElementById('customer'));
  addButton(document.getElementById('auctionModalExplainer')?.parentElement);
- const confirm=document.querySelector('#auctionBidConfirmDialog .pont-confirm-inner'),actions=document.querySelector('#auctionBidConfirmDialog .pont-confirm-actions');
- const label=document.createElement('label');label.className='pont-rules-accept';label.innerHTML='<input type="checkbox"><span>Accept termenii și condițiile, am citit regulamentul.</span>';
- const warning=document.createElement('p');warning.className='pont-rules-warning';warning.setAttribute('role','status');
- if(confirm&&actions){confirm.insertBefore(label,actions);confirm.insertBefore(warning,actions);const button=document.createElement('button');button.type='button';button.className='pont-rules-trigger';button.textContent='Regulament licitație';button.onclick=()=>{if(!dialog.open)dialog.showModal()};confirm.insertBefore(button,actions)}
- const checkbox=label.querySelector('input'),save=document.getElementById('auctionBidConfirmOK');
- checkbox.onchange=()=>{save.disabled=!checkbox.checked;warning.textContent=''};
+ const form=document.getElementById('bidForm'),submit=document.getElementById('bidSubmit');
+ const label=document.createElement('label');
+ label.className='pont-rules-accept';
+ label.innerHTML='<input type="checkbox" id="pontAuctionConsent"><span>Accept termenii și condițiile, am citit regulamentul.</span>';
+ const warning=document.createElement('p');
+ warning.className='pont-rules-warning';warning.id='pontAuctionConsentWarning';warning.setAttribute('role','alert');warning.setAttribute('aria-live','polite');
+ if(form&&submit){form.insertBefore(label,submit);form.insertBefore(warning,submit)}
+ const checkbox=label.querySelector('input');
+ checkbox.addEventListener('change',()=>{warning.textContent='';document.getElementById('bidMessage').textContent=''});
  dialog.querySelector('.pont-rules-close').onclick=()=>dialog.close();
  dialog.querySelector('.pont-rules-done').onclick=()=>dialog.close();
- return {resetConsent(){checkbox.checked=false;save.disabled=true;warning.textContent=''},isAccepted(){return checkbox.checked},showConsentError(){warning.textContent='Acceptă regulamentul pentru a continua.'}};
+ return {
+  resetConsent(){checkbox.checked=false;warning.textContent=''},
+  isAccepted(){return checkbox.checked},
+  showConsentError(){
+   const text='Bifează că ai luat la cunoștință și accepți termenii și regulamentul licitației.';
+   warning.textContent=text;
+   const message=document.getElementById('bidMessage');
+   if(message)message.textContent=text;
+   checkbox.focus({preventScroll:true});
+  }
+ };
 }
