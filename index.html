@@ -134,6 +134,10 @@ button{font:inherit}
   filter:drop-shadow(0 0 4px #c8e9fa9c);
 }
 .entry.intro-playing .entry-mark{position:relative;z-index:21;transform-origin:0 0}
+/* During the curtain split, screen-blend the luminous wordmark so its dark
+   rectangular PNG background doesn't travel into the header on Android. */
+.entry.intro-reveal .entry-mark{mix-blend-mode:screen!important}
+.pont-intro.is-splitting :is(.pont-intro__art,.pont-intro__panel)::before{display:none!important}
 html.pont-intro-active{overflow:hidden}
 .entry.intro-reveal{overflow-x:clip}
 .entry.intro-reveal .choice-card{
