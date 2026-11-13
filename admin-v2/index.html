@@ -581,7 +581,7 @@ $('pontTodayMenu').addEventListener('click', async event => {
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 showHashView();
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=no-order-hours-daily-stock-20261113');
+const {initPontOperations}=await import('../order-operations.js?v=fix-hours-null-x6-20261113');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();
@@ -1027,6 +1027,7 @@ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header{
  padding:clamp(5px,1.2vw,10px)!important;
 }
 body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header h3{flex:0 1 auto!important;min-width:0!important}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header h3 .pont-today-toggle{white-space:nowrap!important}
 body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-toggle{
  padding:5px 4px!important;min-height:34px!important;
  font-size:clamp(9px,2.45vw,13px)!important;letter-spacing:-.035em!important;
@@ -1059,5 +1060,13 @@ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-exhausted
  body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-actions{gap:2px!important}
  body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-edit{padding:3px!important}
  body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-delete{width:26px!important;min-width:26px!important}
+}
+
+@media(max-width:600px){
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-header time{display:none!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-actions{margin-left:auto!important}
+ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-exhausted-inline{
+  width:clamp(88px,25vw,116px)!important;
+ }
 }
 </style></body></html>
