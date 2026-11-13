@@ -2,6 +2,7 @@
 <html lang="ro">
 <head><meta charset="utf-8"><script>if(navigator.standalone===true)document.documentElement.classList.add("pont-ios-standalone");</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="PONT"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/png" sizes="192x192" href="./pont-192.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"><link rel="manifest" href="./manifest.webmanifest?v=iosfix-20261109-2"><script src="./install.js?v=ios-android-20261113" defer></script>
 <link rel="preload" as="image" href="./assets/pont-intro-c3.jpg">
+<link rel="preload" as="image" href="./assets/pont-intro-clean.jpg">
 <link rel="preload" as="image" href="./assets/pont-intro-logo-c4.png">
 <style>
 :root {
@@ -111,7 +112,7 @@ button{font:inherit}
 
 .pont-intro__panel{
   display:none;position:absolute;inset:0;
-  background:var(--night) var(--intro-art) center / contain no-repeat;
+  background:var(--night) url("./assets/pont-intro-clean.jpg") center / contain no-repeat;
 }
 .pont-intro__panel.left{clip-path:inset(0 50% 0 0);--curtain-motion:pont-curtain-left}
 .pont-intro__panel.right{clip-path:inset(0 0 0 50%);--curtain-motion:pont-curtain-right}
@@ -119,17 +120,7 @@ button{font:inherit}
 .pont-intro.is-splitting .pont-intro__panel{
   display:block;animation:var(--curtain-motion) 1.32s linear both;
 }
-/* The artwork includes a baked-in PONT mark. During the split, cover that
-   stationary print on each moving curtain leaf with a softly feathered
-   patch, while the independent header logo travels upwards. No hard box. */
-.pont-intro.is-splitting .pont-intro__panel::before{
-  content:"";position:absolute;pointer-events:none;
-  left:var(--logo-cover-left);top:var(--logo-cover-top);
-  width:var(--logo-cover-width);height:var(--logo-cover-height);
-  background:radial-gradient(ellipse at center,
-    #05101d 0%,#05101d 45%,rgba(5,16,29,.98) 58%,
-    rgba(5,16,29,.72) 75%,rgba(5,16,29,0) 100%);
-}
+
 .pont-intro__led{
   position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;
 }
@@ -441,12 +432,6 @@ html.pont-intro-active{overflow:hidden}
     const sourceWidth = 260 * scale;
     const sourceHeight = 108 * scale;
     if (!sourceWidth) return;
-    // Cover the printed source logo only after the curtain starts moving.
-    // Recompute with object-fit:contain for every Android/iOS viewport.
-    intro.style.setProperty('--logo-cover-left', (left - 72 * scale) + 'px');
-    intro.style.setProperty('--logo-cover-top', (top - 48 * scale) + 'px');
-    intro.style.setProperty('--logo-cover-width', (sourceWidth + 144 * scale) + 'px');
-    intro.style.setProperty('--logo-cover-height', (sourceHeight + 96 * scale) + 'px');
 
     // During the lift the logo is already moving relative to its live header position.
     if (leaving) return;
