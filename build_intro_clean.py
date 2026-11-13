@@ -1,8 +1,8 @@
-"""Build a seamless intro artwork without the logo printed in the source image.
+"""Reconstruct the dark-sky area behind the printed PONT logo.
 
-The source is kept unchanged for the opening hold. The clean image is used
-only by the two splitting curtain leaves, while the independent wordmark
-moves to its permanent header position.
+The original artwork remains intact for the intro hold. During the curtain
+split, a clean version of the same background is used. The animated wordmark
+is independent. All masked pixels are rebuilt, including blurred edges.
 """
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFilter
@@ -14,38 +14,51 @@ DEST = ASSETS / "pont-intro-clean.jpg"
 with Image.open(SOURCE) as source:
     base = source.convert("RGB")
 
-# Logo occupies the dark-sky area at approximately (300..565, 685..795)
-# in the original 865 x 1536 image. Its replacement is reconstructed from
-# the actual dark-sky pixels immediately to either side, for each scanline.
 reference_w, reference_h = 865, 1536
 w, h = base.size
-scale_x, scale_y = w / reference_w, h / reference_h
-left = round(250 * scale_x)
-right = round(620 * scale_x)
-top = round(610 * scale_y)
-bottom = round(835 * scale_y)
+sx, sy = w / reference_w, h / reference_h
+unit = min(sx, sy)
+
+# Deliberately cover the full glowing arc, lettering, and pale reflections
+# above the waterline. The mask's feathered edges extend beyond this shape.
 mask = Image.new("L", (w, h), 0)
 draw = ImageDraw.Draw(mask)
 draw.rounded_rectangle(
-    (round(265 * scale_x), round(625 * scale_y),
-     round(605 * scale_x), round(815 * scale_y)),
-    radius=round(34 * min(scale_x, scale_y)), fill=255
+    (round(226 * sx), round(557 * sy), round(647 * sx), round(815 * sy)),
+    radius=round(35 * unit), fill=255
 )
-mask = mask.filter(ImageFilter.GaussianBlur(max(1, round(26 * min(scale_x, scale_y)))))
+mask = mask.filter(ImageFilter.GaussianBlur(max(1, round(31 * unit))))
+
+# The surrounding sky is a smooth, dark blue gradient. Reconstruct every
+# pixel touched by the *blurred* mask from unaffected scanline boundaries.
+# Unlike the previous implementation, interpolation is not clipped to an
+# inner rectangle: doing so left ghost fragments at the faded mask edges.
+left_sample = round(161 * sx)
+right_sample = round(709 * sx)
+source = base.load()
 replacement = base.copy()
-src = base.load()
-dest = replacement.load()
+output = replacement.load()
+alpha = mask.load()
 
-# Linear interpolation between untouched neighboring columns creates a
-# naturally changing dark background instead of a flat rectangle. The
-# blurred alpha ensures no visible box-shaped boundary.
-for y in range(max(0, top), min(h, bottom + 1)):
-    a = src[max(0, left), y]
-    b = src[min(w - 1, right), y]
-    for x in range(max(0, left), min(w, right + 1)):
-        t = (x - left) / max(1, right - left)
-        dest[x, y] = tuple(round(a[channel] * (1 - t) + b[channel] * t) for channel in range(3))
+for y in range(h):
+    if mask.getbbox() is None:
+        break
+    a = source[max(0, left_sample), y]
+    b = source[min(w - 1, right_sample), y]
+    for x in range(max(0, left_sample), min(w, right_sample + 1)):
+        if alpha[x, y] == 0:
+            continue
+        t = (x - left_sample) / max(1, right_sample - left_sample)
+        output[x, y] = tuple(round(a[c] * (1 - t) + b[c] * t) for c in range(3))
 
+# Composite against the original with a wide feather. The full mask footprint
+# now uses reconstructed pixels, eliminating leftover glow at mask boundaries.
 base.paste(replacement, (0, 0), mask)
-base.save(DEST, format="JPEG", quality=95, subsampling=0, optimize=True)
-print(f"Created {DEST}: {w}x{h}")
+
+# Sanity check: no high-brightness logo strokes remain in the former wordmark.
+# Cyan highlights near the horizon and blue ribbons elsewhere are preserved.
+check = base.crop((round(315*sx), round(666*sy),
+                   round(558*sx), round(787*sy))).convert("L")
+assert check.getextrema()[1] < 125, "Residual bright logo detected in cleaned sky"
+base.save(DEST, format="JPEG", quality=96, subsampling=0, optimize=True)
+print(f"Generated clean curtain image: {w} x {h}, no stationary PONT logo")
