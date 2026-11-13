@@ -101,6 +101,10 @@ dialog.pont-premium-auction .auction-modal-close,dialog.pont-premium-confirm .au
  border:1px solid #8affed88!important;border-radius:50%!important;background:rgba(7,62,64,.72)!important;
  color:#f4faf9!important;font:400 26px/1 system-ui!important;
 }
+/* Unified, precisely centered close controls across auction dialogs. */
+.auction-modal .auction-modal-close{display:grid!important;place-items:center!important;box-sizing:border-box!important;padding:0!important;line-height:0!important;appearance:none!important;-webkit-appearance:none!important;cursor:pointer!important;touch-action:manipulation!important}
+.auction-modal .auction-modal-close svg{display:block!important;flex:none!important;width:16px!important;height:16px!important;stroke:currentColor!important;fill:none!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important;pointer-events:none!important}
+.auction-modal .auction-modal-close:focus-visible{outline:2px solid #7affed!important;outline-offset:3px!important}
 dialog.pont-premium-auction .modal-kicker{
  max-width:calc(100% - 42px);
  margin:1px 0 13px!important;
@@ -889,7 +893,7 @@ dialog.pont-premium-auction.pont-keyboard-active[open]{overflow-y:auto!important
 <footer class="promotion-footer">PONT Slobozia · Promovare pentru restaurante partenere<div style="max-width:850px;margin:10px auto 0;padding:0 14px;font:500 12px/1.65 system-ui;opacity:.85">Ordinea pozițiilor de promovare este stabilită prin licitații comerciale plătite de restaurante și nu reprezintă un clasament al calității preparatelor. <a href="../termeni.html#transparenta-licitatii" style="color:inherit;text-decoration:underline;text-underline-offset:3px">Transparența licitațiilor</a></div></footer>
 <dialog id="pontAuctionFinalSummary" class="auction-modal pont-premium-confirm pont-final-summary-dialog" aria-labelledby="pontFinalSummaryTitle" aria-describedby="pontFinalSummaryDescription">
  <div class="pont-confirm-inner">
-  <button type="button" class="auction-modal-close" id="pontFinalSummaryClose" aria-label="Închide rezumatul">×</button>
+  <button type="button" class="auction-modal-close" id="pontFinalSummaryClose" aria-label="Închide rezumatul"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
   <div class="pont-final-summary-kicker">CLASAMENT FINAL · PONT</div>
   <h2 id="pontFinalSummaryTitle">Rezultatele licitației</h2>
   <div class="pont-final-summary-rule" aria-hidden="true"></div>
@@ -898,7 +902,7 @@ dialog.pont-premium-auction.pont-keyboard-active[open]{overflow-y:auto!important
  </div>
 </dialog>
 <dialog id="auctionDialog" class="auction-modal pont-premium-auction" aria-labelledby="auctionModalTitle" aria-describedby="auctionModalExplainer"><div class="auction-modal-inner">
- <button type="button" class="auction-modal-close" id="auctionClose" aria-label="Închide"><span aria-hidden="true">×</span></button>
+ <button type="button" class="auction-modal-close" id="auctionClose" aria-label="Închide"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
  <div class="modal-kicker" id="auctionModalPosition">LICITAȚIE PONT</div>
  <h2 id="auctionModalTitle">Licitează pentru vizibilitate</h2>
  <span class="pont-auction-glow-rule" aria-hidden="true"></span>
@@ -919,7 +923,7 @@ dialog.pont-premium-auction.pont-keyboard-active[open]{overflow-y:auto!important
 </div></dialog>
 <dialog id="auctionBidConfirmDialog" class="auction-modal pont-premium-confirm" aria-labelledby="auctionBidConfirmTitle" aria-describedby="auctionBidConfirmDescription">
  <div class="pont-confirm-inner">
-  <button type="button" id="auctionBidConfirmClose" class="auction-modal-close" aria-label="Anulează confirmarea">×</button>
+  <button type="button" id="auctionBidConfirmClose" class="auction-modal-close" aria-label="Anulează confirmarea"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
   <div class="pont-confirm-emblem" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg></div>
   <h2 id="auctionBidConfirmTitle">Confirmi oferta?</h2>
   <div id="auctionBidConfirmDescription" class="pont-confirm-detail">
@@ -935,7 +939,7 @@ dialog.pont-premium-auction.pont-keyboard-active[open]{overflow-y:auto!important
 </dialog>
 <dialog id="pontWithdrawConfirm" class="auction-modal pont-premium-confirm pont-withdraw-confirm" aria-labelledby="pontWithdrawTitle" aria-describedby="pontWithdrawDescription">
  <div class="pont-confirm-inner">
-  <button type="button" class="auction-modal-close" id="pontWithdrawClose" aria-label="Închide confirmarea">×</button>
+  <button type="button" class="auction-modal-close" id="pontWithdrawClose" aria-label="Închide confirmarea"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
   <div class="pont-withdraw-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v5M14 11v5"/></svg></div>
   <h2 id="pontWithdrawTitle">Retragi oferta?</h2>
   <p id="pontWithdrawDescription" class="pont-withdraw-explainer">Oferta ta va fi eliminată din clasamentul acestei licitații.</p>
