@@ -982,7 +982,7 @@ function orderedOffers(){
   const byRestaurant=new Map(offers.map(offer=>[offer.restaurant_id,offer]));
   return finalRanking.filter(id=>names[id]).map(id=>byRestaurant.get(id)??{restaurant_id:id,amount:null});
  }
- return [...offers].sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at))}
+ return [...offers].sort(compareAuctionOffers)}
 function ownOffer(){return offers.find(o=>o.restaurant_id===me)}
 function isAuctionFinalized(){return !biddingOpen&&Array.isArray(finalRanking)}
 function renderAuctionFinalSummary(){
@@ -1120,6 +1120,7 @@ function bidInputIssue(value){
 }
 function compareAuctionOffers(a,b){
  return Number(b.amount)-Number(a.amount)
+  || new Date(a.bid_rank_at||a.created_at)-new Date(b.bid_rank_at||b.created_at)
   || new Date(a.created_at)-new Date(b.created_at)
   || String(a.restaurant_id).localeCompare(String(b.restaurant_id));
 }
@@ -1131,7 +1132,10 @@ function currentRestaurantRank(){
 function projectedBidRank(value){
  if(bidInputIssue(value))return null;
  const previous=ownOffer();
- const candidate={restaurant_id:me,amount:value,created_at:previous?.created_at||new Date().toISOString()};
+ const now=new Date().toISOString();
+ const candidate={restaurant_id:me,amount:value,created_at:previous?.created_at||now,
+  bid_rank_at:previous&&value===Number(previous.amount)?(previous.bid_rank_at||previous.created_at)
+   :value===50&&previous?.first_minimum_bid_at?previous.first_minimum_bid_at:now};
  const sorted=[...offers.filter(o=>o.restaurant_id!==me),candidate].sort(compareAuctionOffers);
  return sorted.findIndex(o=>o.restaurant_id===me)+1;
 }
@@ -1145,7 +1149,7 @@ function rankMovementText(value){
  return 'Cu această modificare vei rămâne pe locul '+destination+'.';
 }
 function suggestedAmountForSlot(slot){
- const others=offers.filter(offer=>offer.restaurant_id!==me).sort((a,b)=>Number(b.amount)-Number(a.amount)||new Date(a.created_at)-new Date(b.created_at));
+ const others=offers.filter(offer=>offer.restaurant_id!==me).sort(compareAuctionOffers);
  const own=ownOffer(),minimum=minimumPersonalBid();
  // Bid just above the competitor currently at that rank, if possible;
  // the recommendation is optional and never restricts lowering the bid.
