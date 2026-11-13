@@ -1,0 +1,1 @@
+size=865x1536; mask_bbox=(147, 478, 727, 895); sample_left=161; sample_right=709; mask_at_center=250; original_center=(4, 14, 25); clean_center=(4, 14, 25)\n
