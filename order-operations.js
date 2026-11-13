@@ -392,13 +392,14 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    settings.id='pontRestaurantSettings';
    settings.className='pont-operations';
    settings.append($('pontHoursPanel'));
+   $('pontHoursPanel').hidden=true;
    if (isRestaurantAdmin) {
      const priceCard = $('restaurantMenuPrice')?.closest('.contact-card-settings');
      if (priceCard) settingsHost.insertBefore(settings, priceCard);
      else settingsHost.append(settings);
      const hoursPanel = $('pontHoursPanel');
      hoursPanel.querySelector('summary').textContent = 'Programul comenzilor';
-     hoursPanel.open = true;
+     hoursPanel.open = false;
      const minLabel = hoursPanel.querySelector('.pont-op-grid label:nth-child(3)');
      const minCard = document.createElement('div');
      minCard.className = 'contact-card-settings pont-min-order-settings';
@@ -418,7 +419,7 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    }
    if (superAdminSettings) {
      settingsHost.hidden = true;
-     $('pontHoursPanel').open = true;
+     $('pontHoursPanel').open = false;
      $('pontOpRestaurantWrap').hidden = true;
    }
  }
@@ -477,11 +478,9 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  $('pontOpRestaurant').addEventListener('change',event=>{activeRestaurant=event.target.value;loadSettings()});
  $('pontOpWeekRestaurant').addEventListener('change',renderWeek);
  function readOrderSettings(){
-   const start=$('pontOpStart').value,end=$('pontOpEnd').value,min=Number($('pontOpMin').value);
-   if(Boolean(start)!==Boolean(end))throw Error('Completează ambele ore sau lasă-le goale pentru programul implicit.');
-   if(start&&start===end)throw Error('Ora de început și ora de încheiere nu pot fi egale.');
+   const min=Number($('pontOpMin').value);
    if(!Number.isInteger(min)||min<1||min>20)throw Error('Comanda minimă trebuie să fie între 1 și 20 de meniuri.');
-   return {opens_at:start||defaultStart,closes_at:end||defaultEnd,min_full_menus:min};
+   return {min_full_menus:min};
  }
  async function saveOrderSettings(restaurantId){
    const values=readOrderSettings();
@@ -494,7 +493,7 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
      const button=$('pontOpSave');button.disabled=true;
      try{
        await saveOrderSettings(activeRestaurant);
-       $('pontOpStatus').textContent='Programul și comanda minimă au fost salvate.';
+       $('pontOpStatus').textContent='Comanda minimă a fost salvată.';
      }catch(e){$('pontOpStatus').textContent=e.message}
      finally{button.disabled=false}
    });
