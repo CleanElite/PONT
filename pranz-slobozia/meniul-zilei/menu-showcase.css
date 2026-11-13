@@ -247,7 +247,7 @@ body.lunch.menu-showcase #customer #list {
 }
 .menu-tile:nth-child(-n+2) .menu-card-price { font-size: clamp(13px, 2.6vw, 26px); }
 .menu-card-action {
-  display: none;
+  display: inline-flex;
   justify-self: start;
   padding: .58em .9em;
   background: linear-gradient(160deg, #084345, #05292d 65%, #0a5557);
@@ -256,7 +256,10 @@ body.lunch.menu-showcase #customer #list {
   line-height: 1.12;
   white-space: nowrap;
 }
-.menu-tile:nth-child(-n+2) .menu-card-action { display: inline-flex; margin-top: .35em; }
+.menu-card-action { margin-top: .35em; }
+/* Compact action on two-column tiles; prominent original styling remains on the first two. */
+.menu-tile:nth-child(n+3) .menu-card-action { padding: .42em .62em; gap: .35em; font-size: clamp(10px, 2.15vw, 17px); }
+.menu-card.is-unavailable .menu-card-action { opacity: .52; }
 .menu-card-action .menu-icon { width: .9em; }
 .menu-card:hover { border-color: #e4fffb; box-shadow: 0 0 21px #42eedb55; }
 .menu-card:active .menu-card-action { background-color: #0f686b; }
