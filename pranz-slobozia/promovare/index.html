@@ -894,6 +894,8 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
 </dialog>
 <script src="../super-admin/config.js"></script><script type="module">
 import {pontAuctionDateLabel} from '../../pont-auction-calendar.js?v=20261114';
+import {initPontAuctionRules,AUCTION_RULES_VERSION} from '../../pont-auction-rules.js?v=calendar-23-20261114';
+const auctionRulesUI=initPontAuctionRules();
 
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
@@ -1341,11 +1343,12 @@ $('bidForm').onsubmit=async e=>{
  const value=Number($('bidAmount').value);
  const issue=bidInputIssue(value);
  if(issue){$('bidMessage').textContent=issue;refreshBidPreview();return}
+ if(!auctionRulesUI.isAccepted()){auctionRulesUI.showConsentError();return}
  if(!await confirmPontBid(value,month))return;
  if(busy||role!=='restaurant'||!auctionIsOpen()||month!==$('date').dataset.campaignMonth)return;
  busy=true;updateModal();
  try{
-  const {error}=await db.rpc('place_my_auction_bid',{p_month:month,p_amount:value});
+  const {error}=await db.rpc('place_my_auction_bid_v2',{p_month:month,p_amount:value,p_terms_accepted:true,p_rules_version:AUCTION_RULES_VERSION});
   if(error)throw error;
  }catch(e){
   $('bidMessage').textContent='Oferta nu a fost salvată: '+e.message;
@@ -1354,6 +1357,7 @@ $('bidForm').onsubmit=async e=>{
   busy=false;updateModal();
  }
  $('bidAmount').value='';
+ auctionRulesUI.resetConsent();
  $('auctionDialog').close();
  $('bidSuccessAmount').textContent=money(value);
  // Read fresh, server-persisted offers before reporting a placement.
