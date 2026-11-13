@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 92" role="img" aria-labelledby="title">
+<title id="title">PONT Slobozia</title>
+<rect width="320" height="92" rx="22" fill="#172b23"/>
+<path d="M24 64V43a21 21 0 0 1 42 0v21M18 64h54" fill="none" stroke="#dbb57b" stroke-width="2" stroke-linecap="round"/>
+<path d="M33 46a12 12 0 0 1 24 0M33 51h24" fill="none" stroke="#dbb57b" stroke-width="1.6" stroke-linecap="round"/>
+<circle cx="45" cy="34" r="1.8" fill="#dbb57b"/>
+<text x="91" y="55" font-family="Georgia,serif" font-size="47" letter-spacing="5" fill="#fff1da">PONT</text>
+<text x="94" y="73" font-family="sans-serif" font-weight="700" font-size="9" letter-spacing="5" fill="#dbb57b">SLOBOZIA</text>
+</svg>

@@ -1,0 +1,269 @@
+.pont-admin--platform {
+  --admin-ink: #f4f8f4;
+  --admin-muted: #b4c8be;
+  --admin-line: #315047;
+  --admin-field: #102822;
+  --admin-surface: #0d241f;
+  --admin-accent: #a3e4c5;
+  --admin-bar-height: 64px;
+}
+
+.pont-admin--platform .admin-topbar { border-color: var(--admin-line); }
+.pont-admin--platform .dashboard-intro {
+  align-items: center;
+  flex-wrap: nowrap;
+  margin: clamp(16px, 2.6vw, 28px) 0 14px;
+}
+.dashboard-intro .admin-hero-copy { flex: 1; }
+.pont-admin--platform .dashboard-intro h1 { font-size: clamp(28px, 4vw, 44px); }
+.dashboard-intro .admin-hero-copy p { margin-top: 5px; font-size: 13px; }
+.pont-admin--platform .dashboard-intro > .admin-icon { width: 30px; color: var(--admin-mint); }
+.pont-admin--platform .admin-nav {
+  background: #102822;
+  border-radius: 15px;
+  margin-bottom: 14px;
+}
+.pont-admin--platform .admin-nav > :is(button, a) { border-radius: 10px; }
+.pont-admin--platform .admin-nav .admin-icon { color: #b9d1c3; }
+
+.pont-admin--platform .card {
+  box-shadow: none;
+  border-radius: 16px;
+}
+.pont-admin--platform .dashboard-panel { margin: 0 0 15px; }
+.dashboard-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin-bottom: 16px;
+}
+.dashboard-heading > div:first-child { flex: 1 1 200px; min-width: 0; }
+.pont-admin--platform .dashboard-heading h2 {
+  margin: 0;
+  font: 600 clamp(24px, 3vw, 34px)/1.12 Georgia, 'Times New Roman', serif;
+  letter-spacing: -.02em;
+}
+.dashboard-heading p { margin: 6px 0 0; font-size: 13px; }
+.pont-admin--platform .dashboard-heading button { white-space: normal; }
+.pont-admin--platform .dashboard-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0;
+}
+.pont-admin--platform .pont-analytics-summary { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.pont-admin--platform .dashboard-stats .stat {
+  background: #112d25;
+  border-radius: 12px;
+  min-width: 0;
+  padding: 10px clamp(8px, 1.6vw, 16px);
+  font-size: 12px;
+  line-height: 1.3;
+}
+.dashboard-stats .stat strong {
+  margin-top: 5px;
+  font-size: clamp(19px, 3vw, 29px);
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.pont-admin--platform .pont-customers-summary .stat:last-child { grid-column: auto; }
+
+.dashboard-tools, .dashboard-actions { display: flex; flex-wrap: wrap; align-items: end; gap: 9px; }
+.dashboard-tools { margin: 14px 0; }
+.dashboard-tools > label { flex: 0 1 auto; min-width: 0; }
+.dashboard-tools > .dashboard-search { flex: 1 1 200px; }
+.pont-admin--platform :is(.dashboard-fields, .dashboard-tools) label { margin: 0; }
+.dashboard-fields label > :is(input, select, textarea), .dashboard-tools label > :is(input, select) { margin-top: 5px; }
+.pont-admin--platform .dashboard-tools input[type='month'] { width: 165px; max-width: 100%; }
+.pont-admin--platform :is(.dashboard-form, .dashboard-disclosure) {
+  border: 1px solid var(--admin-line);
+  border-radius: 12px;
+  background: #102822;
+}
+.dashboard-form { margin: 14px 0; padding: clamp(13px, 2vw, 19px); }
+.dashboard-form h3, .dashboard-list h3 { margin: 0 0 10px; }
+.dashboard-form > p { margin: 0 0 12px; }
+.dashboard-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px 14px; }
+.dashboard-fields > .dashboard-wide { grid-column: 1 / -1; }
+.dashboard-form :is(form, h3) + .dashboard-fields { margin-top: 10px; }
+.dashboard-form > .dashboard-actions, .dashboard-form form > .dashboard-actions { margin-top: 14px; }
+.dashboard-actions > button { flex: 0 1 auto; }
+#toggleMenuForm[aria-expanded='false'] .dashboard-when-open,
+#toggleMenuForm[aria-expanded='true'] .dashboard-when-closed { display: none; }
+#toggleMenuForm[aria-expanded='true'] {
+  background: var(--admin-field);
+  color: var(--admin-ink);
+  border-color: var(--admin-line);
+}
+
+.dashboard-list { margin-top: 17px; }
+.pont-admin--platform .menu-group { background: #112b24; margin: 8px 0; border-radius: 12px; }
+.pont-admin--platform .menu-group summary { padding: 12px; }
+.pont-admin--platform .menu-group summary small { margin-top: 3px; }
+.pont-admin--platform .menu-group .row { padding-block: 9px; gap: 8px; align-items: center; }
+.pont-admin--platform .menu-group .row > div:first-child { min-width: min(100%, 180px); }
+.pont-admin--platform .menu-group .menu-actions button { min-height: 44px; }
+.pont-admin--platform .menu-status { margin-top: 4px; }
+.pont-admin--platform :is(.restaurant-admin-item, .dashboard-member, .auction-entry) {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 9px 13px;
+  text-align: left;
+  padding: 10px 0;
+  background: transparent;
+  border: 0;
+  border-top: 1px solid var(--admin-line);
+  border-radius: 0;
+}
+.pont-admin--platform .restaurant-admin-heading { align-items: flex-start; flex: 1 1 170px; min-width: 0; }
+.pont-admin--platform .restaurant-admin-heading strong { font-size: 16px; }
+.pont-admin--platform .restaurant-admin-actions { justify-content: flex-start; gap: 6px; }
+.pont-admin--platform .restaurant-admin-actions button { min-width: 0; flex: 0 1 auto; }
+.pont-admin--platform .dashboard-member small { display: block; overflow-wrap: anywhere; }
+.dashboard-member > div { min-width: 0; }
+.pont-admin--platform .restaurant-card-toggle { margin: 0; align-self: stretch; padding: 9px 11px; }
+.pont-admin--platform .restaurant-card-toggle small { margin-top: 3px; }
+.dashboard-badges { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.dashboard-badge {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--admin-line);
+  border-radius: 30px;
+  padding: 3px 8px;
+  color: var(--admin-muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+.dashboard-badge[data-state='enabled'], .dashboard-auction-state[data-mode='paid'] { color: #b6efd0; }
+.dashboard-badge[data-state='disabled'], .dashboard-auction-state[data-mode='authorization'] { color: #f0d28b; }
+
+.pont-admin--platform .admin-library-grid { align-items: start; }
+.pont-admin--platform .admin-library-grid aside > label { margin: 0 0 12px; }
+.pont-admin--platform .admin-library-grid aside select { margin-top: 5px; }
+.dashboard-catalog-main { min-width: 0; }
+.pont-admin--platform .dashboard-catalog-main > .card { margin: 0; }
+.pont-admin--platform .dashboard-catalog-main > .admin-dish-editor { margin-bottom: 12px; }
+.pont-admin--platform #dishLibrary > .dashboard-heading { margin: 0 0 12px; }
+.pont-admin--platform .dashboard-catalog-main .admin-panel-head { margin-bottom: 8px; }
+.pont-admin--platform #dishLibrary .admin-row-actions button { min-width: 44px; min-height: 44px; }
+
+.pont-admin--platform .auction-save-bar {
+  margin: 12px 0;
+  padding: 9px 11px;
+  border: 1px solid var(--admin-line);
+  border-radius: 12px;
+  background: #163329;
+}
+.auction-save-bar[data-pending='true'] { position: sticky; top: 8px; z-index: 2; }
+.auction-save-bar > div { min-width: 0; }
+.auction-save-bar strong { display: block; font-size: 13px; }
+.auction-save-bar span { display: block; }
+.pont-admin--platform .auction-entry-main small { display: block; }
+.pont-admin--platform .auction-entry .auction-amount { font-size: 16px; }
+.pont-admin--platform .dashboard-auction-state { text-align: left; min-width: min(126px, 100%); }
+.dashboard-auction-state small { display: block; margin-top: 2px; }
+.dashboard-disclosure { margin-top: 14px; padding: 10px 12px; }
+.dashboard-disclosure summary { cursor: pointer; padding: 5px 0; font-weight: 700; }
+.dashboard-disclosure p { margin: 9px 0 0; font-size: 13px; }
+.dashboard-disclosure .pont-analytics-table-wrap { margin-top: 10px; }
+#restaurantAccess .restaurant-password-box { margin: 8px 0 0; padding: 10px; background: transparent; }
+
+.pont-admin--platform .dashboard-message { font-size: 13px; }
+.pont-admin--platform .dashboard-message:empty { margin: 0; }
+.pont-admin--platform :is(.dashboard-message.error, .error) { color: #ffbdad; }
+.pont-admin--platform .dashboard-table th { background: #163329; color: var(--admin-muted); }
+.pont-admin--platform .dashboard-table td, .pont-admin--platform .dashboard-table th { padding: 11px 9px; }
+.pont-admin--platform .dashboard-table td:first-child { min-width: 0; }
+.dashboard-cell-label { display: none; }
+.dashboard-empty { margin: 12px 0; padding: 10px 0; color: var(--admin-muted); }
+.pont-admin--platform #status { margin: 0; }
+.pont-admin--platform #status:not(:empty) {
+  position: sticky;
+  bottom: 10px;
+  z-index: 3;
+  width: fit-content;
+  max-width: 100%;
+  margin: 12px 0 0 auto;
+  border: 1px solid var(--admin-line);
+  border-radius: 12px;
+  padding: 10px 13px;
+  background: #163329;
+  overflow-wrap: anywhere;
+}
+
+@media (min-width: 1024px) {
+  .pont-admin--platform .admin-nav { position: sticky; z-index: 3; top: 8px; }
+  .auction-save-bar[data-pending='true'] { top: 82px; }
+}
+
+@media (max-width: 760px) {
+  .pont-admin--platform .pont-analytics-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pont-admin--platform .pont-analytics-table-wrap { overflow: visible; border: 0; }
+  .pont-admin--platform .dashboard-table { display: block; width: 100%; min-width: 0; }
+  .dashboard-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .dashboard-table tbody { display: grid; gap: 8px; }
+  .dashboard-table tbody tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 12px;
+    padding: 10px 12px;
+    border: 1px solid var(--admin-line);
+    border-radius: 12px;
+    background: #102822;
+  }
+  .pont-admin--platform .dashboard-table td {
+    min-width: 0;
+    padding: 2px 0;
+    border: 0;
+    text-align: left;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .dashboard-table td:first-child, .dashboard-table td[colspan], .dashboard-orders td:nth-child(4) { grid-column: 1 / -1; }
+  .dashboard-table td:first-child .dashboard-cell-label { display: none; }
+  .dashboard-cell-label {
+    display: block;
+    color: var(--admin-muted);
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+}
+
+@media (max-width: 460px) {
+  .pont-admin--platform .dashboard-heading { gap: 9px; margin-bottom: 12px; }
+  .dashboard-heading > div:first-child { flex-basis: 100%; }
+  .dashboard-tools label { flex: 1 1 120px; }
+  .dashboard-tools > .dashboard-search { flex-basis: 135px; }
+  .pont-admin--platform .dashboard-tools input[type='month'] { width: 100%; }
+  .dashboard-fields { grid-template-columns: minmax(0, 1fr); }
+  .pont-admin--platform .restaurant-admin-item { gap: 8px; padding-block: 10px; }
+  .pont-admin--platform .auction-entry-main { flex-basis: 50%; }
+  .pont-admin--platform .auction-entry .dashboard-auction-state { margin-left: auto; }
+}
+
+.pont-admin--platform #login { max-width: 450px; margin: clamp(24px, 8vh, 80px) auto; }
+.pont-admin--platform :is(.restaurant-admin-actions, .dashboard-member, .menu-actions, .dashboard-orders) .admin-danger {
+  color: #ffc1b3;
+}
+.pont-admin--platform #dishLibrary .admin-category-help { display: none; }
+.pont-admin--platform #restaurantAccess { margin-bottom: 14px; }
+@media (max-width: 760px) {
+  .dashboard-analytics tbody tr { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  .pont-admin--platform :is(input, select, textarea) { font-size: 16px; }
+  .dashboard-tools > label:has(input[type='month']) { flex-basis: 167px; }
+}

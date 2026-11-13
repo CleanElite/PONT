@@ -1,0 +1,1970 @@
+/* PONT restaurant full-page experience · 2026-11 */
+body.pont-restaurant-page{background:#031d1b;overflow:hidden}
+body.pont-restaurant-page>#order{display:block}
+body.pont-restaurant-page>header,body.pont-restaurant-page>main,body.pont-restaurant-page>footer{visibility:hidden}
+html:has(body.pont-restaurant-page){background:#031d1b}
+body #order{
+  box-sizing:border-box;
+  position:fixed!important;inset:0!important;margin:0!important;
+  width:100vw!important;max-width:none!important;
+  height:100dvh!important;max-height:100dvh!important;
+  padding:0 0 26px!important;border:0!important;
+  border-radius:0!important;overflow-x:hidden!important;overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  color:#f5faf7!important;
+  background:radial-gradient(ellipse at 50% 11%,rgba(7,136,124,.22),transparent 40%),radial-gradient(ellipse at 50% 105%,rgba(3,129,110,.18),transparent 45%),#031f1d!important;
+  box-shadow:none!important;
+  scrollbar-color:#27766a #062924;
+}
+body #order::backdrop{background:#031c1a}
+#order .order-topbar{position:absolute;z-index:5;top:clamp(17px,3vw,34px);left:max(18px,calc((100vw - 920px)/2));margin:0!important}
+#order #close{border:1px solid #49a9999c!important;background:#092b2bc9!important;color:#e9fffa!important;border-radius:999px!important;padding:9px 14px!important;font-size:14px!important;backdrop-filter:blur(10px)}
+#order #close:hover{background:#0c4b46!important}
+#order .pont-restaurant-hero{position:relative;min-height:235px;max-width:1060px;margin:0 auto 4px;padding:18px 26px 8px;isolation:isolate}
+#order .pont-restaurant-hero__photo{position:absolute;z-index:-1;inset:0 0 0 25%;background-position:center right;background-size:cover;opacity:.9;-webkit-mask-image:linear-gradient(90deg,transparent,black 44%);mask-image:linear-gradient(90deg,transparent,black 44%)}
+#order .pont-restaurant-hero::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(0deg,#03201d 0%,transparent 45%),radial-gradient(ellipse at 54% 89%,#06c2b049,transparent 33%);pointer-events:none}
+#order .pont-order-brand{text-align:left!important;margin:0!important;pointer-events:auto!important;display:flex;flex-direction:column;align-items:flex-start;padding:75px 0 0}
+#order .pont-order-logo{position:absolute;top:13px;left:50%;transform:translateX(-50%);font:400 clamp(39px,6vw,63px)/1 Georgia,serif!important;letter-spacing:.13em!important;color:#ecffff!important;text-shadow:0 0 7px #7cfff0a8,0 0 24px #00d9cc5e}
+#order .pont-order-logo span{color:#9fffee!important}
+#order .pont-logo-city{position:absolute;top:75px;left:50%;transform:translateX(-50%);font:700 9px/1 system-ui;letter-spacing:.4em;color:#b5dfd8}
+#order .pont-order-brand h2{font:700 clamp(29px,5vw,43px)/1.15 Georgia,serif!important;color:#fcfffa!important;max-width:68%;margin:11px 0 0!important;text-shadow:0 3px 10px #001e18}
+#order .pont-order-brand p{font:500 14px/1.4 system-ui!important;margin:6px 0 8px!important;color:#e0ebe6!important}
+#order .pont-menu-tag{display:flex;justify-content:space-between;align-items:center;gap:12px;width:min(580px,100%);margin-top:14px;padding-top:12px;border-top:1px solid #48e3cb54;font-weight:700}
+#order .pont-menu-tag span{padding:8px 17px;border:1px solid #2cceb4;border-radius:999px;box-shadow:0 0 13px #00e2cc39;color:#f5fffb;font-size:14px}
+#order .pont-menu-tag strong{padding:8px 15px;background:linear-gradient(120deg,#ffe8a1,#e6b74b);color:#171b16;border-radius:999px;white-space:nowrap;font-size:19px;box-shadow:0 0 16px #e8bc4a43}
+#order #checkout{max-width:930px;margin:auto;padding:0 20px 30px!important}
+#order .order-menu-preview{display:none!important}
+#order .order-contact{margin:3px 0 12px!important}
+#order .order-contact .call-now{display:block;width:100%;padding:11px 15px!important;background:linear-gradient(90deg,#082b28,#0a3430)!important;border:1px solid #ddc37a!important;box-shadow:0 0 0 1px #13c2a62a,inset 0 0 20px #15a48c12;color:#fff7e3!important;text-align:center;font-size:15px!important;font-weight:700;border-radius:999px}
+#order .order-contact .call-now[hidden]{display:none!important}
+#order #pontOrderRules{font-size:11px!important;color:#b1cfc6!important;margin:4px 8px 11px!important;text-align:center!important}
+#order .order-selection{margin:0!important}
+#order .order-selection h3{display:block!important;margin:0 0 5px;font:700 18px/1.2 system-ui;color:#fcfffb}
+#order .order-help{display:block!important;font-size:11px!important;color:#add6ce!important;margin:0 0 12px!important}
+#order #choices{border:1px solid #44d7bd!important;padding:8px 16px!important;background:linear-gradient(145deg,#062a28f2,#04211feb)!important;box-shadow:0 0 19px #13c8b52a,inset 0 0 12px #18b39d09!important;border-radius:21px!important}
+#order .pont-dish-group{border:0;border-bottom:1px solid #38a99e70;padding:4px 0 9px;margin:0}
+#order .pont-dish-group:last-child{border-bottom:0}
+#order .pont-dish-group>summary{display:flex;align-items:center;gap:9px;cursor:pointer;list-style:none;padding:8px 2px 9px;color:#fff}
+#order .pont-dish-group>summary::-webkit-details-marker{display:none}
+#order .pont-dish-group>summary strong{font:750 19px/1.15 system-ui;color:#fff}
+#order .pont-dish-group>summary small{font:400 12px/1.2 system-ui;color:#d1d9d5}
+#order .pont-group-symbol{min-width:31px;color:#ecd182;font:700 22px/1 system-ui}
+#order .pont-group-arrow{margin-left:auto;color:#ffdc83;font-size:21px;transition:transform .2s ease}
+#order .pont-dish-group:not([open]) .pont-group-arrow{transform:rotate(180deg)}
+#order .pont-dish-group__content{padding-left:6px}
+#order .quantity{display:flex!important;justify-content:initial!important;gap:9px!important;min-height:41px;padding:4px 0!important;border:0!important;color:#f5fbf7;align-items:center!important}
+/* Compact vertical selection matching the supplied mobile reference. */
+#order .pont-dish-group__content{
+  display:block!important;
+  width:100%;
+  min-width:0;
+  padding:0 2px 7px 4px!important;
+  overflow:visible!important;
+  scrollbar-width:auto;
+}
+#order .pont-dish-group__content .pont-choice-dish{
+  display:flex!important;
+  flex-wrap:nowrap!important;
+  align-items:center!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:3px 2px!important;
+  min-height:33px!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  gap:clamp(5px,1.3vw,11px)!important;
+}
+#order .pont-dish-group__content .pont-choice-photo{display:none!important}
+#order .pont-dish-group__content .pont-dish-name{
+  flex:1 1 0!important;
+  min-width:0!important;
+  margin:0!important;
+  font-size:clamp(11px,2.55vw,14px)!important;
+  line-height:1.2!important;
+  font-weight:450!important;
+}
+#order .pont-dish-group__content .pont-dish-name strong{
+  display:block;
+  font-weight:500!important;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#order .pont-dish-group__content .pont-dish-price{
+  flex:0 0 auto!important;
+  min-width:0!important;
+  width:clamp(52px,14vw,95px);
+  font-size:clamp(10px,2.3vw,13px)!important;
+  font-weight:550!important;
+  white-space:nowrap;
+  text-align:right;
+}
+#order .pont-dish-group__content .pont-pick{
+  flex:0 0 22px!important;
+  width:22px!important;min-width:22px!important;height:22px!important;
+}
+#order .pont-dish-group__content .pont-pick span{width:20px;height:20px}
+#order .pont-dish-group__content .stepper{
+  flex:0 0 auto!important;
+  width:clamp(78px,21vw,108px);
+  justify-content:space-between;
+  padding:0 2px!important;
+}
+#order .pont-dish-group__content .stepper button{
+  flex:0 0 auto;min-width:24px!important;min-height:26px!important;
+  padding:2px 4px!important;font-size:17px!important;line-height:1!important;
+}
+#order .pont-dish-group__content .stepper input{
+  flex:1 1 auto;min-width:0!important;width:22px!important;
+  font-size:16px!important;line-height:1!important;text-align:center;
+}
+#order .pont-dish-group{padding:3px 0 7px!important}
+#order .pont-dish-group>summary{gap:8px!important;padding:8px 2px 7px!important}
+#order .pont-dish-group>summary strong{font-size:clamp(17px,3.4vw,21px)!important}
+#order .pont-dish-group>summary small{font-size:clamp(10px,2.2vw,12px)!important}
+#order .pont-group-symbol{min-width:27px!important;font-size:21px!important}
+@media(max-width:380px){
+ #order .pont-dish-group__content .pont-choice-dish{gap:4px!important}
+ #order .pont-dish-group__content .pont-dish-name{font-size:11px!important}
+ #order .pont-dish-group__content .pont-dish-price{width:53px;font-size:10px!important}
+ #order .pont-dish-group__content .stepper{width:78px}
+}
+#order .pont-pick{flex:none!important;display:block!important;width:24px;min-width:24px;height:24px;margin:0!important;position:relative;cursor:pointer}
+#order .pont-pick input{position:absolute;inset:0;width:100%!important;height:100%!important;margin:0!important;opacity:0;cursor:pointer}
+#order .pont-pick span{display:grid;place-items:center;width:22px;height:22px;border:1.5px solid #d9ead8;border-radius:5px;background:transparent}
+#order .pont-pick input:checked+span{background:linear-gradient(145deg,#fff1af,#d6a842);border-color:#fce7a3}
+#order .pont-pick input:checked+span:after{content:"✓";color:#063a2d;font:bold 16px system-ui}
+#order .pont-pick input:focus-visible+span{outline:2px solid #fff;outline-offset:2px}
+#order .pont-choice-photo{width:35px;height:35px;border-radius:7px;flex:none}
+#order .pont-dish-name{flex:1!important;min-width:0!important;font-size:13px!important;margin:0!important}
+#order .pont-dish-name strong{font-weight:500!important;color:#f2fff9!important}
+#order .pont-dish-price{flex:none;color:#f4f5ee;font-weight:600;font-size:12px;min-width:72px;text-align:right}
+#order .is-soldout .pont-dish-price{color:#efb7a6}
+#order .is-soldout .pont-dish-name strong{opacity:.55}
+#order .stepper{flex:none!important;display:flex;align-items:center;gap:0!important;background:#082925!important;border:1px solid #cba964!important;padding:0!important;border-radius:999px!important}
+#order .stepper button{background:transparent!important;color:#ffe3a0!important;font-weight:700;padding:3px 8px!important;min-height:26px!important;font-size:17px!important}
+#order .stepper button:disabled{opacity:.35}
+#order .stepper input{color:#fff!important;min-width:0!important;width:26px!important;font-size:16px!important;font-weight:700!important;background:transparent!important;border:0!important;padding:0!important}
+#order .pont-selection-summary{display:flex;align-items:center;gap:12px;margin:13px 1px 18px!important;padding:14px 17px!important;background:linear-gradient(120deg,#07312d,#062522)!important;border:1px solid #e9c879!important;border-radius:999px!important;box-shadow:0 0 12px #e9c87926,inset 0 0 12px #18b39d08}
+#order .pont-selection-summary strong{flex:none;color:#ffe6a0!important;font-size:13px}
+#order .pont-selection-summary p{color:#eaf7ef!important;font-size:12px!important;margin:0!important}
+#order .pont-order-details{background:linear-gradient(155deg,#fdf9f2,#e8e3dc);color:#152b26;border:1px solid #ede3cd;border-radius:25px;padding:18px 18px 19px;box-shadow:0 12px 31px #001a14a9}
+#order .pont-details-head h3{font:750 18px/1.3 system-ui;margin:0 0 8px;color:#122a25}
+#order .fulfillment{margin:4px 0 13px!important;display:flex;align-items:center;justify-content:space-between;gap:10px}
+#order .field-heading{font-size:11px!important;color:#455f53;margin:0!important}
+#order .fulfillment-options{display:flex;gap:6px}
+#order .fulfillment-options button{padding:8px 12px!important;font-size:12px!important;white-space:nowrap;border:1px solid #c8c7bb!important;background:#f8f6ee!important;color:#234537!important;box-shadow:0 3px 5px #18251c1c}
+#order .fulfillment-options button.selected{background:linear-gradient(120deg,#064c3c,#08765f)!important;color:#fff!important;border-color:#28bea2!important;box-shadow:0 0 10px #0ca88955}
+#order .pont-order-details>label{display:block;margin:10px 0!important;font-size:11px!important;color:#244335;font-weight:700!important}
+#order .pont-order-details label input:not([type=checkbox]),#order .pont-order-details label select,#order .pont-order-details label textarea{display:block;width:100%;margin-top:5px;font-size:16px!important;background:#fffdfa!important;color:#20342c!important;border:1px solid #cfc9ba!important;border-radius:13px!important;padding:11px 13px!important;box-shadow:0 2px 5px #00000012}
+#order .pont-order-details #address[hidden]{display:none!important}
+#order .pont-order-details .pont-order-notes{background:#fffcf5;border-color:#d5cdbf}
+#order .pont-order-details .pont-order-notes summary{color:#335448}
+#order .pont-order-details .pont-loyalty-consent{background:#f6f1e5!important;border-color:#e0d6c3!important}
+#order .pont-order-details .pont-loyalty-consent span{color:#374e44!important}
+#order .pont-order-details #orderMsg{color:#305e4a!important;font-size:12px}
+#order .order-footer{display:flex!important;flex-direction:column!important;gap:11px!important;margin:15px 0 0!important}
+#order .order-total{display:flex!important;align-items:center;justify-content:space-between;border:1px solid #ebcd7a!important;border-radius:999px!important;padding:12px 16px!important;background:linear-gradient(110deg,#032b23,#123d37)!important;color:#fff!important;box-shadow:0 5px 13px #03221e60}
+#order .order-total span{font-size:15px!important;font-weight:700}
+#order .order-total strong{font-size:clamp(21px,4vw,29px)!important;color:#ffe8a5!important}
+#order #breakdown{font-size:11px!important;text-align:center;color:#49655a!important}
+#order #send{order:2;min-height:54px;border:2px solid #f1e2b4!important;border-radius:999px!important;padding:13px 16px!important;background:linear-gradient(120deg,#0e9b81,#006a52 38%,#03432e 100%)!important;box-shadow:0 9px 20px #004d3d4c,inset 0 1px 0 #b6ffe857;font-size:16px!important;color:#fff!important}
+#order #send:disabled{opacity:.6;cursor:not-allowed}
+@media(min-width:760px){
+ #order .pont-restaurant-hero{min-height:260px}
+ #order .pont-order-brand{padding-top:84px}
+ #order #checkout{display:grid;grid-template-columns:minmax(0,1fr) minmax(310px,.84fr);column-gap:24px;align-items:start}
+ #order .order-contact,#order #pontOrderRules{grid-column:1/-1}
+ #order .order-selection{grid-column:1}
+ #order .pont-order-details{grid-column:2;grid-row:3}
+ #order .pont-dish-name{font-size:14px!important}
+}
+@media(max-width:530px){
+ #order .pont-restaurant-hero{min-height:218px;padding:10px 18px}
+ #order .pont-order-brand{padding-top:76px}
+ #order .pont-order-logo{top:17px;font-size:42px!important}
+ #order .pont-logo-city{top:66px;font-size:8px}
+ #order .pont-order-brand h2{margin-top:3px!important;font-size:29px!important;max-width:70%}
+ #order .pont-menu-tag{margin-top:10px;padding-top:10px}
+ #order .pont-menu-tag span{font-size:12px;padding:7px 12px}
+ #order .pont-menu-tag strong{font-size:17px;padding:7px 12px}
+ #order #checkout{padding:0 12px 22px!important}
+ #order #choices{padding:7px 10px!important;border-radius:18px!important}
+ #order .pont-dish-group>summary strong{font-size:17px}
+ #order .pont-dish-group>summary small{font-size:11px}
+ #order .pont-dish-name{font-size:12px!important}
+ #order .pont-dish-price{font-size:11px;min-width:57px}
+ #order .pont-pick{width:22px;min-width:22px}
+ #order .quantity{gap:6px!important}
+ #order .stepper button{padding:3px 6px!important}
+ #order .pont-selection-summary{border-radius:18px!important;align-items:flex-start;flex-wrap:wrap;gap:5px}
+ #order .pont-selection-summary strong{font-size:12px}
+ #order .pont-selection-summary p{font-size:11px!important}
+ #order .pont-order-details{padding:13px 12px;border-radius:22px}
+ #order .fulfillment{flex-wrap:wrap}
+ #order .fulfillment-options{width:100%}
+ #order .fulfillment-options button{flex:1}
+}
+@media(prefers-reduced-motion:reduce){#order *{scroll-behavior:auto!important}}
+
+
+/* Readable, bold order summaries, separated by a simple vertical bar. */
+#order #pontSelectionText{
+  display:flex!important;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:5px 9px;
+  min-width:0;
+  line-height:1.5!important;
+  font-size:13px!important;
+}
+#order .pont-summary-piece{
+  display:inline-block;
+  font-weight:800!important;
+  color:inherit!important;
+  font-size:inherit!important;
+  letter-spacing:0!important;
+  white-space:nowrap;
+}
+#order .pont-summary-divider{
+  display:inline-block;
+  color:#d6bb72!important;
+  font-weight:400;
+  opacity:.92;
+}
+#order .pont-summary-pieces{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:5px 9px;
+  font-size:13px;
+  line-height:1.5;
+  color:#173a30;
+}
+#order .pont-summary-notes{
+  margin-top:5px;
+  font-size:11px;
+  line-height:1.5;
+  color:#5d6b61;
+  text-align:center;
+}
+#order .pont-summary-empty{font-size:12px;font-weight:500}
+#order #breakdown{font-size:13px!important;color:#173a30!important}
+@media(max-width:530px){
+  #order #pontSelectionText,#order .pont-summary-pieces{font-size:12px!important;gap:4px 7px}
+}
+
+
+/* Dessert is included: no quantity controls or selection checkbox. */
+#order .pont-dessert-included{
+  display:flex!important;align-items:center!important;gap:10px!important;
+  min-height:39px!important;padding:5px 4px!important;
+}
+#order .pont-dessert-mark{width:22px;flex:none;text-align:center;color:#efd58a;font-size:16px}
+#order .pont-dessert-included .pont-dish-name{flex:1!important;min-width:0!important}
+#order .pont-dessert-label{margin-left:auto;flex:none;font-size:13px;font-weight:800;color:#ffe1a0;white-space:nowrap}
+#order .pont-dessert-included.is-soldout .pont-dessert-label{color:#efb7a6}
+
+/* Compact quantity control; invisible tap extension keeps it usable. */
+#order .pont-dish-group__content .stepper{
+  width:96px!important;
+  min-height:32px!important;
+  height:32px!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  padding:0 2px!important;
+  overflow:visible!important;
+  border-radius:999px!important;
+}
+#order .pont-dish-group__content .stepper button{
+  position:relative!important;
+  display:grid!important;
+  place-items:center!important;
+  flex:0 0 30px!important;
+  min-width:30px!important;
+  width:30px!important;
+  min-height:30px!important;
+  height:30px!important;
+  padding:0!important;
+  margin:0!important;
+  font-size:18px!important;
+  line-height:1!important;
+  touch-action:manipulation;
+  -webkit-tap-highlight-color:transparent;
+}
+#order .pont-dish-group__content .stepper button::before{
+  content:"";
+  position:absolute;
+  inset:-6px -3px;
+}
+#order .pont-dish-group__content .stepper input{
+  flex:1 1 25px!important;
+  width:25px!important;
+  min-width:0!important;
+  padding:0!important;
+  font-size:16px!important;
+}
+#order .pont-dish-group__content .pont-choice-dish:not(.pont-dessert-included){
+  min-height:40px!important;
+  padding-top:3px!important;
+  padding-bottom:3px!important;
+}
+@media(max-width:380px){
+  #order .pont-dish-group__content .stepper{width:92px!important}
+  #order .pont-dish-group__content .stepper button{flex-basis:29px!important;width:29px!important;min-width:29px!important}
+  #order .pont-dish-group__content .pont-dish-price{width:49px!important;font-size:10px!important}
+}
+
+/* Clear explanation when WhatsApp checkout is unavailable. */
+#order .pont-send-hint{
+  display:block;
+  margin:2px 2px 0!important;
+  padding:10px 12px;
+  border-radius:11px;
+  background:#fff0db;
+  border:1px solid #d8b37e;
+  color:#77421d;
+  font:650 12px/1.5 system-ui,-apple-system,sans-serif;
+  text-align:center;
+}
+#order .pont-send-hint[hidden]{display:none!important}
+#order #send:disabled{opacity:.55;cursor:not-allowed}
+
+/* Direct phone ordering and WhatsApp alternative. */
+#order .order-contact{display:flex;flex-direction:column;align-items:center;gap:6px;margin:6px 0 10px!important}
+#order .order-contact .call-now{display:flex!important;align-items:center;justify-content:center;text-decoration:none;min-height:44px;font-weight:800!important}
+#order .order-contact .call-now[hidden]{display:none!important}
+#order .pont-contact-or{font-size:12px;font-weight:650;color:#d7bc7b;text-transform:lowercase}
+#order .pont-contact-or[hidden]{display:none!important}
+#order .pont-contact-whatsapp{margin:0!important;padding:0 10px;font-size:12px!important;line-height:1.45;color:#d4e8e2!important;font-weight:500!important;text-align:center}
+
+/* Navigation occupies its own strip; never overlaps the centered PONT logo. */
+#order .order-topbar{
+  position:relative!important;
+  z-index:6;
+  top:auto!important;
+  left:auto!important;
+  right:auto!important;
+  width:100%;
+  min-height:52px;
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  box-sizing:border-box;
+  padding:7px max(16px,calc((100vw - 920px)/2))!important;
+  margin:0!important;
+  background:linear-gradient(90deg,#052b29,#062d2b 65%,#041f1e)!important;
+  border-bottom:1px solid rgba(98,197,173,.22);
+}
+#order .order-topbar #close{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-height:36px;
+  padding:7px 13px!important;
+  border-color:rgba(111,212,191,.42)!important;
+  background:rgba(12,76,68,.36)!important;
+  color:#ebfffa!important;
+  font-size:12px!important;
+  font-weight:650!important;
+  letter-spacing:.015em;
+  box-shadow:none!important;
+}
+#order .order-topbar #close:focus-visible{
+  outline:2px solid #9af4d9;
+  outline-offset:3px;
+}
+@media(max-width:530px){
+  #order .order-topbar{min-height:48px;padding:6px 14px!important}
+  #order .order-topbar #close{min-height:34px;font-size:12px!important;padding:6px 12px!important}
+}
+
+
+/* Compact ordering entry: phone CTA + WhatsApp alternative + rules. */
+#order .order-contact{
+  display:grid!important;
+  grid-template-columns:minmax(145px, .85fr) auto minmax(0, 1.15fr)!important;
+  gap:clamp(8px,1.4vw,18px)!important;
+  align-items:center!important;
+  width:100%!important;
+  max-width:760px!important;
+  margin:2px auto 5px!important;
+  padding:0!important;
+  text-align:left!important;
+}
+#order .order-contact .call-now{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:100%!important;
+  min-height:44px!important;
+  height:44px!important;
+  margin:0!important;
+  padding:0 11px!important;
+  border:1px solid rgba(226,197,119,.85)!important;
+  border-radius:999px!important;
+  font:750 clamp(12px,1.6vw,15px)/1.15 system-ui,-apple-system,sans-serif!important;
+  white-space:nowrap!important;
+  box-shadow:inset 0 0 12px rgba(38,182,155,.08)!important;
+  background:linear-gradient(115deg,#0b3732,#0b2827)!important;
+}
+#order .order-contact .call-now[hidden]{display:none!important}
+#order .pont-contact-or{
+  margin:0!important;padding:0!important;
+  color:#d6bd86!important;
+  font:650 11px/1.2 system-ui,-apple-system,sans-serif!important;
+  white-space:nowrap!important;
+}
+#order .pont-contact-or[hidden]{display:none!important}
+#order .pont-contact-whatsapp{
+  max-width:none!important;
+  margin:0!important;
+  padding:0!important;
+  text-align:left!important;
+  color:#d6e9e2!important;
+  font:500 clamp(11px,1.4vw,13px)/1.35 system-ui,-apple-system,sans-serif!important;
+}
+#order #pontOrderRules{
+  max-width:760px!important;
+  margin:3px auto 11px!important;
+  padding:7px 11px!important;
+  border-top:1px solid rgba(99,197,174,.22)!important;
+  color:#bedbd1!important;
+  text-align:center!important;
+  font:550 11px/1.35 system-ui,-apple-system,sans-serif!important;
+}
+@media(max-width:530px){
+ #order .order-contact{
+   grid-template-columns:minmax(140px, .9fr) 22px minmax(0,1.1fr)!important;
+   gap:6px!important;
+   margin:1px auto 5px!important;
+ }
+ #order .order-contact .call-now{
+   min-height:42px!important;height:42px!important;
+   padding:0 8px!important;
+   font-size:12px!important;
+ }
+ #order .pont-contact-or{font-size:10px!important;text-align:center!important}
+ #order .pont-contact-whatsapp{font-size:11px!important;line-height:1.3!important}
+ #order #pontOrderRules{
+   font-size:10px!important;
+   margin:3px auto 9px!important;
+   padding:7px 4px!important;
+ }
+}
+@media(max-width:350px){
+ #order .order-contact{grid-template-columns:1fr!important;row-gap:4px!important}
+ #order .pont-contact-or{text-align:center!important}
+ #order .pont-contact-whatsapp{text-align:center!important}
+}
+
+
+/* Shared PONT brand asset, identical to the logo used across the admin pages. */
+#order .pont-restaurant-hero .pont-order-logo-image{
+  position:absolute!important;
+  top:9px!important;
+  left:50%!important;
+  transform:translateX(-50%)!important;
+  display:block!important;
+  width:clamp(145px,26vw,210px)!important;
+  height:74px!important;
+  max-width:52vw!important;
+  object-fit:contain!important;
+  border:0!important;
+  box-shadow:none!important;
+  filter:none!important;
+  padding:0!important;
+  margin:0!important;
+}
+@media(max-width:530px){
+ #order .pont-restaurant-hero .pont-order-logo-image{
+   top:9px!important;
+   width:clamp(142px,43vw,185px)!important;
+   height:67px!important;
+   max-width:52vw!important;
+ }
+}
+
+
+/* Dish photos belong next to their dishes, never in restaurant covers. */
+#order .pont-dish-group__content .pont-choice-photo{
+  display:block!important;
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  flex:0 0 34px!important;
+  border-radius:8px!important;
+  object-fit:cover!important;
+  border:1px solid rgba(183,228,211,.3);
+  background:#103e35;
+}
+#order .pont-dessert-included .pont-choice-photo{
+  width:34px!important;height:34px!important;
+}
+@media(max-width:530px){
+ #order .pont-dish-group__content .pont-choice-photo{
+   width:29px!important;height:29px!important;
+   min-width:29px!important;flex-basis:29px!important;
+   border-radius:6px!important;
+ }
+ #order .pont-dish-group__content .pont-choice-dish{gap:5px!important}
+ #order .pont-dish-group__content .pont-dish-price{width:48px!important;font-size:10px!important}
+}
+@media(max-width:365px){
+ #order .pont-dish-group__content .pont-choice-photo{
+   width:25px!important;height:25px!important;
+   min-width:25px!important;flex-basis:25px!important;
+ }
+}
+
+
+/* Editorial dish cards: photography is part of the dish, not a tiny inline icon. */
+#order .pont-dish-group__content .pont-choice-dish.pont-has-photo{
+  display:grid!important;
+  grid-template-columns:82px 22px minmax(0,1fr) 96px!important;
+  grid-template-rows:minmax(35px,auto) 34px!important;
+  align-items:center!important;
+  column-gap:8px!important;
+  row-gap:4px!important;
+  min-height:100px!important;
+  padding:8px!important;
+  margin:5px 0!important;
+  border:1px solid rgba(139,206,180,.26)!important;
+  border-radius:15px!important;
+  background:linear-gradient(115deg,rgba(19,75,65,.54),rgba(5,38,35,.76))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.04)!important;
+}
+#order .pont-has-photo .pont-dish-photo-button{
+  grid-column:1!important;
+  grid-row:1/3!important;
+  position:relative;
+  display:block;
+  width:82px;
+  height:82px;
+  padding:0;
+  margin:0;
+  border:1px solid rgba(244,222,161,.26);
+  border-radius:11px;
+  background:#16453e;
+  box-shadow:0 6px 17px rgba(0,0,0,.24);
+  overflow:hidden;
+  cursor:zoom-in;
+}
+#order .pont-dish-group__content .pont-has-photo .pont-choice-photo{
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-width:0!important;
+  border:0!important;
+  border-radius:0!important;
+  object-fit:cover!important;
+  transition:transform .22s ease;
+}
+#order .pont-has-photo .pont-dish-photo-button:hover .pont-choice-photo{transform:scale(1.06)}
+#order .pont-has-photo .pont-dish-photo-zoom{
+  position:absolute;right:5px;bottom:5px;
+  display:grid;place-items:center;
+  width:20px;height:20px;
+  border-radius:50%;background:rgba(3,30,27,.8);
+  color:#e8fff7;font-size:13px;line-height:1;
+}
+#order .pont-has-photo .pont-pick{
+  grid-column:2!important;grid-row:1!important;
+}
+#order .pont-dish-group__content .pont-has-photo .pont-dish-name{
+  grid-column:3/5!important;
+  grid-row:1!important;
+  font-size:13px!important;
+  line-height:1.35!important;
+}
+#order .pont-dish-group__content .pont-has-photo .pont-dish-name strong{
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:normal!important;
+  display:-webkit-box!important;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+  overflow:hidden!important;
+}
+#order .pont-dish-group__content .pont-has-photo .pont-dish-price{
+  grid-column:2/4!important;
+  grid-row:2!important;
+  width:auto!important;
+  text-align:left!important;
+  padding-left:3px;
+  font-size:12px!important;
+  font-weight:700!important;
+  color:#eed49b!important;
+}
+#order .pont-dish-group__content .pont-has-photo .stepper{
+  grid-column:4!important;
+  grid-row:2!important;
+  justify-self:end;
+  width:96px!important;
+}
+#order .pont-dish-group__content .pont-dessert-included.pont-has-photo{
+  grid-template-columns:82px minmax(0,1fr) auto!important;
+  grid-template-rows:auto!important;
+  min-height:100px!important;
+}
+#order .pont-dessert-included.pont-has-photo .pont-dessert-mark{display:none!important}
+#order .pont-dessert-included.pont-has-photo .pont-dish-photo-button{
+  grid-column:1!important;grid-row:1!important;
+}
+#order .pont-dish-group__content .pont-dessert-included.pont-has-photo .pont-dish-name{
+  grid-column:2!important;grid-row:1!important;
+}
+#order .pont-dessert-included.pont-has-photo .pont-dessert-label{
+  grid-column:3!important;grid-row:1!important;
+  font-size:12px!important;
+}
+@media(max-width:530px){
+  #order .pont-dish-group__content .pont-choice-dish.pont-has-photo{
+    grid-template-columns:74px 19px minmax(0,1fr) 92px!important;
+    grid-template-rows:minmax(34px,auto) 32px!important;
+    column-gap:5px!important;
+    padding:7px!important;
+    min-height:90px!important;
+  }
+  #order .pont-has-photo .pont-dish-photo-button{width:74px;height:74px;border-radius:9px}
+  #order .pont-dish-group__content .pont-has-photo .pont-dish-name{font-size:12px!important}
+  #order .pont-dish-group__content .pont-has-photo .pont-dish-price{font-size:11px!important}
+  #order .pont-dish-group__content .pont-has-photo .stepper{width:92px!important}
+  #order .pont-dish-group__content .pont-dessert-included.pont-has-photo{
+    grid-template-columns:74px minmax(0,1fr) auto!important;grid-template-rows:auto!important;
+  }
+}
+@media(max-width:365px){
+  #order .pont-dish-group__content .pont-choice-dish.pont-has-photo{
+    grid-template-columns:66px 17px minmax(0,1fr) 92px!important;
+    column-gap:4px!important; padding:6px!important;min-height:82px!important;
+  }
+  #order .pont-has-photo .pont-dish-photo-button{width:66px;height:66px}
+  #order .pont-dish-group__content .pont-has-photo .pont-dish-name{font-size:11px!important}
+  #order .pont-dish-group__content .pont-dessert-included.pont-has-photo{
+    grid-template-columns:66px minmax(0,1fr) auto!important;
+  }
+}
+/* The image opens at readable size, without changing order quantities. */
+.pont-dish-photo-dialog{
+  box-sizing:border-box;
+  position:fixed;
+  inset:0;
+  width:min(92vw,470px);
+  max-width:92vw;
+  max-height:min(86dvh,700px);
+  margin:auto;
+  overflow:auto;
+  padding:12px 12px 16px;
+  background:#062923;
+  border:1px solid rgba(235,206,135,.55);
+  border-radius:19px;
+  box-shadow:0 25px 80px rgba(0,0,0,.67);
+  color:#f5fff9;
+}
+.pont-dish-photo-dialog::backdrop{background:rgba(1,19,17,.87);backdrop-filter:blur(7px)}
+.pont-dish-photo-dialog img{
+  display:block;width:100%;height:auto;max-height:66dvh;
+  object-fit:contain;border-radius:12px;background:#123a33;
+}
+.pont-dish-photo-dialog p{
+  margin:13px 8px 2px;text-align:center;
+  color:#f2f8f3;font:650 16px/1.4 system-ui,sans-serif;
+}
+.pont-dish-photo-close{
+  position:absolute;right:18px;top:18px;z-index:2;
+  display:grid;place-items:center;
+  width:36px;height:36px;padding:0;
+  border:1px solid rgba(255,255,255,.65);border-radius:50%;
+  background:rgba(3,26,24,.85);color:#fff;font-size:27px;
+  cursor:pointer;
+}
+
+
+/* Compact restaurant banner. */
+#order .pont-restaurant-hero{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  max-width:1672px;
+  min-height:0;
+  margin:0 auto 8px;
+  --hero-gutter:clamp(12px,4.4vw,74px);
+  padding:clamp(8px,2vw,32px) var(--hero-gutter) clamp(13px,5.4vw,90px);
+  background:#031315;
+}
+#order .pont-restaurant-hero::before,
+#order .pont-restaurant-hero::after{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  width:min(55%,650px);
+  height:100%;
+  pointer-events:none;
+  background:url("./showcase/arc.webp") left top / contain no-repeat;
+}
+#order .pont-restaurant-hero::before{inset:0 auto auto 0;opacity:.72}
+#order .pont-restaurant-hero::after{inset:auto 0 0 auto;transform:rotate(180deg);opacity:.87}
+#order .order-topbar{
+  position:absolute!important;
+  top:clamp(9px,2vw,30px)!important;
+  left:clamp(10px,2.8vw,43px)!important;
+  right:auto!important;
+  width:auto;
+  min-height:0;
+  padding:0!important;
+  border:0;
+  background:none!important;
+}
+#order .order-topbar #close{
+  display:grid;
+  place-items:center;
+  width:44px;
+  height:44px;
+  min-height:44px;
+  padding:0!important;
+  border:1px solid #8ba7a75c!important;
+  border-radius:12px!important;
+  background:#091c20e8!important;
+  box-shadow:none!important;
+  text-shadow:none;
+}
+#order #close .pont-nav-action__icon{width:44%;height:44%;display:grid;place-items:center}
+#order #close svg{width:100%;height:100%}
+#order .pont-restaurant-hero__content{position:relative;z-index:1;max-width:1540px;margin-inline:auto}
+#order .pont-restaurant-hero .pont-order-logo-image{
+  position:static!important;
+  transform:none!important;
+  display:block!important;
+  width:clamp(113px,19vw,284px)!important;
+  height:auto!important;
+  margin:0 auto!important;
+  mix-blend-mode:screen;
+}
+#order .pont-restaurant-hero__identity{
+  position:relative;
+  display:grid;
+  grid-template-columns:minmax(0,63%);
+  min-height:clamp(75px,19vw,316px);
+  align-items:center;
+  padding:0 0 clamp(5px,.65vw,10px);
+}
+#order .pont-restaurant-hero__identity::after{
+  content:"";
+  position:absolute;
+  inset:auto 0 0;
+  height:2px;
+  background:linear-gradient(90deg,transparent,#c28b48 19%,#fff1b0 34%,#c28b48 48%,transparent 72%);
+  box-shadow:0 0 10px #d39a4e45;
+}
+#order .pont-restaurant-hero .pont-order-brand{
+  position:relative;
+  padding:clamp(3px,.55vw,9px) 0 clamp(3px,.55vw,9px) clamp(8px,2vw,30px);
+  gap:clamp(3px,.65vw,10px);
+}
+#order .pont-restaurant-hero .pont-order-brand::before{
+  content:"";
+  position:absolute;
+  left:0;
+  inset-block:0;
+  width:2px;
+  background:linear-gradient(transparent,#fff0aa 52%,transparent);
+}
+#order .pont-restaurant-hero .pont-order-brand h2{
+  max-width:none;
+  margin:0!important;
+  font:700 clamp(20px,5.05vw,84px)/1.07 Georgia,serif!important;
+  letter-spacing:-.025em;
+  color:#fff5e6!important;
+  overflow-wrap:anywhere;
+  text-wrap:balance;
+}
+#order .pont-restaurant-hero .pont-hero-location{
+  display:flex;
+  gap:clamp(4px,1vw,14px);
+  align-items:center;
+  margin:0!important;
+  font:500 clamp(12px,2.8vw,46px)/1.2 system-ui,sans-serif!important;
+}
+#order .pont-hero-location svg{flex:none;width:1em;height:1em;color:#bceee9}
+#order .pont-restaurant-hero__photo{
+  position:absolute;
+  z-index:0;
+  inset:0 calc(-1 * var(--hero-gutter)) 0 auto;
+  width:57%;
+  border-radius:0;
+  opacity:1;
+  background-position:center 47%;
+  background-size:cover;
+  pointer-events:none;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,#0004 22%,#000 58%),linear-gradient(0deg,transparent 0%,#000 23%,#000 80%,transparent 100%);
+  mask-image:linear-gradient(90deg,transparent 0%,#0004 22%,#000 58%),linear-gradient(0deg,transparent 0%,#000 23%,#000 80%,transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-composite:intersect;
+}
+@media(max-width:530px){
+  #order .pont-restaurant-hero__photo{width:53%;background-position:58% 46%}
+}
+#order .pont-restaurant-hero .pont-menu-tag{
+  display:flex;
+  justify-content:center;
+  align-items:stretch;
+  gap:0;
+  width:fit-content;
+  max-width:100%;
+  flex:none;
+  margin:0;
+  padding:0;
+  border:1px solid #c8ad78;
+  border-radius:999px;
+  background:linear-gradient(130deg,#d8a759,#f5d98e 65%,#d9a458);
+  box-shadow:none;
+}
+#order .pont-restaurant-hero .pont-menu-tag__label,
+#order .pont-restaurant-hero .pont-menu-tag strong{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(4px,.8vw,12px);
+  padding:clamp(6px,1.65vw,27px) clamp(6px,2vw,34px);
+  font:700 clamp(10px,2.38vw,40px)/1.15 system-ui,sans-serif;
+  white-space:nowrap;
+}
+#order .pont-restaurant-hero .pont-menu-tag__label{
+  margin:-1px 0 -1px -1px;
+  border:1px solid #a4c4af;
+  border-radius:999px;
+  background:linear-gradient(180deg,#0c3b3c,#062327);
+  box-shadow:inset 0 0 14px #148c8435;
+  color:#f1fcf6;
+}
+#order .pont-restaurant-hero .pont-menu-tag strong{
+  background:none;
+  box-shadow:none;
+  color:#1a1308;
+  font-weight:800;
+  font-size:clamp(11px,2.38vw,40px);
+}
+#order .pont-hero-actions{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(8px,2.4vw,38px);
+  margin-top:clamp(10px,3.6vw,60px);
+}
+#order .pont-hero-actions #callNow{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(6px,1.6vw,24px);
+  min-width:0;
+  flex:1 1 0;
+  min-height:44px;
+  padding:clamp(7px,2.1vw,35px) clamp(7px,2vw,33px);
+  border:clamp(2px,.3vw,5px) solid transparent;
+  border-radius:999px;
+  background:linear-gradient(180deg,#135c56,#062c30 70%,#104b46) padding-box,linear-gradient(110deg,#fff0b6,#a3fff1 45%,#5ee9db 58%,#fff0b6) border-box;
+  box-shadow:inset 0 0 17px #43ead442,0 0 clamp(8px,1.2vw,18px) #68edc577;
+  color:#f0fffa;
+  text-align:center;
+  text-decoration:none;
+  font:750 clamp(11px,3.25vw,54px)/1.2 system-ui,sans-serif;
+}
+#order .pont-hero-actions #callNow[hidden]{display:none}
+#order .pont-hero-actions #callNow:hover{filter:brightness(1.15)}
+#order .pont-hero-actions #callNow:focus-visible{outline:2px solid #baf5df;outline-offset:2px}
+#order .pont-hero-actions #callNow svg,
+#order .pont-menu-tag__label svg{width:1.2em;height:1.2em;flex:none;fill:#fff1c9}
+#order .pont-hero-actions #callNow span{border-inline-start:1px solid #a3fff17d;padding-inline-start:clamp(6px,1.4vw,21px)}
+@media(max-width:530px){
+  #order .pont-hero-actions{max-width:440px;margin-inline:auto}
+  #order .pont-hero-actions #callNow{min-height:44px;font-size:clamp(11px,2.95vw,14px)}
+  #order .pont-restaurant-hero__identity{grid-template-columns:minmax(0,70%)}
+}
+
+/* Restaurant menu shared by every venue. */
+#order .pont-restaurant-hero.pont-menu-reference{
+  max-width:660px;
+  min-height:0;
+  padding:clamp(12px,3vw,24px) 0 0;
+  margin:0 auto clamp(8px,2vw,15px);
+  overflow:hidden;
+  container-type:inline-size;
+  background:radial-gradient(ellipse at 66% 57%,#0d3532,#021a1a 75%);
+}
+#order .pont-menu-reference::before{
+  content:"";position:absolute;z-index:0;pointer-events:none;
+  width:69%;height:35%;left:-23%;top:-20%;
+  border-bottom:2px solid #d9f7ef;
+  border-radius:50%;transform:rotate(-24deg);
+  box-shadow:0 5px 8px #eefffdb5,0 12px 21px #4fc7bb55,inset 0 -12px 14px #bce1d970;
+}
+#order .pont-menu-reference::after{display:none}
+#order .pont-menu-reference .pont-order-logo-image{
+  width:clamp(86px,25cqw,160px)!important;
+  filter:saturate(.25);
+}
+#order .pont-menu-reference .order-topbar{inset:clamp(12px,4cqw,25px) auto auto 4.5%!important}
+#order .pont-menu-reference #close{
+  display:grid;place-items:center;
+  width:clamp(44px,9cqw,58px);height:clamp(44px,7cqw,48px);
+  padding:0!important;border-radius:12px!important;
+  border:1px solid #dceeeeba!important;
+  background:linear-gradient(155deg,#4663618a,#041b1c 59%)!important;
+  box-shadow:inset 0 0 8px #e5fffb50!important;
+}
+#order .pont-menu-reference #close svg{opacity:1}
+#order #orderTitle:focus{outline:none}
+#order .pont-menu-reference .pont-restaurant-hero__identity{
+  position:static;
+  min-height:clamp(80px,19cqw,130px);
+  padding:0 5.5% 8px;
+  grid-template-columns:minmax(0,61%);
+}
+#order .pont-menu-reference .pont-restaurant-hero__identity::after{display:none}
+#order .pont-menu-reference .pont-restaurant-hero__photo{
+  position:absolute;z-index:-1;inset:0 0 20% auto;width:65%;height:80%;
+  object-fit:cover;object-position:58% 50%;opacity:1;
+  -webkit-mask-image:radial-gradient(ellipse 78% 64% at 78% 63%,#000 28%,transparent 84%);
+  mask-image:radial-gradient(ellipse 78% 64% at 78% 63%,#000 28%,transparent 84%);
+}
+#order .pont-menu-reference .pont-order-brand{
+  padding:0 0 0 3cqw;
+  gap:1.2cqw;
+}
+#order .pont-menu-reference .pont-order-brand h2{font-size:clamp(24px,8cqw,51px)!important}
+#order .pont-menu-reference.pont-long-restaurant-name .pont-order-brand h2{font-size:clamp(19px,6cqw,38px)!important}
+#order .pont-menu-reference .pont-hero-location{font:600 clamp(12px,3.8cqw,23px)/1.2 Georgia,serif!important}
+#order .pont-menu-reference .pont-hero-actions{
+  position:relative;display:flex;justify-content:center;align-items:center;
+  gap:clamp(7px,4cqw,26px);max-width:none;
+  margin:0 4%!important;padding:clamp(7px,2.5cqw,17px) 0;
+}
+#order .pont-menu-reference .pont-hero-actions::before{
+  content:"";position:absolute;top:0;inset-inline:0;height:1px;
+  background:linear-gradient(90deg,transparent,#d5b469 30%,#ecffff 52%,#7baf9e 75%,transparent);
+}
+#order .pont-menu-reference .pont-menu-tag{
+  display:flex;gap:clamp(5px,3cqw,23px);width:auto;margin:0;padding:0;border:0;background:none;
+}
+#order .pont-menu-reference .pont-menu-tag__label,
+#order .pont-menu-reference #heroMenuPrice{
+  gap:4px;font:700 clamp(10px,3.3cqw,20px)/1.15 Georgia,serif;
+}
+#order .pont-menu-reference .pont-menu-tag__label{
+  border:0;background:none;box-shadow:none;margin:0;padding:0;
+}
+#order .pont-menu-reference #heroMenuPrice{
+  background:linear-gradient(110deg,#f7c966,#ffe3a2 52%,#eec66b);
+  padding:clamp(4px,1.2cqw,8px) clamp(6px,3cqw,21px);
+}
+#order .pont-menu-reference .pont-menu-tag__label svg{width:1.05em;height:1.05em;fill:currentColor}
+#order .pont-menu-reference #pontOrderRules{
+  display:grid;gap:2px;margin:0!important;
+  padding:0 0 0 clamp(5px,3cqw,20px)!important;
+  border:0!important;border-inline-start:1px solid #c9ab6d88!important;
+  background:none!important;text-align:left!important;color:#f4f8f5!important;
+  font:650 clamp(10px,3.2cqw,19px)/1.13 Georgia,serif!important;
+  font-variant-numeric:tabular-nums;white-space:nowrap;
+}
+#order .pont-menu-reference .pont-order-hours{display:flex;align-items:center;gap:4px}
+#order .pont-menu-reference .pont-order-hours svg{width:1.1em;height:1.1em;flex:none}
+#order #checkout .order-contact{
+  display:flex!important;justify-content:center!important;
+  margin:0 auto clamp(12px,2.9vw,22px)!important;
+}
+#order #checkout .order-contact:has(#callNow[hidden]),
+#order #checkout .order-contact #callNow[hidden]{display:none!important}
+#order #checkout .order-contact #callNow,
+#order #openCheckout{
+  color:#fff!important;border:1.5px solid #e6f7f4!important;
+  background:linear-gradient(180deg,#173c39,#021b1b 48%,#123331)!important;
+  box-shadow:inset 0 0 10px #dfffff65,0 0 12px #d5fff982,0 6px 20px #001c19!important;
+  font:700 clamp(14px,4vw,26px)/1.12 Georgia,serif!important;
+}
+#order #checkout .order-contact #callNow{
+  display:flex!important;justify-content:center!important;align-items:center;gap:clamp(7px,3vw,21px)!important;
+  width:min(81%,490px)!important;min-height:45px!important;
+  padding:clamp(8px,2.4vw,15px) 10px!important;border-radius:999px!important;
+}
+#order #checkout #callNow svg{width:1.35em;height:1.35em;flex:none;fill:currentColor}
+#order #checkout #callNow span{border-inline-start:1px solid #d6eeea8a;padding-inline-start:clamp(7px,2.5vw,18px)}
+#order #checkout #callNow:focus-visible,#order #openCheckout:focus-visible{outline:2px solid #a3fff1;outline-offset:3px}
+
+/* c1: match the framed course sections in the reference. */
+#order #choices{
+  padding:0!important;
+  overflow:hidden;
+  border-color:#70c5bc!important;
+  background:linear-gradient(150deg,#073a36,#041f20 70%)!important;
+  box-shadow:0 0 18px #40d9c32b,inset 0 0 17px #36c5bd30!important;
+}
+#order #choices .pont-dish-group{
+  padding:0 0 6px!important;
+  border-bottom:1px solid #93d5c88a;
+  border-radius:16px;
+  background:linear-gradient(175deg,#1c665846,#062b2b40 31%,#05222355 70%,#21877945);
+}
+#order #choices .pont-dish-group:last-child{border-bottom:0}
+#order #choices .pont-dish-group>summary{
+  margin:0 clamp(10px,4vw,22px);
+  padding:clamp(9px,2.8vw,16px) 3px!important;
+  border-bottom:1px solid #a5d2ca45;
+}
+#order #choices .pont-dish-group>summary strong{
+  font:700 clamp(17px,4.65vw,25px)/1.05 Georgia,serif!important;
+}
+#order #choices .pont-group-symbol{width:24px;height:24px;fill:#f5cf77;flex:none}
+#order #choices .pont-dish-group__content{padding:2px clamp(8px,3.6vw,20px) 3px}
+#order #choices .stepper{background:linear-gradient(170deg,#1b62534a,#09282a)!important;border-color:#d7b36d!important}
+#order #choices .pont-dessert-label{
+  padding:3px 10px;
+  border:1px solid #d1a85e;
+  border-radius:999px;
+  background:linear-gradient(110deg,#705424,#3c2e19);
+}
+#order .pont-menu-reference .pont-order-hours{display:flex;align-items:center;gap:4px}
+#order .pont-menu-reference .pont-order-hours svg{width:1.1em;height:1.1em;flex:none}
+#order #choices .pont-choice-dish:not(.pont-dessert-included){
+  min-height:33px!important;
+  padding-block:1px!important;
+}
+
+/* Fixed, compact Felul 1 heading paired with the included dessert.
+   Felul 2 retains the original collapsible <details> behaviour. */
+#order #choices .pont-first-static{padding-top:0!important;padding-bottom:7px!important}
+#order #choices .pont-first-heading{
+ display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+ align-items:center!important;gap:clamp(7px,2vw,18px)!important;
+ min-height:44px!important;padding:7px 5px 9px!important;
+ margin:0 0 3px!important;min-width:0;
+ border-bottom:1px solid rgba(182,212,194,.25);
+}
+#order #choices .pont-first-label{
+ display:flex!important;align-items:center!important;gap:6px!important;
+ min-width:0;white-space:nowrap;
+}
+#order #choices .pont-first-label>.pont-group-symbol{
+ flex:0 0 23px!important;min-width:23px!important;
+ width:23px!important;height:23px!important;
+}
+#order #choices .pont-first-label>strong{
+ flex:0 0 auto;font:700 clamp(15px,3.5vw,20px)/1.15 system-ui!important;
+ color:#f7f7f0;
+}
+#order #choices .pont-first-label>small{
+ font:400 clamp(9px,2.4vw,12px)/1.2 system-ui!important;
+ color:#c6d6d0;white-space:nowrap;
+}
+#order #choices .pont-first-dessert{
+ display:flex;flex-direction:column;align-items:flex-start;
+ justify-content:center;min-width:0;gap:2px;
+ border-left:1px solid rgba(230,199,127,.47);
+ padding-left:clamp(8px,2.5vw,18px);
+}
+#order #choices .pont-first-dessert>strong{
+ font:700 clamp(12px,2.8vw,15px)/1.15 system-ui!important;
+ color:#f0d998;letter-spacing:.01em;
+}
+#order #choices .pont-first-dessert>span{
+ max-width:100%;font:500 clamp(11px,2.5vw,14px)/1.28 system-ui;
+ color:#f4f7f1;overflow-wrap:anywhere;
+ display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+}
+@media(max-width:390px){
+ #order #choices .pont-first-heading{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:5px!important;padding-inline:0!important}
+ #order #choices .pont-first-label{gap:4px!important}
+ #order #choices .pont-first-label>.pont-group-symbol{flex-basis:18px!important;min-width:18px!important;width:18px!important;height:18px!important}
+ #order #choices .pont-first-label>small{font-size:9px!important}
+ #order #choices .pont-first-dessert{padding-left:7px}
+}
+
+/* WhatsApp checkout: customer data is shown only after the order button is pressed. */
+#order .pont-checkout-launch{display:grid;justify-items:center;gap:6px;margin:14px 12px 24px;padding:0;position:relative;z-index:1}
+#order #openCheckout{display:flex;align-items:center;justify-content:center;gap:10px;width:min(100%,460px);min-height:51px;border-radius:999px;border:1px solid #d6e5e6;background:linear-gradient(135deg,#143e3d,#082826);color:#f5f7f4;font-weight:760;font-size:clamp(13px,3.5vw,16px);box-shadow:0 0 0 1px #ffffff1a,0 7px 20px #0005,0 0 15px #bdd7de35;cursor:pointer;padding:12px 17px}
+#order #openCheckout span{font-size:23px;font-weight:400;line-height:1}
+#order #openCheckout:disabled{opacity:.55;cursor:not-allowed}
+#order #pontCheckoutLaunchHint:not([hidden]){font-size:12px;color:#d8c5a3;text-align:center;margin:0;max-width:350px}
+#order .pont-checkout-overlay:not([hidden]){display:flex!important;position:fixed!important;inset:0!important;z-index:2147483000!important;align-items:center;justify-content:center;padding:max(14px,env(safe-area-inset-top)) 12px max(14px,env(safe-area-inset-bottom));isolation:isolate}
+#order .pont-checkout-backdrop{position:absolute;inset:0;background:#001716d9;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);cursor:pointer}
+#order .pont-checkout-panel{position:relative;z-index:1;width:min(100%,510px);max-height:calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom));overflow-y:auto;overscroll-behavior:contain;border:1px solid #a4c7c3a0;border-radius:19px;background:linear-gradient(145deg,#123b38,#061f21 85%);box-shadow:0 20px 65px #000b,0 0 23px #77d1c433;padding:14px 16px 18px;color:#f7f9f5;scrollbar-width:thin}
+#order .pont-checkout-panel:focus{outline:none}
+#order .pont-checkout-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;padding:3px 0 9px;border-bottom:1px solid #c8e1d33b}
+#order .pont-checkout-top h3{font:650 21px/1.25 Georgia,serif;margin:3px 0 0;color:#fffaf1}
+#order .pont-checkout-kicker{font-size:9px;letter-spacing:.14em;color:#b5d5d1;font-weight:700}
+#order #closeCheckout{flex:none;display:grid;place-items:center;width:36px;height:36px;min-width:36px;min-height:36px;border:1px solid #c7dddd65;border-radius:11px;padding:0;background:#092c2d;color:#f8ffff;font-size:26px;line-height:1}
+#order .pont-checkout-panel>.pont-order-details{margin:0!important;padding:5px 0 0!important;max-width:none!important;min-width:0!important;width:100%!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
+#order .pont-checkout-panel .pont-order-details label{max-width:100%}
+#order .pont-checkout-panel .order-footer{margin-top:12px!important}
+#order .pont-checkout-panel #send{min-height:49px!important;border-radius:999px!important;background:linear-gradient(115deg,#0d6660,#124441)!important;border:1px solid #a0d9d0!important;color:#fff!important;font-weight:750!important}
+#order .pont-checkout-panel #send:disabled{opacity:.55}
+@media(max-width:480px){#order .pont-checkout-panel{padding:12px 13px 15px;border-radius:16px;max-height:calc(100dvh - 18px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}#order .pont-checkout-overlay:not([hidden]){padding:9px 8px}}
+
+/* PONT premium compact checkout — visual reference November 2026 */
+#order .pont-checkout-overlay:not([hidden]){padding:max(10px,env(safe-area-inset-top)) 10px max(10px,env(safe-area-inset-bottom))!important}
+#order .pont-checkout-backdrop{background:rgba(0,19,18,.88)!important;backdrop-filter:blur(12px)!important;-webkit-backdrop-filter:blur(12px)!important}
+#order .pont-checkout-panel{
+ width:min(100%,490px)!important;max-height:calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;
+ padding:clamp(13px,3.2vw,22px)!important;border:1px solid rgba(73,228,211,.68)!important;border-radius:22px!important;
+ background:radial-gradient(ellipse at 90% -10%,rgba(0,145,127,.24),transparent 53%),linear-gradient(165deg,#07382f 0%,#042b28 55%,#022421 100%)!important;
+ box-shadow:inset 0 0 0 1px rgba(90,231,220,.10),0 18px 65px #000c,0 0 23px rgba(0,221,201,.20)!important;
+ color:#f5fbf8!important;
+}
+#order .pont-checkout-top{
+ display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;
+ position:relative;gap:2px!important;min-height:111px!important;padding:0 36px 12px!important;
+ border-bottom:0!important;text-align:center!important;
+}
+#order .pont-checkout-top::after{content:"";position:absolute;bottom:0;left:4%;right:4%;height:1px;background:linear-gradient(90deg,transparent,#e9c47c 35%,#ffe9be 50%,#e9c47c 65%,transparent);opacity:.75}
+#order .pont-checkout-logo{display:block!important;width:clamp(110px,32vw,155px)!important;height:48px!important;object-fit:contain!important;mix-blend-mode:screen}
+#order .pont-checkout-kicker{display:block!important;color:#c2e6df!important;letter-spacing:.21em!important;font-size:10px!important;font-weight:650!important}
+#order .pont-checkout-top h3{margin:4px 0 0!important;color:#fffaf4!important;font:500 clamp(24px,6.1vw,32px)/1.12 Georgia,serif!important;letter-spacing:-.025em!important}
+#order #closeCheckout{position:absolute!important;right:0;top:0;width:37px!important;height:37px!important;min-width:37px!important;min-height:37px!important;border-radius:50%!important;border:1px solid #9ce9df80!important;background:#062d29!important;box-shadow:inset 0 1px 6px #6dcabb1b;color:#fff!important}
+#order .pont-checkout-panel>.pont-order-details{padding-top:11px!important}
+#order .pont-checkout-panel .fulfillment{margin:0 0 10px!important;display:block!important}
+#order .pont-checkout-panel .field-heading{display:block;margin:0 0 7px!important;font-size:12px!important;font-weight:700!important;color:#e6f3ef!important}
+#order .pont-checkout-panel .fulfillment-options{display:grid!important;grid-template-columns:1fr 1fr!important;gap:0!important;width:100%!important;border:1px solid #70cbbd8e;border-radius:999px;overflow:hidden;background:#092e2c}
+#order .pont-checkout-panel .fulfillment-options button{min-width:0!important;min-height:43px!important;padding:8px 9px!important;border:0!important;border-radius:999px!important;background:transparent!important;color:#f3f8f4!important;font-size:13px!important;font-weight:700!important;box-shadow:none!important}
+#order .pont-checkout-panel .fulfillment-options button.selected{background:linear-gradient(125deg,#0a8375,#087569)!important;border:1px solid #3de0c8!important;box-shadow:inset 0 1px 9px #affffb38,0 0 10px #20cdb556!important}
+#order .pont-checkout-panel .pont-order-details>label:not(.pont-loyalty-consent),
+#order .pont-checkout-panel .pont-contact-payment label{
+ display:block!important;margin:8px 0!important;font:650 12px/1.25 system-ui!important;color:#eef6f2!important;
+}
+#order .pont-checkout-panel .pont-order-details label input:not([type=checkbox]),
+#order .pont-checkout-panel .pont-order-details label select,
+#order .pont-checkout-panel .pont-order-details label textarea{
+ width:100%!important;min-width:0!important;max-width:100%!important;
+ min-height:42px!important;height:42px!important;margin:5px 0 0!important;padding:9px 12px!important;
+ border:1px solid #9ed0c8c2!important;border-radius:13px!important;
+ background:linear-gradient(125deg,rgba(131,190,180,.23),rgba(96,150,145,.17))!important;
+ box-shadow:inset 0 1px 6px rgba(205,255,244,.07),0 0 0 1px rgba(255,255,255,.03)!important;
+ color:#fafffb!important;-webkit-text-fill-color:initial!important;font:500 16px/1.3 system-ui!important;
+}
+#order .pont-checkout-panel input::placeholder{color:#b5d0cb!important;opacity:1!important}
+#order .pont-checkout-panel .pont-contact-payment{display:grid!important;grid-template-columns:minmax(0,1.9fr) minmax(110px,1fr)!important;gap:12px!important;align-items:start!important;min-width:0!important}
+#order .pont-checkout-panel .pont-contact-payment label{min-width:0!important}
+#order .pont-checkout-panel .pont-payment-field select{padding-right:20px!important;appearance:auto!important;-webkit-appearance:menulist!important}
+#order .pont-checkout-panel .phone-error:not([hidden]){font-size:11px!important;color:#ffcf9f!important}
+#order .pont-checkout-panel .pont-order-notes{margin:10px 0!important;border-radius:12px!important;border:1px solid #78d8c6a1!important;background:linear-gradient(115deg,#0b524a,#0a3735)!important;overflow:hidden}
+#order .pont-checkout-panel .pont-order-notes>summary{padding:10px 13px!important;color:#f1fbf5!important;font-size:13px!important;min-height:38px!important}
+#order .pont-checkout-panel .pont-order-notes>summary small{color:#d4e2dd!important}
+#order .pont-checkout-panel .pont-checkout-summary{
+ display:grid!important;grid-template-columns:minmax(0,.93fr) minmax(0,1.07fr)!important;align-items:center!important;
+ gap:0!important;margin:12px 0 10px!important;padding:8px 11px!important;
+ border:1px solid #f2cc7d!important;border-radius:16px!important;background:linear-gradient(100deg,#053b32,#07352e)!important;
+ box-shadow:inset 0 1px 10px #ffffff08,0 0 13px #e3c36b30!important;min-height:69px;
+}
+#order .pont-checkout-summary .order-total{display:block!important;min-width:0!important;border:0!important;border-radius:0!important;padding:0 11px 0 0!important;margin:0!important;background:transparent!important;box-shadow:none!important}
+#order .pont-checkout-summary .order-total>span{display:flex!important;flex-direction:column!important;gap:3px!important;color:#f9f7eb!important;font-size:12px!important;font-weight:700!important;white-space:nowrap}
+#order .pont-checkout-summary .order-total strong{display:block!important;color:#f5d590!important;font-size:clamp(20px,5vw,27px)!important;line-height:1.15!important;font-weight:800!important;white-space:nowrap}
+#order .pont-checkout-summary #breakdown{border-left:1px solid #d8c08a8c!important;min-width:0!important;margin:0!important;padding:0 0 0 12px!important;color:#ecf7f2!important;text-align:left!important;font-size:11px!important}
+#order .pont-checkout-summary #breakdown .pont-summary-pieces{display:flex!important;justify-content:flex-start!important;flex-wrap:wrap!important;gap:3px 7px!important;color:#f8f6e9!important;font-size:11px!important}
+#order .pont-checkout-summary #breakdown .pont-summary-piece{color:#f8f6e9!important;font-size:11px!important;font-weight:650!important}
+#order .pont-checkout-summary #breakdown .pont-summary-divider{opacity:.55!important}
+#order .pont-checkout-summary #breakdown .pont-summary-notes{font-size:10px!important;color:#bdd8d2!important;text-align:left!important;margin-top:4px!important}
+#order .pont-checkout-panel .pont-loyalty-consent{
+ display:flex!important;align-items:flex-start!important;gap:10px!important;max-width:none!important;
+ padding:9px 2px!important;margin:6px 0!important;background:transparent!important;border:0!important;box-shadow:none!important
+}
+#order .pont-checkout-panel .pont-loyalty-consent input[type=checkbox]{flex:0 0 22px!important;min-width:22px!important;width:22px!important;height:22px!important;margin:2px 0 0!important;accent-color:#1ec4aa!important}
+#order .pont-checkout-panel .pont-loyalty-consent span{color:#e4f0eb!important;font-size:clamp(11px,2.8vw,13px)!important;line-height:1.42!important;font-weight:450!important}
+#order .pont-checkout-panel .pont-loyalty-consent a{color:#56e5ce!important;text-decoration:underline!important}
+#order .pont-checkout-panel .order-footer{margin:10px 0 0!important;padding:0!important;gap:7px!important}
+#order .pont-checkout-panel #send{
+ width:100%!important;min-height:49px!important;padding:12px 14px!important;border-radius:999px!important;
+ border:1.5px solid #d4f6f2!important;background:linear-gradient(160deg,#116e62,#00463f 80%)!important;
+ color:#fff!important;font:750 clamp(13px,3.6vw,17px)/1.25 system-ui!important;
+ box-shadow:inset 0 2px 7px #adfff438,0 6px 19px #0005,0 0 12px #b3fff450!important;
+}
+#order .pont-checkout-panel #send:disabled{opacity:.55!important}
+#order .pont-checkout-panel #pontSendHint:not([hidden]){padding:6px 9px!important;font-size:11px!important;line-height:1.35!important;border-radius:9px!important;background:#fff2db!important;color:#773e21!important;text-align:center!important}
+#order .pont-checkout-panel #orderMsg:not(:empty){color:#ffe8bf!important;font-size:12px!important}
+@media(max-width:380px){
+ #order .pont-checkout-panel{padding:12px 11px!important}
+ #order .pont-checkout-panel .pont-contact-payment{grid-template-columns:minmax(0,1.65fr) minmax(96px,1fr)!important;gap:8px!important}
+ #order .pont-checkout-panel .pont-order-details label input:not([type=checkbox]),#order .pont-checkout-panel .pont-order-details label select{padding-inline:8px!important}
+ #order .pont-checkout-summary #breakdown{padding-left:8px!important}
+ #order .pont-checkout-summary .order-total{padding-right:7px!important}
+}
+
+/* Exact-reference checkout composition — intentionally overrides legacy form skins. */
+#order .pont-checkout-panel {
+  --pont-cream:#f1f3ec;
+  --pont-aqua:#40e5d5;
+  --pont-gold:#f5d28b;
+  box-sizing:border-box!important;
+  position:relative!important;
+  width:min(calc(100vw - 24px),508px)!important;
+  padding:17px clamp(17px,5.2vw,31px) 28px!important;
+  border:1px solid rgba(69,206,192,.72)!important;
+  border-radius:20px!important;
+  background:
+    radial-gradient(ellipse 83% 42% at -15% -15%,rgba(2,199,180,.33),transparent 75%),
+    radial-gradient(ellipse 73% 34% at 119% 109%,rgba(0,210,192,.2),transparent 80%),
+    linear-gradient(110deg,#002b27 0%,#00372e 52%,#002b29 100%)!important;
+  color:#f4f9f5!important;
+  box-shadow:inset 0 0 0 1px rgba(50,219,195,.14),0 0 0 1px rgba(8,79,71,.2),0 0 26px rgba(6,204,177,.15),0 16px 60px #000b!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+#order .pont-checkout-panel::before {
+  content:"";position:absolute;z-index:0;pointer-events:none;
+  left:-45%;top:-160px;width:160%;height:245px;
+  border-bottom:2px solid rgba(47,234,222,.67);
+  border-radius:0 0 60% 58%;
+  transform:rotate(-13deg);
+  background:linear-gradient(168deg,rgba(17,209,201,.11),rgba(0,193,180,.04) 52%,transparent 70%);
+  box-shadow:0 7px 12px rgba(20,248,223,.32);
+}
+#order .pont-checkout-panel>*{position:relative;z-index:1}
+#order .pont-checkout-top{
+  min-height:139px!important;gap:0!important;
+  padding:0 42px 18px!important;border:0!important;
+  align-items:center!important;justify-content:flex-start!important;
+}
+#order .pont-checkout-top::after{
+  content:"";position:absolute;left:2%;right:2%;bottom:10px;height:1px;
+  background:linear-gradient(90deg,transparent,#e7ba6b 25%,#ffefc9 50%,#e7ba6b 75%,transparent);
+  box-shadow:0 0 9px #ffcd6a96;
+}
+#order .pont-checkout-logo{
+  display:block!important;width:157px!important;max-width:100%!important;
+  height:58px!important;margin:0 auto 3px!important;
+  object-fit:contain!important;mix-blend-mode:screen;
+}
+#order .pont-checkout-kicker{
+  color:#d3e6e2!important;font:550 10px/1.25 system-ui!important;
+  letter-spacing:.23em!important;white-space:nowrap;
+  margin:1px 0 8px!important;
+}
+#order .pont-checkout-top h3{
+  font:500 clamp(30px,7.5vw,39px)/1.05 Georgia,'Times New Roman',serif!important;
+  color:#fffdfa!important;letter-spacing:-.025em!important;
+  margin:0!important;white-space:nowrap;
+}
+#order #closeCheckout{
+  position:absolute!important;top:1px!important;right:-6px!important;
+  width:42px!important;height:42px!important;min-width:42px!important;min-height:42px!important;
+  padding:0!important;border-radius:50%!important;border:1px solid #4b9d93!important;
+  background:linear-gradient(145deg,#064f47,#002e2e)!important;
+  color:#fff!important;font:450 30px/1 system-ui!important;
+  box-shadow:inset 0 0 9px #55e1ce28,0 0 4px #4fe1cf25!important;
+}
+#order .pont-checkout-panel>.pont-order-details{
+  display:block!important;padding:1px 0 0!important;margin:0!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;
+  background:transparent!important;color:inherit!important;
+}
+#order .pont-checkout-panel .pont-checkout-icon{
+  display:inline-block!important;width:18px!important;height:18px!important;
+  flex:0 0 18px!important;color:#fbfdf9!important;
+  vertical-align:middle;stroke:currentColor;fill:none;
+}
+#order .pont-checkout-panel .fulfillment{
+  margin:0 0 14px!important;padding:0!important;background:transparent!important;border:0!important;
+}
+#order .pont-checkout-panel .field-heading{
+  display:flex!important;align-items:center!important;gap:10px!important;
+  margin:0 0 11px!important;
+  color:#f3f6f1!important;font:700 14px/1.3 system-ui!important;
+}
+#order .pont-checkout-panel .field-heading .pont-checkout-icon{
+  width:21px!important;height:21px!important;flex-basis:21px!important;
+}
+#order .pont-checkout-panel .fulfillment-options{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:0!important;
+  background:rgba(4,49,43,.7)!important;border:1px solid rgba(92,180,167,.8)!important;
+  border-radius:999px!important;overflow:hidden!important;min-height:45px!important;
+}
+#order .pont-checkout-panel .fulfillment-options button{
+  display:flex!important;align-items:center!important;justify-content:center!important;gap:8px!important;
+  height:45px!important;min-height:45px!important;padding:6px 10px!important;
+  border:0!important;border-radius:999px!important;
+  color:#f2f6f3!important;background:transparent!important;box-shadow:none!important;
+  font:700 15px/1.2 system-ui!important;
+}
+#order .pont-checkout-panel .fulfillment-options button.selected{
+  border:1px solid #28d6c2!important;background:linear-gradient(115deg,#00685e,#047c6b 60%,#00655b)!important;
+  box-shadow:inset 0 1px 11px rgba(72,255,234,.34),0 0 13px rgba(40,231,207,.48)!important;
+}
+#order .pont-checkout-panel .pont-order-details>label:not(.pont-loyalty-consent),
+#order .pont-checkout-panel .pont-contact-payment label{
+  display:block!important;min-width:0!important;
+  margin:0 0 12px!important;
+  color:#f7f9f6!important;font:700 13px/1.25 system-ui!important;
+}
+#order .pont-checkout-panel .pont-field-caption{
+  display:flex!important;align-items:center!important;gap:9px!important;
+  min-height:21px!important;margin:0 0 7px!important;
+  font:700 13px/1.2 system-ui!important;color:#f5f9f6!important;
+}
+#order .pont-checkout-panel label input:not([type=checkbox]),
+#order .pont-checkout-panel label select,
+#order .pont-checkout-panel label textarea{
+  display:block!important;box-sizing:border-box!important;
+  width:100%!important;min-width:0!important;max-width:100%!important;
+  height:43px!important;min-height:43px!important;
+  margin:0!important;padding:8px 12px!important;
+  border:1px solid rgba(207,245,237,.83)!important;border-radius:14px!important;
+  background:linear-gradient(120deg,rgba(135,202,186,.3),rgba(119,174,162,.22))!important;
+  color:#fff!important;font:500 16px/1.3 system-ui!important;
+  box-shadow:inset 0 2px 4px rgba(247,255,252,.07),0 0 0 1px rgba(21,122,112,.17)!important;
+}
+#order .pont-checkout-panel input::placeholder{
+  color:#bcd5d0!important;opacity:1!important;
+}
+#order .pont-checkout-panel .pont-contact-payment{
+  display:grid!important;grid-template-columns:minmax(0,1.96fr) minmax(106px,1fr)!important;
+  gap:19px!important;align-items:start!important;margin:0!important;
+}
+#order .pont-checkout-panel .pont-contact-payment label{position:relative}
+#order .pont-checkout-panel .pont-payment-field:before{
+  content:"";position:absolute;left:-10px;top:25px;height:44px;width:1px;
+  background:linear-gradient(transparent,#d0c999a0,transparent);
+}
+#order .pont-checkout-panel .pont-payment-field select{
+  padding-right:20px!important;font-size:15px!important;
+  -webkit-appearance:menulist!important;appearance:auto!important;
+}
+#order .pont-checkout-panel .pont-payment-field .pont-field-caption .pont-checkout-icon{color:#fff!important}
+#order .pont-checkout-panel .pont-order-notes{
+  display:block!important;margin:14px 0 13px!important;padding:0!important;
+  border:1px solid rgba(83,222,209,.73)!important;
+  border-radius:13px!important;background:linear-gradient(105deg,#07554e,#063c36)!important;
+  box-shadow:inset 0 1px 6px #5adac924!important;
+}
+#order .pont-checkout-panel .pont-order-notes summary{
+  display:flex!important;align-items:center!important;gap:10px!important;
+  min-height:42px!important;padding:9px 13px!important;list-style:none!important;
+  color:#f3faf6!important;font:700 14px/1.3 system-ui!important;
+}
+#order .pont-checkout-panel .pont-order-notes summary::-webkit-details-marker{display:none}
+#order .pont-checkout-panel .pont-order-notes small{
+  color:#e2e5db!important;font:500 12px/1.3 system-ui!important;
+}
+#order .pont-checkout-panel .pont-note-arrow{
+  margin-left:auto;font-size:27px;font-weight:300;color:#eed195;
+  line-height:1;transition:transform .2s ease;
+}
+#order .pont-checkout-panel .pont-order-notes[open] .pont-note-arrow{transform:rotate(90deg)}
+#order .pont-checkout-summary{
+  display:grid!important;grid-template-columns:minmax(0,.98fr) minmax(0,1.02fr)!important;
+  align-items:center!important;gap:0!important;width:100%!important;min-height:73px!important;
+  margin:15px 0 18px!important;padding:9px 12px!important;
+  border:1.5px solid #f0d395!important;border-radius:18px!important;
+  background:linear-gradient(110deg,#034039,#043b32 58%,#063a33)!important;
+  box-shadow:inset 0 1px 10px #a8fce810,0 0 16px #efd18731!important;
+}
+#order .pont-checkout-summary .order-total{
+  display:flex!important;align-items:center!important;gap:9px!important;
+  background:transparent!important;box-shadow:none!important;
+  border:0!important;border-radius:0!important;padding:0 11px 0 0!important;margin:0!important;
+}
+#order .pont-checkout-summary .pont-summary-icon{
+  display:flex!important;align-items:center!important;flex:0 0 25px!important;
+}
+#order .pont-checkout-summary .pont-summary-icon .pont-checkout-icon{
+  width:25px!important;height:25px!important;color:#fff!important;
+}
+#order .pont-checkout-summary .order-total>span:last-child{
+  display:flex!important;flex-direction:column!important;gap:3px!important;
+  min-width:0;color:#fff!important;
+  font:750 clamp(11px,2.9vw,14px)/1.2 system-ui!important;white-space:nowrap;
+}
+#order .pont-checkout-summary .order-total strong{
+  font:800 clamp(19px,5vw,26px)/1.1 system-ui!important;
+  color:#f4d695!important;white-space:nowrap!important;
+}
+#order .pont-checkout-summary .pont-summary-right{
+  display:grid!important;grid-template-columns:19px minmax(0,1fr) 15px!important;
+  align-items:center!important;gap:7px!important;min-width:0!important;
+  padding-left:12px!important;border-left:1px solid rgba(242,211,146,.79)!important;
+}
+#order .pont-checkout-summary .pont-summary-right>.pont-checkout-icon{
+  width:18px!important;height:18px!important;color:#fff!important;
+}
+#order .pont-checkout-summary #breakdown{
+  margin:0!important;padding:0!important;min-width:0!important;
+  border:0!important;color:#fff!important;font:700 clamp(10px,2.6vw,12px)/1.3 system-ui!important;
+  text-align:left!important;
+}
+#order .pont-checkout-summary #breakdown .pont-summary-pieces{
+  display:flex!important;flex-direction:column!important;
+  align-items:flex-start!important;justify-content:center!important;gap:3px!important;
+  padding:0!important;margin:0!important;
+}
+#order .pont-checkout-summary #breakdown .pont-summary-pieces .pont-summary-piece{
+  color:#fff!important;display:block!important;
+  font:700 clamp(10px,2.6vw,12px)/1.25 system-ui!important;white-space:normal!important;
+}
+#order .pont-checkout-summary #breakdown .pont-summary-notes{display:none!important}
+#order .pont-checkout-summary .pont-summary-chevron{
+  align-self:center;color:#f0d798!important;font-size:27px!important;font-weight:300;line-height:.7;
+}
+#order .pont-checkout-panel .pont-loyalty-consent{
+  display:flex!important;align-items:flex-start!important;gap:12px!important;
+  margin:0 0 14px!important;padding:0 2px!important;
+  border:0!important;background:transparent!important;box-shadow:none!important;
+}
+#order .pont-checkout-panel .pont-loyalty-consent input[type=checkbox]{
+  width:24px!important;height:24px!important;min-width:24px!important;flex:0 0 24px!important;
+  margin:1px 0 0!important;border-radius:7px;accent-color:#25bcab!important;
+}
+#order .pont-checkout-panel .pont-loyalty-consent span{
+  display:inline!important;color:#f8f9f3!important;
+  font:450 clamp(11px,3.05vw,14px)/1.45 Georgia,'Times New Roman',serif!important;
+}
+#order .pont-checkout-panel .pont-loyalty-consent a{
+  color:#4ce2d1!important;text-decoration:underline!important;
+  text-underline-offset:2px;font-weight:700;
+}
+#order .pont-checkout-panel .order-footer{
+  display:flex!important;flex-direction:column!important;gap:8px!important;
+  padding:0!important;margin:16px 0 0!important;
+}
+#order .pont-checkout-panel #send{
+  position:relative!important;width:100%!important;
+  min-height:59px!important;padding:11px 19px 11px 52px!important;
+  border:2px solid #f0fbfa!important;border-radius:999px!important;
+  background:linear-gradient(180deg,#105850 0%,#034940 49%,#002e2c 100%)!important;
+  box-shadow:inset 0 5px 8px rgba(154,245,225,.23),inset 0 -4px 8px rgba(0,20,20,.3),0 0 14px rgba(155,249,238,.45),0 9px 22px #0005!important;
+  color:#fff!important;font:750 clamp(13px,3.55vw,17px)/1.2 system-ui!important;
+  white-space:nowrap!important;text-align:center!important;
+}
+#order .pont-checkout-panel #send:before{
+  content:"";position:absolute;left:clamp(12px,8%,31px);top:50%;
+  transform:translateY(-50%);
+  width:28px;height:28px;background-repeat:no-repeat;background-position:center;background-size:contain;
+  background-image:url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23ffffff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"%3E%3Cpath d="M20.5 11.7a8.5 8.5 0 0 1-12.4 7.5L3.4 20.5l1.4-4.6A8.5 8.5 0 1 1 20.5 11.7Z"/%3E%3Cpath d="M8.4 8.2c.2-.4.5-.4.7-.4h.5l.6 1.6c.1.3-.1.5-.3.8l-.3.4c.7 1.2 1.6 2.1 2.9 2.7l.5-.6c.2-.2.4-.3.7-.2l1.5.7c.3.1.3.3.3.6-.1.8-.7 1.5-1.7 1.7-1 .2-2.5-.4-4.1-1.8-1.7-1.5-2.6-3.6-2.5-4.6 0-.4.4-.8.7-.9Z"/%3E%3C/svg%3E');
+}
+#order .pont-checkout-panel #send:disabled{opacity:.56!important}
+@media(max-width:390px){
+ #order .pont-checkout-panel{padding-inline:13px!important}
+ #order .pont-checkout-top{padding-inline:23px!important}
+ #order .pont-checkout-top h3{font-size:29px!important}
+ #order .pont-checkout-panel .pont-contact-payment{grid-template-columns:minmax(0,1.7fr) minmax(92px,1fr)!important;gap:12px!important}
+ #order .pont-checkout-summary{padding-inline:8px!important}
+ #order .pont-checkout-summary .order-total{gap:5px!important;padding-right:6px!important}
+ #order .pont-checkout-summary .pont-summary-icon{flex-basis:20px!important}
+ #order .pont-checkout-summary .pont-summary-icon .pont-checkout-icon{width:20px!important;height:20px!important}
+ #order .pont-checkout-summary .pont-summary-right{grid-template-columns:15px minmax(0,1fr) 10px!important;gap:4px!important;padding-left:7px!important}
+ #order .pont-checkout-summary .pont-summary-right>.pont-checkout-icon{width:15px!important}
+ #order .pont-checkout-panel #send{padding-left:37px!important;font-size:12px!important}
+ #order .pont-checkout-panel #send:before{width:22px;height:22px;left:12px}
+}
+
+/* Final checkout visibility, iOS form and icon safeguards. */
+#order .pont-checkout-panel #address[hidden]{display:none!important}
+#order .pont-checkout-panel .pont-order-details .address-hint[hidden],
+#order .pont-checkout-panel .phone-error[hidden]{display:none!important}
+#order .pont-checkout-panel .pont-checkout-icon{
+ display:inline-block!important;fill:none!important;stroke:currentColor!important;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;
+}
+#order .pont-checkout-panel input:focus-visible,
+#order .pont-checkout-panel select:focus-visible,
+#order .pont-checkout-panel textarea:focus-visible{
+ outline:2px solid #61eddb!important;outline-offset:2px!important;
+}
+#order .pont-checkout-panel .pont-order-notes label textarea{height:auto!important;min-height:76px!important;resize:vertical}
+#order .pont-checkout-panel .pont-order-notes[open] label{color:#e7f9f4!important}
+#order .pont-checkout-panel .pont-payment-field select option{color:#132522!important;background:#fff!important}
+
+/* Silver-edged menu cards and order controls. */
+#order #checkout{display:block;max-width:660px;padding-inline:clamp(11px,3vw,21px)!important}
+#order #choices{
+  display:grid;gap:clamp(10px,2.8vw,18px);
+  overflow:visible;border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;
+}
+#order #choices .pont-dish-group,
+#order #choices .pont-dish-group:last-child{
+  border:1px solid #a7dad4;border-radius:clamp(16px,4.5vw,26px);
+  padding:0 0 clamp(6px,1.7vw,12px)!important;
+  background:radial-gradient(ellipse at 50% 0,#17615a66,transparent 55%),linear-gradient(145deg,#073732,#031d1d 65%,#07413e);
+  box-shadow:inset 0 0 11px #92d9cd35,0 0 13px #7ce7d749;
+}
+#order #choices .pont-first-heading,
+#order #choices .pont-dish-group>summary{
+  margin:0 clamp(8px,3vw,18px) 3px!important;
+  padding:clamp(8px,2.4vw,15px) 0!important;
+}
+#order #choices .pont-first-heading{grid-template-columns:minmax(0,1.13fr) minmax(0,1fr)}
+#order #choices .pont-first-label>strong,
+#order #choices .pont-dish-group>summary strong{font:700 clamp(16px,4.7vw,27px)/1.1 Georgia,serif!important}
+#order #choices .pont-group-symbol{fill:#f1fffb;min-width:0!important}
+#order #choices .pont-first-dessert{display:grid;grid-template-columns:auto minmax(0,1fr);gap:2px 6px}
+#order #choices .pont-first-dessert svg{grid-row:span 2;align-self:center;width:clamp(16px,4.8vw,26px);height:clamp(16px,4.8vw,26px)}
+#order #choices .pont-first-dessert strong{font:700 clamp(12px,3.4vw,19px)/1 Georgia,serif!important}
+#order #choices .pont-first-dessert>span{font-family:Georgia,serif}
+#order #choices .pont-dish-group__content{padding:2px clamp(8px,2.9vw,16px) 0}
+#order #choices .pont-choice-dish:not(.pont-dessert-included){
+  display:grid!important;
+  grid-template-columns:22px minmax(0,1fr) clamp(62px,17vw,106px) auto;
+  align-items:center!important;
+  min-height:clamp(33px,7.6vw,44px)!important;
+  gap:clamp(4px,1.45vw,11px)!important;
+  padding-block:4px!important;
+}
+#order #choices .pont-dish-name strong{
+  font:700 clamp(12px,3.5vw,19px)/1.22 Georgia,serif!important;
+  white-space:normal;
+  overflow:visible;
+  text-overflow:clip;
+  word-break:normal;
+  -webkit-hyphens:none;
+  hyphens:none;
+  overflow-wrap:break-word;
+}
+#order #choices .pont-dish-price{width:auto!important;min-width:0!important;font:700 clamp(10px,2.9vw,16px)/1 Georgia,serif!important;white-space:nowrap}
+#order #choices .stepper{box-shadow:inset 0 0 6px #f5d17835}
+#order #choices .stepper button{color:#ffda79!important}
+#order .pont-selection-summary{
+  display:flex;align-items:center;gap:clamp(5px,2vw,13px);
+  margin:clamp(12px,2.9vw,22px) 0 0!important;
+  padding:clamp(8px,2.4vw,15px) clamp(8px,2.5vw,17px)!important;
+}
+#order .pont-selection-summary>strong{color:#fff!important;font:700 clamp(11px,3vw,18px)/1.15 Georgia,serif}
+#order .pont-selection-summary .pont-summary-piece{color:#f9d77e!important;font:700 clamp(10px,2.8vw,16px)/1.16 Georgia,serif}
+#order .pont-selection-summary p{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+#order .pont-summary-cart{width:clamp(18px,5.5vw,33px);height:auto;flex:none}
+#order .pont-checkout-launch{margin:clamp(13px,3.8vw,27px) 1.5% 12px}
+#order #openCheckout{width:100%;min-height:51px;gap:clamp(6px,2vw,15px);padding-inline:9px}
+#order #openCheckout .pont-whatsapp-icon{
+  flex:none;width:clamp(22px,6vw,37px);height:auto;box-sizing:content-box;
+  padding-inline-end:clamp(6px,2.7vw,17px);border-inline-end:1px solid #d6eeea8a;
+}
+#order #openCheckout:disabled{opacity:.72}
+#order .pont-checkout-launch::after{
+  content:"";pointer-events:none;width:96%;height:clamp(12px,3.8vw,25px);
+  border-bottom:1px solid #d8f1eb9c;border-radius:0 0 48% 53%;
+  box-shadow:0 4px 7px #e8fff94f;transform:rotate(-1.8deg);
+}
+
+
+/* Checkout as a true full-screen step, compact on small mobile displays. */
+#order .pont-checkout-overlay:not([hidden]){
+ position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;
+ padding:0!important;margin:0!important;z-index:2147483000!important;
+ display:flex!important;align-items:stretch!important;justify-content:stretch!important;
+ background:#032521!important;
+}
+#order .pont-checkout-backdrop{
+ position:absolute!important;inset:0!important;
+ background:#032521!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+#order .pont-checkout-panel{
+ position:relative!important;z-index:1!important;
+ box-sizing:border-box!important;display:block!important;
+ width:100%!important;max-width:none!important;min-width:0!important;
+ height:100%!important;max-height:100dvh!important;min-height:100%!important;
+ margin:0!important;padding:calc(10px + env(safe-area-inset-top)) clamp(14px,4vw,24px) calc(16px + env(safe-area-inset-bottom))!important;
+ border:none!important;border-radius:0!important;box-shadow:none!important;
+ overflow-x:hidden!important;overflow-y:auto!important;
+ overscroll-behavior:contain!important;-webkit-overflow-scrolling:touch;
+}
+#order .pont-checkout-logo{display:none!important}
+#order .pont-checkout-top{
+ min-height:0!important;gap:3px!important;
+ padding:0 42px 12px!important;margin:0 0 7px!important;
+}
+#order .pont-checkout-top h3{font-size:clamp(22px,5vw,28px)!important;line-height:1.16!important}
+#order .pont-checkout-kicker{font-size:9px!important;margin:0 0 3px!important}
+#order #closeCheckout{
+ top:0!important;right:0!important;
+ width:34px!important;height:34px!important;min-width:34px!important;min-height:34px!important;
+ font-size:24px!important;
+}
+#order .pont-checkout-panel>.pont-order-details{padding-top:4px!important}
+#order .pont-checkout-panel .fulfillment{margin-bottom:8px!important}
+#order .pont-checkout-panel .field-heading{font-size:12px!important;margin-bottom:6px!important;gap:6px!important}
+#order .pont-checkout-panel .fulfillment-options{min-height:36px!important}
+#order .pont-checkout-panel .fulfillment-options button{
+ height:36px!important;min-height:36px!important;
+ padding:5px 8px!important;font-size:12px!important;gap:5px!important;
+}
+#order .pont-checkout-panel .pont-checkout-icon{width:16px!important;height:16px!important;flex-basis:16px!important}
+#order .pont-checkout-panel .pont-field-caption{
+ min-height:0!important;margin-bottom:5px!important;
+ font-size:12px!important;gap:6px!important;
+}
+#order .pont-checkout-panel .pont-order-details>label:not(.pont-loyalty-consent),
+#order .pont-checkout-panel .pont-contact-payment label{
+ margin:0 0 8px!important;font-size:12px!important;
+}
+#order .pont-checkout-panel label input:not([type=checkbox]),
+#order .pont-checkout-panel label select,
+#order .pont-checkout-panel label textarea{
+ height:38px!important;min-height:38px!important;
+ padding:7px 10px!important;border-radius:10px!important;
+ font-size:16px!important;
+}
+#order .pont-checkout-panel .pont-contact-payment{gap:9px!important}
+#order .pont-checkout-panel .pont-order-notes{margin:8px 0!important}
+#order .pont-checkout-panel .pont-order-notes summary{
+ min-height:34px!important;padding:6px 10px!important;font-size:12px!important;
+}
+#order .pont-checkout-panel .pont-order-notes label textarea{height:auto!important;min-height:58px!important}
+#order .pont-checkout-panel .pont-checkout-summary{
+ min-height:0!important;margin:9px 0!important;padding:7px 9px!important;border-radius:12px!important;
+}
+#order .pont-checkout-summary .order-total strong{font-size:clamp(18px,4.5vw,23px)!important}
+#order .pont-checkout-summary .pont-summary-icon{flex-basis:20px!important}
+#order .pont-checkout-summary .pont-summary-icon .pont-checkout-icon{width:20px!important;height:20px!important}
+#order .pont-checkout-panel .pont-loyalty-consent{
+ margin:4px 0!important;padding:5px 0!important;gap:8px!important;
+}
+#order .pont-checkout-panel .pont-loyalty-consent input[type=checkbox]{
+ width:18px!important;min-width:18px!important;height:18px!important;flex-basis:18px!important;
+}
+#order .pont-checkout-panel .pont-loyalty-consent span{
+ font-size:11px!important;line-height:1.35!important;
+}
+#order .pont-checkout-panel .order-footer{margin-top:8px!important}
+#order .pont-checkout-panel #send{
+ min-height:42px!important;padding:9px 12px!important;font-size:13px!important;
+}
+@media(max-width:390px){
+ #order .pont-checkout-panel{
+  padding:calc(8px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom))!important;
+ }
+ #order .pont-checkout-top{padding:0 34px 10px!important}
+ #order .pont-checkout-top h3{font-size:23px!important}
+ #order .pont-checkout-panel .pont-contact-payment{
+  grid-template-columns:minmax(0,1.6fr) minmax(90px,1fr)!important;gap:7px!important;
+ }
+ #order .pont-checkout-panel .pont-checkout-summary{padding:6px!important}
+ #order .pont-checkout-panel .pont-checkout-summary #breakdown{font-size:10px!important}
+}
+
+
+/* Checkout isolation on iOS Safari: the parent modal itself must fill the
+   visual viewport, otherwise a fixed child can reveal the menu underneath. */
+#order.pont-checkout-active[open]{
+  position:fixed!important;
+  inset:0!important;
+  top:0!important;right:0!important;bottom:0!important;left:0!important;
+  box-sizing:border-box!important;
+  margin:0!important;padding:0!important;
+  width:100%!important;max-width:100%!important;min-width:100%!important;
+  height:100dvh!important;max-height:100dvh!important;min-height:100dvh!important;
+  border:0!important;border-radius:0!important;
+  background:#032521!important;box-shadow:none!important;
+  overflow:hidden!important;overscroll-behavior:none!important;
+}
+#order.pont-checkout-active::backdrop{
+  background:#032521!important;
+  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+#order.pont-checkout-active #checkout{
+  margin:0!important;padding:0!important;
+}
+#order.pont-checkout-active .pont-checkout-overlay:not([hidden]){
+  position:fixed!important;inset:0!important;
+  width:100%!important;height:100dvh!important;
+  margin:0!important;padding:0!important;
+  background:#032521!important;
+  overflow:hidden!important;
+  z-index:2147483000!important;
+}
+#order.pont-checkout-active .pont-checkout-backdrop{
+  background:#032521!important;
+}
+#order.pont-checkout-active .pont-checkout-panel{
+  width:100%!important;height:100dvh!important;
+  min-height:0!important;max-height:100dvh!important;
+  overflow-y:auto!important;
+}
+@supports not (height:100dvh){
+ #order.pont-checkout-active[open],
+ #order.pont-checkout-active .pont-checkout-overlay:not([hidden]),
+ #order.pont-checkout-active .pont-checkout-panel{
+   height:100vh!important;max-height:100vh!important;
+ }
+}
+
+
+/* Checkout recap: compact counts, expandable full dish list.
+   The WhatsApp action is the single source of the order total. */
+#order .pont-checkout-panel details.pont-order-recap{
+ display:block!important;min-height:0!important;
+ width:100%!important;box-sizing:border-box!important;
+ margin:10px 0!important;padding:0!important;
+ border:1px solid rgba(237,203,133,.85)!important;border-radius:14px!important;
+ background:linear-gradient(120deg,#063c36,#052f2d)!important;
+ box-shadow:inset 0 1px 8px #a1e5d018!important;
+ overflow:hidden!important;
+}
+#order .pont-order-recap-toggle{
+ display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
+ align-items:center!important;column-gap:8px!important;
+ cursor:pointer;list-style:none!important;
+ padding:11px 13px!important;min-height:48px!important;
+ color:#fff!important;
+}
+#order .pont-order-recap-toggle::-webkit-details-marker{display:none!important}
+#order .pont-order-recap-heading{font:750 13px/1.25 system-ui!important;color:#fff!important}
+#order .pont-order-recap-arrow{font:400 22px/1 system-ui!important;color:#e9cf91!important;transition:transform .18s ease}
+#order .pont-order-recap[open] .pont-order-recap-arrow{transform:rotate(180deg)}
+#order .pont-checkout-panel .pont-order-recap #breakdown{
+ grid-column:1/-1!important;display:block!important;min-width:0!important;
+ padding:5px 0 0!important;margin:0!important;border:0!important;
+ font:600 11px/1.35 system-ui!important;color:#d8e8e3!important;
+}
+#order .pont-order-recap #breakdown .pont-summary-pieces{
+ display:flex!important;flex-direction:row!important;align-items:center!important;
+ justify-content:flex-start!important;gap:5px 10px!important;flex-wrap:wrap!important;
+}
+#order .pont-order-recap #breakdown .pont-summary-pieces .pont-summary-piece{
+ font:650 11px/1.3 system-ui!important;color:#e1ece6!important;
+}
+#order .pont-order-recap-details{
+ padding:10px 13px 13px!important;border-top:1px solid rgba(220,238,228,.18)!important;
+ background:rgba(0,24,23,.25)!important;
+}
+#order .pont-recap-dish-list{padding:0!important;margin:0!important;list-style:none!important}
+#order .pont-recap-dish-list li{
+ display:flex!important;align-items:baseline!important;gap:9px!important;
+ padding:6px 0!important;color:#f5f9f5!important;
+ font:500 12px/1.4 system-ui!important;
+}
+#order .pont-recap-dish-list li+li{border-top:1px solid rgba(215,238,227,.14)!important}
+#order .pont-recap-dish-quantity{color:#f2d690!important;font-weight:800!important;white-space:nowrap!important;min-width:31px!important}
+#order .pont-checkout-panel .order-footer #send{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:10px!important;text-align:left!important;min-height:60px!important;
+ padding:10px 15px 10px 51px!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{
+ display:block!important;flex:1 1 auto!important;min-width:0!important;
+ font:750 clamp(11px,3vw,15px)/1.24 system-ui!important;
+ text-align:left!important;white-space:normal!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total{
+ display:flex!important;flex:0 0 auto!important;flex-direction:column!important;
+ align-items:flex-end!important;gap:2px!important;
+ padding-left:9px!important;border-left:1px solid rgba(232,255,245,.45)!important;
+ color:#fff!important;line-height:1.15!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total small{
+ font:550 clamp(9px,2.45vw,11px)/1.2 system-ui!important;white-space:nowrap!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total strong{
+ color:#f6d994!important;font:800 clamp(13px,3.4vw,17px)/1.15 system-ui!important;white-space:nowrap!important;
+}
+@media(max-width:390px){
+ #order .pont-checkout-panel .order-footer #send{padding-left:39px!important;padding-right:10px!important;gap:5px!important}
+ #order .pont-checkout-panel .order-footer #send .pont-send-total{padding-left:6px!important}
+ #order .pont-checkout-panel .order-footer #send .pont-send-total small{font-size:9px!important}
+}
+
+
+/* The checkout confirmation button inherits the exact restaurant-menu CTA finish:
+   identical pill, border, dark gradient, typography, highlights and dimensions. */
+#order #openCheckout,
+#order .pont-checkout-panel .order-footer #send{
+  box-sizing:border-box!important;
+  display:flex!important;align-items:center!important;
+  width:100%!important;min-height:51px!important;
+  border:1.5px solid #e6f7f4!important;border-radius:999px!important;
+  background:linear-gradient(180deg,#173c39,#021b1b 48%,#123331)!important;
+  box-shadow:inset 0 0 10px #dfffff65,0 0 12px #d5fff982,0 6px 20px #001c19!important;
+  color:#fff!important;
+  font:700 clamp(14px,4vw,26px)/1.12 Georgia,serif!important;
+}
+#order .pont-checkout-panel .order-footer #send{
+  justify-content:space-between!important;
+  gap:clamp(6px,2vw,15px)!important;
+  padding:9px!important;
+  text-align:left!important;
+  cursor:pointer;
+}
+#order .pont-checkout-panel .order-footer #send::before{display:none!important;content:none!important}
+#order .pont-checkout-panel .order-footer #send .pont-whatsapp-icon{
+  display:block!important;flex:none!important;
+  width:clamp(22px,6vw,37px)!important;height:auto!important;
+  box-sizing:content-box!important;
+  padding-inline-end:clamp(6px,2.7vw,17px)!important;
+  border-inline-end:1px solid #d6eeea8a!important;
+  color:#fff!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{
+  display:block!important;flex:1 1 auto!important;min-width:0!important;
+  color:#fff!important;
+  font:700 clamp(11px,3.15vw,19px)/1.13 Georgia,serif!important;
+  letter-spacing:0!important;
+  white-space:normal!important;text-align:left!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total{
+  display:flex!important;flex:0 0 auto!important;
+  flex-direction:column!important;align-items:flex-end!important;
+  gap:2px!important;
+  padding-inline-start:clamp(7px,2.5vw,18px)!important;
+  border-inline-start:1px solid #d6eeea8a!important;
+  color:#fff!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total small{
+  font:500 clamp(9px,2.4vw,12px)/1.1 Georgia,serif!important;
+  color:#f1fffc!important;white-space:nowrap!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total strong{
+  font:700 clamp(14px,4vw,22px)/1.1 Georgia,serif!important;
+  color:#f6df9d!important;white-space:nowrap!important;
+}
+#order .pont-checkout-panel .order-footer #send:focus-visible{
+  outline:2px solid #a3fff1!important;outline-offset:3px!important;
+}
+#order .pont-checkout-panel .order-footer #send:disabled{opacity:.72!important;cursor:not-allowed}
+@media(max-width:390px){
+  #order .pont-checkout-panel .order-footer #send{gap:5px!important;padding:8px 7px!important}
+  #order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{font-size:clamp(11px,3vw,14px)!important}
+  #order .pont-checkout-panel .order-footer #send .pont-send-total{padding-inline-start:6px!important}
+}
+
+
+/* Refined total block: balanced typography, centred labels, room for prices. */
+#order .pont-checkout-panel .order-footer #send{
+  gap:clamp(5px,1.7vw,10px)!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{
+  flex:1 1 auto!important;
+  min-width:0!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total{
+  box-sizing:border-box!important;
+  flex:0 0 36%!important;
+  width:36%!important;
+  min-width:112px!important;
+  max-width:165px!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  gap:3px!important;
+  padding:1px 2px 1px clamp(7px,2.3vw,12px)!important;
+  border-inline-start:1px solid #d6eeea8a!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total small{
+  display:block!important;
+  width:100%!important;
+  font:600 clamp(10px,2.7vw,12px)/1.2 Georgia,serif!important;
+  color:#f1fffc!important;
+  text-align:center!important;
+  letter-spacing:0!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total strong{
+  display:block!important;
+  width:100%!important;
+  font:700 clamp(13px,3.5vw,16px)/1.2 Georgia,serif!important;
+  color:#f6df9d!important;
+  text-align:center!important;
+  letter-spacing:0!important;
+  font-variant-numeric:tabular-nums;
+}
+@media(max-width:390px){
+  #order .pont-checkout-panel .order-footer #send .pont-send-total{
+    flex-basis:37%!important;width:37%!important;min-width:108px!important;
+    padding-inline-start:7px!important;
+  }
+  #order .pont-checkout-panel .order-footer #send .pont-send-total small{
+    font-size:10px!important;
+  }
+  #order .pont-checkout-panel .order-footer #send .pont-send-total strong{
+    font-size:14px!important;
+  }
+}
+
+
+/* WhatsApp checkout CTA: keep the action label on one single line. */
+#order .pont-checkout-panel .order-footer #send{
+  flex-wrap:nowrap!important;
+  justify-content:flex-start!important;
+  gap:clamp(4px,1.25vw,8px)!important;
+  padding:9px clamp(7px,2vw,12px)!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-whatsapp-icon{
+  flex:0 0 auto!important;
+  width:clamp(16px,4vw,23px)!important;
+  padding-inline-end:clamp(3px,.8vw,6px)!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  font-size:clamp(9px,2.58vw,13px)!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+  letter-spacing:-.025em!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total{
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-width:0!important;
+  max-width:none!important;
+  padding-inline-start:clamp(5px,1.5vw,10px)!important;
+  gap:2px!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total small{
+  font-size:clamp(9px,2.5vw,11px)!important;
+  white-space:nowrap!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-send-total strong{
+  font-size:clamp(12px,3.4vw,16px)!important;
+  white-space:nowrap!important;
+}
+@media(max-width:390px){
+ #order .pont-checkout-panel .order-footer #send{
+   gap:4px!important;padding:8px 6px!important;
+ }
+ #order .pont-checkout-panel .order-footer #send .pont-whatsapp-icon{
+   width:16px!important;padding-inline-end:3px!important;
+ }
+ #order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{
+   font-size:clamp(9px,2.55vw,10px)!important;
+   letter-spacing:-.04em!important;
+ }
+ #order .pont-checkout-panel .order-footer #send .pont-send-total{
+   flex-basis:auto!important;width:auto!important;min-width:0!important;
+   padding-inline-start:5px!important;
+ }
+}
+
+
+/* Keep the final WhatsApp CTA as luminous as the menu-page CTA,
+   including while the personal details are incomplete. */
+#order .pont-checkout-panel .order-footer #send,
+#order .pont-checkout-panel .order-footer #send:disabled{
+  opacity:1!important;
+  border:1.5px solid #e6f7f4!important;
+  background:linear-gradient(180deg,#173c39,#021b1b 48%,#123331)!important;
+  box-shadow:inset 0 0 10px #dfffff65,0 0 12px #d5fff982,0 6px 20px #001c19!important;
+  color:#fff!important;
+}
+#order .pont-checkout-panel .order-footer #send:disabled{
+  cursor:not-allowed!important;
+}
+
+
+/* Larger WhatsApp label and icon, preserving the existing button geometry. */
+#order .pont-checkout-panel .order-footer #send .pont-whatsapp-icon{
+  width:clamp(18px,4.75vw,22px)!important;
+  padding-inline-end:2px!important;
+}
+#order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{
+  font-size:clamp(10.5px,2.85vw,13.5px)!important;
+  line-height:1.12!important;
+  letter-spacing:-.055em!important;
+  white-space:nowrap!important;
+  overflow:visible!important;
+}
+@media(max-width:390px){
+  #order .pont-checkout-panel .order-footer #send .pont-whatsapp-icon{
+    width:18px!important;
+    padding-inline-end:2px!important;
+  }
+  #order .pont-checkout-panel .order-footer #send .pont-whatsapp-label{
+    font-size:clamp(10.5px,2.85vw,11.1px)!important;
+    letter-spacing:-.065em!important;
+  }
+}

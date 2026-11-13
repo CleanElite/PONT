@@ -1,0 +1,175 @@
+/* Unified PONT navigation: subtle compact pill across public and admin views. */
+.pont-nav-action{
+  box-sizing:border-box!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:7px!important;
+  min-height:34px!important;
+  height:34px!important;
+  max-width:max-content!important;
+  padding:0 11px!important;
+  margin:0!important;
+  background:rgba(8,42,40,.63)!important;
+  color:#e9fff8!important;
+  border:1px solid rgba(140,216,197,.28)!important;
+  border-radius:999px!important;
+  box-shadow:none!important;
+  backdrop-filter:blur(12px);
+  -webkit-backdrop-filter:blur(12px);
+  font:650 12px/1 system-ui,-apple-system,sans-serif!important;
+  letter-spacing:.01em!important;
+  text-decoration:none!important;
+  white-space:nowrap!important;
+  cursor:pointer;
+  flex:none!important;
+  -webkit-tap-highlight-color:transparent;
+}
+.pont-nav-action:hover,.pont-nav-action:focus-visible{
+  background:rgba(18,88,76,.85)!important;
+  border-color:rgba(168,233,206,.68)!important;
+  color:#fff!important;
+}
+.pont-nav-action:focus-visible{outline:2px solid #a4efdb!important;outline-offset:2px!important}
+.pont-nav-action__icon{display:inline-grid;place-items:center;flex:none;width:16px;height:16px;font-size:18px;line-height:1}
+.pont-nav-action__icon svg{width:16px;height:16px;display:block}
+.pont-nav-action__label{display:inline}
+@media(max-width:540px){
+  .pont-nav-action{
+    width:34px!important;min-width:34px!important;max-width:34px!important;
+    padding:0!important;gap:0!important;
+  }
+  .pont-nav-action__label{display:none!important}
+}
+/* Landing page: action already belongs in the upper right, with no added header height. */
+.entry-header .pont-admin-entry.pont-nav-action{justify-self:end!important}
+/* Restaurant gallery: preserve logo centering and existing heading. */
+.menu-header .pont-nav-action{position:relative;z-index:3;align-self:center}
+/* Restaurant detail: free the 48px toolbar strip; the button floats at hero's upper left. */
+#order .order-topbar{
+  position:absolute!important;
+  z-index:8!important;
+  top:13px!important;
+  left:clamp(12px,2.2vw,24px)!important;
+  right:auto!important;
+  width:auto!important;
+  min-height:0!important;
+  height:auto!important;
+  display:block!important;
+  padding:0!important;
+  margin:0!important;
+  background:transparent!important;
+  border:0!important;
+}
+#order .order-topbar #close.pont-nav-action{
+  width:auto!important;min-width:34px!important;min-height:34px!important;height:34px!important;
+  padding:0 11px!important;font-size:12px!important;
+}
+@media(max-width:540px){
+ #order .order-topbar{top:12px!important;left:12px!important}
+ #order .order-topbar #close.pont-nav-action{width:34px!important;max-width:34px!important;padding:0!important}
+}
+/* Admin screens retain the slim header grid, but share the same treatment. */
+.pont-admin .admin-topbar .admin-back.pont-nav-action{
+  justify-self:start!important;
+  border-color:rgba(140,216,197,.28)!important;
+  padding:0 11px!important;
+  min-height:34px!important;
+  height:34px!important;
+}
+@media(max-width:540px){
+  .pont-admin .admin-topbar .admin-back.pont-nav-action{
+    width:34px!important;min-width:34px!important;padding:0!important;
+  }
+}
+/* Sign-in: place back action in the existing card without an extra bar. */
+main.pont-login-surface{position:relative;padding-top:max(60px,clamp(60px,7vw,68px))}
+.pont-login-surface .links .pont-nav-action{position:absolute;top:14px;left:clamp(15px,4vw,28px)}
+
+
+/* PONT refined navigation · fine-line arrows, softly illuminated glass, no heavy pill. */
+.pont-nav-action,
+#order .order-topbar #close.pont-nav-action,
+.pont-admin .admin-topbar .admin-back.pont-nav-action{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  min-height:38px!important;
+  height:38px!important;
+  min-width:38px!important;
+  border-radius:13px!important;
+  border:1px solid rgba(166,216,202,.23)!important;
+  background:linear-gradient(150deg,rgba(40,87,79,.38),rgba(6,33,32,.35))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.11),0 4px 15px rgba(0,12,14,.11)!important;
+  color:#eafff6!important;
+  font-size:12px!important;
+  font-weight:560!important;
+  letter-spacing:.02em!important;
+  gap:9px!important;
+  padding:0 12px!important;
+  transition:background .2s ease,border-color .2s ease,box-shadow .2s ease,transform .2s ease;
+}
+.pont-nav-action::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(115deg,rgba(255,255,255,.085),transparent 44%);
+  pointer-events:none;
+}
+.pont-nav-action__icon{
+  display:grid!important;
+  place-items:center!important;
+  width:19px!important;
+  height:19px!important;
+  flex:0 0 19px!important;
+  color:#d0eee1!important;
+}
+.pont-nav-action__icon svg{
+  display:block;
+  width:18px!important;
+  height:18px!important;
+  stroke-width:1.65;
+}
+.pont-nav-action__label{
+  display:inline;
+  font-size:12px!important;
+  font-weight:570!important;
+}
+.pont-nav-action:hover,
+#order .order-topbar #close.pont-nav-action:hover,
+.pont-admin .admin-topbar .admin-back.pont-nav-action:hover{
+  background:linear-gradient(140deg,rgba(37,111,90,.67),rgba(10,66,56,.62))!important;
+  border-color:rgba(196,238,205,.53)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 6px 18px rgba(0,15,15,.16)!important;
+  transform:translateY(-1px);
+}
+.pont-nav-action:active{transform:scale(.97)!important}
+.pont-nav-action:focus-visible{
+  outline:2px solid #c0eed5!important;
+  outline-offset:3px!important;
+}
+@media(max-width:540px){
+  .pont-nav-action,
+  #order .order-topbar #close.pont-nav-action,
+  .pont-admin .admin-topbar .admin-back.pont-nav-action{
+    width:38px!important;
+    min-width:38px!important;
+    max-width:38px!important;
+    height:38px!important;
+    min-height:38px!important;
+    padding:0!important;
+    gap:0!important;
+    border-radius:12px!important;
+  }
+  .pont-nav-action__label{display:none!important}
+}
+/* Consistent integration regardless of older page-specific styles. */
+.entry-header .pont-admin-entry.pont-nav-action{min-height:38px!important}
+.menu-header .menu-back.pont-nav-action{max-height:38px!important}
+#order .order-topbar{top:10px!important;left:clamp(10px,2.1vw,22px)!important}
+.pont-admin .admin-topbar .admin-back.pont-nav-action{align-self:center!important}
+@media(prefers-reduced-motion:reduce){
+  .pont-nav-action{transition:none!important}
+  .pont-nav-action:hover{transform:none!important}
+}

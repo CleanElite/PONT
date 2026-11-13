@@ -1,22 +1,513 @@
 <!doctype html>
 <html lang="ro">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="pont-build" content="2026-11-10-statistics-v2">
-<meta name="theme-color" content="#000000">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="PONT">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>PONT</title>
-<link rel="icon" type="image/png" sizes="192x192" href="./pranz-slobozia/pont-192.png?v=20261109-ios2">
-<link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
-<link rel="manifest" href="./pranz-slobozia/manifest.webmanifest?v=20261109-ios2">
-<meta http-equiv="refresh" content="0;url=./pranz-slobozia/">
-<link rel="canonical" href="./pranz-slobozia/">
+<head><meta charset="utf-8"><script>if(navigator.standalone===true)document.documentElement.classList.add("pont-ios-standalone");</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="PONT"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/png" sizes="192x192" href="./pont-192.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"><link rel="manifest" href="./manifest.webmanifest?v=iosfix-20261109-2"><script src="./install.js?v=safari-4" defer></script>
+<link rel="preload" as="image" href="./assets/pont-intro-c3.jpg">
+<link rel="preload" as="image" href="./assets/pont-intro-logo-c4.png">
+<style>
+:root {
+  color-scheme:dark;
+  --night:#030405;
+  --text:#f4f4f1;
+  --muted:#bbc3c9;
+  --line:rgba(210,228,239,.17);
+  --ice:#b3e4f3;
+  --bronze:#edd1a7;
+  --intro-art:url("./assets/pont-intro-c3.jpg");
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{
+  margin:0;color:var(--text);background:var(--night);
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+a{color:inherit;text-decoration:none}
+button{font:inherit}
+:where(a,button):focus-visible{outline:2px solid var(--ice);outline-offset:4px}
+.entry{
+  min-height:100svh;
+  background:var(--night);
+}
+.entry-header,.entry-content,.entry-footer{width:min(100% - 36px,1040px);margin-inline:auto}
+.entry-header{
+  min-height:86px;border-bottom:1px solid var(--line);
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;
+}
+.entry-mark{display:block;height:auto}
+.entry-location{
+  margin:0;color:var(--muted);font-size:.67rem;font-weight:650;
+  text-transform:uppercase;letter-spacing:.17em;
+}
+.pont-admin-entry{
+  justify-self:end;display:flex;align-items:center;gap:7px;
+  min-height:44px;padding:8px 3px;color:var(--muted);font-size:.75rem;
+}
+.pont-admin-entry svg,.install-button svg{width:15px;height:15px;flex:none}
+.pont-admin-entry:hover,.install-button:hover{color:var(--text)}
+.entry-heading{text-align:center;padding:clamp(28px,4.7vw,55px) 0 clamp(20px,3.6vw,34px)}
+.entry-heading .entry-location{color:var(--ice);margin-bottom:9px}
+.entry-heading h1{
+  margin:0;font:400 clamp(2.28rem,6vw,4.65rem)/.99 Georgia,serif;
+  letter-spacing:-.059em;text-wrap:balance;
+}
+.entry-heading em{font-weight:400;color:#d2e1e7}
+.entry-description{margin:13px 0 0;color:var(--muted);font-size:clamp(.87rem,2.5vw,1rem)}
+.choice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,2vw,18px)}
+.choice-card{
+  --accent:var(--ice);position:relative;isolation:isolate;overflow:hidden;min-width:0;
+  display:flex;flex-direction:column;justify-content:space-between;
+  min-height:clamp(290px,46vw,410px);
+  padding:clamp(12px,2.8vw,30px);border:1px solid var(--line);border-radius:clamp(15px,2.5vw,24px);
+  background:#16191a;box-shadow:0 18px 38px #0003;
+}
+.choice-card.night{--accent:var(--bronze);background:#1a1411}
+.choice-photo{
+  position:absolute;z-index:-2;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:50% 33%;
+}
+.choice-card::before{
+  content:"";position:absolute;z-index:-1;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,#07090b97 0,transparent 24%,#07090b16 39%,#07090bbd 67%,#08090a 98%);
+}
+.choice-card:hover,.choice-card:focus-visible{border-color:var(--accent)}
+.choice-index{
+  align-self:flex-start;display:inline-flex;align-items:center;gap:7px;max-width:100%;
+  padding:6px 8px;color:#fff;background:#101214b8;border:1px solid #f4f8fc37;border-radius:6px;
+  font-size:clamp(.60rem,1.25vw,.70rem);font-weight:650;letter-spacing:.10em;line-height:1.3;
+}
+.choice-index b{color:var(--accent);font-weight:650;font-variant-numeric:tabular-nums}
+.choice-title{
+  margin:0;font:400 clamp(1.45rem,4.5vw,3.08rem)/1 Georgia,serif;
+  letter-spacing:-.047em;text-wrap:balance;
+}
+.choice-caption{margin:9px 0 14px;color:#d7d9d8;font-size:clamp(.75rem,1.7vw,.94rem);line-height:1.45}
+.choice-action{
+  display:flex;align-items:center;justify-content:space-between;gap:5px;
+  padding-top:9px;border-top:1px solid #edf6fa35;color:var(--accent);
+  font-size:clamp(.71rem,1.6vw,.86rem);font-weight:650;
+}
+.choice-arrow{width:19px;height:19px;flex:none}
+.entry-footer{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;
+  margin-top:clamp(18px,3vw,27px);padding:8px 0 max(12px,env(safe-area-inset-bottom));
+  border-top:1px solid var(--line);color:var(--muted);font-size:.75rem;
+}
+.entry-footer p{margin:0}
+.install-button{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;
+  padding:8px 0;border:0;background:none;color:var(--ice);
+  font-size:.78rem;font-weight:650;cursor:pointer;
+}
+#install-help{
+  width:min(420px,calc(100% - 32px));max-height:85svh;padding:24px;
+  border:1px solid var(--line);border-radius:18px;background:#111a20;color:var(--text);
+}
+#install-help h2{margin-top:0;font:400 2rem Georgia,serif}
+#install-help::backdrop{background:#030507c9}
+#install-help button{padding:8px 14px;border:1px solid var(--line);border-radius:8px}
+
+.pont-intro{position:fixed;inset:0;z-index:20;overflow:hidden;overscroll-behavior:none}
+.pont-intro__art{position:absolute;inset:0;background:var(--night)}
+.pont-intro__art img{display:block;width:100%;height:100%;object-fit:contain}
+
+.pont-intro__panel{
+  display:none;position:absolute;inset:0;
+  background:var(--night) var(--intro-art) center / contain no-repeat;
+}
+.pont-intro__panel.left{clip-path:inset(0 50% 0 0);--curtain-motion:pont-curtain-left}
+.pont-intro__panel.right{clip-path:inset(0 0 0 50%);--curtain-motion:pont-curtain-right}
+.pont-intro.is-splitting .pont-intro__art{visibility:hidden}
+.pont-intro.is-splitting .pont-intro__panel{
+  display:block;animation:var(--curtain-motion) 1.32s linear both;
+}
+.pont-intro.is-matching :is(.pont-intro__art,.pont-intro__panel)::before{
+  content:"";position:absolute;left:var(--well-left);top:var(--well-top);
+  width:var(--well-width);height:var(--well-height);
+  background:#03090f;border-radius:25%;box-shadow:0 0 12px 6px #03090f;
+}
+.pont-intro__led{
+  position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;
+}
+.pont-intro.is-splitting .pont-intro__led{opacity:1}
+.pont-intro__led path{
+  fill:none;stroke:url(#pont-led-silver);stroke-width:1.15;
+  stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke;
+  filter:drop-shadow(0 0 4px #c8e9fa9c);
+}
+.entry.intro-playing .entry-mark{position:relative;z-index:21;transform-origin:0 0}
+html.pont-intro-active{overflow:hidden}
+.entry.intro-reveal{overflow-x:clip}
+.entry.intro-reveal .choice-card{
+  animation:pont-choice-in .62s .86s cubic-bezier(.32,0,.24,1) both;
+}
+.entry.intro-reveal .day{--card-start:-18vw}
+.entry.intro-reveal .night{--card-start:18vw}
+@keyframes pont-curtain-left{
+  0%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,50.00% 80%,50.00% 90%,50.00% 100%,0% 100%)}
+  6.25%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,50.00% 80%,49.96% 90%,49.44% 100%,0% 100%)}
+  12.5%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,49.83% 80%,49.05% 90%,47.85% 100%,0% 100%)}
+  18.75%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,49.58% 70%,48.51% 80%,47.06% 90%,45.39% 100%,0% 100%)}
+  25%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,49.94% 50%,49.17% 60%,47.79% 70%,46.06% 80%,44.16% 90%,42.19% 100%,0% 100%)}
+  31.25%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,49.74% 40%,48.56% 50%,46.83% 60%,44.82% 70%,42.68% 80%,40.52% 90%,38.40% 100%,0% 100%)}
+  37.5%{clip-path:polygon(0% 0%,50.00% 0%,50.00% 10%,50.00% 20%,49.33% 30%,47.70% 40%,45.59% 50%,43.27% 60%,40.89% 70%,38.55% 80%,36.31% 90%,34.18% 100%,0% 100%)}
+  43.75%{clip-path:polygon(0% 0%,50.00% 0%,49.91% 10%,48.64% 20%,46.50% 30%,43.98% 40%,41.34% 50%,38.74% 60%,36.24% 70%,33.89% 80%,31.69% 90%,29.66% 100%,0% 100%)}
+  50%{clip-path:polygon(0% 0%,49.54% 0%,47.57% 10%,44.86% 20%,41.91% 30%,38.97% 40%,36.16% 50%,33.53% 60%,31.10% 70%,28.88% 80%,26.85% 90%,25.00% 100%,0% 100%)}
+  56.25%{clip-path:polygon(0% 0%,45.96% 0%,42.65% 10%,39.27% 20%,36.05% 30%,33.07% 40%,30.35% 50%,27.90% 60%,25.70% 70%,23.72% 80%,21.94% 90%,20.34% 100%,0% 100%)}
+  62.5%{clip-path:polygon(0% 0%,39.67% 0%,35.91% 10%,32.47% 20%,29.39% 30%,26.67% 40%,24.26% 50%,22.14% 60%,20.27% 70%,18.61% 80%,17.13% 90%,15.82% 100%,0% 100%)}
+  68.75%{clip-path:polygon(0% 0%,31.65% 0%,28.11% 10%,25.06% 20%,22.43% 30%,20.17% 40%,18.21% 50%,16.52% 60%,15.04% 70%,13.74% 80%,12.60% 90%,11.60% 100%,0% 100%)}
+  75%{clip-path:polygon(0% 0%,22.88% 0%,20.03% 10%,17.65% 20%,15.65% 30%,13.96% 40%,12.53% 50%,11.30% 60%,10.24% 70%,9.32% 80%,8.52% 90%,7.81% 100%,0% 100%)}
+  81.25%{clip-path:polygon(0% 0%,14.35% 0%,12.41% 10%,10.83% 20%,9.53% 30%,8.45% 40%,7.54% 50%,6.77% 60%,6.11% 70%,5.54% 80%,5.04% 90%,4.61% 100%,0% 100%)}
+  87.5%{clip-path:polygon(0% 0%,7.03% 0%,6.02% 10%,5.22% 20%,4.56% 30%,4.02% 40%,3.57% 50%,3.19% 60%,2.87% 70%,2.59% 80%,2.35% 90%,2.15% 100%,0% 100%)}
+  93.75%{clip-path:polygon(0% 0%,1.92% 0%,1.63% 10%,1.40% 20%,1.22% 30%,1.07% 40%,0.95% 50%,0.84% 60%,0.76% 70%,0.68% 80%,0.62% 90%,0.56% 100%,0% 100%)}
+  100%{clip-path:polygon(0% 0%,0.00% 0%,0.00% 10%,0.00% 20%,0.00% 30%,0.00% 40%,0.00% 50%,0.00% 60%,0.00% 70%,0.00% 80%,0.00% 90%,0.00% 100%,0% 100%)}
+}
+@keyframes pont-curtain-right{
+  0%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,50.00% 80%,50.00% 90%,50.00% 100%,100% 100%)}
+  6.25%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,50.00% 80%,50.04% 90%,50.56% 100%,100% 100%)}
+  12.5%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.00% 70%,50.17% 80%,50.95% 90%,52.15% 100%,100% 100%)}
+  18.75%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.00% 50%,50.00% 60%,50.42% 70%,51.49% 80%,52.94% 90%,54.61% 100%,100% 100%)}
+  25%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.00% 40%,50.06% 50%,50.83% 60%,52.21% 70%,53.94% 80%,55.84% 90%,57.81% 100%,100% 100%)}
+  31.25%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.00% 30%,50.26% 40%,51.44% 50%,53.17% 60%,55.18% 70%,57.32% 80%,59.48% 90%,61.60% 100%,100% 100%)}
+  37.5%{clip-path:polygon(100% 0%,50.00% 0%,50.00% 10%,50.00% 20%,50.67% 30%,52.30% 40%,54.41% 50%,56.73% 60%,59.11% 70%,61.45% 80%,63.69% 90%,65.82% 100%,100% 100%)}
+  43.75%{clip-path:polygon(100% 0%,50.00% 0%,50.09% 10%,51.36% 20%,53.50% 30%,56.02% 40%,58.66% 50%,61.26% 60%,63.76% 70%,66.11% 80%,68.31% 90%,70.34% 100%,100% 100%)}
+  50%{clip-path:polygon(100% 0%,50.46% 0%,52.43% 10%,55.14% 20%,58.09% 30%,61.03% 40%,63.84% 50%,66.47% 60%,68.90% 70%,71.12% 80%,73.15% 90%,75.00% 100%,100% 100%)}
+  56.25%{clip-path:polygon(100% 0%,54.04% 0%,57.35% 10%,60.73% 20%,63.95% 30%,66.93% 40%,69.65% 50%,72.10% 60%,74.30% 70%,76.28% 80%,78.06% 90%,79.66% 100%,100% 100%)}
+  62.5%{clip-path:polygon(100% 0%,60.33% 0%,64.09% 10%,67.53% 20%,70.61% 30%,73.33% 40%,75.74% 50%,77.86% 60%,79.73% 70%,81.39% 80%,82.87% 90%,84.18% 100%,100% 100%)}
+  68.75%{clip-path:polygon(100% 0%,68.35% 0%,71.89% 10%,74.94% 20%,77.57% 30%,79.83% 40%,81.79% 50%,83.48% 60%,84.96% 70%,86.26% 80%,87.40% 90%,88.40% 100%,100% 100%)}
+  75%{clip-path:polygon(100% 0%,77.12% 0%,79.97% 10%,82.35% 20%,84.35% 30%,86.04% 40%,87.47% 50%,88.70% 60%,89.76% 70%,90.68% 80%,91.48% 90%,92.19% 100%,100% 100%)}
+  81.25%{clip-path:polygon(100% 0%,85.65% 0%,87.59% 10%,89.17% 20%,90.47% 30%,91.55% 40%,92.46% 50%,93.23% 60%,93.89% 70%,94.46% 80%,94.96% 90%,95.39% 100%,100% 100%)}
+  87.5%{clip-path:polygon(100% 0%,92.97% 0%,93.98% 10%,94.78% 20%,95.44% 30%,95.98% 40%,96.43% 50%,96.81% 60%,97.13% 70%,97.41% 80%,97.65% 90%,97.85% 100%,100% 100%)}
+  93.75%{clip-path:polygon(100% 0%,98.08% 0%,98.37% 10%,98.60% 20%,98.78% 30%,98.93% 40%,99.05% 50%,99.16% 60%,99.24% 70%,99.32% 80%,99.38% 90%,99.44% 100%,100% 100%)}
+  100%{clip-path:polygon(100% 0%,100.00% 0%,100.00% 10%,100.00% 20%,100.00% 30%,100.00% 40%,100.00% 50%,100.00% 60%,100.00% 70%,100.00% 80%,100.00% 90%,100.00% 100%,100% 100%)}
+}
+@keyframes pont-choice-in{
+  from{transform:translateX(var(--card-start));opacity:0}
+  to{transform:translateX(0);opacity:1}
+}
+@media(max-width:520px){
+  .entry-header,.entry-content,.entry-footer{width:calc(100% - 26px)}
+  .entry-header{min-height:66px}
+  .entry-header .entry-location{font-size:.56rem;letter-spacing:.10em}
+  .pont-admin-entry{font-size:.64rem;gap:4px}
+  .pont-admin-entry svg{width:12px;height:12px}
+  .choice-card{min-height:clamp(279px,78vw,330px)}
+  .choice-title{min-height:1.96em;display:flex;align-items:end}
+  .choice-photo{object-position:50% 12%}
+  .choice-caption{min-height:2.9em;margin:7px 0 11px}
+}
+@media(max-width:365px){
+  .entry-header .entry-location{max-width:6ch;overflow-wrap:normal}
+  .entry-footer{justify-content:center;text-align:center}
+  .entry-footer p{width:100%}
+}
+@media(hover:hover) and (prefers-reduced-motion:no-preference){
+  .choice-card,.choice-photo,.choice-arrow{transition:transform .46s cubic-bezier(.2,.75,.25,1),border-color .24s}
+  .choice-card:hover{transform:translateY(-3px)}
+  .choice-card:hover .choice-photo{transform:scale(1.035)}
+  .choice-card:hover .choice-arrow{transform:translateX(3px)}
+}
+@media(prefers-reduced-motion:reduce){.pont-intro{display:none!important}}
+
+.entry{position:relative;isolation:isolate;background:radial-gradient(ellipse at 50% 35%,#082026 0%,#03090b 58%,#030405 89%)}
+.entry-orbits{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;overflow:hidden}
+.entry-header,.entry-content,.entry-footer{width:min(84%,700px)}
+.entry-header{display:flex;flex-direction:column;gap:0;justify-content:center;min-height:0;border:0;padding-top:clamp(38px,8vw,72px)}
+.entry-header .entry-mark{width:clamp(146px,37vw,260px)}
+.entry-city{display:flex;align-items:center;gap:10px;margin:0;color:#edf1f1;font:400 clamp(.59rem,1.7vw,.95rem)/1 Georgia,serif;letter-spacing:.42em;text-indent:.42em;text-transform:uppercase}
+.entry-city::before,.entry-city::after{content:"";width:clamp(24px,9vw,65px);height:1px;background:linear-gradient(90deg,transparent,#e6ffff)}
+.entry-city::after{transform:scaleX(-1)}
+.pont-admin-entry{position:absolute;right:clamp(10px,3vw,28px);top:clamp(10px,3vw,26px);min-height:0;padding:5px 9px;border:1px solid #75b8c573;border-radius:999px;color:#f4f8f8;background:#030c10b8;font-size:clamp(.68rem,2.6vw,.9rem);gap:5px}
+.pont-admin-entry svg{width:clamp(13px,3vw,17px);height:auto}
+.entry-heading{padding:clamp(14px,3vw,24px) 0 clamp(13px,3.6vw,30px)}
+.entry-heading h1{font:italic 400 clamp(1.41rem,5.4vw,2.98rem)/1.06 Georgia,serif;letter-spacing:-.025em}
+.entry-heading h1 span{display:block}
+.entry-heading h1 span+span{margin-top:3px;color:#c8d4d8;font-size:.86em}
+.entry-heading::after{content:"";display:block;width:58%;height:1px;margin:clamp(10px,2vw,18px) auto 0;background:linear-gradient(90deg,transparent,#30dcec 44%,#cbffff 50%,#30dcec 56%,transparent);box-shadow:0 0 11px #3ee7f36e}
+.choice{grid-template-columns:minmax(0,1fr);gap:clamp(9px,2.9vw,22px)}
+.choice-card,.choice-card.night{
+  --accent:#c5fbff;min-height:0;aspect-ratio:2.47;justify-content:center;
+  padding:clamp(8px,2.25vw,21px) clamp(12px,6.45vw,53px);
+  border:1px solid #9cebf4ba;border-radius:clamp(16px,5.2vw,44px);
+  background:#09242a;box-shadow:inset 0 -1px 13px #42ddeb52,0 0 14px #32d9eb26,0 10px 25px #0004;
+}
+.choice-photo{inset:0 0 0 auto;width:56%;height:100%;object-position:55% 50%;filter:brightness(1.19) saturate(1.07)}
+.choice-card::before{
+  background:linear-gradient(90deg,#09242a 0%,#09242a 41%,#09242a9e 51%,transparent 64%),linear-gradient(0deg,#0e60672c,transparent 20%);
+}
+.choice-card::after{
+  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+  background:radial-gradient(ellipse at 10% 100%,#49e6f25c,transparent 42%);
+}
+.choice-copy{width:59%}
+.choice-index{display:flex;align-items:center;gap:clamp(5px,2vw,15px);padding:0;border:0;background:none;font-size:clamp(.49rem,1.8vw,.97rem);letter-spacing:.21em;text-transform:uppercase}
+.choice-icon,.choice-action{
+  display:grid;place-items:center;width:clamp(23px,6vw,50px);height:clamp(23px,6vw,50px);
+  flex:none;border-radius:50%;border:1px solid #a5edf4dc;color:#f4fdff;box-shadow:inset 0 0 7px #43dbea33;
+}
+.choice-icon svg,.choice-action svg{width:65%;height:65%}
+.day .choice-icon svg{color:#ffdb67}
+.choice-title{margin:3px 0 4px;font:italic 400 clamp(1.22rem,5.3vw,3.1rem)/1 Georgia,serif;letter-spacing:-.04em;text-wrap:initial}
+.choice-caption{margin:0 0 clamp(4px,1.2vw,11px);max-width:22ch;font-size:clamp(.63rem,2.35vw,1.17rem);line-height:1.18;color:#f4f7f7}
+.choice-action{padding:0}
+.entry-footer{justify-content:center;flex-direction:column;gap:clamp(12px,3.9vw,32px);border:0;margin-top:clamp(10px,4.8vw,37px);padding:0 0 max(18px,env(safe-area-inset-bottom))}
+.entry-footer .install-button{min-height:0;padding:clamp(7px,1.8vw,13px) clamp(12px,5vw,37px);border:1px solid #7bbbc887;border-radius:999px;background:#030c10;color:#f4f7f8;font-size:clamp(.70rem,2.55vw,1.18rem);font-weight:500;box-shadow:inset 0 -2px 9px #22dbed25}
+.entry-footer .install-button svg{width:clamp(15px,3.5vw,23px);height:auto}
+.entry-footer p{font:400 clamp(.49rem,1.95vw,1.12rem)/1.3 Georgia,serif;letter-spacing:.21em;color:#f1f2f1;text-transform:uppercase;text-align:center}
+.entry-pin{display:flex;align-items:center;justify-content:center;gap:12px;width:75%;color:#acd1df;margin-top:calc(-1 * clamp(4px,2vw,14px))}
+.entry-pin::before,.entry-pin::after{content:"";width:40%;height:1px;background:linear-gradient(90deg,transparent,#a5c3cc)}
+.entry-pin::after{transform:scaleX(-1)}
+.entry-pin svg{width:clamp(12px,3vw,22px);height:auto}
+@media(max-width:520px){
+  .entry-header,.entry-content,.entry-footer{width:84%}
+  .choice-card,.choice-card.night{min-height:120px}
+  .choice-title{min-height:0;display:block}
+  .choice-caption{min-height:0}
+  .entry-footer{flex-wrap:nowrap}
+  .pont-admin-entry svg{width:13px}
+}
+
+@media(max-width:520px) and (min-height:680px){
+  .entry{display:flex;flex-direction:column}
+  .entry-header{padding-top:clamp(38px,6.5svh,60px)}
+  .entry-content{flex:1;display:flex;flex-direction:column;justify-content:space-around}
+  .choice-card,.choice-card.night{min-height:clamp(135px,21svh,192px)}
+  .entry-footer{padding-bottom:max(22px,3svh,env(safe-area-inset-bottom))}
+}
+
+/* Installed app only: avoid space-around gaps caused by the taller standalone viewport. */
+@media (max-width:520px) and (min-height:680px) and (display-mode:standalone){
+  .entry-content{
+    justify-content:center!important;
+    gap:clamp(22px,3.8svh,38px)!important;
+  }
+  .entry-heading{padding-bottom:0!important}
+  .choice{flex:0 0 auto!important}
+}
+@media (max-width:520px) and (min-height:680px){
+  html.pont-ios-standalone .entry-content{
+    justify-content:center!important;
+    gap:clamp(22px,3.8svh,38px)!important;
+  }
+  html.pont-ios-standalone .entry-heading{padding-bottom:0!important}
+  html.pont-ios-standalone .choice{flex:0 0 auto!important}
+}
+</style>
 </head>
-<body>
-<p><a href="./pranz-slobozia/">Deschide PONT</a></p>
-<script>location.replace('./pranz-slobozia/')</script>
-</body>
+<link rel="stylesheet" href="./pont-navigation.css?v=2"><body class="entry-page">
+<div class="entry">
+  <svg class="entry-orbits" viewBox="0 0 1024 1536" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="entry-orbit" x1="0" y1="0" x2="1" y2=".9"><stop stop-color="#137986" stop-opacity="0"/><stop offset=".48" stop-color="#5bf6ff"/><stop offset=".67" stop-color="#d4ffff"/><stop offset="1" stop-color="#1f6d87" stop-opacity="0"/></linearGradient>
+      <filter id="entry-orbit-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="14"/></filter>
+    </defs>
+    <g fill="none" stroke="url(#entry-orbit)" opacity=".8">
+      <path d="M-92 326C26 126 176 7 367-62M670 1592c251-75 371-213 424-377" stroke-width="35" opacity=".7" filter="url(#entry-orbit-glow)"/>
+      <path d="M-92 326C26 126 176 7 367-62M670 1592c251-75 371-213 424-377" stroke-width="3"/>
+      <path d="M-104 371C33 136 186 14 406-68M627 1599c256-47 423-207 475-396" stroke-width="1" opacity=".4"/>
+    </g>
+  </svg>
+  <header class="entry-header">
+    <a href="./" aria-label="PONT – pagina principală" title="Acasă" style="display:inline-flex;align-items:center;justify-content:flex-start;justify-self:start"><img class="entry-mark" src="./assets/pont-intro-logo-c4.png" alt="PONT" width="260" height="108"></a>
+    <p class="entry-city">Slobozia</p>
+    <a href="./login/" class="pont-admin-entry" aria-label="Acces administrator">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M10 2h4l.6 3 2 .9 2.6-1.5 2 3.4-2.2 2v2.4l2.2 2-2 3.4-2.6-1.5-2 .9-.6 3h-4l-.6-3-2-.9-2.6 1.5-2-3.4 2.2-2V9.8l-2.2-2 2-3.4L7.4 6l2-.9z" transform="translate(0 1)"/></svg>
+      Administrator
+    </a>
+  </header>
+  <main class="entry-content">
+    <section class="entry-heading" aria-labelledby="entry-title">
+      <h1 id="entry-title"><span>Ce mâncăm azi?</span><span>Unde ieșim diseară?</span></h1>
+    </section>
+    <nav class="choice" aria-label="Alege între meniul zilei și ieșirea în oraș">
+      <a class="choice-card day" href="./meniul-zilei/?v=header-20261109-5">
+        <img class="choice-photo" src="./assets/choice-lunch.webp" alt="" width="414" height="339" decoding="async">
+        <div class="choice-copy">
+          <span class="choice-index"><span class="choice-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3M5 5l2 2m10 10 2 2M5 19l2-2M17 7l2-2"/></svg></span>La prânz</span>
+          <h2 class="choice-title">Meniul zilei</h2>
+          <p class="choice-caption">Vezi ce gătesc azi restaurantele din oraș.</p>
+          <span class="choice-action" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></span>
+        </div>
+      </a>
+      <a class="choice-card night" href="./iesire-in-oras/?v=localuri-4">
+        <img class="choice-photo" src="./assets/choice-evening.webp" alt="" width="414" height="339" decoding="async">
+        <div class="choice-copy">
+          <span class="choice-index"><span class="choice-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><path d="M19 17A8 8 0 0 1 10 4a8.5 8.5 0 1 0 9 13Z"/></svg></span>Diseară</span>
+          <h2 class="choice-title">Ieșire în oraș</h2>
+          <p class="choice-caption">Alege restaurantul după atmosfera serii.</p>
+          <span class="choice-action" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></span>
+        </div>
+      </a>
+    </nav>
+  </main>
+  <footer class="entry-footer">
+    <button type="button" class="install-button" id="install-pont">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg>
+      Descarcă aplicația PONT
+    </button>
+    <p>Două feluri de a te bucura de oraș</p>
+    <span class="entry-pin" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.2"/></svg></span>
+  </footer>
+  <dialog id="install-help" aria-labelledby="install-title">
+    <h2 id="install-title">Instalează PONT</h2><p></p>
+    <form method="dialog"><button class="install-button">Am înțeles</button></form>
+  </dialog>
+<div class="pont-intro" id="pont-intro" hidden>
+  <div class="pont-intro__art" aria-hidden="true">
+    <img src="./assets/pont-intro-c3.jpg" alt="" width="865" height="1536" fetchpriority="high">
+  </div>
+  <div class="pont-intro__panel left" aria-hidden="true"></div>
+  <div class="pont-intro__panel right" aria-hidden="true"></div>
+  <svg class="pont-intro__led" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="pont-led-silver" gradientUnits="userSpaceOnUse" x1="0" x2="0" y1="86" y2="100">
+        <stop stop-color="#fff" stop-opacity="0"/>
+        <stop offset=".28" stop-color="#f1f8fc"/>
+        <stop offset=".56" stop-color="#cedfea" stop-opacity=".68"/>
+        <stop offset="1" stop-color="#a6c3d4" stop-opacity=".15"/>
+      </linearGradient>
+    </defs>
+    <path/><path/>
+  </svg>
+</div>
+</div>
+<script>
+(() => {
+  const motion = matchMedia('(prefers-reduced-motion: reduce)');
+  if (motion.matches) return;
+
+  const intro = document.querySelector('#pont-intro');
+  const page = document.querySelector('.entry');
+  const art = intro.querySelector('.pont-intro__art');
+  const image = art.querySelector('img');
+  const logo = page.querySelector('.entry-mark');
+  const leftPanel = intro.querySelector('.pont-intro__panel.left');
+  const led = intro.querySelector('.pont-intro__led');
+  const ledGradient = led.querySelector('linearGradient');
+  const [leftLed, rightLed] = led.querySelectorAll('path');
+  let ledFrame;
+  const curtainDuration = 1320;
+  const root = document.documentElement;
+  const liftDuration = 850;
+  const revealDuration = 1480;
+  let readyTimer, holdTimer, finishTimer, flightMotion;
+  let started = false, leaving = false, finished = false;
+
+  function finish() {
+    if (finished) return;
+    finished = true;
+    clearTimeout(readyTimer);
+    clearTimeout(holdTimer);
+    clearTimeout(finishTimer);
+    cancelAnimationFrame(ledFrame);
+    intro.hidden = true;
+    page.classList.remove('intro-playing', 'intro-reveal');
+    root.classList.remove('pont-intro-active');
+    page.inert = false;
+    flightMotion?.cancel();
+    logo.style.removeProperty('transform');
+    window.removeEventListener('pagehide', finish);
+    window.removeEventListener('resize', onResize);
+    document.removeEventListener('keydown', onKey);
+    motion.removeEventListener?.('change', onMotion);
+  }
+
+  function onKey(event) {
+    if (event.key === 'Escape') finish();
+  }
+
+  function onMotion(event) {
+    if (event.matches) finish();
+  }
+
+  function onResize() {
+    if (started) placeLogo();
+  }
+
+  function placeLogo() {
+    if (typeof logo.animate !== 'function' || !logo.complete || !logo.naturalWidth) return;
+    // The flight starts at the 260 × 108 wordmark crop in the new intro image.
+    const bounds = intro.getBoundingClientRect();
+    const scale = Math.min(bounds.width / image.naturalWidth, bounds.height / image.naturalHeight);
+    const left = (bounds.width - image.naturalWidth * scale) / 2 + 303 * scale;
+    const top = (bounds.height - image.naturalHeight * scale) / 2 + 688 * scale;
+    const sourceWidth = 260 * scale;
+    const sourceHeight = 108 * scale;
+    if (!sourceWidth) return;
+
+    intro.style.setProperty('--well-left', (left - 9 * scale) + 'px');
+    intro.style.setProperty('--well-top', (top - 9 * scale) + 'px');
+    intro.style.setProperty('--well-width', (sourceWidth + 18 * scale) + 'px');
+    intro.style.setProperty('--well-height', (sourceHeight + 18 * scale) + 'px');
+    // During the lift the logo is already moving relative to its live header position.
+    if (leaving) return;
+    logo.style.removeProperty('transform');
+    const target = logo.getBoundingClientRect();
+    if (!target.width || target.bottom <= 0) return;
+    logo.style.transform = `translate(${left - target.left}px,${top - target.top}px) scale(${sourceWidth / target.width})`;
+    intro.classList.add('is-matching');
+    page.classList.add('intro-playing');
+  }
+
+  function lightCurtain() {
+    const startedAt = performance.now();
+    function draw(now) {
+      if (finished) return;
+      const time = now - startedAt;
+      const p = Math.min(time / curtainDuration, 1);
+      const shape = getComputedStyle(leftPanel).clipPath;
+      // Read the same interpolated edge that clips the panel, excluding its outer corners.
+      const points = [...shape.matchAll(/([\d.]+)%\s+([\d.]+)%/g)].slice(1, -1);
+      if (points.length > 1) {
+        const path = mirror => points.map((point, index) =>
+          (index ? 'L' : 'M') + (mirror ? 100 - Number(point[1]) : point[1]) + ' ' + point[2]
+        ).join(' ');
+        leftLed.setAttribute('d', path(false));
+        rightLed.setAttribute('d', path(true));
+        const rise = Math.min(1, Math.pow(Math.max(0, time) / 650, .68));
+        const tip = 100 - rise * 96;
+        ledGradient.setAttribute('y1', String(tip - 6));
+        ledGradient.setAttribute('y2', String(tip + 32));
+        led.style.opacity = String(Math.min(1, time / 80) * Math.min(1, (1 - p) * 4));
+      }
+      if (p < 1) ledFrame = requestAnimationFrame(draw);
+      else led.style.opacity = '0';
+    }
+    ledFrame = requestAnimationFrame(draw);
+  }
+
+  function splitCurtain() {
+    if (finished || leaving) return;
+    leaving = true;
+    if (page.classList.contains('intro-playing')) {
+      flightMotion = logo.animate(
+        [{ transform:logo.style.transform }, { transform:'none' }],
+        { duration:liftDuration - 105, delay:105, easing:'cubic-bezier(.42,0,.26,1)', fill:'both' }
+      );
+    }
+    intro.classList.add('is-splitting');
+    page.classList.add('intro-reveal');
+    lightCurtain();
+    finishTimer = setTimeout(finish, revealDuration);
+  }
+
+  function ready() {
+    if (finished || started) return;
+    if (!image.naturalWidth) { finish(); return; }
+    started = true;
+    clearTimeout(readyTimer);
+    placeLogo();
+    holdTimer = setTimeout(splitCurtain, 950);
+  }
+
+  intro.hidden = false;
+  page.inert = true;
+  root.classList.add('pont-intro-active');
+  window.addEventListener('pagehide', finish);
+  window.addEventListener('resize', onResize);
+  document.addEventListener('keydown', onKey);
+  motion.addEventListener?.('change', onMotion);
+  readyTimer = setTimeout(finish, 4000);
+  Promise.all([image.decode(), logo.decode().catch(() => {})]).then(ready, finish);
+})();
+</script>
+<script type="module" src="./pont-privacy-consent.js?v=consent-audit-20261113-v4"></script></body>
 </html>

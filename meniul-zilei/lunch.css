@@ -1,0 +1,38 @@
+body.lunch{background:#f6f0e8;color:#312430}
+.lunch header,.lunch main,.lunch footer{max-width:840px}
+.lunch header{gap:8px}.lunch header img{display:block;width:132px;height:auto;max-width:100%}
+.lunch header .search-link,.lunch #close{background:#ede1d9;color:#492b40;font-size:.81rem}
+.lunch .hero{position:relative;padding:clamp(25px,5vw,46px) clamp(17px,4vw,34px);margin-bottom:24px;border-radius:23px;background:linear-gradient(125deg,#492b40,#57364e);color:#fff7ee}
+.lunch .hero::after{display:none}.lunch .hero .tag{padding:0;background:none;color:#f2c9a9;font-size:.64rem;letter-spacing:.12em}
+.lunch .hero h1{font-size:clamp(38px,7vw,65px);margin:9px 0 0;letter-spacing:-.04em}
+.lunch .hero h1 em{color:#f2c9a9}.lunch .hero p{margin:10px 0 0;color:#fff7ee;font-size:.88rem}
+.hero-index{position:absolute;right:16px;top:14px;color:#f2c9a9;font-size:.58rem;letter-spacing:.12em}
+.lunch #customer>.muted,.lunch .row #date,.lunch footer{color:#69535f}
+.lunch #customer h2{margin:6px 0}.lunch #customer>.muted{margin:4px 0 12px;font-size:.82rem}
+.lunch #customer>#list+h2{margin-top:28px}.lunch footer{border-color:#d5c4bd}
+#list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(8px,2vw,14px)}
+#list .restaurant{min-width:0;position:relative;border:1px solid #dacac2;border-radius:15px;background:#fffbf6;box-shadow:0 4px 12px #492b4009}
+#list .featured{border-color:#a87680;background:#f7ece3}
+.lunch .restaurant-open{position:relative;width:100%;height:100%;display:grid;align-content:start;justify-items:start;gap:7px;text-align:left;border-radius:inherit;padding:12px;background:none;color:#312430}
+.lunch .restaurant-open:hover{background:#492b4008;box-shadow:none}
+.restaurant-logo{display:grid;place-items:center;width:clamp(42px,9vw,57px);aspect-ratio:1;border-radius:10px;background:#ede1d9;color:#653b57}
+.restaurant-logo svg{width:88%;height:auto}.restaurant-content{display:grid;gap:4px;min-width:0}
+.restaurant-name{font:normal clamp(1rem,3.4vw,1.35rem)/1.13 Georgia,serif;overflow-wrap:anywhere}
+.restaurant-price{color:#653b57;font-size:.83rem}.restaurant-price small{color:#69535f}
+.restaurant-arrow{position:absolute;top:12px;right:12px;color:#653b57}
+.featured-label{max-width:calc(100% - 20px);color:#653b57;font-size:.65rem;line-height:1.25}
+.featured-label small{color:inherit}
+.lunch #order{width:min(520px,calc(100% - 24px));padding:20px;overscroll-behavior:contain;background:#fffbf6;color:#312430}
+.lunch #order h2{font-size:clamp(1.55rem,5vw,2.1rem);margin:14px 0 8px}
+.lunch #checkout{padding:0;border:0;background:transparent}
+.lunch #send{background:#492b40;color:#fff7ee}
+.lunch .quantity{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.lunch .stepper{grid-template-columns:40px 42px 40px;gap:3px;flex-shrink:0}
+.lunch .stepper input{padding-inline:2px}
+#combo-price{margin:0 0 12px;font-weight:700}
+.order-footer{position:sticky;bottom:-20px;background:#fffbf6;border-top:1px solid #dacac2;padding:12px 0;display:grid;gap:8px}
+#breakdown{color:#69535f;font-size:.85rem}
+#orderMsg:empty{display:none}
+@media(max-width:375px){.lunch .quantity{display:block}}
+@media(prefers-reduced-motion:no-preference){#list .restaurant{animation:reveal .35s ease-out var(--delay) both}}
+@keyframes reveal{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}

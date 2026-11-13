@@ -1,0 +1,654 @@
+#pontMenuTemplates { margin-bottom: 1.25rem; }
+.pont-model-toolbar, .pont-model-actions { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; }
+.pont-model-toolbar h2 { margin: 0 auto 0 0; }
+.pont-model-toolbar label { display: flex; gap: .45rem; align-items: center; margin: 0; }
+.pont-model-toolbar select { width: auto; max-width: min(48vw, 18rem); }
+.pont-model-hint, #pontModelStatus, #pontModelError { margin: .5rem 0; }
+#pontModelStatus:empty, #pontModelError:empty { display: none; }
+#pontModelError { color: #ffc3af; }
+#pontModelList { display: grid; gap: .5rem; }
+.pont-model-row { border: 1px solid var(--admin-line, #285451); border-radius: 12px; padding: .7rem .85rem; display: grid; gap: .45rem 1rem; grid-template-columns: minmax(0,1fr) auto; }
+.pont-model-row h3, .pont-model-row p, .pont-model-row dl, .pont-model-row dd { margin: 0; overflow-wrap: anywhere; }
+.pont-model-row dl, .pont-model-row p { grid-column: 1; }
+.pont-model-row dl > div { display: flex; gap: .5rem; align-items: baseline; }
+.pont-model-row dt { flex: 0 0 4rem; opacity: .8; font-size: .85em; }
+.pont-model-row .pont-model-actions { grid-column: 2; grid-row: 1 / span 2; align-self: center; }
+.pont-admin .pont-model-dialog { max-height: 86dvh; max-width: min(44rem, calc(100% - 1.5rem)); overflow-y: auto; text-align: start; }
+.pont-model-dialog .pont-model-actions { justify-content: flex-end; }
+.pont-dish-checklist { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: .6rem; margin: .75rem 0; }
+.pont-dish-checklist fieldset { min-width: 0; padding: .45rem .55rem; border: 1px solid var(--admin-line, #285451); border-radius: 8px; }
+.pont-dish-checklist label { display: flex; margin: 0; align-items: center; gap: .45rem; padding-block: .25rem; overflow-wrap: anywhere; }
+.pont-dish-checklist input[type="checkbox"] { flex: none; width: 1rem; height: 1rem; margin: 0; min-height: 0; }
+.pont-menu-archive { margin-top: .5rem; }
+.pont-menu-archive > summary {
+  width: fit-content;
+  cursor: pointer;
+  padding: .3rem .5rem;
+  border: 1px solid var(--admin-line, #285451);
+  border-radius: 8px;
+  font-size: .875rem;
+}
+.pont-archive-row {
+  padding: .5rem 0;
+  border-bottom: 1px solid var(--admin-line, #285451);
+  overflow-wrap: anywhere;
+}
+.pont-archive-row p, .pont-archive-row dl, .pont-archive-row dd { margin: 0; }
+.pont-archive-row dl > div { display: flex; gap: .5rem; }
+.pont-archive-row dt { flex: 0 0 3.5rem; }
+@media (max-width: 600px) {
+  .pont-model-row { grid-template-columns: minmax(0,1fr); }
+  .pont-model-row .pont-model-actions { grid-column: 1; grid-row: auto; }
+}
+
+.pont-checklist-option { display: flex; align-items: center; justify-content: space-between; gap: .4rem; flex-wrap: wrap; }
+.pont-checklist-option + .pont-checklist-option { border-top: 1px solid var(--admin-line, #285451); }
+.pont-checklist-price { display: flex; align-items: center; gap: .25rem; font-size: .85em; white-space: nowrap; }
+.pont-dish-checklist .pont-checklist-price input { width: 5rem; margin: 0; }
+
+
+/* Compact daily publishing: show five dishes per category, keep all selectable. */
+.pont-admin #pontDailyDishes .pont-daily-scroll-list{
+  --pont-dish-row-height:50px;
+  --pont-visible-dishes:3;
+  max-height:calc(var(--pont-visible-dishes) * var(--pont-dish-row-height));
+  overflow-y:auto;
+  overflow-x:hidden;
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+}
+.pont-admin #pontDailyDishes .pont-daily-fieldset--second .pont-daily-scroll-list{--pont-visible-dishes:5}
+.pont-admin #pontDailyDishes .pont-daily-scroll-list::-webkit-scrollbar{display:none;width:0;height:0}
+.pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option{
+  box-sizing:border-box;
+  min-height:var(--pont-dish-row-height);
+  padding:6px 3px;
+}
+.pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option label{
+  min-width:0;
+  flex:1 1 auto;
+}
+.pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-price{flex:0 0 auto}
+@media(max-width:430px){
+  .pont-admin #pontDailyDishes .pont-daily-scroll-list{--pont-dish-row-height:55px}
+  .pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option{gap:5px}
+}
+
+
+/* Fixed, non-scrolling selection summary under each daily menu category. */
+.pont-admin #pontDailyDishes .pont-daily-course-counter{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:0;
+  min-height:29px;
+  margin-top:6px;
+  padding:6px 4px 2px;
+  border-top:1px solid var(--admin-line,#285451);
+  color:#bcd9ce;
+  font-size:12px;
+  font-weight:600;
+  white-space:nowrap;
+  font-variant-numeric:tabular-nums;
+}
+.pont-admin #pontDailyDishes .pont-daily-course-counter span:last-child{
+  color:#aaf3d3;
+}
+
+
+/* Daily menu: dish name left, price next, classic tick box at far right. */
+.pont-admin #pontDailyDishes .pont-daily-choice{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto 24px!important;
+  align-items:center!important;
+  gap:8px!important;
+  flex-wrap:nowrap!important;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice-name{
+  min-width:0!important;
+  width:auto!important;
+  margin:0!important;
+  padding:4px 0!important;
+  cursor:pointer;
+  overflow-wrap:anywhere;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice>.pont-checklist-price{
+  justify-self:end;
+  min-width:0;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice>input[type="checkbox"]{
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  display:grid!important;
+  place-items:center!important;
+  width:22px!important;
+  min-width:22px!important;
+  height:22px!important;
+  min-height:22px!important;
+  margin:0!important;
+  padding:0!important;
+  border:1.5px solid #9ed0c0!important;
+  border-radius:6px!important;
+  background:rgba(4,41,36,.78)!important;
+  box-shadow:none!important;
+  cursor:pointer;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice>input[type="checkbox"]::before{
+  content:""!important;
+  display:block!important;
+  width:11px!important;
+  height:6px!important;
+  border:0!important;
+  border-left:2.5px solid #06342b!important;
+  border-bottom:2.5px solid #06342b!important;
+  border-radius:0!important;
+  background:transparent!important;
+  transform:rotate(-45deg) scale(0)!important;
+  transform-origin:center!important;
+  justify-self:center!important;
+  box-shadow:none!important;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice>input[type="checkbox"]:checked{
+  background:#a7f1cb!important;
+  border-color:#a7f1cb!important;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice>input[type="checkbox"]:checked::before{
+  transform:rotate(-45deg) scale(1)!important;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice>input[type="checkbox"]:focus-visible{
+  outline:2px solid #e1fff1!important;
+  outline-offset:3px!important;
+}
+@media(max-width:400px){
+  .pont-admin #pontDailyDishes .pont-daily-choice{gap:5px!important;grid-template-columns:minmax(0,1fr) auto 22px!important}
+  .pont-admin #pontDailyDishes .pont-daily-choice>.pont-checklist-price{font-size:12px!important}
+}
+
+
+/* Mobile-first compact daily menu rows: never break a dish name letter by letter. */
+.pont-admin #pontDailyDishes .pont-daily-choice{
+  grid-template-columns:minmax(0,1fr) max-content 24px!important;
+  min-height:44px!important;
+  padding:5px 2px!important;
+  gap:7px!important;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice-name{
+  min-width:0!important;
+  max-width:100%!important;
+  display:block!important;
+  font-size:12px!important;
+  line-height:1.25!important;
+  font-weight:500!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice-name span{
+  display:block!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  text-overflow:ellipsis!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice>.pont-checklist-price{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:3px!important;
+  min-width:0!important;
+  max-width:90px!important;
+  white-space:nowrap!important;
+  font-size:11px!important;
+  font-variant-numeric:tabular-nums;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice>.pont-checklist-price input[data-price]{
+  box-sizing:border-box!important;
+  display:inline-block!important;
+  flex:0 0 49px!important;
+  width:49px!important;
+  min-width:0!important;
+  max-width:49px!important;
+  height:30px!important;
+  min-height:30px!important;
+  padding:3px 4px!important;
+  margin:0!important;
+  font-size:13px!important;
+  line-height:1.1!important;
+  border-radius:8px!important;
+  text-align:center!important;
+  appearance:textfield;
+  -moz-appearance:textfield;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice>.pont-checklist-price input[data-price]::-webkit-inner-spin-button,
+.pont-admin #pontDailyDishes .pont-daily-choice>.pont-checklist-price input[data-price]::-webkit-outer-spin-button{
+  -webkit-appearance:none;
+  margin:0;
+}
+.pont-admin #pontDailyDishes .pont-daily-choice>input[type="checkbox"]{
+  width:23px!important;
+  height:23px!important;
+  min-width:23px!important;
+  min-height:23px!important;
+  justify-self:end!important;
+}
+@media(max-width:650px){
+  .pont-admin #pontDailyDishes{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:12px!important;
+  }
+  .pont-admin #pontDailyDishes fieldset{
+    min-width:0!important;
+    width:100%!important;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-choice{
+    grid-template-columns:minmax(0,1fr) max-content 24px!important;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-choice-name{
+    font-size:13px!important;
+  }
+}
+
+
+/* Daily menu layout: first course and dessert above, full-width second course below. */
+.pont-admin #pontDailyDishes{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-areas:"first dessert" "second second"!important;
+  column-gap:12px!important;
+  row-gap:14px!important;
+  align-items:stretch!important;
+}
+.pont-admin #pontDailyDishes .pont-daily-fieldset{
+  box-sizing:border-box!important;
+  min-width:0!important;
+  width:100%!important;
+  max-width:100%!important;
+  margin:0!important;
+}
+.pont-admin #pontDailyDishes .pont-daily-fieldset--first{grid-area:first!important}
+.pont-admin #pontDailyDishes .pont-daily-fieldset--second{grid-area:second!important}
+.pont-admin #pontDailyDishes .pont-daily-fieldset--dessert{grid-area:dessert!important}
+/* In narrower half-width cards, keep names and tick visible; price occupies a short second line. */
+@media(max-width:720px){
+  .pont-admin #pontDailyDishes{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px 9px!important}
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-choice,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-choice{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 23px!important;
+    grid-template-areas:"dish-name dish-check" "dish-price dish-check"!important;
+    align-items:center!important;
+    gap:2px 4px!important;
+    min-height:55px!important;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-choice-name,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-choice-name{
+    grid-area:dish-name!important;
+    font-size:12px!important;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-choice>.pont-checklist-price,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-choice>.pont-checklist-price{
+    grid-area:dish-price!important;
+    justify-self:start!important;
+    max-width:100%!important;
+    font-size:11px!important;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-choice>input[type="checkbox"],
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-choice>input[type="checkbox"]{
+    grid-area:dish-check!important;
+    justify-self:end!important;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-course-counter,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-course-counter{
+    justify-content:center!important;
+    flex-wrap:wrap!important;
+    font-size:10px!important;
+    gap:0!important;
+    white-space:normal!important;
+    text-align:center!important;
+  }
+}
+
+
+/* One-click reusable model action in the daily menu editor. */
+.pont-admin #pontDailySaveModel{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  padding:9px 12px;
+  min-height:40px;
+  max-width:100%;
+  border:1px solid #83c9b5;
+  border-radius:11px;
+  background:rgba(19,76,68,.75);
+  color:#d6f7e9;
+  font-size:13px;
+  font-weight:650;
+  line-height:1.25;
+  white-space:nowrap;
+}
+.pont-admin #pontDailySaveModel.is-saved{
+  color:#092e22;
+  border-color:#a8edc8;
+  background:#acf0cb;
+  box-shadow:0 0 12px rgba(98,228,168,.15);
+}
+.pont-admin #pontDailySaveModel:disabled:not(.is-saved){opacity:.65;cursor:wait}
+@media(max-width:420px){
+  .pont-admin #pontDailyBuilder .pont-dish-actions{gap:7px}
+  .pont-admin #pontDailySaveModel{font-size:12px;padding-inline:9px}
+}
+
+
+/* Save selected daily menu as a reusable model, without publishing it. */
+.pont-admin .pont-daily-save-model{
+  min-height:40px;
+  border:1px solid rgba(139,224,197,.58);
+  border-radius:11px;
+  white-space:nowrap;
+}
+.pont-admin .pont-daily-save-model.is-saved{
+  background:rgba(21,99,75,.55)!important;
+  color:#bafbd9!important;
+  border-color:#83e2b5!important;
+  font-weight:700;
+}
+@media(max-width:440px){
+  .pont-admin .pont-dish-actions{
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .pont-admin .pont-daily-save-model{
+    font-size:12px;
+    padding:9px 10px;
+  }
+}
+
+/* Collapsible saved templates; the create-new action remains visible outside this panel. */
+.pont-model-saved{margin-top:.8rem;border:1px solid var(--admin-line,#285451);border-radius:12px;overflow:hidden}
+.pont-model-saved>summary{display:flex;align-items:center;justify-content:space-between;gap:12px;cursor:pointer;list-style:none;padding:13px 15px;font-weight:700;user-select:none}
+.pont-model-saved>summary::-webkit-details-marker{display:none}
+.pont-model-saved>summary:focus-visible{outline:2px solid #76e6d5;outline-offset:-3px}
+.pont-model-saved .pont-model-chevron{flex:none;width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .2s ease;margin-right:5px}
+.pont-model-saved[open] .pont-model-chevron{transform:rotate(225deg)}
+.pont-model-saved-body{padding:0 13px 13px}
+
+/* C19 — preserve individual scrolling with exactly 3 / 5 / 3 visible dishes.
+   Fixed row dimensions prevent partial fourth/sixth rows on mobile. */
+.pont-admin #pontDailyDishes .pont-daily-scroll-list {
+  --pont-dish-row-height: 52px;
+  --pont-visible-dishes: 3;
+  max-height: calc(var(--pont-visible-dishes) * var(--pont-dish-row-height)) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  overscroll-behavior-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-scroll-list,
+.pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-scroll-list {
+  --pont-visible-dishes: 3;
+}
+.pont-admin #pontDailyDishes .pont-daily-fieldset--second .pont-daily-scroll-list {
+  --pont-visible-dishes: 5;
+}
+.pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option {
+  height: var(--pont-dish-row-height) !important;
+  min-height: var(--pont-dish-row-height) !important;
+  max-height: var(--pont-dish-row-height) !important;
+  box-sizing: border-box !important;
+}
+@media (max-width: 720px) {
+  .pont-admin #pontDailyDishes .pont-daily-scroll-list {
+    --pont-dish-row-height: 60px;
+  }
+  .pont-admin #pontDailyDishes .pont-daily-scroll-list .pont-checklist-option,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--first .pont-daily-choice,
+  .pont-admin #pontDailyDishes .pont-daily-fieldset--dessert .pont-daily-choice {
+    height: var(--pont-dish-row-height) !important;
+    min-height: var(--pont-dish-row-height) !important;
+    max-height: var(--pont-dish-row-height) !important;
+  }
+}
+
+/* C20 — Model nou: Felul 1 + Desert stacked left, Felul 2 at right. */
+.pont-admin #pontModelDishes.pont-dish-checklist{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  grid-template-areas:"first second" "dessert second";
+  grid-template-rows:auto auto;
+  align-items:stretch;
+  gap:10px 12px;
+}
+.pont-admin #pontModelDishes>fieldset{
+  box-sizing:border-box;
+  min-width:0;
+  width:100%;
+  max-width:100%;
+  margin:0;
+  padding:10px;
+  border-radius:12px;
+}
+.pont-admin #pontModelDishes>fieldset:has(> [data-course="first"]){grid-area:first}
+.pont-admin #pontModelDishes>fieldset:has(> [data-course="second"]){grid-area:second}
+.pont-admin #pontModelDishes>fieldset:has(> [data-course="dessert"]){grid-area:dessert}
+.pont-admin #pontModelDishes .pont-checklist-option{min-width:0}
+.pont-admin #pontModelDishes .pont-checklist-option label{min-width:0;overflow-wrap:anywhere}
+@media(max-width:430px){
+  .pont-admin #pontModelDishes.pont-dish-checklist{gap:8px;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .pont-admin #pontModelDishes>fieldset{padding:7px 5px}
+  .pont-admin #pontModelDishes .pont-checklist-option label{gap:4px;font-size:clamp(10px,2.6vw,12px);line-height:1.35}
+  .pont-admin #pontModelDishes .pont-checklist-option input[type="checkbox"]{width:15px;height:15px;flex:none}
+}
+
+/* Today's menus: one compact, aligned line per course. */
+.pont-today-menu {
+  margin:0 0 8px;
+  padding:5px 7px;
+  border:1px solid var(--admin-line,#427068);
+  border-radius:8px;
+  background:var(--admin-field,#102f2c);
+  font:400 .75rem/1.28 system-ui,sans-serif;
+}
+.pont-today-header,
+.pont-today-meta {
+  display:flex;
+  align-items:center;
+  gap:4px 7px;
+  margin:0 0 2px;
+}
+.pont-today-menu #pontTodayHeading {margin:0;font:700 .75rem/1.15 system-ui,sans-serif}
+.pont-today-header time {font-size:.6875rem;white-space:nowrap}
+.pont-today-menu .pont-today-card {margin:0;padding:3px 0}
+.pont-today-menu .pont-today-card:last-child {border-bottom:0;padding-bottom:0}
+.pont-today-menu .pont-today-meta h4 {margin:0;font:700 .75rem/1.25 system-ui,sans-serif}
+#pontTodayMenu .pont-today-edit {
+  margin:0 0 0 auto;
+  padding:3px 6px;
+  min-width:0;
+  min-height:24px;
+  width:auto;
+  flex:none;
+  border:1px solid var(--admin-line,#427068);
+  border-radius:5px;
+  background:var(--admin-surface,#102f2c);
+  color:inherit;
+  font:700 .6875rem/1.15 system-ui,sans-serif;
+}
+#pontTodayMenu .pont-today-edit:hover {border-color:currentColor}
+.pont-today-menu .pont-today-card dl > div {
+  display:grid;
+  grid-template-columns:4em minmax(0,1fr);
+  gap:0 4px;
+}
+.pont-today-menu dt {font-weight:700;color:var(--admin-text,#eef8f4)}
+.pont-today-menu dd {min-width:0;overflow-wrap:break-word}
+.pont-today-menu .pont-today-empty {margin:0}
+#pontTodayMenu .pont-today-toggle {
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  width:auto;
+  min-width:0;
+  min-height:24px;
+  margin:0;
+  padding:0 2px 0 0;
+  border:0;
+  background:none;
+  box-shadow:none;
+  color:inherit;
+  font:inherit;
+  text-align:start;
+  cursor:pointer;
+}
+#pontTodayMenu .pont-today-toggle svg {
+  flex:none;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.5;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#pontTodayMenu .pont-today-toggle[aria-expanded="false"] svg {transform:rotate(-90deg)}
+
+#pontTodayMenu:has(#pontTodayDetails[hidden]) {padding-block:2px}
+#pontTodayMenu:has(#pontTodayDetails[hidden]) .pont-today-header {margin-bottom:0}
+#pontTodayMenu:has(#pontTodayDetails[hidden]) .pont-today-header button {
+  min-height:24px!important;
+  padding-block:0!important;
+}
+
+/* C21 — Today's published menu: separately numbered dishes, compact delete icon. */
+#pontTodayMenu .pont-today-actions {
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  flex:none;
+  margin-left:auto;
+}
+#pontTodayMenu .pont-today-actions .pont-today-edit { margin-left:0; }
+#pontTodayMenu .pont-today-delete {
+  display:inline-grid;
+  place-items:center;
+  flex:none;
+  width:24px;
+  height:24px;
+  min-width:24px;
+  min-height:24px;
+  padding:3px;
+  margin:0;
+  border:1px solid var(--admin-line,#427068);
+  border-radius:5px;
+  background:var(--admin-surface,#102f2c);
+  color:#f6b8ad;
+  cursor:pointer;
+}
+#pontTodayMenu .pont-today-delete:hover { border-color:#e5a39a; }
+#pontTodayMenu .pont-today-delete svg {
+  width:14px;
+  height:14px;
+  fill:none;
+  stroke:currentColor;
+  stroke-width:1.8;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+#pontTodayMenu .pont-today-dish-list {
+  display:grid;
+  gap:2px;
+  list-style:decimal;
+  padding-left:1.75em;
+  margin:0;
+}
+#pontTodayMenu .pont-today-dish-list li {
+  padding-left:1px;
+  line-height:1.35;
+}
+#pontTodayMenu .pont-today-dish-list li::marker { font-variant-numeric:tabular-nums; }
+
+
+/* C31 — Menu model editor uses same compact category-and-recap flow as daily publishing. */
+.pont-admin #pontModelDishes.pont-model-course-buttons{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-areas:none!important;gap:8px!important;min-width:0!important;
+  max-width:100%!important;width:100%!important;margin:15px 0 12px!important;
+}
+.pont-admin #pontModelDishes .pont-model-course-button{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  min-width:0!important;width:100%!important;max-width:100%!important;
+  min-height:44px!important;height:44px!important;box-sizing:border-box!important;
+  padding:7px 3px!important;margin:0!important;border:1px solid #6b9990!important;
+  border-radius:10px!important;background:linear-gradient(145deg,#16494a,#0b3036)!important;
+  color:#f5fcf8!important;font:700 12px/1.15 system-ui,sans-serif!important;white-space:nowrap!important;
+}
+.pont-admin .pont-model-selection-summary{
+  padding:14px 16px;border:1px solid #4c7b74;border-radius:14px;background:#0a2e31;
+}
+.pont-admin .pont-model-selection-summary h4{margin:0 0 11px;color:#e8eee9;font:700 15px system-ui,sans-serif}
+.pont-admin .pont-model-summary-group{padding:9px 0;border-top:1px solid #ffffff20}
+.pont-admin .pont-model-summary-group:first-child{border-top:0;padding-top:0}
+.pont-admin .pont-model-summary-group:last-child{padding-bottom:0}
+.pont-admin .pont-model-summary-head{display:flex;align-items:center;justify-content:space-between;gap:9px;margin-bottom:5px}
+.pont-admin .pont-model-summary-head strong{color:#e1d3ad;font:700 13px system-ui,sans-serif}
+.pont-admin .pont-model-summary-head button{
+  margin:0;min-height:27px;padding:3px 8px;border:1px solid #557970;
+  border-radius:7px;background:transparent;color:#b9e4dd;font:600 11px system-ui,sans-serif;
+}
+.pont-admin .pont-model-selected-list{display:grid;gap:5px;margin:0;padding-left:22px;color:#e4f2ed;font-size:13px}
+.pont-admin .pont-model-selected-list li{padding-left:2px;line-height:1.4}
+.pont-admin .pont-model-selected-list li::marker{color:#d9bd7b}
+.pont-admin .pont-model-selected-list li button{
+  float:right;display:inline-grid;place-items:center;width:23px;min-width:23px;
+  height:23px;min-height:23px;padding:0;margin:-1px 0 0 7px;
+  border:1px solid #63877f;border-radius:7px;background:#112f33;color:#f3c8be;font-size:18px;line-height:1;
+}
+.pont-admin .pont-model-selected-list li::after{content:"";display:block;clear:both}
+.pont-admin .pont-model-none{margin:0;color:#9cb8b9;font-size:12px}
+.pont-admin #pontModelCourseDialog.pont-model-course-dialog:not([open]){display:none!important}
+.pont-admin #pontModelCourseDialog.pont-model-course-dialog[open]{
+  position:fixed!important;inset:0!important;display:flex!important;flex-direction:column!important;
+  box-sizing:border-box!important;width:min(580px,calc(100vw - 24px))!important;
+  max-width:calc(100vw - 24px)!important;max-height:min(85dvh,760px)!important;
+  margin:auto!important;padding:0!important;border:1px solid #6da398!important;
+  border-radius:19px!important;background:#0b292e!important;color:#f1f9f7!important;
+  box-shadow:0 24px 90px #000b,0 0 0 1px #a0ebd318!important;overflow:hidden!important;
+}
+.pont-admin #pontModelCourseDialog::backdrop{background:rgba(0,8,13,.78);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.pont-admin .pont-model-course-header{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px;border-bottom:1px solid #406b67;background:#14383d}
+.pont-admin .pont-model-course-header h3{margin:0;color:#f4f7f0;font:750 clamp(17px,4vw,21px)/1.2 system-ui,sans-serif}
+.pont-admin .pont-model-course-hint{flex:none;margin:11px 14px;color:#b8d3cc;font-size:12px;line-height:1.45}
+.pont-admin .pont-model-course-list{flex:1 1 auto;display:grid;align-content:start;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;padding:0 14px 8px}
+.pont-admin .pont-model-course-choice{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 24px;gap:10px;
+  align-items:center;min-width:0;margin:0!important;padding:12px 0!important;
+  border-bottom:1px solid #ffffff20;color:#f1f9f7;
+}
+.pont-admin .pont-model-course-name{min-width:0;overflow-wrap:break-word;font-size:13px;line-height:1.3}
+.pont-admin .pont-model-course-choice input[type="checkbox"]{
+  appearance:auto!important;-webkit-appearance:checkbox!important;
+  width:21px!important;min-width:21px!important;height:21px!important;min-height:21px!important;
+  margin:0!important;padding:0!important;accent-color:#d6ba78;cursor:pointer;
+}
+.pont-admin .pont-model-course-footer{
+  flex:none;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:8px;
+  padding:12px 14px max(14px,env(safe-area-inset-bottom));border-top:1px solid #406b67;background:#10343a;
+}
+.pont-admin .pont-model-course-footer button{
+  display:flex;align-items:center;justify-content:center;min-width:0;width:100%;
+  min-height:43px;margin:0;padding:9px 8px;border-radius:10px;font:700 12px/1.25 system-ui,sans-serif;text-align:center;
+}
+.pont-admin .pont-model-course-footer #pontModelCourseBack{border:1px solid #567973;background:#15373c;color:#d1e2df}
+.pont-admin .pont-model-course-footer #pontModelCourseConfirm{border:1px solid #9be7d5;background:#9be7d5;color:#07332d}
+@media(max-width:430px){
+  .pont-admin #pontModelDishes.pont-model-course-buttons{gap:6px!important}
+  .pont-admin #pontModelDishes .pont-model-course-button{min-height:42px!important;height:42px!important;font-size:11px!important;padding:6px 2px!important}
+  .pont-admin .pont-model-selection-summary{padding:12px}
+  .pont-admin .pont-model-course-footer{gap:6px;padding-inline:10px}
+  .pont-admin .pont-model-course-footer button{font-size:11px;padding-inline:5px}
+  .pont-admin .pont-model-course-list{padding-inline:10px}
+}
