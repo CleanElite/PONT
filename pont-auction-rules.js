@@ -11,7 +11,9 @@ export function initPontAuctionRules(){
  dialog.pont-rules-dialog::backdrop{background:#000c;backdrop-filter:blur(4px)}
  .pont-rules-head{position:relative;padding:18px 54px 15px 17px;border-bottom:1px solid #4a736c}
  .pont-rules-head small{color:#dfc18b;letter-spacing:.1em}.pont-rules-head h2{color:#fff;font:500 27px/1.2 Georgia,serif;margin:5px 0 0}
- .pont-rules-close{position:absolute;right:12px;top:13px;width:36px;height:36px;border:1px solid #678e86;border-radius:50%;background:#153a3f;color:white;font-size:22px}
+ .pont-rules-close{position:absolute;right:12px;top:13px;display:grid;place-items:center;box-sizing:border-box;width:36px;height:36px;padding:0;border:1px solid #678e86;border-radius:50%;background:#153a3f;color:white;cursor:pointer;line-height:0;appearance:none;-webkit-appearance:none;touch-action:manipulation}
+ .pont-rules-close svg{display:block;width:16px;height:16px;stroke:currentColor;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+ .pont-rules-close:focus-visible{outline:2px solid #8fffe9;outline-offset:3px}
  .pont-rules-body{max-height:calc(88dvh - 145px);overflow-y:auto;overscroll-behavior:contain;padding:14px 18px 22px;text-align:left;font:400 13px/1.6 system-ui}
  .pont-rules-body h3{color:#f1d29c;font:700 14px/1.3 system-ui;margin:16px 0 5px}.pont-rules-body p{margin:0 0 7px}
  .pont-rules-body a{color:#a8e8dc}.pont-rules-footer{padding:11px;border-top:1px solid #436d65;text-align:center}
@@ -22,7 +24,7 @@ export function initPontAuctionRules(){
  `;
  document.head.append(style);
  const dialog=document.createElement('dialog');dialog.className='pont-rules-dialog';dialog.setAttribute('aria-labelledby','pontRulesTitle');
- dialog.innerHTML=`<header class="pont-rules-head"><small>PONT · 13.11.2026</small><h2 id="pontRulesTitle">Regulament licitație</h2><button type="button" class="pont-rules-close" aria-label="Închide">×</button></header><div class="pont-rules-body">
+ dialog.innerHTML=`<header class="pont-rules-head"><small>PONT · 13.11.2026</small><h2 id="pontRulesTitle">Regulament licitație</h2><button type="button" class="pont-rules-close" aria-label="Închide"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button></header><div class="pont-rules-body">
  <h3>1. Participanți</h3><p>Participă restaurantele partenere PONT, prin conturi autentificate și autorizate.</p>
  <h3>2. Scop</h3><p>Licitația stabilește poziții de promovare. O ofertă nu garantează comenzi, vizualizări, venituri sau o poziție fixă înainte de închidere.</p>
  <h3>3. Valoarea ofertei</h3><p>Oferta minimă este <strong>50 lei</strong>. Se licitează în multipli de 10 lei. O ofertă poate fi majorată, redusă până la minimum 50 lei sau retrasă cât licitația este activă. Modificările sunt interzise în pauză și după închidere.</p>
