@@ -134,6 +134,7 @@ editorStockStyle.textContent = `
 #pontDailySummaryList .pont-editor-dish-row{display:flex;align-items:center;gap:7px;min-width:0;padding:4px 0;list-style:none}
 #pontDailySummaryList .pont-editor-dish-number{flex:none;min-width:17px;color:#d5e3dc;font:650 11px/1.3 system-ui,sans-serif;text-align:right}
 #pontDailySummaryList .pont-daily-selected-list{list-style:none!important;padding-left:0!important}
+#pontDailySaveModel[hidden]{display:none!important}
 #pontDailySummaryList .pont-editor-dish-name{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
 #pontDailySummaryList .pont-editor-dish-row.is-soldout .pont-editor-dish-name{color:#f4a9ad;text-decoration:line-through;text-decoration-color:#d95a63;text-decoration-thickness:1px}
 #pontDailySummaryList .pont-editor-stock{float:none!important;flex:none!important;width:auto!important;min-width:54px!important;min-height:26px!important;height:26px!important;padding:3px 6px!important;border:1px solid #a97f83!important;border-radius:7px!important;color:#e8b6b9!important;background:#3d282c!important;font:700 10px/1.1 system-ui,sans-serif!important;white-space:nowrap}
