@@ -61,4 +61,12 @@ check = base.crop((round(315*sx), round(666*sy),
                    round(558*sx), round(787*sy))).convert("L")
 assert check.getextrema()[1] < 125, "Residual bright logo detected in cleaned sky"
 base.save(DEST, format="JPEG", quality=96, subsampling=0, optimize=True)
+(ASSETS / "pont-intro-build-info.txt").write_text(
+    f"size={w}x{h}; mask_bbox={mask_bounds}; "
+    f"sample_left={left_sample}; sample_right={right_sample}; "
+    f"mask_at_center={alpha[round(.5*w),round(.49*h)]}; "
+    f"original_center={source[round(.5*w),round(.49*h)]}; "
+    f"clean_center={base.getpixel((round(.5*w),round(.49*h)))}\\n",
+    encoding="utf-8"
+)
 print(f"Generated clean curtain image: {w} x {h}, no stationary PONT logo")
