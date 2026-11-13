@@ -528,7 +528,7 @@ function restoreMenuDishes(menu) {
     const key = id || 'saved-' + index;
     const item = {
       ...(id ? {id} : {}), name:dish.name, category:dish.category,
-      available:(match?.available ?? dish.available) !== false,
+      available:(dish.available ?? match?.available) !== false,
       price:dish.category === 'dessert' ? 0 : Number(dish.price ?? match?.price ?? 0),
       description:dish.description ?? match?.description ?? '',
       photo_url:dish.photo_url ?? photoUrl(match)
@@ -719,7 +719,7 @@ $('pontDishPublish').onclick = async () => {
       restaurant_id:restaurant, service_date:date, title:'Meniul zilei', price, description, published:true,
       first_course:first?.name || '', first_price:first?.price ?? null,
       second_course:second?.name || '', second_price:second?.price ?? null,
-      dessert:dessert?.name || '', dish_selection:items.map(item => ({...item, available:(dishes.find(dish => dish.id === item.id)?.available ?? item.available) !== false}))
+      dessert:dessert?.name || '', dish_selection:items.map(item => ({...item, available:(id ? item.available : (dishes.find(dish => dish.id === item.id)?.available ?? item.available)) !== false}))
     };
     const {error} = await (id ? db.from('menus').update(values).eq('id', id) : db.from('menus').insert(values));
     if (error?.code === '23505') throw Error('Există deja un meniu publicat pentru această zi. Editează meniul existent sau alege altă dată.');
