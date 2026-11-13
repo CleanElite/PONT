@@ -345,7 +345,7 @@
 <p id="selfPasswordFeedback" role="status" aria-live="polite"></p>
 <button type="submit" class="primary" id="selfPasswordSubmit">Schimbă parola</button>
 </form>
-</div></section><div id="addView"><section class="card admin-workspace"><section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section><div class="pont-day-exhausted-panel"><button type="button" class="pont-day-exhausted-button" id="toggleDailyExhausted" disabled>Meniul zilei epuizat</button><span id="pontDayExhaustedNote" role="status" aria-live="polite"></span></div><h2>Planifică meniul zilei</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="false" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap" hidden></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section></div><div id="savedView" hidden><section class="card"><div id="pontMenuTemplates"></div><details class="pont-menu-archive">
+</div></section><div id="addView"><section class="card admin-workspace"><section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section><div class="pont-day-exhausted-panel"><button type="button" class="pont-day-exhausted-button" id="toggleDailyExhausted" role="switch" aria-checked="true" data-exhausted="false" disabled>Meniu disponibil</button><span id="pontDayExhaustedNote" role="status" aria-live="polite"></span></div><h2>Planifică meniul zilei</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="false" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap" hidden></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=1#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section></div><div id="savedView" hidden><section class="card"><div id="pontMenuTemplates"></div><details class="pont-menu-archive">
   <summary>Meniuri active și programate</summary>
   <div id="menus"></div>
 </details>
@@ -419,7 +419,7 @@ async function refreshDailyExhausted(){
   if(error)throw error;
   if($('contactRestaurant').value!==id)return;
   const exhausted=data?.exhausted===true;button.dataset.exhausted=String(exhausted);
-  button.textContent=exhausted?'Reactivează meniul zilei':'Meniul zilei epuizat';
+  button.textContent=exhausted?'Meniu epuizat':'Meniu disponibil';button.setAttribute('role','switch');button.setAttribute('aria-checked',String(!exhausted));button.setAttribute('aria-label',exhausted?'Meniu epuizat. Apasă pentru reactivare.':'Meniu disponibil. Apasă pentru a marca epuizat.');
   $('pontDayExhaustedNote').textContent=exhausted?'Indisponibil astăzi · Se resetează automat mâine.':'';
  }catch(error){$('pontDayExhaustedNote').textContent=error.message}
  finally{if($('contactRestaurant').value===id)button.disabled=false}
@@ -432,7 +432,7 @@ $('toggleDailyExhausted').onclick=async()=>{
  try{
   await req(db.rpc('pont_set_daily_menu_exhausted',{p_restaurant_id:id,p_exhausted:exhausted}));
   button.dataset.exhausted=String(exhausted);
-  button.textContent=exhausted?'Reactivează meniul zilei':'Meniul zilei epuizat';
+  button.textContent=exhausted?'Meniu epuizat':'Meniu disponibil';button.setAttribute('role','switch');button.setAttribute('aria-checked',String(!exhausted));button.setAttribute('aria-label',exhausted?'Meniu epuizat. Apasă pentru reactivare.':'Meniu disponibil. Apasă pentru a marca epuizat.');
   $('pontDayExhaustedNote').textContent=exhausted?'Meniul este indisponibil până la sfârșitul zilei.':'Meniul este disponibil.';
   status(exhausted?'Meniul zilei a fost marcat ca epuizat.':'Meniul zilei a fost reactivat.');
  }catch(error){status(error.message,true)}finally{button.disabled=false}
@@ -1142,5 +1142,37 @@ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-exhausted
 }
 body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-exhausted-inline{
  gap:2px!important;white-space:normal!important;overflow:hidden!important;
+}
+</style><style id="pont-menu-switch-20261114">
+/* Compact status switch: green ON = available, red OFF = exhausted. */
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exhausted-inline[data-exhausted]{
+ position:relative!important;display:inline-flex!important;align-items:center!important;
+ justify-content:center!important;gap:5px!important;overflow:hidden!important;
+ padding:3px 4px!important;white-space:normal!important;line-height:1.1!important;
+ font-size:clamp(8px,2vw,11px)!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exhausted-inline[data-exhausted]::before{
+ content:""!important;display:block!important;flex:0 0 28px!important;
+ width:28px!important;min-width:28px!important;height:17px!important;
+ margin:0!important;border-radius:99px!important;border:1px solid #ffffff55!important;
+ box-shadow:inset 0 1px 3px #0005!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exhausted-inline[data-exhausted="false"]::before{
+ background:#258a51!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exhausted-inline[data-exhausted="true"]::before{
+ background:#c53641!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exhausted-inline[data-exhausted]::after{
+ content:""!important;position:absolute!important;display:block!important;
+ width:11px!important;height:11px!important;background:#fff!important;border-radius:50%!important;
+ top:50%!important;transform:translateY(-50%)!important;
+ box-shadow:0 1px 3px #0005!important;pointer-events:none!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exhausted-inline[data-exhausted="false"]::after{
+ left:24px!important;
+}
+body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exhausted-inline[data-exhausted="true"]::after{
+ left:8px!important;
 }
 </style></body></html>
