@@ -211,4 +211,4 @@ document.getElementById('closeRecovery').onclick=()=>recoveryDialog.close();
 document.getElementById('recoveryForm').onsubmit=e=>{e.preventDefault();const user=document.getElementById('recoveryUser').value.trim(),phone=document.getElementById('recoveryPhone').value.trim();if(!user||!phone)return;const msg=['Buna ziua! Am uitat parola contului PONT','Nume: '+user,'Numar telefon: '+phone].join(String.fromCharCode(10));window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');};
 if(await adminSession.resume())await redirect();
 }
-</script><script defer src="../../pont-navigation-history.js?v=origin-aware-20261113"></script></html>
+</script><script defer src="../../pont-navigation-history.js?v=origin-aware-20261113"></script><script defer src="../../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script></html>
