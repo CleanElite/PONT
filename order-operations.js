@@ -367,11 +367,11 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    }
  }
  </style>
- <details id="pontHoursPanel"><summary>${superAdminSettings ? 'Program comenzi' : 'Programul comenzilor și comanda minimă'}</summary>
+ <details id="pontHoursPanel"><summary>Comandă minimă</summary>
  <label id="pontOpRestaurantWrap">Restaurant<select id="pontOpRestaurant"></select></label>
  
- <div class="pont-op-grid"><label><span ${superAdminSettings ? 'class="pont-op-visually-hidden"' : ''}>${superAdminSettings ? 'Ora de început' : 'Comenzi de la ora'}</span><input id="pontOpStart" type="time" aria-label="Ora de început"></label><label><span ${superAdminSettings ? 'class="pont-op-visually-hidden"' : ''}>${superAdminSettings ? 'Ora de încheiere' : 'Comenzi până la ora'}</span><input id="pontOpEnd" type="time" aria-label="Ora de încheiere"></label><label>${superAdminSettings ? 'Comandă minimă · meniuri' : 'Comandă minimă'}<span class="pont-op-min-row"><input id="pontOpMin" type="number" min="1" max="20" step="1" value="1" required><span>meniu</span></span></label></div>
- ${superAdminSettings ? '' : '<button type="button" id="pontOpSave" class="' + (settingsHost ? 'primary' : 'pont-op-button') + '">' + (settingsHost ? 'Salvează setările comenzilor' : 'Salvează programul') + '</button>'}<p id="pontOpStatus" role="status"></p></details>
+ <div class="pont-op-grid"><label>Comandă minimă<span class="pont-op-min-row"><input id="pontOpMin" type="number" min="1" max="20" step="1" value="1" required><span>meniu</span></span></label></div>
+ ${superAdminSettings ? '' : '<button type="button" id="pontOpSave" class="' + (settingsHost ? 'primary' : 'pont-op-button') + '">' + (settingsHost ? 'Salvează setările comenzilor' : 'Salvează comanda minimă') + '</button>'}<p id="pontOpStatus" role="status"></p></details>
  <details id="pontWeekPanel"><summary><span class="pont-week-header-icon" aria-hidden="true">▣</span><span class="pont-week-header-text">Planifică meniul pe toată săptămâna</span></summary>
  <label id="pontOpWeekRestaurantWrap" hidden><span class="pont-week-restaurant-label">Restaurant</span><select id="pontOpWeekRestaurant"></select></label>
  <div class="pont-op-week-nav">
@@ -399,9 +399,9 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
      if (priceCard) settingsHost.insertBefore(settings, priceCard);
      else settingsHost.append(settings);
      const hoursPanel = $('pontHoursPanel');
-     hoursPanel.querySelector('summary').textContent = 'Programul comenzilor';
+     hoursPanel.querySelector('summary').textContent = 'Comandă minimă';
      hoursPanel.open = false;
-     const minLabel = hoursPanel.querySelector('.pont-op-grid label:nth-child(3)');
+     const minLabel = hoursPanel.querySelector('.pont-op-grid label');
      const minCard = document.createElement('div');
      minCard.className = 'contact-card-settings pont-min-order-settings';
      const minTitle = document.createElement('h3');
@@ -430,7 +430,6 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  let renderedDay=formatDate(new Date());
  let weekStart=monday(renderedDay);
  const restaurants=()=>getRestaurants()||[];
- const defaultStart='09:00', defaultEnd='15:00';
  let activeRestaurant='';
  let editRestaurantId = null;
  let settingsLoadPromise=Promise.resolve();
@@ -466,11 +465,9 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    if(saveButton)saveButton.disabled=true;
    if(superAdminSettings)settingsLoaded=false;
    $('pontOpStatus').textContent='Se încarcă setările…';
-   const {data,error}=await db.from('pont_order_settings').select('opens_at,closes_at,min_full_menus').eq('restaurant_id',restaurantId).maybeSingle();
+   const {data,error}=await db.from('pont_order_settings').select('min_full_menus').eq('restaurant_id',restaurantId).maybeSingle();
    if(restaurantId!==activeRestaurant || (superAdminSettings && editRestaurantId!==restaurantId))return;
    if(error){$('pontOpStatus').textContent=error.message;return}
-   $('pontOpStart').value=data?.opens_at?.slice(0,5)||defaultStart;
-   $('pontOpEnd').value=data?.closes_at?.slice(0,5)||defaultEnd;
    $('pontOpMin').value=data?.min_full_menus||1;
    $('pontOpStatus').textContent='';
    if(saveButton)saveButton.disabled=false;
