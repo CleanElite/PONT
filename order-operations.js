@@ -391,17 +391,17 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    const settings=document.createElement('div');
    settings.id='pontRestaurantSettings';
    settings.className='pont-operations';
-   settings.append($('pontHoursPanel'));
-   $('pontHoursPanel').hidden=true;
+   const initialHoursPanel=$('pontHoursPanel');
+   if(initialHoursPanel){settings.append(initialHoursPanel);initialHoursPanel.hidden=true;}
    settings.style.display='none';
    if (isRestaurantAdmin) {
      const priceCard = $('restaurantMenuPrice')?.closest('.contact-card-settings');
      if (priceCard) settingsHost.insertBefore(settings, priceCard);
      else settingsHost.append(settings);
      const hoursPanel = $('pontHoursPanel');
-     hoursPanel.querySelector('summary').textContent = 'Comandă minimă';
-     hoursPanel.open = false;
-     const minLabel = hoursPanel.querySelector('.pont-op-grid label');
+     if(hoursPanel){hoursPanel.querySelector('summary').textContent = 'Comandă minimă';
+     hoursPanel.open = false;}
+     const minLabel = hoursPanel?.querySelector('.pont-op-grid label');
      const minCard = document.createElement('div');
      minCard.className = 'contact-card-settings pont-min-order-settings';
      const minTitle = document.createElement('h3');
@@ -420,8 +420,8 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    }
    if (superAdminSettings) {
      settingsHost.hidden = true;
-     $('pontHoursPanel').open = false;
-     $('pontOpRestaurantWrap').hidden = true;
+     if($('pontHoursPanel')) $('pontHoursPanel').open = false;
+     if($('pontOpRestaurantWrap')) $('pontOpRestaurantWrap').hidden = true;
    }
  }
  const formatDate=d=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(d);
