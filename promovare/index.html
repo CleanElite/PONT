@@ -714,6 +714,69 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
  }
 }
 
+
+/* Auction modal: one-screen fit, including older small-screen iPhones. */
+dialog.pont-premium-auction[open]{
+ box-sizing:border-box!important;
+ max-height:calc(100vh - 18px)!important;
+ max-height:calc(100dvh - 18px)!important;
+ overflow-y:hidden!important;overflow-x:hidden!important;
+}
+dialog.pont-premium-auction .auction-modal-inner{padding:clamp(11px,2.3svh,20px) clamp(15px,4vw,23px)!important}
+dialog.pont-premium-auction .modal-kicker{margin:0 0 5px!important;font-size:10px!important}
+dialog.pont-premium-auction h2.pont-restaurant-title{
+ padding:5px 26px 0!important;margin:0 0 4px!important;gap:2px!important;
+ font-size:clamp(21px,4.3svh,30px)!important;line-height:1.05!important;
+}
+dialog.pont-premium-auction .pont-modal-restaurant-rank{padding-bottom:6px!important;font-size:clamp(17px,3.3svh,24px)!important;line-height:1.1!important}
+dialog.pont-premium-auction .pont-modal-restaurant-rank::after{height:2px!important}
+dialog.pont-premium-auction .modal-explainer{
+ margin:5px 0 6px!important;font-size:clamp(10px,1.65svh,12px)!important;line-height:1.3!important;
+}
+dialog.pont-premium-auction .pont-rules-slot{margin:5px auto 8px!important}
+dialog.pont-premium-auction .pont-rules-trigger{min-height:29px!important;padding:5px 11px!important;font-size:11px!important}
+dialog.pont-premium-auction .pont-podium-panel{margin:0 0 9px!important;padding:5px!important;gap:5px!important}
+dialog.pont-premium-auction .pont-podium-item{padding:4px 2px!important;gap:1px!important}
+dialog.pont-premium-auction .pont-podium-trophy{font-size:16px!important}
+dialog.pont-premium-auction #bidForm>label:first-child{font-size:12px!important;margin-bottom:4px!important}
+dialog.pont-premium-auction .pont-bid-input-wrap{position:relative;display:flex;align-items:center;width:100%;margin:0 0 8px}
+dialog.pont-premium-auction #bidAmount{
+ height:clamp(42px,6.3svh,52px)!important;min-height:42px!important;margin:0!important;
+ padding:8px 74px 8px 13px!important;font-size:clamp(22px,4svh,28px)!important;
+}
+dialog.pont-premium-auction .pont-keyboard-done:not([hidden]){
+ position:absolute;right:5px;top:50%;transform:translateY(-50%);
+ display:inline-flex!important;align-items:center;justify-content:center;gap:4px;
+ min-width:62px;min-height:34px;padding:5px 7px;border:1px solid #89e8d6;
+ border-radius:8px;background:#0a625b;color:#fff;font:700 12px system-ui;z-index:2
+}
+dialog.pont-premium-auction .pont-keyboard-done[hidden]{display:none!important}
+dialog.pont-premium-auction #bidForm label.pont-rules-accept{
+ display:flex!important;align-items:center!important;gap:8px!important;
+ margin:3px 0 5px!important;font-size:11px!important;line-height:1.2!important
+}
+dialog.pont-premium-auction #bidForm label.pont-rules-accept input{
+ width:18px!important;height:18px!important;min-height:18px!important;min-width:18px!important;
+ display:block!important;flex:none!important;margin:0!important;padding:0!important
+}
+dialog.pont-premium-auction #bidForm .pont-rules-warning{font-size:10px!important;line-height:1.2!important;margin:0 0 5px!important}
+dialog.pont-premium-auction #bidSubmit{min-height:43px!important;padding:8px!important;font-size:15px!important}
+dialog.pont-premium-auction .pont-bid-rank-preview{margin:1px 0 3px!important;padding:4px 5px!important;line-height:1.2!important}
+dialog.pont-premium-auction .modal-note{margin:5px 0 0!important;gap:6px!important;font-size:10px!important;line-height:1.25!important}
+dialog.pont-premium-auction .pont-modal-info-icon{width:17px!important;height:17px!important;font-size:10px!important}
+dialog.pont-premium-auction .pont-withdraw-bid-link{margin:5px auto 0!important;padding:3px 6px!important;font-size:10px!important}
+dialog.pont-premium-auction .modal-status{margin:2px 0!important;font-size:11px!important}
+@media(max-height:700px){
+ dialog.pont-premium-auction .auction-modal-inner{padding:9px 13px!important}
+ dialog.pont-premium-auction .modal-explainer{font-size:10px!important;line-height:1.15!important}
+ dialog.pont-premium-auction .pont-podium-panel{margin-bottom:5px!important}
+ dialog.pont-premium-auction .pont-podium-item{padding:2px!important}
+ dialog.pont-premium-auction #bidSubmit{min-height:40px!important}
+ dialog.pont-premium-auction .modal-note{font-size:9px!important}
+}
+@supports(height:100svh){
+ dialog.pont-premium-auction[open]{max-height:calc(100svh - 18px)!important}
+}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -846,7 +909,7 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
   <span class="pont-auction-pause-symbol" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="6" y="4" width="4" height="16" rx="1.5"/><rect x="14" y="4" width="4" height="16" rx="1.5"/></svg></span>
   <div><strong>Licitația este momentan în pauză</strong><p>Ofertele și clasamentul rămân vizibile. Vei putea licita sau modifica oferta imediat ce administratorul reia licitația.</p></div>
  </section>
- <form id="bidForm" novalidate><label for="bidAmount">Oferta ta totală (lei)</label><input id="bidAmount" type="number" min="50" step="10" inputmode="numeric" required placeholder="Minimum 50 lei"><button class="primary-bid" type="submit" id="bidSubmit"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg><span id="bidSubmitText">Confirmă oferta</span></button></form>
+ <form id="bidForm" novalidate><label for="bidAmount">Oferta ta totală (lei)</label><div class="pont-bid-input-wrap"><input id="bidAmount" type="number" min="50" step="10" inputmode="numeric" enterkeyhint="done" required placeholder="Minimum 50 lei"><button type="button" class="pont-keyboard-done" id="pontBidKeyboardDone" aria-label="Ascunde tastatura" hidden>Gata <span aria-hidden="true">⌄</span></button></div><button class="primary-bid" type="submit" id="bidSubmit"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m13 3 8 8M11 5l8 8M2 22l11-11M10 2l12 12M3 8l5-5M13 18l5-5M2 22l5-1"/></svg><span id="bidSubmitText">Confirmă oferta</span></button></form>
  <p class="pont-bid-rank-preview" id="pontBidRankPreview" aria-live="polite"></p><p class="modal-status" id="bidMessage" role="status" aria-live="polite"></p>
  <p class="modal-note"><span class="pont-modal-info-icon" aria-hidden="true">i</span><span id="auctionModalNote">Poți modifica suma cât timp licitația este activă. Poziția se actualizează automat. Plata se verifică separat.</span></p>
  <button type="button" class="pont-withdraw-bid-link" id="pontWithdrawBid" hidden>Retrage oferta din licitație</button>
@@ -1145,6 +1208,22 @@ function updateModal(){
  refreshBidPreview();
 }
 $('bidAmount').addEventListener('input',refreshBidPreview);
+const bidAmountInput=$('bidAmount'),bidKeyboardDone=$('pontBidKeyboardDone');
+function hideBidKeyboard(){
+ if(document.activeElement===bidAmountInput)bidAmountInput.blur();
+ bidKeyboardDone.hidden=true;
+}
+bidAmountInput.addEventListener('focus',()=>{bidKeyboardDone.hidden=false;$('auctionDialog').classList.add('pont-keyboard-active')});
+bidAmountInput.addEventListener('blur',()=>{bidKeyboardDone.hidden=true;$('auctionDialog').classList.remove('pont-keyboard-active')});
+bidAmountInput.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();hideBidKeyboard()}});
+bidKeyboardDone.addEventListener('pointerdown',event=>{event.preventDefault();hideBidKeyboard()});
+bidKeyboardDone.addEventListener('click',hideBidKeyboard);
+// Tapping consent or other controls dismisses iOS numeric keyboard independently of acceptance.
+$('auctionDialog').addEventListener('pointerdown',event=>{
+ if(document.activeElement===bidAmountInput && !event.target.closest('#bidAmount,#pontBidKeyboardDone'))hideBidKeyboard();
+});
+$('auctionDialog').addEventListener('close',hideBidKeyboard);
+
 
 $('list').addEventListener('click',e=>{
  const button=e.target.closest('[data-slot]');if(!button)return;
