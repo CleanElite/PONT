@@ -22,6 +22,11 @@
 /* Fulfilment badge on restaurant tiles; does not overlap the title or price. */
 .menu-card-copy .pont-pickup-label{display:inline-flex;align-self:flex-start;width:max-content;max-width:100%;margin:3px 0 2px;padding:3px 8px;border:1px solid rgba(182,219,204,.48);border-radius:7px;background:rgba(5,36,38,.72);color:#e9f5ee;font:600 10px/1.35 system-ui;letter-spacing:.01em}
 .fulfillment-options button[hidden]{display:none!important}
+
+.menu-card.is-unavailable{cursor:default!important;opacity:1!important;filter:none!important}
+.menu-card.is-unavailable .menu-card-photo{filter:saturate(.63) brightness(.72)}
+.menu-card.is-unavailable .pont-menu-status-tag{max-width:100%;white-space:normal;font-size:clamp(10px,2.6vw,12px)!important;line-height:1.2!important;text-align:center;background:rgba(26,43,46,.87)!important;color:#f3dcb1!important;border:1px solid rgba(231,198,134,.52)!important}
+.menu-card .pont-menu-unavailable-copy{display:block;margin:5px 0 3px;font:600 clamp(10px,2.6vw,12px)/1.35 system-ui!important;color:#f3eee6;max-width:100%;text-wrap:balance}
 </style><link rel="stylesheet" href="../refinement.css"><link rel="stylesheet" href="../pont-editorial.css?v=1">
 <style>
 body.lunch{background:radial-gradient(ellipse at 50% 0,#183955 0,transparent 36rem),#071421;color:#f7f9fc}
@@ -595,7 +600,7 @@ const ornaments=[
 ];
 const isMenuPreview = new URLSearchParams(location.search).get('preview') === '1';
 let liveMenus=[];const menus=()=>isMenuPreview?samples:liveMenus;
-function orderOpen(menu){const start=menu?.opens_at?.slice(0,5),end=menu?.closes_at?.slice(0,5);if(!start||!end)return true;const now=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Bucharest',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date());return start<end?(now>=start&&now<end):(now>=start||now<end)}
+function orderOpen(menu){return Boolean(menu&&menu.available!==false)}
 const hasMinimumMenu=()=>selection().filter(item=>item.short==='meniuri complete').reduce((sum,item)=>sum+item.qty,0)>=(current?.min_full_menus||1);
 // Cardurile sunt afisate direct, fara filtre.
 let current, draft;
@@ -606,15 +611,16 @@ function render(){
     const fallback = restaurantCover(menu);
     usesIllustration = true;
     const name = esc(menu.name);
-    const price = lei(menu.full);
+    const isUnavailable=menu.available===false;
+    const price=isUnavailable?(menu.exhausted?'Indisponibil':'Indisponibil momentan'):lei(menu.full);
     return `<article class="menu-tile">
-      <button class="menu-card" type="button" aria-haspopup="dialog" data-menu="${esc(menu.id)}" aria-label="Vezi meniul de la ${name}, ${price}">
+      <button class="menu-card${isUnavailable?' is-unavailable':''}" type="button" ${isUnavailable?'disabled aria-disabled="true"':'aria-haspopup="dialog" data-menu="'+esc(menu.id)+'"'} aria-label="${isUnavailable?name+': '+price:'Vezi meniul de la '+name+', '+price}">
         <img class="menu-card-photo" src="${fallback}" alt="" ${index >= 2 ? 'loading="lazy"' : ''} decoding="async">
         <span class="menu-card-copy">
           <span class="menu-card-name">${name}</span>
-          <span class="pont-menu-price-tag">${price}</span>
+          <span class="pont-menu-price-tag${isUnavailable?' pont-menu-status-tag':''}">${price}</span>${isUnavailable?'<span class="pont-menu-unavailable-copy">'+(menu.exhausted?'Meniul zilei epuizat':'Restaurantul va posta în curând meniul zilei')+'</span>':''}
           <span class="menu-card-location"><span class="menu-icon menu-icon--pin" aria-hidden="true"></span>Slobozia</span>${menu.delivery===false?'<span class="pont-pickup-label">Ridicare personală</span>':''}
-          <span class="menu-card-action" aria-hidden="true">Vezi meniul<span class="menu-icon menu-icon--arrow"></span></span>
+          ${isUnavailable?'':'<span class="menu-card-action" aria-hidden="true">Vezi meniul<span class="menu-icon menu-icon--arrow"></span></span>'}
         </span>
         
       </button>
@@ -705,8 +711,8 @@ function update(){
   ];
   $('#breakdown').innerHTML='<div class="pont-summary-pieces">'+(summaryParts.length?summaryParts.map(part=>'<span class="pont-summary-piece">'+esc(part)+'</span>').join(''):'<span class="pont-summary-empty">Nu ai selectat încă preparate.</span>')+'</div>'+
     (bottomNotes.length?'<div class="pont-summary-notes">'+bottomNotes.map(note=>esc(note)).join(' · ')+'</div>':'');
-  const hourRange=current?.opens_at&&current?.closes_at?' ('+current.opens_at.slice(0,5)+'–'+current.closes_at.slice(0,5)+')':'';
-  const launchBlocked=!orderOpen(current)?'Comenzile sunt închise acum'+hourRange+'. Încearcă în intervalul afișat.':
+  const hourRange='';
+  const launchBlocked=!orderOpen(current)?'Meniul zilei este indisponibil.':
     !current?.phone?'Restaurantul nu are un număr WhatsApp configurat.':
     items.length===0?'Selectează preparatele și cantitățile dorite.':
     !hasMinimumMenu()?'Comanda minimă este de '+(current?.min_full_menus||1)+' meniu complet.':'';
@@ -810,7 +816,7 @@ function openOrder(m,trigger){
    form.elements.payment.innerHTML='<option value="Cash">Cash</option>'+(m.card?'<option value="Card">Card</option>':'');form.elements.payment.disabled=!m.card;let note=document.querySelector('#cardPaymentNote');if(!note){note=document.createElement('small');note.id='cardPaymentNote';form.elements.payment.closest('label').after(note)}note.hidden=!!m.card;note.textContent='Restaurantul nu percepe plata cu cardul.';
   const minimum = m.min_full_menus || 1;
   $('#pontOrderMinimum').textContent = 'Minim ' + minimum + (minimum === 1 ? ' meniu' : ' meniuri');
-  $('#pontOrderHours').textContent = (m.opens_at || '09:00').slice(0,5) + '–' + (m.closes_at || '15:00').slice(0,5);
+  $('#pontOrderHours').hidden=true;
   $('#send').querySelector('.pont-whatsapp-label').textContent=m.phone?'Trimite comanda pe WhatsApp':isMenuPreview?'Comenzile sunt dezactivate în previzualizare':'WhatsApp indisponibil — lipsește numărul';$('#send').disabled=!m.phone;const callPhone=normalizeCallPhone(m.phone);$('#callNow').hidden=!callPhone;if(callPhone){$('#callNow').href='tel:'+callPhone;}else{$('#callNow').removeAttribute('href');}
   const hero=$('#order .pont-restaurant-hero');
   hero.classList.add('pont-menu-reference');
@@ -821,7 +827,7 @@ function openOrder(m,trigger){
 let pontRestaurantRoutePushed=false;
 function enterRestaurant(id,trigger=null,changeUrl=true){
  const m=menus().find(x=>x.id===id);
- if(!m)return false;
+ if(!m||m.available===false)return false;
  if(changeUrl){const u=new URL(location.href);u.searchParams.set('restaurant',id);history.pushState({restaurant:id},'',u);pontRestaurantRoutePushed=true;}
  if($('#order').open)$('#order').close();
  openOrder(m,trigger);
@@ -906,7 +912,7 @@ const cleanWhatsAppPhone=raw=>{let digits=String(raw||'').replace(/[^0-9]/g,'');
 let submittingOrder=false,orderNoticeAccepted=false;
 $('#orderNoticeCancel').onclick=()=>$('#orderConfirmationNotice').close();
 $('#orderNoticeContinue').onclick=()=>{orderNoticeAccepted=true;$('#orderConfirmationNotice').close();form.requestSubmit()};
-form.onsubmit=async e=>{e.preventDefault();if(submittingOrder)return;if($('#pontCheckoutOverlay').hidden){openCheckoutPanel();return;}if(!form.reportValidity()){const target=form.querySelector(':invalid');if(target){target.scrollIntoView({behavior:'smooth',block:'center'});target.focus({preventScroll:true})}return}if(!current?.phone){$('#orderMsg').textContent='Acest restaurant nu a activat comenzile online.';return}if(!orderOpen(current)){$('#orderMsg').textContent='Programul comenzilor este închis.';return}if(!hasMinimumMenu()){$('#orderMsg').textContent='Comanda minimă este de '+(current?.min_full_menus||1)+' meniu complet.';return}const details=Object.fromEntries(new FormData(form));details.payment=current?.card?(details.payment||'Cash'):'Cash';details.full_name=String(details.full_name||'').trim();details.phone=String(details.phone||'').trim();details.address=String(details.address||'').trim();if(current.delivery===false)details.method='Ridicare';if(details.full_name.length<3||!validCustomerPhone(details.phone)||(details.method!=='Ridicare'&&!details.address)){$('#orderMsg').textContent='Completează numele, telefonul și adresa pentru livrare.';return}if(details.method==='Ridicare')details.address='';
+form.onsubmit=async e=>{e.preventDefault();if(submittingOrder)return;if($('#pontCheckoutOverlay').hidden){openCheckoutPanel();return;}if(!form.reportValidity()){const target=form.querySelector(':invalid');if(target){target.scrollIntoView({behavior:'smooth',block:'center'});target.focus({preventScroll:true})}return}if(!current?.phone){$('#orderMsg').textContent='Acest restaurant nu a activat comenzile online.';return}if(!orderOpen(current)){$('#orderMsg').textContent='Meniul zilei este indisponibil.';return}if(!hasMinimumMenu()){$('#orderMsg').textContent='Comanda minimă este de '+(current?.min_full_menus||1)+' meniu complet.';return}const details=Object.fromEntries(new FormData(form));details.payment=current?.card?(details.payment||'Cash'):'Cash';details.full_name=String(details.full_name||'').trim();details.phone=String(details.phone||'').trim();details.address=String(details.address||'').trim();if(current.delivery===false)details.method='Ridicare';if(details.full_name.length<3||!validCustomerPhone(details.phone)||(details.method!=='Ridicare'&&!details.address)){$('#orderMsg').textContent='Completează numele, telefonul și adresa pentru livrare.';return}if(details.method==='Ridicare')details.address='';
 // The button itself initiates the WhatsApp order; no extra confirmation dialog.
 orderNoticeAccepted=true;
 submittingOrder=true;$('#send').disabled=true;
@@ -957,7 +963,58 @@ async function loadPromotionRanks(cfg){
  }catch(error){console.warn('PONT: clasamentul promovării nu a putut fi încărcat',error);}
  return new Map();
 }
-async function refreshLiveMenus(){try{const cfg=window.PONT_CONFIG;if(!cfg?.url||!cfg?.anonKey)throw Error('Conexiune neconfigurată');const params=new URLSearchParams({select:'id,restaurant_id,title,price,description,first_course,second_course,first_price,second_price,dessert,dish_selection,restaurants!inner(name,enabled,phone,accepts_card,menu_price,offers_delivery)',published:'eq.true',service_date:'eq.'+day(),'restaurants.enabled':'eq.true',order:'created_at.desc'});const response=await fetch(cfg.url+'/rest/v1/menus?'+params,{headers:{apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},cache:'no-store'});if(!response.ok)throw Error('HTTP '+response.status);const data=await response.json();let orderSettings=[];try{const r=await fetch(cfg.url+'/rest/v1/pont_order_settings?select=restaurant_id,opens_at,closes_at,min_full_menus',{headers:{apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey},cache:'no-store'});if(r.ok)orderSettings=await r.json()}catch(err){console.warn('PONT order hours unavailable',err)}const byRestaurant=new Map(orderSettings.map(s=>[s.restaurant_id,s]));const positions=await loadPromotionRanks(cfg);liveMenus=data.map(m=>({id:m.id,restaurantId:m.restaurant_id,promotionRank:positions.get(m.restaurant_id),dishes:Array.isArray(m.dish_selection)?m.dish_selection.filter(d=>d&&['first','second','dessert'].includes(d.category)&&typeof d.name==='string').slice(0,60):[],name:m.restaurants.name,first:m.first_course||m.title,second:m.second_course||m.description||'Detalii la restaurant',p1:Number(m.first_price??m.price??0),p2:Number(m.second_price??m.price??0),full:Number(m.restaurants.menu_price>0?m.restaurants.menu_price:(m.price??0)),dessert:m.dessert||'',card:!!m.restaurants.accepts_card,delivery:!!m.restaurants.offers_delivery,phone:m.restaurants.phone||'',opens_at:byRestaurant.get(m.restaurant_id)?.opens_at||'09:00',closes_at:byRestaurant.get(m.restaurant_id)?.closes_at||'15:00',min_full_menus:byRestaurant.get(m.restaurant_id)?.min_full_menus||1})).sort((a,b)=>(a.promotionRank??Infinity)-(b.promotionRank??Infinity));render()}catch(err){console.error('PONT menus',err);$('#list').innerHTML='<p class="menu-empty">Meniurile nu s-au încărcat. Reîncarcă pagina.</p>';$('#menuPhotoNote').hidden=true}}
+async function refreshLiveMenus(){
+ try{
+  const cfg=window.PONT_CONFIG;
+  if(!cfg?.url||!cfg?.anonKey)throw Error('Conexiune neconfigurată');
+  const headers={apikey:cfg.anonKey,Authorization:'Bearer '+cfg.anonKey};
+  const today=day();
+  const params=new URLSearchParams({select:'id,restaurant_id,title,price,description,first_course,second_course,first_price,second_price,dessert,dish_selection,restaurants!inner(name,enabled,phone,accepts_card,menu_price,offers_delivery)',published:'eq.true',service_date:'eq.'+today,'restaurants.enabled':'eq.true',order:'created_at.desc'});
+  const request=async path=>{
+   const response=await fetch(cfg.url+'/rest/v1/'+path,{headers,cache:'no-store'});
+   if(!response.ok)throw Error('HTTP '+response.status+' la '+path.split('?')[0]);
+   return response.json();
+  };
+  const [data,allRestaurants,dailyStatuses,orderSettings,positions]=await Promise.all([
+   request('menus?'+params),
+   request('restaurants?select=id,name,enabled,phone,accepts_card,menu_price,offers_delivery&enabled=eq.true&order=name.asc'),
+   request('pont_daily_menu_status?select=restaurant_id,exhausted&service_date=eq.'+today),
+   request('pont_order_settings?select=restaurant_id,min_full_menus').catch(()=>[]),
+   loadPromotionRanks(cfg)
+  ]);
+  const daily=new Set(dailyStatuses.filter(s=>s.exhausted===true).map(s=>s.restaurant_id));
+  const settings=new Map(orderSettings.map(s=>[s.restaurant_id,s]));
+  const byRestaurant=new Map();
+  // When several versions exist, use the newest published daily menu.
+  for(const m of data)if(!byRestaurant.has(m.restaurant_id))byRestaurant.set(m.restaurant_id,m);
+  liveMenus=allRestaurants.map(restaurant=>{
+   const m=byRestaurant.get(restaurant.id);
+   const exhausted=daily.has(restaurant.id);
+   return {
+    id:m?.id||'pending-'+restaurant.id,restaurantId:restaurant.id,
+    promotionRank:positions.get(restaurant.id),name:restaurant.name,
+    available:Boolean(m)&&!exhausted,exhausted,pending:!m,
+    dishes:Array.isArray(m?.dish_selection)?m.dish_selection.filter(d=>d&&['first','second','dessert'].includes(d.category)&&typeof d.name==='string').slice(0,60):[],
+    first:m?.first_course||m?.title||'',second:m?.second_course||m?.description||'',
+    p1:Number(m?.first_price??m?.price??0),p2:Number(m?.second_price??m?.price??0),
+    full:Number(restaurant.menu_price>0?restaurant.menu_price:(m?.price??0)),
+    dessert:m?.dessert||'',card:!!restaurant.accepts_card,delivery:!!restaurant.offers_delivery,
+    phone:restaurant.phone||'',min_full_menus:settings.get(restaurant.id)?.min_full_menus||1
+   };
+  }).sort((a,b)=>(a.promotionRank??Infinity)-(b.promotionRank??Infinity)||a.name.localeCompare(b.name,'ro'));
+  // Prevent ordering through a previously opened checkout after stock runs out.
+  if(current&&$('#order').open&&!liveMenus.some(m=>m.id===current.id&&m.available)){
+   returnToRestaurants(false);
+   const url=new URL(location.href);url.searchParams.delete('restaurant');
+   history.replaceState({},'',url);
+  }
+  render();
+ }catch(error){
+  console.error('PONT menus',error);
+  $('#list').innerHTML='<p class="menu-empty">Restaurantele nu s-au încărcat. Reîncarcă pagina.</p>';
+  $('#menuPhotoNote').hidden=true;
+ }
+}
 if (isMenuPreview) {
   $('#menuPreviewLabel').hidden = false;
   render();
