@@ -1,0 +1,431 @@
+const esc = value => String(value ?? '').replace(/[&<>"]/g, char =>
+  ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;'}[char]));
+const today = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Bucharest'}).format(new Date());
+const formatDate = date => date.split('-').reverse().join('.');
+const groups = [['first','Felul 1'], ['second','Felul 2'], ['dessert','Desert']];
+
+export function renderDishChecklist(entries, selected, {daily = false, renderDetails = () => ''} = {}) {
+  return groups.map(([category, label]) => {
+    const categoryEntries = entries.filter(([, dish]) => dish.category === category);
+    const totalCount = categoryEntries.length;
+    const selectedCount = categoryEntries.filter(([key]) => selected.has(key)).length;
+    const options = categoryEntries.map(([key, dish], index) => {
+      const checked = selected.has(key);
+      const name = esc(dish.name) + (dish.available === false ? ' · Epuizat' : '');
+      if (daily) {
+        const inputId = 'pont-daily-' + category + '-' + index;
+        return `<div class="pont-checklist-option pont-daily-choice">
+          <label for="${inputId}" class="pont-daily-choice-name"><span>${name}</span></label>
+          ${renderDetails(key, dish, checked)}
+          <input id="${inputId}" type="checkbox" data-select aria-label="Selectează ${esc(dish.name)}" value="${esc(key)}" ${checked ? 'checked' : ''}>
+        </div>`;
+      }
+      return `<div class="pont-checklist-option">
+        <label><input type="checkbox" name="dish" value="${esc(key)}" ${checked ? 'checked' : ''}><span>${name}</span></label>
+        ${renderDetails(key, dish, checked)}
+      </div>`;
+    }).join('');
+    const counter = daily ? `<div class="pont-daily-course-counter" aria-live="polite"><span>${totalCount} preparate</span><span aria-hidden="true"> · </span><span>${selectedCount} selectate</span></div>` : '';
+    return `<fieldset${daily ? ' class="pont-daily-fieldset pont-daily-fieldset--' + category + '"' : ''}><legend>${label}</legend><div class="${daily ? 'pont-daily-scroll-list' : 'pont-standard-dish-list'}" data-course="${category}">${options || '<small>Niciun preparat.</small>'}</div>${counter}</fieldset>`;
+  }).join('');
+}
+
+function renderMenuCourses(menu, numbered = false, editableAvailability = false) {
+  const snapshots = Array.isArray(menu.dish_selection) ? menu.dish_selection : [];
+  const legacy = {first:menu.first_course, second:menu.second_course, dessert:menu.dessert};
+  return groups.map(([key, label]) => {
+    const dishes = snapshots.map((dish, index) => ({dish, index}))
+      .filter(({dish}) => dish?.category === key && dish.name);
+    if (!dishes.length && legacy[key]) dishes.push({dish:{name:legacy[key], available:true}, index:-1});
+    if (!dishes.length) return '';
+    const content = numbered
+      ? '<ol class="pont-today-dish-list">' + dishes.map(({dish,index}) => {
+          const soldOut = dish.available === false;
+          const toggle = editableAvailability && index >= 0
+            ? '<button type="button" class="pont-today-availability' + (soldOut ? ' is-soldout' : '') +
+              '" data-today-availability="' + esc(menu.id) + '" data-dish-index="' + index +
+              '" aria-pressed="' + String(soldOut) + '" aria-label="' + esc((soldOut ? 'Marchează disponibil: ' : 'Marchează epuizat: ') + dish.name) +
+              '" title="' + (soldOut ? 'Marchează disponibil' : 'Marchează epuizat') + '">' +
+              (soldOut ? '✓ Epuizat' : 'Epuizat') + '</button>' : '';
+          return '<li class="' + (soldOut ? 'pont-today-soldout' : '') + '"><div class="pont-today-dish-line"><span class="pont-today-dish-name">' +
+            esc(dish.name) + '</span>' + toggle + '</div></li>';
+        }).join('') + '</ol>'
+      : dishes.map(({dish}) => esc(dish.name)).join(' · ');
+    return '<div><dt>' + label + '</dt><dd>' + content + '</dd></div>';
+  }).join('');
+}
+
+export async function toggleTodayDishAvailability(db, menu, index) {
+  if (!menu?.id || !menu.published || menu.service_date !== today()) throw Error('Meniul nu mai este activ astăzi.');
+  if (!Number.isInteger(index) || index < 0) throw Error('Preparatul selectat este invalid.');
+  const {data:latest, error:readError} = await db.from('menus')
+    .select('id,restaurant_id,service_date,published,dish_selection')
+    .eq('id', menu.id).eq('restaurant_id',menu.restaurant_id).single();
+  if (readError) throw readError;
+  if (!latest?.published || latest.service_date !== today()) throw Error('Meniul nu mai este activ astăzi.');
+  const dishes = Array.isArray(latest.dish_selection) ? latest.dish_selection : [];
+  const dish = dishes[index];
+  if (!dish?.name || !['first','second','dessert'].includes(dish.category)) throw Error('Preparatul nu mai există în meniul publicat.');
+  const available = dish.available === false;
+  const updated = dishes.map((entry,i) => i === index ? {...entry,available} : entry);
+  const {data:saved,error:saveError} = await db.from('menus').update({dish_selection:updated})
+    .eq('id',menu.id).eq('restaurant_id',menu.restaurant_id)
+    .eq('published',true).eq('service_date',today()).select('id').maybeSingle();
+  if (saveError) throw saveError;
+  if (!saved) throw Error('Nu am putut salva disponibilitatea. Reîncarcă pagina și încearcă din nou.');
+  return {available,dishName:dish.name};
+}
+
+export function renderPublishedToday(target, menus, restaurants, showRestaurantName, resetExpanded = false) {
+  const date = today();
+  const published = restaurants.flatMap(restaurant => menus
+    .filter(menu => menu.published && menu.service_date === date && menu.restaurant_id === restaurant.id)
+    .map(menu => ({menu, restaurant})));
+  const menuActions = menu => '<span class="pont-today-actions">' +
+    '<button type="button" class="pont-today-edit" data-today-edit="' + esc(menu.id) + '">Editează</button>' +
+    '<button type="button" class="pont-today-delete" data-today-delete="' + esc(menu.id) +
+    '" aria-label="Șterge meniul publicat" title="Șterge meniul">' +
+    '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M10 7V4h4v3m4 0-1 13H7L6 7m4 4v5m4-5v5"/></svg></button></span>';
+  const expanded = !resetExpanded && target.querySelector('.pont-today-toggle')?.getAttribute('aria-expanded') === 'true';
+  const header = '<div class="pont-today-header"><h3 id="pontTodayHeading">' +
+    '<button class="pont-today-toggle" type="button" aria-expanded="' + expanded + '" aria-controls="pontTodayDetails">' +
+    '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg>' +
+    'Meniul publicat azi</button></h3>' +
+    '<time datetime="' + date + '">' + formatDate(date) + '</time>' +
+    (published.length === 1 ? menuActions(published[0].menu) : '') + '</div>';
+  const cards = published.map(({menu, restaurant}) => {
+    const heading = showRestaurantName ? '<h4>' + esc(restaurant.name) + '</h4>' : '';
+    const action = published.length > 1 ? menuActions(menu) : '';
+    const courses = renderMenuCourses(menu, true, true);
+    return '<article class="pont-archive-row pont-today-card">' +
+      (heading || action ? '<div class="pont-today-meta">' + heading + action + '</div>' : '') +
+      (courses ? '<dl>' + courses + '</dl>' : '<p>Detalii indisponibile.</p>') + '</article>';
+  }).join('');
+  target.innerHTML = header + '<div id="pontTodayDetails"' + (expanded ? '' : ' hidden') + '>' +
+    (cards || '<p class="pont-today-empty">Nu există meniuri publicate azi.</p>') + '</div>';
+  const toggle = target.querySelector('.pont-today-toggle');
+  const details = target.querySelector('#pontTodayDetails');
+  toggle.addEventListener('click', () => {
+    details.hidden = !details.hidden;
+    toggle.setAttribute('aria-expanded', String(!details.hidden));
+  });
+}
+
+export function renderMenuArchive(target, menus, restaurants) {
+  const names = new Map(restaurants.map(restaurant => [restaurant.id, restaurant.name]));
+  const cutoff = today();
+  const items = menus.filter(menu => menu.published && menu.service_date && menu.service_date <= cutoff);
+  target.innerHTML = items.map(menu => {
+    const courses = renderMenuCourses(menu);
+    const restaurant = restaurants.length > 1 ? ' · '+esc(names.get(menu.restaurant_id) || 'Restaurant') : '';
+    const price = menu.price == null || menu.price === '' ? '' : ' · '+esc(Number(menu.price).toLocaleString('ro-RO'))+' lei';
+    return `<article class="pont-archive-row">
+      <p><time datetime="${esc(menu.service_date)}">${esc(formatDate(menu.service_date))}</time> · <strong>${esc(menu.title || 'Meniul zilei')}</strong>${restaurant}${price}</p>
+      ${courses ? '<dl>'+courses+'</dl>' : '<p>Detaliile preparatelor nu sunt disponibile.</p>'}
+    </article>`;
+  }).join('') || '<p>Nu există meniuri publicate până azi.</p>';
+}
+
+export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
+  const host = document.getElementById('pontMenuTemplates');
+  host.innerHTML = `
+    <div class="pont-model-toolbar">
+      <h2>Modele de meniu</h2>
+      <label id="pontModelRestaurantField">Restaurant<select id="pontModelRestaurant"></select></label>
+      <button type="button" class="primary" id="pontModelNew">Model nou</button>
+    </div>
+    <p id="pontModelStatus" role="status"></p>
+    <details class="pont-model-saved" id="pontModelSaved">
+      <summary>Modele salvate <span class="pont-model-chevron" aria-hidden="true"></span></summary>
+      <div class="pont-model-saved-body">
+        <p class="pont-model-hint">Alege un model și o dată pentru a publica. Poți reutiliza același model oricând.</p>
+        <div id="pontModelList"></div>
+      </div>
+    </details>
+    <dialog id="pontModelDialog" class="pont-menu-dialog pont-model-dialog" aria-labelledby="pontModelTitle">
+      <form id="pontModelForm">
+        <h3 id="pontModelTitle"></h3>
+        <div id="pontModelEditor">
+          <label>Numele modelului<input id="pontModelName" maxlength="80" required></label>
+          <div id="pontModelDishes" class="pont-model-course-buttons" role="group" aria-label="Categorii">
+            <button type="button" class="pont-model-course-button" data-model-course="first">Felul 1</button>
+            <button type="button" class="pont-model-course-button" data-model-course="second">Felul 2</button>
+            <button type="button" class="pont-model-course-button" data-model-course="dessert">Desert</button>
+          </div>
+          <section class="pont-model-selection-summary" aria-labelledby="pontModelSummaryHeading">
+            <h4 id="pontModelSummaryHeading">Rezumatul modelului</h4>
+            <div id="pontModelSelected"></div>
+          </section>
+        </div>
+        <div id="pontModelPublishFields" hidden>
+          <p id="pontModelPublishName"></p>
+          <label>Data meniului<input type="date" id="pontModelDate"></label>
+        </div>
+        <p id="pontModelError" role="alert"></p>
+        <div class="pont-model-actions">
+          <button type="button" id="pontModelCancel">Anulează</button>
+          <button type="submit" class="primary" id="pontModelSubmit">Salvează modelul</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="pontModelCourseDialog" class="pont-model-course-dialog" aria-labelledby="pontModelCourseTitle">
+      <header class="pont-model-course-header"><h3 id="pontModelCourseTitle">Felul 1</h3></header>
+      <p class="pont-model-course-hint">Bifează preparatele pe care vrei să le incluzi în model.</p>
+      <div id="pontModelCourseList" class="pont-model-course-list"></div>
+      <footer class="pont-model-course-footer">
+        <button type="button" id="pontModelCourseBack">Înapoi fără modificări</button>
+        <button type="button" id="pontModelCourseConfirm" class="primary">Confirmă selecția</button>
+      </footer>
+    </dialog>`;
+  const $ = id => document.getElementById(id);
+  const restaurantPicker = $('pontModelRestaurant');
+  const list = $('pontModelList');
+  const status = $('pontModelStatus');
+  const dialog = $('pontModelDialog');
+  const courseDialog = $('pontModelCourseDialog');
+  const courseList = $('pontModelCourseList');
+  const selectedList = $('pontModelSelected');
+  const nameInput = $('pontModelName');
+  const dateInput = $('pontModelDate');
+  const submit = $('pontModelSubmit');
+  const cancel = $('pontModelCancel');
+  const errorMessage = $('pontModelError');
+  let models = [], dishes = [], byId = new Map();
+  let request = 0, ready = false, busy = false, activeModel = null, publishing = false, focusAfterClose = null;
+
+  const modelSelected = new Set();
+  let openedCourse = null, courseSnapshot = null, courseOpener = null;
+  function renderModelSummary() {
+    selectedList.innerHTML = groups.map(([key,label]) => {
+      const entries = dishes.filter(dish => dish.category === key && modelSelected.has(dish.id));
+      const body = entries.length
+        ? '<ol class="pont-model-selected-list">' + entries.map(dish =>
+          '<li><span>' + esc(dish.name) + '</span><button type="button" data-model-remove="' + esc(dish.id) +
+          '" aria-label="Elimină ' + esc(dish.name) + '" title="Elimină">×</button></li>').join('') + '</ol>'
+        : '<p class="pont-model-none">Niciun preparat selectat</p>';
+      return '<div class="pont-model-summary-group"><div class="pont-model-summary-head"><strong>' + label +
+        '</strong><button type="button" data-model-course="' + key + '">Modifică</button></div>' + body + '</div>';
+    }).join('');
+  }
+  function renderModelCourse() {
+    if (!openedCourse) return;
+    $('pontModelCourseTitle').textContent = groups.find(([key]) => key === openedCourse)?.[1] ?? 'Preparate';
+    const options = dishes.filter(dish => dish.category === openedCourse);
+    courseList.innerHTML = options.length ? options.map(dish =>
+      '<label class="pont-model-course-choice"><span class="pont-model-course-name">' + esc(dish.name) +
+      (dish.available === false ? ' · Epuizat' : '') + '</span><input type="checkbox" data-model-pick="' + esc(dish.id) +
+      '" aria-label="Selectează ' + esc(dish.name) + '" ' + (modelSelected.has(dish.id) ? 'checked' : '') + '></label>'
+    ).join('') : '<p>Nu există preparate salvate în această categorie.</p>';
+  }
+  function openModelCourse(key, opener) {
+    if (publishing || busy || !groups.some(([course]) => course === key)) return;
+    courseSnapshot = new Set([...modelSelected].filter(id => byId.get(id)?.category === key));
+    courseOpener = opener;
+    openedCourse = key;
+    renderModelCourse();
+    courseDialog.showModal();
+    $('pontModelCourseConfirm').focus({preventScroll:true});
+  }
+  function closeModelCourse(confirmSelection) {
+    if (!openedCourse) return;
+    if (!confirmSelection && courseSnapshot) {
+      for (const id of [...modelSelected]) if (byId.get(id)?.category === openedCourse) modelSelected.delete(id);
+      for (const id of courseSnapshot) modelSelected.add(id);
+    }
+    openedCourse = null;
+    courseSnapshot = null;
+    courseDialog.close();
+    renderModelSummary();
+    if (courseOpener?.isConnected) courseOpener.focus({preventScroll:true});
+    courseOpener = null;
+  }
+  $('pontModelDishes').addEventListener('click', event => {
+    const button = event.target.closest('[data-model-course]');
+    if (button) openModelCourse(button.dataset.modelCourse, button);
+  });
+  selectedList.addEventListener('click', event => {
+    const remove = event.target.closest('[data-model-remove]');
+    if (remove) {
+      modelSelected.delete(remove.dataset.modelRemove);
+      renderModelSummary();
+      return;
+    }
+    const button = event.target.closest('[data-model-course]');
+    if (button) openModelCourse(button.dataset.modelCourse, button);
+  });
+  courseList.onchange = event => {
+    const input = event.target.closest('[data-model-pick]');
+    if (!input) return;
+    if (input.checked) modelSelected.add(input.dataset.modelPick);
+    else modelSelected.delete(input.dataset.modelPick);
+  };
+  $('pontModelCourseBack').onclick = () => closeModelCourse(false);
+  $('pontModelCourseConfirm').onclick = () => closeModelCourse(true);
+  courseDialog.addEventListener('cancel', event => { event.preventDefault(); closeModelCourse(false); });
+  courseDialog.addEventListener('click', event => { if (event.target === courseDialog) closeModelCourse(false); });
+
+
+  function renderList() {
+    list.innerHTML = models.map(model => {
+      const selected = model.dish_ids.map(id => byId.get(id));
+      const categories = groups.map(([key, label]) => {
+        const names = selected.filter(dish => dish?.category === key).map(dish => esc(dish.name));
+        return names.length ? '<div><dt>'+label+'</dt><dd>'+names.join(' · ')+'</dd></div>' : '';
+      }).join('');
+      const unavailable = selected.some(dish => !dish);
+      const restaurant = getRestaurants().find(item => item.id === model.restaurant_id);
+      return `<article class="pont-model-row">
+        <h3>${esc(model.name)}</h3><dl>${categories}</dl>
+        ${unavailable ? '<p>Un preparat lipsește din bibliotecă. Editează modelul.</p>' : ''}
+        <div class="pont-model-actions">
+          <button type="button" class="primary" data-model-publish="${esc(model.id)}" ${unavailable || !restaurant?.enabled ? 'disabled' : ''}>Publică</button>
+          <button type="button" data-model-edit="${esc(model.id)}">Editează</button>
+          <button type="button" data-model-delete="${esc(model.id)}" class="admin-danger">Șterge</button>
+        </div>
+      </article>`;
+    }).join('') || '<p>Nu ai încă modele salvate.</p>';
+  }
+
+  async function refresh(selectedId, keepStatus = false) {
+    const version = ++request;
+    const restaurants = getRestaurants();
+    const previous = selectedId || restaurantPicker.value;
+    restaurantPicker.replaceChildren(...restaurants.map(restaurant => new Option(restaurant.name, restaurant.id)));
+    if (restaurants.some(restaurant => restaurant.id === previous)) restaurantPicker.value = previous;
+    $('pontModelRestaurantField').hidden = restaurants.length < 2;
+    const restaurant = restaurantPicker.value;
+    ready = false;
+    $('pontModelNew').disabled = true;
+    list.replaceChildren();
+    if (!restaurant) {
+      status.textContent = 'Alege un restaurant pentru a vedea modelele.';
+      return;
+    }
+    if (!keepStatus) status.textContent = 'Se încarcă modelele…';
+    try {
+      const [templateResult, dishResult] = await Promise.all([
+        db.from('pont_menu_templates').select('id,restaurant_id,name,dish_ids').eq('restaurant_id', restaurant).order('name'),
+        db.from('pont_dishes').select('id,category,name,available').eq('restaurant_id', restaurant).order('name')
+      ]);
+      if (version !== request) return;
+      if (templateResult.error || dishResult.error) throw (templateResult.error || dishResult.error);
+      models = templateResult.data ?? [];
+      dishes = dishResult.data ?? [];
+      byId = new Map(dishes.map(dish => [dish.id, dish]));
+      ready = true;
+      $('pontModelNew').disabled = false;
+      if (!keepStatus) status.textContent = '';
+      renderList();
+    } catch (error) {
+      if (version === request) status.textContent = 'Modelele nu s-au încărcat. ' + error.message;
+    }
+  }
+
+  function open(model, publish, trigger) {
+    if (!ready || dialog.open) return;
+    activeModel = model;
+    publishing = publish;
+    focusAfterClose = trigger;
+    errorMessage.textContent = '';
+    $('pontModelTitle').textContent = publish ? 'Alege data publicării' : model?.id ? 'Editează modelul' : 'Model nou';
+    $('pontModelEditor').hidden = publish;
+    $('pontModelPublishFields').hidden = !publish;
+    nameInput.disabled = publish;
+    dateInput.disabled = !publish;
+    dateInput.required = publish;
+    submit.textContent = publish ? 'Publică' : 'Salvează modelul';
+    if (publish) {
+      dateInput.min = today();
+      dateInput.value = dateInput.min;
+      $('pontModelPublishName').textContent = model.name;
+    } else {
+      nameInput.value = model?.name ?? '';
+      modelSelected.clear();
+      for (const id of model?.dish_ids ?? []) if (byId.has(id)) modelSelected.add(id);
+      renderModelSummary();
+      if (model?.dish_ids.some(id => !byId.has(id))) {
+        errorMessage.textContent = 'Preparatele eliminate din bibliotecă trebuie înlocuite.';
+      }
+    }
+    dialog.showModal();
+    // Do not focus the hidden native date input: iOS Safari would open its legacy calendar.
+    // Focus the visible compact month/day/year control instead.
+    if (publish) {
+      const compact = dateInput.nextElementSibling?.querySelector('.pont-date-part');
+      (compact || $('pontModelTitle')).focus({preventScroll:true});
+    } else {
+      nameInput.focus({preventScroll:true});
+    }
+  }
+
+  restaurantPicker.onchange = () => void refresh();
+  $('pontModelNew').onclick = event => open(null, false, event.currentTarget);
+  cancel.onclick = () => dialog.close();
+  dialog.addEventListener('cancel', event => { if (busy) event.preventDefault(); });
+  dialog.addEventListener('close', () => {
+    if (focusAfterClose?.isConnected) focusAfterClose.focus();
+  });
+
+  list.onclick = async event => {
+    const button = event.target.closest('button');
+    if (!button || !ready) return;
+    const {modelEdit, modelPublish, modelDelete} = button.dataset;
+    const model = models.find(item => item.id === (modelEdit || modelPublish || modelDelete));
+    if (!model) return;
+    if (modelEdit || modelPublish) {
+      open(model, Boolean(modelPublish), button);
+      return;
+    }
+    if (!confirm('Ștergi modelul „'+model.name+'”?')) return;
+    button.disabled = true;
+    try {
+      const {error} = await db.from('pont_menu_templates').delete().eq('id', model.id).eq('restaurant_id', model.restaurant_id);
+      if (error) throw error;
+      if (restaurantPicker.value === model.restaurant_id) await refresh();
+    } catch (error) {
+      if (restaurantPicker.value === model.restaurant_id) status.textContent = error.message;
+    } finally {
+      button.disabled = false;
+    }
+  };
+
+  $('pontModelForm').onsubmit = async event => {
+    event.preventDefault();
+    if (busy) return;
+    const restaurant = restaurantPicker.value;
+    errorMessage.textContent = '';
+    busy = submit.disabled = cancel.disabled = true;
+    try {
+      if (publishing) {
+        const date = dateInput.value;
+        const {error} = await db.rpc('pont_publish_menu_template', {p_template:activeModel.id, p_date:date});
+        if (error) throw error;
+        dialog.close();
+        status.textContent = date === today()
+          ? 'Meniul a fost publicat pentru azi.'
+          : 'Meniul a fost programat pentru '+formatDate(date)+'.';
+        try { await refreshHistory(); } catch { status.textContent += ' Reîncarcă pagina pentru a vedea istoricul.'; }
+      } else {
+        const name = nameInput.value.trim();
+        const ids = [...modelSelected];
+        if (!name || !ids.length || ids.length > 60) throw Error('Completează numele și selectează între 1 și 60 de preparate.');
+        const values = {name, dish_ids:ids};
+        const query = activeModel?.id
+          ? db.from('pont_menu_templates').update(values).eq('id', activeModel.id).eq('restaurant_id', restaurant)
+          : db.from('pont_menu_templates').insert({...values, restaurant_id:restaurant});
+        const {error} = await query;
+        if (error) throw error;
+        dialog.close();
+        status.textContent = 'Model salvat.';
+        await refresh(restaurant, true);
+        $('pontModelNew').focus();
+      }
+    } catch (error) {
+      errorMessage.textContent = error.message;
+    } finally {
+      busy = submit.disabled = cancel.disabled = false;
+    }
+  };
+
+  return {refresh};
+}
