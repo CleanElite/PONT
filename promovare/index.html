@@ -800,7 +800,7 @@ dialog.pont-premium-auction.pont-keyboard-active[open]{overflow-y:auto!important
     <h1 id="lunchTitle"><span class="menu-icon menu-icon--utensils" aria-hidden="true"></span>Promovare</h1>
     <p>Licitează pentru vizibilitatea restaurantului tău.</p>
     <p class="promotion-campaign-period">Licitație pentru <span id="date"></span></p>
-    <p class="pont-auction-scheduled-date" style="margin:5px auto 11px;color:#bbdedb;font:600 clamp(11px,2.5vw,14px)/1.4 system-ui">Data licitației: <strong id="pontAuctionScheduledDate" style="color:#f2d69d"></strong> · 10:00–18:00 (ora României) · Plată max. 48 h de la închidere</p>
+    <p class="pont-auction-scheduled-date" style="margin:5px auto 11px;color:#bbdedb;font:600 clamp(11px,2.5vw,14px)/1.4 system-ui">Data licitației: <strong id="pontAuctionScheduledDate" style="color:#f2d69d"></strong> · 10:00–18:00</p>
     <label id="promotionMonthSelectWrap" class="promotion-month-picker" hidden>Campania <select id="promotionMonthSelect" aria-label="Alege luna licitației"></select></label>
   </section>
   <section id="pontPendingPayments" class="pont-pending-payments" aria-label="Plăți licitații încheiate" hidden>
@@ -1081,22 +1081,24 @@ function renderAuctionStatus(){
 let pontCheckout=null;
 async function pontRefreshPendingPayments(){
  const panel=$('pontPendingPayments'),list=$('pontPendingPaymentItems');
- if(role!=='restaurant'||!me){panel.hidden=true;return}
+ // The payment panel only belongs to the displayed campaign after the
+ // Super Admin has explicitly finished it. Reopening hides it again.
+ if(role!=='restaurant'||!me||biddingOpen||!Array.isArray(finalRanking)||!finalRanking.includes(me)){
+  panel.hidden=true;list.replaceChildren();return;
+ }
+ const {data:control,error:controlError}=await db.from('pont_auction_control')
+  .select('campaign_month,is_open,closed_at,final_ranking')
+  .eq('campaign_month',month).maybeSingle();
+ if(controlError)throw controlError;
+ if(!control||control.is_open!==false||!control.closed_at||
+    !Array.isArray(control.final_ranking)||!control.final_ranking.includes(me)){
+  panel.hidden=true;list.replaceChildren();return;
+ }
  const {data:rows,error}=await db.from('auction_offers')
   .select('id,restaurant_id,campaign_month,amount,payment_status')
-  .eq('restaurant_id',me).neq('payment_status','paid')
-  .order('campaign_month',{ascending:false});
+  .eq('restaurant_id',me).eq('campaign_month',month).neq('payment_status','paid');
  if(error)throw error;
- if(!rows?.length){panel.hidden=true;list.replaceChildren();return}
- const months=[...new Set(rows.map(row=>row.campaign_month))];
- const {data:controls,error:controlError}=await db.from('pont_auction_control')
-  .select('campaign_month,is_open,final_ranking').in('campaign_month',months);
- if(controlError)throw controlError;
- const controlByMonth=new Map((controls||[]).map(item=>[item.campaign_month,item]));
- const due=rows.filter(row=>{
-  const control=controlByMonth.get(row.campaign_month);
-  return control?.is_open===false&&Array.isArray(control.final_ranking)&&control.final_ranking.includes(me);
- });
+ const due=rows||[];
  list.replaceChildren();
  for(const row of due){
   const item=document.createElement('div');item.className='pont-pending-payment-row';
