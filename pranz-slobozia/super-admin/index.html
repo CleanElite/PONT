@@ -954,7 +954,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   <div class="admin-hero-copy"><h1>Super Admin</h1><p>Administrarea platformei PONT</p></div>
   <button type="button" class="pont-hero-dashboard" data-tab="analytics" aria-controls="analytics" aria-pressed="true">Dashboard</button>
 </div>
-<nav class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Super Admin">
+<div class="pont-live-datetime" role="group" aria-label="Data și ora României"><span class="pont-live-datetime__date" data-pont-clock-date>—</span><span class="pont-live-datetime__separator" aria-hidden="true"></span><time class="pont-live-datetime__time" data-pont-clock-time>--:--</time></div> <nav class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Super Admin">
   <div class="pont-nav-cluster pont-nav-cluster--content" role="group" aria-label="Meniuri și preparate">
     <button type="button" data-tab="menus" aria-controls="menus" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Meniuri</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <button type="button" data-tab="dishLibrary" aria-controls="dishLibrary" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#fork-knife"></use></svg><span>Preparate</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
@@ -2604,4 +2604,20 @@ await pontOperations.refresh();
 }
 </script>
 <script src="../compact-date-picker.js?v=c28b" defer></script>
-<script src="../pont-week-navigation.js?v=planner-nav-thin-20261112" defer></script><script defer src="../../pont-navigation-history.js?v=stack-v2-20261113"></script></body></html>
+<script src="../pont-week-navigation.js?v=planner-nav-thin-20261112" defer></script><script defer src="../../pont-navigation-history.js?v=stack-v2-20261113"></script><style id="pont-live-clock-style">
+#app .pont-live-datetime{display:flex;align-items:center;justify-content:flex-end;gap:9px;min-height:28px;margin:-3px 1px 9px;white-space:nowrap;font-variant-numeric:tabular-nums}
+#app .pont-live-datetime__date{color:#b0d0d0;font:550 clamp(10px,2.4vw,12px)/1.2 system-ui,sans-serif;letter-spacing:.015em}
+#app .pont-live-datetime__separator{width:1px;height:13px;background:#c5b08375}
+#app .pont-live-datetime__time{font:750 clamp(12px,2.9vw,15px)/1.2 system-ui,sans-serif;letter-spacing:.055em;color:#f0d396;text-shadow:0 0 10px #d5ab4b33}
+@media(max-width:420px){#app .pont-live-datetime{margin-top:-2px;gap:7px;min-height:25px}}
+</style><script id="pont-live-clock-script">
+(()=>{const zone='Europe/Bucharest';let last='';
+const dateFmt=new Intl.DateTimeFormat('ro-RO',{timeZone:zone,day:'2-digit',month:'long',year:'numeric'});
+const timeFmt=new Intl.DateTimeFormat('ro-RO',{timeZone:zone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+function updatePontClock(){const now=new Date(),minute=timeFmt.format(now),day=dateFmt.format(now);const stamp=day+'|'+minute;if(stamp===last)return;last=stamp;
+document.querySelectorAll('[data-pont-clock-date]').forEach(el=>{el.textContent=day});
+document.querySelectorAll('[data-pont-clock-time]').forEach(el=>{el.textContent=minute;el.setAttribute('datetime',new Intl.DateTimeFormat('sv-SE',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).format(now)+'T'+minute)});
+}
+updatePontClock();setInterval(updatePontClock,15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){last='';updatePontClock()}});window.addEventListener('pageshow',()=>{last='';updatePontClock()});
+})();
+</script></body></html>
