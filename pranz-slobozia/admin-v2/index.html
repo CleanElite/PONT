@@ -487,7 +487,7 @@ $('menus').onclick = async event => {
   status(error.message,true);
  }
 };
-const {initPontDishEditor}=await import('../dish-editor.js?v=menu-save-edit-20261113');
+const {initPontDishEditor}=await import('../dish-editor.js?v=today-availability-20261113');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:true});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
