@@ -229,7 +229,7 @@
   </div>
   <div id="pontAuctionBellMount" class="pont-bell-header-slot" aria-label="Notificări licitații"></div>
 </div>
-<nav class="admin-nav pont-restaurant-grouped-nav" aria-label="Secțiunile panoului">
+<div class="pont-live-datetime" role="group" aria-label="Data și ora României"><span class="pont-live-datetime__date" data-pont-clock-date>—</span><span class="pont-live-datetime__separator" aria-hidden="true"></span><time class="pont-live-datetime__time" data-pont-clock-time>--:--</time></div> <nav class="admin-nav pont-restaurant-grouped-nav" aria-label="Secțiunile panoului">
   <div class="pont-restaurant-nav-group pont-restaurant-nav-menus" role="group" aria-label="Gestionare meniuri">
     <button type="button" id="showAdd" data-view="add" data-hash="#adauga" aria-controls="addView" aria-pressed="true"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Meniul zilei</span></button>
     <button type="button" id="showSaved" data-view="saved" data-hash="#meniuri" aria-controls="savedView" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#list-bullets"></use></svg><span>Meniuri salvate</span></button>
@@ -1069,4 +1069,20 @@ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu .pont-today-exhausted
   width:clamp(88px,25vw,116px)!important;
  }
 }
-</style></body></html>
+</style><style id="pont-live-clock-style">
+#app .pont-live-datetime{display:flex;align-items:center;justify-content:flex-end;gap:9px;min-height:28px;margin:-3px 1px 9px;white-space:nowrap;font-variant-numeric:tabular-nums}
+#app .pont-live-datetime__date{color:#b0d0d0;font:550 clamp(10px,2.4vw,12px)/1.2 system-ui,sans-serif;letter-spacing:.015em}
+#app .pont-live-datetime__separator{width:1px;height:13px;background:#c5b08375}
+#app .pont-live-datetime__time{font:750 clamp(12px,2.9vw,15px)/1.2 system-ui,sans-serif;letter-spacing:.055em;color:#f0d396;text-shadow:0 0 10px #d5ab4b33}
+@media(max-width:420px){#app .pont-live-datetime{margin-top:-2px;gap:7px;min-height:25px}}
+</style><script id="pont-live-clock-script">
+(()=>{const zone='Europe/Bucharest';let last='';
+const dateFmt=new Intl.DateTimeFormat('ro-RO',{timeZone:zone,day:'2-digit',month:'long',year:'numeric'});
+const timeFmt=new Intl.DateTimeFormat('ro-RO',{timeZone:zone,hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+function updatePontClock(){const now=new Date(),minute=timeFmt.format(now),day=dateFmt.format(now);const stamp=day+'|'+minute;if(stamp===last)return;last=stamp;
+document.querySelectorAll('[data-pont-clock-date]').forEach(el=>{el.textContent=day});
+document.querySelectorAll('[data-pont-clock-time]').forEach(el=>{el.textContent=minute;el.setAttribute('datetime',new Intl.DateTimeFormat('sv-SE',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).format(now)+'T'+minute)});
+}
+updatePontClock();setInterval(updatePontClock,15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){last='';updatePontClock()}});window.addEventListener('pageshow',()=>{last='';updatePontClock()});
+})();
+</script></body></html>
