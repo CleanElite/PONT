@@ -1078,7 +1078,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   <h2 id="auctionsTitle" class="pont-auction-page-title">Licitații și încasări</h2>
   <section class="pont-auction-lifecycle-panel" aria-labelledby="auctionLifecyclePanelTitle">
     <div class="pont-auction-lifecycle-top">
-      <div><h3 id="auctionLifecyclePanelTitle">Controlul licitației</h3><p>Licitația are loc pe 23 (vineri pe 22 dacă este sâmbătă, luni pe 24 dacă este duminică). Ofertele se păstrează la redeschidere.</p></div>
+      <div><h3 id="auctionLifecyclePanelTitle">Controlul licitației</h3><p>Licitația are loc pe 23 (vineri pe 22 dacă pică sâmbătă, luni pe 24 dacă pică duminică), între 10:00–18:00, ora României. Plata: maximum 48 de ore de la închidere. Ofertele se păstrează la redeschidere.</p></div>
       <label for="auctionControlMonth">Luna licitației<input type="month" id="auctionControlMonth" aria-label="Luna licitației controlate"></label>
     </div>
     <div class="pont-auction-lifecycle-buttons" role="group" aria-label="Pornește, pauză, reia sau încheie licitația">
@@ -1961,7 +1961,7 @@ function displayAuctionControl(month,isOpen,paused,finalized){
  const state=isOpen?(paused?'paused':'open'):(finalized?'closed':'not-started');
  const controlStatus=$('auctionControlStatus');
  controlStatus.textContent=(state==='paused'?'În pauză':state==='open'?'Activă':state==='closed'?'Încheiată (poate fi redeschisă)':'Nepornită')+' · '+label;
- controlStatus.textContent += ' · Data oficială: '+pontAuctionDateLabel(month);
+ controlStatus.textContent += ' · Data oficială: '+pontAuctionDateLabel(month)+' · 10:00–18:00 · Plată max. 48 h';
  controlStatus.dataset.state=state;
  auctionControlButton.disabled=auctionControlBusy||isOpen;
  auctionPauseButton.disabled=auctionControlBusy||!isOpen||paused;
