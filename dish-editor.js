@@ -7,6 +7,8 @@ const groups = [['first','Felul 1','bowl-food'], ['second','Felul 2','fork-knife
 const todayRO = () => new Intl.DateTimeFormat('sv-SE', {timeZone:'Europe/Bucharest', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date());
 const priceRO = new Intl.NumberFormat('ro-RO', {minimumFractionDigits:2, maximumFractionDigits:2});
 const host = $('toggleMenuForm'), wrap = $('menuFormWrap'), catalog = $('dishLibrary');
+// Return to the beginning of the current menu page after leaving any editor.
+const scrollMenuPageTop = () => requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo({top:0,left:0,behavior:'instant'})));
 if (!host || !wrap || !catalog) return;
 
 const photoValidationMessage = 'Fotografia trebuie să fie JPG, PNG sau WebP, maximum 2 MB.';
@@ -649,19 +651,13 @@ host.onclick = () => {
   const open = wrap.hidden;
   setEditorOpen(open);
   if (open) refresh().catch(error => { $('pontDailyError').textContent = error.message; });
+  else scrollMenuPageTop();
 };
 $('pontDailyCancel').onclick = () => {
   resetDaily();
   choices();
   setEditorOpen(false);
-  // After cancelling an edit, return to the published-today menu, not the bottom of the page.
-  const todayPanel = document.getElementById('pontTodayMenu');
-  if (todayPanel && !todayPanel.hidden) {
-    todayPanel.scrollIntoView({block:'start',behavior:'smooth'});
-    todayPanel.querySelector('.pont-today-toggle')?.focus({preventScroll:true});
-  } else {
-    window.scrollTo({top:0,behavior:'smooth'});
-  }
+  scrollMenuPageTop();
 };
 $('pontDailyPickerList').onchange = event => {
   const checkbox = event.target.closest('[data-select]');
@@ -799,6 +795,7 @@ $('pontDishPublish').onclick = async () => {
     resetDaily();
     choices();
     setEditorOpen(false);
+    scrollMenuPageTop();
     const message = id
       ? 'Meniul zilei a fost salvat pentru '
       : date > todayRO() ? 'Meniul zilei a fost programat pentru ' : 'Meniul zilei a fost publicat pentru ';
