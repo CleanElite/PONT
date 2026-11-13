@@ -1341,16 +1341,10 @@ async function refreshRestaurantAuctionPayments(){
  renderRestaurants();
 }
 function restaurantAuctionPaymentBadge(restaurantId){
- if(!restaurantAuctionPaymentsLoaded)return '<span class="pont-restaurant-payment pont-restaurant-payment-unknown" title="Nu s-a putut verifica statusul plății">Plată neverificată</span>';
+ if(!restaurantAuctionPaymentsLoaded)return '<span class="pont-restaurant-payment pont-restaurant-payment-unknown" title="Statusul nu a putut fi verificat">Neverificat</span>';
  const offer=restaurantAuctionPayments.get(restaurantId);
- if(!offer)return '<span class="pont-restaurant-payment pont-restaurant-payment-none">Licitație: fără ofertă</span>';
- const month=String(offer.campaign_month||'').slice(0,7);
- const monthText=/^\d{4}-\d{2}$/.test(month)?month.slice(5)+'/'+month.slice(0,4):'';
- const stripeConfirmed=offer.payment_status==='paid' && offer.payment_method==='stripe' && /^pi_/.test(offer.payment_reference||'');
- const manuallyPaid=offer.payment_status==='paid' && !stripeConfirmed;
- const label=stripeConfirmed?'Plătit Stripe':manuallyPaid?'Plătit · altă metodă':'Neplătit';
- const kind=offer.payment_status==='paid'?'paid':'pending';
- return '<span class="pont-restaurant-payment pont-restaurant-payment-'+kind+'" title="Plata licitației '+esc(monthText)+'">'+label+' · '+esc(monthText)+'</span>';
+ const paid=offer?.payment_status==='paid';
+ return '<span class="pont-restaurant-payment pont-restaurant-payment-'+(paid?'paid':'pending')+'" title="Statusul plății licitației, fără modificarea accesului sau aprobărilor">'+(paid?'Plătit':'Neplătit')+'</span>';
 }
 let restaurantOnlineIds = new Set();
 let dailyMenuStatuses=[],dailyMenuExhaustedIds=new Set();
