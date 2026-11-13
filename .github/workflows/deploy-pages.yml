@@ -4,7 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 concurrency:
@@ -35,6 +35,13 @@ jobs:
         run: |
           python build_intro_clean.py
           test -s assets/pont-intro-clean.jpg
+      - name: Save verified curtain artwork for visual inspection
+        run: |
+          git add -f assets/pont-intro-clean.jpg
+          if ! git diff --cached --quiet; then
+            git -c user.name="PONT Build Bot" -c user.email="github-actions[bot]@users.noreply.github.com" commit -m "Update generated logo-free intro curtain image"
+            git push origin HEAD:main
+          fi
       - name: Upload site
         uses: actions/upload-pages-artifact@v3
         with:
