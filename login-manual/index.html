@@ -164,8 +164,8 @@ main.pont-login-surface #reset{
  main.pont-login-surface input{transition:none}
 }
 </style><link rel="stylesheet" href="../pont-navigation.css?v=2"><main class="pont-login-surface">
- <a href="../" class="pont-login-back" aria-label="Înapoi la PONT"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></a>
- <div class="brand" aria-label="PONT">P<span>O</span>NT</div>
+ <a href="../" class="pont-login-back" aria-label="Înapoi la PONT" data-pont-back><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></a>
+ <a class="brand" href="../" aria-label="Acasă — PONT" style="text-decoration:none;color:inherit">P<span>O</span>NT</a>
  <div class="pont-login-heading"><h1>Acces administratori</h1><p>Completează datele și apasă „Conectare” pentru a intra în panoul tău.</p></div>
  <form id="form" autocomplete="on">
   <label for="email" class="pont-login-label"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m4 7 8 6 8-6"/></svg><span>Email sau nume de cont</span></label>
@@ -211,4 +211,4 @@ document.getElementById('closeRecovery').onclick=()=>recoveryDialog.close();
 document.getElementById('recoveryForm').onsubmit=e=>{e.preventDefault();const user=document.getElementById('recoveryUser').value.trim(),phone=document.getElementById('recoveryPhone').value.trim();if(!user||!phone)return;const msg=['Buna ziua! Am uitat parola contului PONT','Nume: '+user,'Numar telefon: '+phone].join(String.fromCharCode(10));window.open('https://api.whatsapp.com/send?text='+encodeURIComponent(msg),'_blank','noopener,noreferrer');};
 if(await adminSession.resume())await redirect();
 }
-</script></html>
+</script><script defer src="../pont-navigation-history.js?v=origin-aware-20261113"></script></html>
