@@ -61,15 +61,19 @@ async function processWebhook(req:Request) {
  if(!offerId||!month||!restaurantId||intent?.currency!=='ron'||intent?.status!=='succeeded')return json({received:true});
  const {data:offer,error:offerError}=await admin.from('auction_offers').select('id,restaurant_id,campaign_month,amount,payment_status,payment_reference').eq('id',offerId).maybeSingle();
  if(offerError)throw offerError;
- const {data:control,error:controlError}=await admin.from('pont_auction_control').select('is_open,final_ranking').eq('campaign_month',month).maybeSingle();
+ const {data:control,error:controlError}=await admin.from('pont_auction_control').select('is_open,final_ranking,closed_at').eq('campaign_month',month).maybeSingle();
  if(controlError)throw controlError;
  // If the auction was reopened, the bid changed, or the offer vanished,
  // return funds rather than accepting payment for an invalid placement.
+ const deadline=control?.closed_at?Date.parse(control.closed_at)+48*60*60*1000:null;
+ const settledAt=Number(event.created)*1000;
+ const settledInTime=deadline===null || (Number.isFinite(settledAt)&&settledAt<=deadline);
  const validOffer=offer && offer.restaurant_id===restaurantId
   && offer.campaign_month===month
   && Math.round(Number(offer.amount)*100)===intent.amount_received
   && control?.is_open===false
-  && Array.isArray(control.final_ranking) && control.final_ranking.includes(restaurantId);
+  && Array.isArray(control.final_ranking) && control.final_ranking.includes(restaurantId)
+  && (offer.payment_status==='paid' || settledInTime);
  if(!validOffer || (offer.payment_status==='paid' && offer.payment_reference!==intent.id)){
   console.error('PONT Stripe: invalid settled bid; refunding PaymentIntent',intent.id);
   await stripeRequest('refunds',new URLSearchParams({payment_intent:intent.id}), 'pont-invalid-bid-refund-'+intent.id);
@@ -110,6 +114,8 @@ async function createIntent(req:Request) {
  if(controlError)throw controlError;
  if(!control||control.is_open!==false||!Array.isArray(control.final_ranking)||!control.final_ranking.includes(restaurantId))
    return json({error:'Plata devine disponibilă doar după închiderea licitației pentru restaurantele clasate.'},409);
+ if(control.closed_at && Date.now()>=Date.parse(control.closed_at)+48*60*60*1000)
+   return json({error:'Termenul de plată de 48 de ore a expirat. Restaurantul a pierdut poziția în clasament.'},409);
  const {data:offer,error:offerError}=await admin.from('auction_offers').select('id,amount,payment_status,restaurant_id,campaign_month').eq('restaurant_id',restaurantId).eq('campaign_month',month).maybeSingle();
  if(offerError)throw offerError;
  if(!offer)return json({error:'Nu există ofertă de achitat'},404);
