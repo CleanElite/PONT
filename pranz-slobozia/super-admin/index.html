@@ -2596,7 +2596,7 @@ $('pontTodayMenu').addEventListener('click', async event => {
 });
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=restaurant-planner-20261112');
+const {initPontOperations}=await import('../order-operations.js?v=no-order-hours-daily-stock-20261113');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:false});
 window.pontOperations=pontOperations;
 $('pontOperations').after($('pontTodayMenu'));
