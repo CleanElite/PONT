@@ -728,6 +728,7 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
     <h1 id="lunchTitle"><span class="menu-icon menu-icon--utensils" aria-hidden="true"></span>Promovare</h1>
     <p>Licitează pentru vizibilitatea restaurantului tău.</p>
     <p class="promotion-campaign-period">Licitație pentru <span id="date"></span></p>
+    <p class="pont-auction-scheduled-date" style="margin:5px auto 11px;color:#bbdedb;font:600 clamp(11px,2.5vw,14px)/1.4 system-ui">Data licitației: <strong id="pontAuctionScheduledDate" style="color:#f2d69d"></strong></p>
     <label id="promotionMonthSelectWrap" class="promotion-month-picker" hidden>Campania <select id="promotionMonthSelect" aria-label="Alege luna licitației"></select></label>
   </section>
   <section id="pontPendingPayments" class="pont-pending-payments" aria-label="Plăți licitații încheiate" hidden>
@@ -892,6 +893,8 @@ dialog.pont-final-summary-dialog .pont-final-summary-value-wrap{
   </div>
 </dialog>
 <script src="../super-admin/config.js"></script><script type="module">
+import {pontAuctionDateLabel} from '../../pont-auction-calendar.js?v=20261114';
+
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));
 const localDate=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
@@ -904,6 +907,7 @@ const auctionIsOpen=()=>biddingOpen && !biddingPaused;
 function showCampaignMonth(){
  $('date').textContent=new Intl.DateTimeFormat('ro-RO',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(month+'T12:00:00Z'));
  $('date').dataset.campaignMonth=month;
+ $('pontAuctionScheduledDate').textContent=pontAuctionDateLabel(month);
  if(role==='super_admin')$('back').href='../super-admin/?month='+month.slice(0,7)+'#auctions';
 }
 showCampaignMonth();
