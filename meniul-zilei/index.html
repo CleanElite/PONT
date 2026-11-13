@@ -811,7 +811,7 @@ function openOrder(m,trigger){
    form.elements.payment.innerHTML='<option value="Cash">Cash</option>'+(m.card?'<option value="Card">Card</option>':'');form.elements.payment.disabled=!m.card;let note=document.querySelector('#cardPaymentNote');if(!note){note=document.createElement('small');note.id='cardPaymentNote';form.elements.payment.closest('label').after(note)}note.hidden=!!m.card;note.textContent='Restaurantul nu percepe plata cu cardul.';
   const minimum = m.min_full_menus || 1;
   $('#pontOrderMinimum').textContent = 'Minim ' + minimum + (minimum === 1 ? ' meniu' : ' meniuri');
-  $('#pontOrderHours').hidden=true;
+  $('#pontOrderHours').closest('.pont-order-hours').style.setProperty('display','none','important');
   $('#send').querySelector('.pont-whatsapp-label').textContent=m.phone?'Trimite comanda pe WhatsApp':isMenuPreview?'Comenzile sunt dezactivate în previzualizare':'WhatsApp indisponibil — lipsește numărul';$('#send').disabled=!m.phone;const callPhone=normalizeCallPhone(m.phone);$('#callNow').hidden=!callPhone;if(callPhone){$('#callNow').href='tel:'+callPhone;}else{$('#callNow').removeAttribute('href');}
   const hero=$('#order .pont-restaurant-hero');
   hero.classList.add('pont-menu-reference');
