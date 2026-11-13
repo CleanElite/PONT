@@ -224,12 +224,12 @@
 <section id="setup" class="card" hidden><h1>Configurare necesară</h1><p>Panoul este instalat. Pentru autentificare reală, conectează-l la Supabase și atribuie restaurantul contului.</p></section><section id="login" class="card" hidden><h1>Cont restaurant</h1><p>Fiecare partener își gestionează exclusiv propriile meniuri.</p><form id="auth" autocomplete="on"><label for="email">Email sau nume de utilizator</label><input id="email" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required><label for="password">Parolă</label><input id="password" name="password" type="password" autocomplete="current-password" required><p><button class="primary">Conectare</button></p></form><p id="error" class="error"></p></section><section id="app" hidden><button type="button" id="logout" class="admin-logout" aria-label="Deconectare"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#sign-out"></use></svg><span class="admin-control-text">Deconectare</span></button>
 <div class="admin-hero pont-restaurant-premium-heading">
   <div class="admin-hero-copy pont-restaurant-title-card">
-    <h1 class="pont-admin-heading-label">Panoul restaurantului</h1>
     <div id="adminRestaurantContext" class="pont-admin-heading-name">Restaurant</div>
+    <div class="pont-live-datetime pont-restaurant-card-clock" role="group" aria-label="Data și ora României"><span class="pont-live-datetime__date" data-pont-clock-date>--.--.----</span><time class="pont-live-datetime__time" data-pont-clock-time>--:--</time></div>
   </div>
   <div id="pontAuctionBellMount" class="pont-bell-header-slot" aria-label="Notificări licitații"></div>
 </div>
-<div class="pont-live-datetime" role="group" aria-label="Data și ora României"><span class="pont-live-datetime__date" data-pont-clock-date>—</span><span class="pont-live-datetime__separator" aria-hidden="true"></span><time class="pont-live-datetime__time" data-pont-clock-time>--:--</time></div> <nav class="admin-nav pont-restaurant-grouped-nav" aria-label="Secțiunile panoului">
+ <nav class="admin-nav pont-restaurant-grouped-nav" aria-label="Secțiunile panoului">
   <div class="pont-restaurant-nav-group pont-restaurant-nav-menus" role="group" aria-label="Gestionare meniuri">
     <button type="button" id="showAdd" data-view="add" data-hash="#adauga" aria-controls="addView" aria-pressed="true"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Meniul zilei</span></button>
     <button type="button" id="showSaved" data-view="saved" data-hash="#meniuri" aria-controls="savedView" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#list-bullets"></use></svg><span>Meniuri salvate</span></button>
@@ -379,7 +379,7 @@ for (const button of restaurantTabs) button.onclick = () => showView(button.data
 window.addEventListener('hashchange', showHashView);
 async function load(){const ids=(await req(db.rpc('my_restaurant_access'))).map(x=>x.restaurant_id);const profile=await req(db.from('profiles').select('role').eq('user_id',user.id));if(profile[0]?.role==='super_admin')restaurants=await req(db.from('restaurants').select('*').order('name'));else restaurants=ids.length?await req(db.from('restaurants').select('*').in('id',ids).order('name')):[];if(!restaurants.length)throw Error('Contul nu are încă un restaurant atribuit.');$('adminRestaurantContext').textContent=restaurants.length===1?restaurants[0].name:restaurants.length+' restaurante';const isSuperAdmin=profile[0]?.role==='super_admin';$('contactRestaurantField').hidden=!isSuperAdmin;$('contactRestaurantName').hidden=isSuperAdmin;if(!isSuperAdmin){$('contactRestaurantName').textContent='Restaurant: '+restaurants[0].name;}$('contactRestaurant').innerHTML=restaurants.map(r=>'<option value="'+esc(r.id)+'">'+esc(r.name)+'</option>').join('');syncContactPhone();menus=await req(db.from('menus').select('*').eq('published',true).in('restaurant_id',restaurants.map(r=>r.id)).order('service_date',{ascending:false}).limit(150));const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Bucharest'});const live=menus.filter(m=>m.service_date>=today);const formatMenuDate=value=>{
  const date=new Date(value+'T12:00:00');
- return Number.isNaN(date.getTime())?value:new Intl.DateTimeFormat('ro-RO',{day:'2-digit',month:'long',year:'numeric'}).format(date);
+ return Number.isNaN(date.getTime())?value:new Intl.DateTimeFormat('ro-RO',{day:'2-digit',month:'2-digit',year:'numeric'}).format(date);
 };
 const menuState=menu=>
  menu.service_date===today?{label:'Activ',css:'active'}:{label:'Programat',css:'scheduled'};
@@ -1086,4 +1086,28 @@ document.querySelectorAll('[data-pont-clock-time]').forEach(el=>{el.textContent=
 }
 updatePontClock();setInterval(updatePontClock,15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){last='';updatePontClock()}});window.addEventListener('pageshow',()=>{last='';updatePontClock()});
 })();
-</script></body></html>
+</script><style id="pont-restaurant-card-clock-fit">
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-premium-heading .admin-hero-copy.pont-restaurant-title-card{
+ display:grid!important;grid-template-rows:minmax(0,1fr) 16px!important;justify-items:center!important;
+ align-items:center!important;gap:0!important;height:45px!important;min-height:45px!important;max-height:45px!important;
+ padding:2px 5px!important;overflow:hidden!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-title-card #adminRestaurantContext{
+ display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;
+ max-height:24px!important;font-size:clamp(12px,6.8cqw,19px)!important;line-height:1.12!important;
+ white-space:nowrap!important;text-overflow:ellipsis!important;overflow:hidden!important;
+ overflow-wrap:normal!important;-webkit-line-clamp:unset!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-title-card .pont-restaurant-card-clock{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ gap:clamp(5px,2.5cqw,11px)!important;width:100%!important;min-width:0!important;
+ height:16px!important;min-height:16px!important;margin:0!important;padding:0!important;
+ line-height:1!important;overflow:hidden!important;white-space:nowrap!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-card-clock .pont-live-datetime__date{
+ font:600 clamp(9px,4.9cqw,12px)/1 system-ui,sans-serif!important;color:#c5dedb!important;
+}
+body.pont-admin.pont-admin--restaurant #app .pont-restaurant-card-clock .pont-live-datetime__time{
+ font:800 clamp(11px,6cqw,15px)/1 system-ui,sans-serif!important;color:#f4d18d!important;letter-spacing:0!important;
+}
+</style></body></html>
