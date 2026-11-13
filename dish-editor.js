@@ -131,9 +131,11 @@ document.head.append(compactDishLayoutStyle);
 
 const editorStockStyle = document.createElement('style');
 editorStockStyle.textContent = `
-#pontDailySummaryList .pont-editor-dish-row{display:flex;align-items:center;gap:7px;min-width:0;padding:4px 0}
+#pontDailySummaryList .pont-editor-dish-row{display:flex;align-items:center;gap:7px;min-width:0;padding:4px 0;list-style:none}
+#pontDailySummaryList .pont-editor-dish-number{flex:none;min-width:17px;color:#d5e3dc;font:650 11px/1.3 system-ui,sans-serif;text-align:right}
+#pontDailySummaryList .pont-daily-selected-list{list-style:none!important;padding-left:0!important}
 #pontDailySummaryList .pont-editor-dish-name{flex:1 1 auto;min-width:0;overflow-wrap:anywhere}
-#pontDailySummaryList .pont-editor-dish-row.is-soldout .pont-editor-dish-name{color:#f4a9ad;text-decoration:line-through;text-decoration-color:#fa4251;text-decoration-thickness:2px}
+#pontDailySummaryList .pont-editor-dish-row.is-soldout .pont-editor-dish-name{color:#f4a9ad;text-decoration:line-through;text-decoration-color:#d95a63;text-decoration-thickness:1px}
 #pontDailySummaryList .pont-editor-stock{float:none!important;flex:none!important;width:auto!important;min-width:54px!important;min-height:26px!important;height:26px!important;padding:3px 6px!important;border:1px solid #a97f83!important;border-radius:7px!important;color:#e8b6b9!important;background:#3d282c!important;font:700 10px/1.1 system-ui,sans-serif!important;white-space:nowrap}
 #pontDailySummaryList .pont-editor-stock.is-soldout{background:#9e2431!important;border-color:#ed5665!important;color:#fff!important}
 #pontDailySummaryList [data-unselect]{float:none!important;flex:none}
@@ -395,14 +397,14 @@ function choices() {
     label + '</button>').join('');
   $('pontDailySummaryList').innerHTML = groups.map(([key,label]) => {
     const items = [...selected.entries()].filter(([,item]) => item.category === key);
-    const list = items.length ? '<ol class="pont-daily-selected-list">' + items.map(([id,item]) => {
+    const list = items.length ? '<ol class="pont-daily-selected-list">' + items.map(([id,item], itemIndex) => {
       const stockIndex = stockIndexForItem(item), soldOut = item.available === false;
       const stockButton = stockIndex < 0 ? '' : '<button type="button" class="pont-editor-stock' +
         (soldOut ? ' is-soldout' : '') + '" data-editor-stock="' + stockIndex + '" aria-pressed="' +
         String(soldOut) + '" aria-label="' + esc((soldOut ? 'Marchează disponibil: ' : 'Marchează epuizat: ') + item.name) +
         '">' + (soldOut ? '✓ Epuizat' : 'Epuizat') + '</button>';
       return '<li class="pont-editor-dish-row' + (soldOut && stockIndex >= 0 ? ' is-soldout' : '') +
-        '"><span class="pont-editor-dish-name">' + esc(item.name) + '</span>' + stockButton +
+        '"><span class="pont-editor-dish-number" aria-hidden="true">' + (itemIndex + 1) + '.</span><span class="pont-editor-dish-name">' + esc(item.name) + '</span>' + stockButton +
         '<button type="button" data-unselect="' + esc(id) +
         '" aria-label="Elimină ' + esc(item.name) + '" title="Elimină preparatul">×</button></li>';
     }).join('') + '</ol>' :
@@ -520,7 +522,8 @@ function canSaveDailyModel() {
 function syncSaveModelButton() {
   const button = $('pontDailySaveModel');
   if (!button) return;
-  button.disabled = savingModel || !canSaveDailyModel() || button.classList.contains('is-saved');
+  button.hidden = Boolean(editingMenu);
+  button.disabled = Boolean(editingMenu) || savingModel || !canSaveDailyModel() || button.classList.contains('is-saved');
   button.title = canSaveDailyModel() ? '' : 'Selectează minimum un preparat din Felul 1 și unul din Felul 2.';
 }
 function resetModelSaved() {
@@ -608,7 +611,12 @@ async function open(menu, copy = false, {restaurant = menu?.restaurant_id, date 
   setEditorOpen(false);
   await load();
   if (version !== editorVersion) return false;
-  if (menu) restoreMenuDishes(menu);
+  if (menu) {
+    // A reused menu starts fresh on a different date; stock flags belong to a single day's menu.
+    const source = copy ? {...menu, dish_selection:Array.isArray(menu.dish_selection)
+      ? menu.dish_selection.map(item => ({...item,available:true})) : []} : menu;
+    restoreMenuDishes(source);
+  }
   choices();
   setEditorOpen(true);
   if (menu) {
@@ -680,7 +688,7 @@ $('pontDailyPickerList').oninput = event => {
 
 $('pontDailySaveModel').onclick = async () => {
   const button = $('pontDailySaveModel');
-  if (savingModel || button.classList.contains('is-saved')) return;
+  if (editingMenu || savingModel || button.classList.contains('is-saved')) return;
   if (!canSaveDailyModel()) {
     syncSaveModelButton();
     return;
@@ -739,7 +747,8 @@ form.onsubmit = event => {
     return;
   }
   pendingMenu = {
-    id:editingMenu, restaurant, date, price, items,
+    id:editingMenu, restaurant, date, price,
+    items:items.map(item => ({...item, available: editingMenu && editingMenuRecord?.service_date === date ? item.available !== false : true})),
     description:menuDescription
   };
   const restaurantName = getRestaurants().find(item => item.id === restaurant)?.name ?? '';
