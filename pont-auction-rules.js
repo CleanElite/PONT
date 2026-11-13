@@ -5,7 +5,8 @@ export function initPontAuctionRules(){
  .pont-rules-trigger{display:inline-flex;justify-content:center;align-items:center;min-height:36px;padding:8px 13px;border:1px solid #bc9e68;border-radius:10px;background:#103337;color:#f7e1ad;font:650 12px/1.3 system-ui;cursor:pointer}
  .pont-rules-slot{display:flex;justify-content:center;margin:12px auto}
  .menu-heading .pont-rules-slot{margin:9px auto 4px}
- .menu-heading .pont-rules-trigger{min-height:28px;padding:5px 12px;font:600 11px/1.2 system-ui;letter-spacing:.01em;border-color:#bca16a99;background:#0c2b30;color:#dbc79d}
+ .menu-heading .pont-rules-trigger{display:inline!important;width:auto!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;color:#a9c8cb!important;font:400 clamp(12px,2.4vw,18px)/1.3 system-ui!important;letter-spacing:normal!important;text-decoration:underline!important;text-underline-offset:3px!important;text-decoration-thickness:1px!important;cursor:pointer!important}
+ .menu-heading .pont-rules-trigger:focus-visible{outline:2px solid #a9c8cb;outline-offset:4px}
  dialog.pont-rules-dialog[open]{position:fixed;inset:0;box-sizing:border-box;width:min(650px,calc(100vw - 20px));max-width:calc(100vw - 20px);max-height:88dvh;margin:auto;padding:0;border:1px solid #72978d;border-radius:18px;background:#0a292e;color:#e6f2ee;overflow:hidden;z-index:2147483647}
  dialog.pont-rules-dialog::backdrop{background:#000c;backdrop-filter:blur(4px)}
  .pont-rules-head{position:relative;padding:18px 54px 15px 17px;border-bottom:1px solid #4a736c}
