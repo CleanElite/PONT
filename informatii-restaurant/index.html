@@ -3,7 +3,7 @@
 <style>*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#0b3e45,#03191e 70%);color:#e9faf6;font:15px/1.6 system-ui}main{width:min(92%,800px);margin:0 auto;padding:28px 0 70px}a{color:#aaf8e8}h1{font:600 clamp(26px,6vw,42px)/1.2 Georgia,serif}h2{font:600 24px Georgia,serif;margin:24px 0 10px}.panel{border:1px solid #36766c;border-radius:18px;background:#092e34;padding:20px;margin:14px 0}.muted{color:#abcac3}.label{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#e5cd91}.dish{border-bottom:1px solid #35635e;padding:10px 0}.dish:last-child{border:0}.foot{padding-top:20px;border-top:1px solid #34605a;margin-top:28px}button{background:none;color:inherit;border:0;cursor:pointer;text-decoration:underline}</style>
 <script src="../super-admin/config.js"></script></head>
 <body><main>
-<a href="../meniul-zilei/" id="back">← Înapoi la meniul zilei</a>
+<a href="../meniul-zilei/" id="back" data-pont-back>← Înapoi la meniul zilei</a>
 <p class="label">PONT · Informații pentru consumatori</p>
 <h1>Informații despre restaurant și meniu</h1>
 <section class="panel" aria-live="polite"><h2 id="restaurantName">Se încarcă restaurantul…</h2><p id="restaurantContact" class="muted"></p>
@@ -43,4 +43,4 @@
   }
  }catch(error){name.textContent='Informații indisponibile';dishes.textContent=error.message}
 })();
-</script><script type="module" src="../pont-privacy-consent.js?v=consent-audit-20261113-v3"></script></body></html>
+</script><script type="module" src="../pont-privacy-consent.js?v=consent-audit-20261113-v3"></script><script defer src="../pont-navigation-history.js?v=origin-aware-20261113"></script></body></html>
