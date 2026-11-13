@@ -1084,7 +1084,16 @@ function updatePontClock(){const now=new Date(),minute=timeFmt.format(now),day=d
 document.querySelectorAll('[data-pont-clock-date]').forEach(el=>{el.textContent=day});
 document.querySelectorAll('[data-pont-clock-time]').forEach(el=>{el.textContent=minute;el.setAttribute('datetime',new Intl.DateTimeFormat('sv-SE',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).format(now)+'T'+minute)});
 }
-updatePontClock();setInterval(updatePontClock,15000);document.addEventListener('visibilitychange',()=>{if(!document.hidden){last='';updatePontClock()}});window.addEventListener('pageshow',()=>{last='';updatePontClock()});
+let pontClockTimer;
+function schedulePontClock(){
+ clearTimeout(pontClockTimer);
+ const delay=60000-(Date.now()%60000)+40;
+ pontClockTimer=setTimeout(()=>{if(!document.hidden)updatePontClock();schedulePontClock()},delay);
+}
+function syncPontClock(){last='';updatePontClock();schedulePontClock()}
+syncPontClock();
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncPontClock()});
+window.addEventListener('pageshow',syncPontClock);
 })();
 </script><style id="pont-restaurant-card-clock-fit">
 body.pont-admin.pont-admin--restaurant #app .pont-restaurant-premium-heading .admin-hero-copy.pont-restaurant-title-card{
