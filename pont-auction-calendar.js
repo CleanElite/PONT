@@ -20,3 +20,18 @@ export function pontAuctionDateLabel(campaignMonth) {
   return new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'})
     .format(new Date(Date.UTC(y,m-1,d,12)));
 }
+
+export const PONT_AUCTION_START_HOUR = 10;
+export const PONT_AUCTION_END_HOUR = 18;
+
+// Local civil time in Bucharest; DST-safe (no fixed UTC offset).
+export function pontAuctionIsInWindow(campaignMonth, now = new Date()) {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-GB', {
+    timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit',
+    hour:'2-digit',minute:'2-digit',hourCycle:'h23'
+  }).formatToParts(now).filter(part => part.type !== 'literal').map(part => [part.type, part.value]));
+  const currentDate = parts.year+'-'+parts.month+'-'+parts.day;
+  const minute = Number(parts.hour) * 60 + Number(parts.minute);
+  return currentDate === pontAuctionDateForCampaign(campaignMonth) &&
+    minute >= 10 * 60 && minute < 18 * 60;
+}
