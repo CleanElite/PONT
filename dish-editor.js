@@ -439,9 +439,7 @@ function toggleEditorStock(button) {
     }
   }
   choices();
-  $('pontDailyError').textContent = snapshot.name + (available
-    ? ' este din nou disponibil. Apasă Salvează pentru confirmare.'
-    : ' a fost marcat ca epuizat. Apasă Salvează pentru confirmare.');
+  $('pontDailyError').textContent = 'Apasă Salvează pentru a salva modificările.';
 }
 function dailyOverviewClick(event) {
   const stock = event.target.closest('[data-editor-stock]');
