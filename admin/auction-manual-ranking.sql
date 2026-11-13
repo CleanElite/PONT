@@ -13,7 +13,7 @@ begin
     from public.auction_offers offer
     join public.restaurants restaurant on restaurant.id = offer.restaurant_id
     where offer.campaign_month = new.campaign_month and restaurant.enabled
-    order by offer.amount desc, offer.created_at asc, offer.restaurant_id asc
+    order by offer.amount desc, offer.bid_rank_at asc nulls last, offer.created_at asc, offer.restaurant_id asc
   );
   new.final_ranking := winners || array(
     select manual.id
