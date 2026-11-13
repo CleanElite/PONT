@@ -5,6 +5,7 @@ on:
     paths:
       - 'backend/**'
       - 'pranz-slobozia/**'
+      - 'pont-navigation-history.js'
       - '.github/workflows/pont-checks.yml'
   pull_request:
     paths:
@@ -33,5 +34,5 @@ jobs:
             console.log('Valid JS:',file);
           }
           NODE
-      - name: Run backend smoke tests
-        run: node --test backend/worker.test.mjs
+      - name: Run backend and navigation tests
+        run: node --test backend/worker.test.mjs backend/navigation.test.mjs
