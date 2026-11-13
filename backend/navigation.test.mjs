@@ -102,3 +102,17 @@ test('restaurant X closes without stacking phantom history states',()=>{
   assert.doesNotMatch(html,/searchParams\.delete\('restaurant'\);history\.pushState\(\{\},'',u\)/);
  }
 });
+
+test('auction transparency opens in same tab from the correct administrator and retains a safe fallback',()=>{
+ for(const prefix of ['', 'pranz-slobozia/']){
+  for(const area of ['admin-v2','super-admin']){
+   const html=readFileSync(new URL('../'+prefix+area+'/index.html',import.meta.url),'utf8');
+   assert.match(html,new RegExp('termeni\\.html\\?from='+area+'#transparenta-licitatii'));
+   assert.doesNotMatch(html,/termeni\\.html\\?from=(?:admin-v2|super-admin)#transparenta-licitatii"\\s+target="_blank"/);
+   const terms=readFileSync(new URL('../'+prefix+'termeni.html',import.meta.url),'utf8');
+   assert.match(terms,/id="pontLegalBack"/);
+   assert.match(terms,/'admin-v2':'\\.\\/admin-v2\\/'/);
+   assert.match(terms,/'super-admin':'\\.\\/super-admin\\/'/);
+  }
+ }
+});
