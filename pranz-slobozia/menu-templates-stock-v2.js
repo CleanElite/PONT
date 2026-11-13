@@ -88,7 +88,7 @@ export function renderPublishedToday(target, menus, restaurants, showRestaurantN
     '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 7h16M10 7V4h4v3m4 0-1 13H7L6 7m4 4v5m4-5v5"/></svg></button></span>';
   const expanded = !resetExpanded && target.querySelector('.pont-today-toggle')?.getAttribute('aria-expanded') === 'true';
   const header = '<div class="pont-today-header"><h3 id="pontTodayHeading">' +
-    '<button class="pont-today-toggle" type="button" aria-expanded="' + expanded + '" aria-controls="pontTodayDetails">' +
+    '<button class="pont-today-toggle" type="button" data-published-today="' + (published.length > 0 ? 'true' : 'false') + '" aria-expanded="' + expanded + '" aria-controls="pontTodayDetails">' +
     '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="m3 4.5 3 3 3-3"/></svg>' +
     'Meniul publicat azi</button></h3>' +
     '<time datetime="' + date + '">' + formatDate(date) + '</time>' +
