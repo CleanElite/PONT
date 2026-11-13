@@ -20,18 +20,18 @@ with Image.open(SOURCE) as source:
 reference_w, reference_h = 865, 1536
 w, h = base.size
 scale_x, scale_y = w / reference_w, h / reference_h
-left = round(282 * scale_x)
-right = round(591 * scale_x)
-top = round(662 * scale_y)
-bottom = round(811 * scale_y)
+left = round(250 * scale_x)
+right = round(620 * scale_x)
+top = round(610 * scale_y)
+bottom = round(835 * scale_y)
 mask = Image.new("L", (w, h), 0)
 draw = ImageDraw.Draw(mask)
 draw.rounded_rectangle(
-    (round(299 * scale_x), round(676 * scale_y),
-     round(571 * scale_x), round(797 * scale_y)),
-    radius=round(25 * min(scale_x, scale_y)), fill=255
+    (round(265 * scale_x), round(625 * scale_y),
+     round(605 * scale_x), round(815 * scale_y)),
+    radius=round(34 * min(scale_x, scale_y)), fill=255
 )
-mask = mask.filter(ImageFilter.GaussianBlur(max(1, round(18 * min(scale_x, scale_y)))))
+mask = mask.filter(ImageFilter.GaussianBlur(max(1, round(26 * min(scale_x, scale_y)))))
 replacement = base.copy()
 src = base.load()
 dest = replacement.load()
