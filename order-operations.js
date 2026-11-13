@@ -393,6 +393,7 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    settings.className='pont-operations';
    settings.append($('pontHoursPanel'));
    $('pontHoursPanel').hidden=true;
+   settings.style.display='none';
    if (isRestaurantAdmin) {
      const priceCard = $('restaurantMenuPrice')?.closest('.contact-card-settings');
      if (priceCard) settingsHost.insertBefore(settings, priceCard);
