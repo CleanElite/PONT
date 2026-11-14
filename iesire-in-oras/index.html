@@ -78,6 +78,8 @@ body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
 .event-submit-form{grid-template-columns:1fr}
 .event-submit-form label{grid-column:1/-1}
 }
+.event-demo-label{position:absolute;z-index:3;top:clamp(43px,6vw,65px);right:clamp(8px,1.9vw,20px);padding:4px 7px;border:1px solid #eacf8677;border-radius:6px;background:#031b20de;color:#fce6b2;font:750 clamp(8px,1.55vw,11px)/1.15 system-ui;letter-spacing:.04em}
+@media(max-width:520px){.event-demo-label{top:42px}}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -132,6 +134,15 @@ const escDate=value=>{const [y,m,d]=(value||'').split('-').map(Number);return y&
 const fallbackPhoto="./ambient.webp";
 let db=null,restaurantId=null,canPost=false,allEvents=[];
 const config=window.PONT_CONFIG||{};
+// Preview content is kept in the page only; never inserted in Supabase.
+const demoEvents=[
+ {id:"demo-01",title:"Seară cu lăutari",event_date:"2026-11-20",start_time:"20:00",locality:"Slobozia",venue:"Local demonstrativ A",poster_url:"./hambar.webp",description:"Muzică live și atmosferă tradițională. Exemplu de anunț, fără organizator real.",contact_phone:'',isDemo:true},
+ {id:"demo-02",title:"Retro Party — anii ’90",event_date:"2026-11-21",start_time:"21:00",locality:"Amara",venue:"Local demonstrativ B",poster_url:"../assets/choice-evening.webp",description:"DJ și hituri retro pentru o seară tematică. Exemplu vizual fictiv.",contact_phone:'',isDemo:true},
+ {id:"demo-03",title:"Cină cu muzică live",event_date:"2026-11-27",start_time:"19:30",locality:"Grivița",venue:"Local demonstrativ C",poster_url:"./noa.webp",description:"Cină festivă cu muzică live. Exemplu de eveniment, fără rezervări.",contact_phone:'',isDemo:true},
+ {id:"demo-04",title:"Karaoke & Friends",event_date:"2026-11-28",start_time:"20:30",locality:"Bucu",venue:"Local demonstrativ D",poster_url:"./vista.webp",description:"Seară de karaoke și distracție între prieteni. Anunț demonstrativ.",contact_phone:'',isDemo:true},
+ {id:"demo-05",title:"Petrecere de iarnă",event_date:"2026-12-05",start_time:"20:00",locality:"Slobozia",venue:"Local demonstrativ E",poster_url:"../assets/pont-evening.webp",description:"Petrecere tematică de sezon. Exemplu fictiv pentru prezentarea cardurilor.",contact_phone:'',isDemo:true},
+ {id:"demo-06",title:"Revelion — Noaptea dintre ani",event_date:"2026-12-31",start_time:"21:00",locality:"Amara",venue:"Local demonstrativ F",poster_url:"./ambient.webp",description:"Exemplu de petrecere de Revelion, fără organizator sau rezervări reale.",contact_phone:'',isDemo:true}
+];
 const eventDialog=$('eventDetails');
 eventDialog.querySelector('.event-dialog-close').onclick=()=>eventDialog.close();
 eventDialog.addEventListener('click',e=>{if(e.target===eventDialog)eventDialog.close()});
@@ -146,30 +157,31 @@ function renderEvents(events){
  for(const [i,event] of events.entries()){
   const outer=document.createElement('div');outer.className='event-tile menu-tile';
   const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
-  const img=document.createElement('img');img.className='menu-card-photo';img.src=event.poster_url&&/^https:\/\//i.test(event.poster_url)?event.poster_url:fallbackPhoto;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';img.onerror=()=>{if(img.src!==new URL(fallbackPhoto,location.href).href)img.src=fallbackPhoto};
+  const img=document.createElement('img');img.className='menu-card-photo';img.src=event.isDemo?event.poster_url:(event.poster_url&&/^https:\/\//i.test(event.poster_url)?event.poster_url:fallbackPhoto);img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';img.onerror=()=>{if(img.src!==new URL(fallbackPhoto,location.href).href)img.src=fallbackPhoto};
   const badge=document.createElement('span');badge.className='event-date';badge.textContent=escDate(event.event_date);
+  const demoLabel=document.createElement('span');demoLabel.className='event-demo-label';demoLabel.textContent='DEMO · EVENIMENT FICTIV';
   const copy=document.createElement('span');copy.className='menu-card-copy';
   const name=document.createElement('strong');name.className='menu-card-name';name.textContent=event.title;
   const place=document.createElement('span');place.className='menu-card-location';place.textContent=event.venue+' · '+event.locality;
   const hour=document.createElement('span');hour.className='event-category';hour.textContent='Ora '+String(event.start_time||'').slice(0,5);
   const action=document.createElement('span');action.className='menu-card-action';action.textContent='Vezi evenimentul';
-  copy.append(name,place,hour,action);button.append(img,badge,copy);
+  copy.append(name,place,hour,action);button.append(img,badge);if(event.isDemo)button.append(demoLabel);button.append(copy);
   button.addEventListener('click',()=>showDetails(event));outer.append(button);list.append(outer);
  }
 }
 function showDetails(event){
  $('eventDetailsTitle').textContent=event.title;
  $('eventDetailsMeta').textContent=escDate(event.event_date)+' · '+String(event.start_time).slice(0,5)+' · '+event.venue+', '+event.locality;
- $('eventDetailsDescription').textContent=event.description||'Pentru detalii și rezervări, contactează direct organizatorul.';
+ $('eventDetailsDescription').textContent=(event.isDemo?'EXEMPLU FICTIV — rezervările sunt dezactivate.\n\n':'')+(event.description||'Pentru detalii și rezervări, contactează direct organizatorul.');
  const phone=String(event.contact_phone||'').trim();const link=$('eventDetailsPhone');
  const dial=phone.replace(/[^+\d]/g,'');
- link.hidden=!/^\+?\d{7,15}$/.test(dial);if(!link.hidden)link.href='tel:'+dial;
+ link.hidden=event.isDemo||!/^\+?\d{7,15}$/.test(dial);if(!link.hidden)link.href='tel:'+dial;
  eventDialog.showModal();
 }
 async function loadEvents(){
  if(!db)return;
  const {data,error}=await db.from('pont_city_events').select('id,title,description,event_date,start_time,locality,venue,contact_phone,poster_url').eq('status','approved').gte('event_date',todayLocal()).order('event_date',{ascending:true}).order('start_time',{ascending:true}).limit(80);
- if(error)throw error;allEvents=data||[];renderEvents(allEvents);
+ if(error)throw error;allEvents=data||[];renderEvents([...demoEvents,...allEvents]);
 }
 async function setupPublisher(){
  const {data:{user},error}=await db.auth.getUser();if(error||!user)return;
@@ -197,6 +209,7 @@ async function start(){
  const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
  db=createClient(config.url,config.anonKey);
  $('eventSubmitForm').elements.event_date.min=todayLocal();
+ renderEvents(demoEvents);
  await Promise.allSettled([loadEvents(),setupPublisher()]);
 }
 start().catch(e=>{const list=$('eventList');list.textContent='Evenimentele nu pot fi încărcate momentan.';console.error('PONT evenimente:',e)});
