@@ -165,7 +165,7 @@ body.lunch .pont-footer-links a:hover{text-decoration:underline!important;color:
 body.lunch .pont-footer-simple>small{font-size:11px!important;color:#84aaa2!important}
 @media(max-width:500px){body.lunch .pont-footer-simple{margin-top:29px!important;padding:24px 16px 30px!important}body.lunch .pont-footer-links{gap:6px 15px!important}body.lunch .pont-footer-links a{font-size:11px!important}}
 body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;height:17px!important;margin:8px auto 20px!important;padding:0!important;border:0!important;background:white!important;border-radius:4px!important;align-items:center;justify-content:center;overflow:hidden}body.lunch .pont-sal-pictogram img{display:block!important;width:68px!important;height:17px!important;max-width:none!important;object-fit:contain!important}body.lunch .pont-sal-pictogram:hover{outline:2px solid #92e8d9;outline-offset:3px}
-</style>
+#eventList .event-card.event-card-no-photo{justify-content:center;background:linear-gradient(135deg,#061b1e,#0c3030 58%,#092022);}\n#eventList .event-card.event-card-no-photo .menu-card-copy{width:100%;max-width:680px;align-items:center;text-align:center;}\n#eventList .event-card.event-card-no-photo::after{display:none;}\n</style>
 </head>
 <body class="lunch menu-showcase">
 <div class="menu-art" aria-hidden="true"></div>
@@ -215,18 +215,10 @@ const fallbackPhoto="./ambient.webp";
 let db=null,restaurantId=null,canPost=false,allEvents=[];
 const config=window.PONT_CONFIG||{};
 // Preview content is kept in the page only; never inserted in Supabase.
-const demoEvents=[
- {id:"demo-01",title:"Seară cu lăutari",event_date:"2026-11-20",start_time:"20:00",locality:"Slobozia",venue:"Restaurant Aurora",poster_url:"https://images.unsplash.com/photo-1739381563065-54cfb2b70079?auto=format&fit=crop&w=1200&q=76",description:"Muzică live și atmosferă tradițională. Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true},
- {id:"demo-02",title:"Retro Party — anii ’90",event_date:"2026-11-21",start_time:"21:00",locality:"Amara",venue:"Bistro Velvet",poster_url:"https://images.unsplash.com/photo-1770413688598-03f95df8ecaf?auto=format&fit=crop&w=1200&q=76",description:"DJ și hituri retro pentru o seară tematică. Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true},
- {id:"demo-03",title:"Cină cu muzică live",event_date:"2026-11-27",start_time:"19:30",locality:"Grivița",venue:"Casa Armonia",poster_url:"https://images.unsplash.com/photo-1696628692316-c667760cec35?auto=format&fit=crop&w=1200&q=76",description:"Cină festivă cu muzică live. Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true},
- {id:"demo-04",title:"Karaoke & Friends",event_date:"2026-11-28",start_time:"20:30",locality:"Bucu",venue:"Studio Nocturn",poster_url:"https://images.unsplash.com/photo-1741594347991-4ad8bb863eb5?auto=format&fit=crop&w=900&q=76",description:"Seară de karaoke și distracție între prieteni. Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true},
- {id:"demo-05",title:"Petrecere de iarnă",event_date:"2026-12-05",start_time:"20:00",locality:"Slobozia",venue:"Salon Winter",poster_url:"https://images.unsplash.com/photo-1671070850071-574b1032b184?auto=format&fit=crop&w=900&q=76",description:"Petrecere tematică de sezon. Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true},
- {id:"demo-06",title:"Revelion — Noaptea dintre ani",event_date:"2026-12-31",start_time:"21:00",locality:"Amara",venue:"Grand Amara",poster_url:"https://images.unsplash.com/photo-1768054186550-4bdbb8f2640e?auto=format&fit=crop&w=900&q=76",description:"Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true}
-];
 const eventDialog=$('eventDetails');
 eventDialog.querySelector('.event-dialog-close').onclick=()=>eventDialog.close();
 eventDialog.addEventListener('click',e=>{if(e.target===eventDialog)eventDialog.close()});
-function refreshEvents(){renderEvents([...demoEvents,...allEvents])}
+function refreshEvents(){renderEvents(allEvents)}
 function renderEvents(events){
  const list=$('eventList');list.replaceChildren();
  if(!events.length){
@@ -238,14 +230,14 @@ function renderEvents(events){
  for(const [i,event] of events.entries()){
   const outer=document.createElement('div');outer.className='event-tile menu-tile';
   const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
-  const img=document.createElement('img');img.className='menu-card-photo';img.src=event.poster_url&&/^https:\/\//i.test(event.poster_url)?event.poster_url:fallbackPhoto;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';img.onerror=()=>{if(img.src!==new URL(fallbackPhoto,location.href).href)img.src=fallbackPhoto};
+  const hasPoster=!!(event.poster_url&&/^https:\/\//i.test(event.poster_url));if(!hasPoster)button.classList.add('event-card-no-photo');const img=hasPoster?document.createElement('img'):null;if(img){img.className='menu-card-photo';img.src=event.poster_url;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';img.onerror=()=>{img.remove();button.classList.add('event-card-no-photo')};}
   const badge=document.createElement('span');badge.className='event-date';badge.textContent=escDate(event.event_date);
   const copy=document.createElement('span');copy.className='menu-card-copy';
   const name=document.createElement('strong');name.className='menu-card-name';name.textContent=event.title;
   const place=document.createElement('span');place.className='menu-card-location';place.textContent=event.venue+' · '+event.locality;
   const hour=document.createElement('span');hour.className='event-category';hour.textContent='Ora '+String(event.start_time||'').slice(0,5);
   const meta=document.createElement('span');meta.className='event-card-meta';meta.append(place,hour);
-  copy.append(badge,name,meta);button.append(img,copy);
+  copy.append(badge,name,meta);if(img)button.append(img);button.append(copy);
   button.addEventListener('click',()=>showDetails(event));outer.append(button);list.append(outer);
  }
 }
@@ -255,7 +247,7 @@ function showDetails(event){
  $('eventDetailsDescription').textContent=(event.description||'Pentru detalii și rezervări, contactează direct organizatorul.');
  const phone=String(event.contact_phone||'').trim();const link=$('eventDetailsPhone');
  const dial=phone.replace(/[^+\d]/g,'');
- link.hidden=event.isDemo||!/^\+?\d{7,15}$/.test(dial);if(!link.hidden)link.href='tel:'+dial;
+ link.hidden=String(event.description||'').includes('[EVENIMENT TEST]')||!/^\+?\d{7,15}$/.test(dial);if(!link.hidden)link.href='tel:'+dial;
  eventDialog.showModal();
 }
 async function loadEvents(){
