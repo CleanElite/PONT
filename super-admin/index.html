@@ -2442,7 +2442,7 @@ function renderCommercialPayments(){
  authSelect.replaceChildren(pontPayElement('option','Selectează restaurantul'));authSelect.firstChild.value='';
  for(const r of restaurants.filter(r=>r.access_meniul_zilei)){const opt=pontPayElement('option',r.name);opt.value=r.id;authSelect.append(opt);}
  if([...authSelect.options].some(x=>x.value===previousAuth))authSelect.value=previousAuth;
- if(!$('pontAuthMonth').value)$('pontAuthMonth').value=new Intl.DateTimeFormat('en-CA',{year:'numeric',month:'2-digit',timeZone:'Europe/Bucharest'}).format(new Date()).slice(0,7);
+ if(!$('pontAuthMonth').value)$('pontAuthMonth').value=todayRO().slice(0,7);
  const restaurantSelect=$('pontPaymentRestaurant'),currentRestaurant=restaurantSelect.value;
  restaurantSelect.replaceChildren(pontPayElement('option','Selectează restaurantul'));
  restaurantSelect.firstChild.value='';
@@ -2557,6 +2557,33 @@ $('pontPaymentCreateForm').onsubmit=async event=>{
  }catch(e){pontPaymentBusy=false;$('pontPaymentCreateButton').disabled=false;$('pontPaymentCreateStatus').textContent='Nu s-a salvat: '+e.message}
 };
 
+const pontUnifiedContainer=$('pontManagePanels');
+for(const name of ['restaurants','commercialPayments','auctions'])pontUnifiedContainer.append($(name));
+let pontManageActiveTab='restaurants';
+function pontSelectManageTab(id='restaurants', remember=true){
+ const target=['restaurants','commercialPayments','auctions'].includes(id)?id:'restaurants';
+ const old=pontManageActiveTab;
+ if(old!==target&&auctionEdits.size){
+  if(!confirm('Ai modificări nesalvate la licitații. Le abandonezi?'))return;
+  auctionEdits.clear();refreshAuctionSave();
+ }
+ pontManageActiveTab=target;
+ for(const name of ['restaurants','commercialPayments','auctions'])$(name).hidden=name!==target;
+ $('adminRestaurants').hidden=false;
+ document.querySelectorAll('[data-manage-tab]').forEach(b=>{
+  b.setAttribute('aria-selected',String(b.dataset.manageTab===target));
+  b.tabIndex=b.dataset.manageTab===target?0:-1;
+ });
+ if(remember)history.replaceState(null,'',location.pathname+location.search+'#adminRestaurants-'+target);
+ if(target==='restaurants')renderRestaurants();
+ if(target==='commercialPayments')void loadCommercialPayments();
+ if(target==='auctions'){void loadAuctions();void loadAuctionControl();void loadAuctionBidHistory(selectedAuctionMonth());}
+}
+document.querySelectorAll('[data-manage-tab]').forEach(button=>{
+ button.addEventListener('click',()=>pontSelectManageTab(button.dataset.manageTab));
+});
+$('pontOpenPaymentsFromAuction').onclick=()=>pontSelectManageTab('commercialPayments');
+
 const platformTabs = [...document.querySelectorAll('#pontMenuSuperNav button[data-tab], .pont-hero-dashboard[data-tab]')];
 const cityTabs=[...document.querySelectorAll('#pontCitySuperNav button[data-city-tab]')];
 const cityExclusivePanels=['cityDashboard','cityModeration','cityPromotion'];
@@ -2577,6 +2604,8 @@ function pontSetWorkspace(isCity){
  document.querySelector('.pont-dashboard-modules .pont-hero-dashboard').setAttribute('aria-pressed',String(!isCity));
 }
 function selectPlatformPanel(id, remember = true) {
+ const managed=['restaurants','commercialPayments','auctions'].includes(id);
+ if(managed){pontManageActiveTab=id;id='adminRestaurants';}
  pontSetWorkspace(false);
  cityExclusivePanels.forEach(name=>$(name).hidden=true);
  cityTabs.forEach(tab=>tab.setAttribute('aria-pressed','false'));
@@ -2587,21 +2616,23 @@ function selectPlatformPanel(id, remember = true) {
   tab.setAttribute('aria-pressed', String(active));
  }
  status('');
- if (remember) history.replaceState(null, '', location.pathname+location.search+'#' + button.dataset.tab);
+ if(id==='adminRestaurants'){pontSelectManageTab(pontManageActiveTab,remember);return;}
+ if(remember) history.replaceState(null, '', location.pathname+location.search+'#' + button.dataset.tab);
  panelLoaders[button.dataset.tab]?.();
 }
 function selectCityPanel(id='cityDashboard', remember=true){
+ const managed=['restaurants','commercialPayments','auctions'].includes(id);
+ if(managed){pontManageActiveTab=id;id='adminRestaurants';}
  pontSetWorkspace(true);
  platformTabs.forEach(tab=>{ $(tab.dataset.tab).hidden=true;tab.setAttribute('aria-pressed','false') });
- const panel=['cityDashboard','cityModeration','restaurants','members','cityPromotion','commercialPayments'].includes(id)?id:'cityDashboard';
+ const panel=['cityDashboard','cityModeration','adminRestaurants','members','cityPromotion'].includes(id)?id:'cityDashboard';
  cityExclusivePanels.forEach(name=>$(name).hidden=name!==panel);
- if(panel==='restaurants'||panel==='members'||panel==='commercialPayments')$(panel).hidden=false;
- if(panel==='commercialPayments')void loadCommercialPayments();
+ if(panel==='adminRestaurants'||panel==='members')$(panel).hidden=false;
+ if(panel==='adminRestaurants')pontSelectManageTab(pontManageActiveTab,remember);
  cityTabs.forEach(tab=>tab.setAttribute('aria-pressed',String(tab.dataset.cityTab===panel)));
  status('');
- if(remember)history.replaceState(null,'',location.pathname+location.search+'#'+panel);
+ if(remember&&panel!=='adminRestaurants')history.replaceState(null,'',location.pathname+location.search+'#'+panel);
  if(panel==='cityDashboard'||panel==='cityModeration')void loadCityEvents();
- if(panel==='restaurants')renderRestaurants();
  if(panel==='members')renderMembers();
 }
 function cityDate(date){
@@ -2778,8 +2809,11 @@ async function enter() {
   const requestedPanel=location.hash.slice(1);
   if(['cityDashboard','cityModeration','cityPromotion'].includes(requestedPanel)){
    selectCityPanel(requestedPanel,false);
-  }else if(requestedPanel==='commercialPayments'){
-   selectPlatformPanel('commercialPayments',false);
+  }else if(requestedPanel==='adminRestaurants'||requestedPanel.startsWith('adminRestaurants-')){
+   const tab=requestedPanel.split('-')[1];
+   selectPlatformPanel(['restaurants','commercialPayments','auctions'].includes(tab)?tab:'restaurants',false);
+  }else if(['commercialPayments','restaurants','auctions'].includes(requestedPanel)){
+   selectPlatformPanel(requestedPanel,false);
   }else{
    history.replaceState(null, '', location.pathname+location.search+'#analytics');
    selectPlatformPanel('analytics', false);
