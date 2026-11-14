@@ -11,13 +11,13 @@ function reviewSummary(event){
  const same=eventHistory.filter(x=>String(x.restaurant_id)===String(event.restaurant_id));
  const chronological=same.slice().sort((a,b)=>String(a.created_at||'').localeCompare(String(b.created_at||'')));
  const rank=chronological.findIndex(x=>x.id===event.id)+1;
- const duplicates=same.filter(x=>x.id!==event.id&&x.event_date===event.event_date&&normalized(x.title)===normalized(event.title));
+ const duplicates=same.filter(x=>x.id!==event.id&&x.event_date===event.event_date&&String(x.start_time).slice(0,5)===String(event.start_time).slice(0,5)&&normalized(x.title)===normalized(event.title));
  const line=(value,cls)=>{const el=document.createElement('span');el.textContent=value;if(cls)el.className=cls;box.append(el)};
  if(!event.restaurant_id)line('Restaurant: identificator indisponibil — istoricul nu poate fi verificat.','review-warning');
  else if(historyComplete)line('Evenimentul nr. '+(rank||'?')+' din '+same.length+' trimise de acest restaurant.');
  else line('Istoric restaurant: verificare incompletă (nu se afișează un număr posibil greșit).','review-warning');
  if(!event.restaurant_id||!historyComplete)line('Duplicate: verificare incompletă.','review-warning');
- else if(duplicates.length)line('Posibil duplicat: '+duplicates.length+' anunț(uri) cu același titlu și aceeași dată. Verifică înainte de aprobare.','review-warning');
+ else if(duplicates.length)line('Posibil duplicat: '+duplicates.length+' anunț(uri) cu același titlu, aceeași dată și aceeași oră. Verifică înainte de aprobare.','review-warning');
  else line('Duplicate: niciunul identificat pentru aceeași dată și același titlu.','review-ok');
  const issues=[];
  if(!event.poster_url)issues.push('fără afiș');
@@ -44,7 +44,7 @@ async function load(){
  const {data,error}=await db.from('pont_city_events').select('id,restaurant_id,created_at,title,description,event_date,start_time,venue,locality,contact_phone,poster_url,status').in('status',['pending','approved']).order('created_at',{ascending:false}).limit(150);
  if(error)throw error;
  // Separate audit query includes rejected/expired submissions, not only visible events.
- const history=await db.from('pont_city_events').select('id,restaurant_id,created_at,title,event_date').order('created_at',{ascending:true}).limit(1000);
+ const history=await db.from('pont_city_events').select('id,restaurant_id,created_at,title,event_date,start_time').order('created_at',{ascending:true}).limit(1000);
  eventHistory=history.error?[]:(history.data||[]);
  historyComplete=!history.error&&eventHistory.length<1000;
  const pending=(data||[]).filter(x=>x.status==='pending'),approved=(data||[]).filter(x=>x.status==='approved');
