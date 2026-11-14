@@ -164,7 +164,7 @@ body.pont-admin--city .pont-city-edit-actions button{font-size:12px}
 <label class="wide">Link afiș (completat automat după încărcare)<input name="poster_url" type="url" maxlength="700" placeholder="https://..." readonly></label>
 <label class="wide">Detalii eveniment<textarea name="description" maxlength="1200" placeholder="Program, artiști, detalii privind rezervările"></textarea></label>
 <button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
-<section class="panel" id="myEvents"><h2>Evenimentele mele</h2><p>Modificarea și retragerea unui eveniment se fac doar după aprobarea PONT. Evenimentele și cererile rămân în istoric.</p><div id="events"></div></section>
+<section class="panel" id="myEvents"><h2>Evenimentele mele</h2><div class="pont-ar-approval-note"><strong>Pentru editarea sau retragerea unui eveniment, solicitați aprobarea AS.</strong><span>Alegeți evenimentul de mai jos, apăsați „Solicită modificare” sau „Solicită retragere” și trimiteți motivul. Cererea ajunge direct în panoul Administratorului Suprem. Nicio modificare nu se aplică automat.</span></div><div id="events"></div></section>
 <section class="panel" id="myRequests"><h2>Cererile mele</h2><p>Cereri de modificare, retragere și promovare — cu decizia administratorului.</p><div id="cityRequests"></div></section></div>
 <dialog id="eventEditDialog" class="pont-city-edit-dialog" aria-labelledby="eventEditTitle">
  <h2 id="eventEditTitle">Solicită modificarea evenimentului</h2>
@@ -178,7 +178,7 @@ body.pont-admin--city .pont-city-edit-actions button{font-size:12px}
   <label class="wide">Telefon rezervări<input name="contact_phone" maxlength="32" required></label>
   <label class="wide">Link afiș<input name="poster_url" type="url" maxlength="700" placeholder="https://..."></label>
   <label class="wide">Detalii<textarea name="description" maxlength="1200"></textarea></label>
-  <label class="wide">Motivul modificării<textarea name="reason" maxlength="1000" required></textarea></label>
+  <label class="wide">Mesaj către Administratorul Suprem — ce doriți să modificați și de ce?<textarea name="reason" maxlength="1000" required placeholder="Explicați exact modificarea solicitată. Mesajul se trimite spre aprobare către AS."></textarea></label>
   <div class="wide pont-city-edit-actions"><button id="cancelEventEdit" type="button">Anulează</button><button type="submit" class="primary" id="submitEventEdit">Trimite spre aprobare</button></div>
  </form>
  <p class="status" id="eventEditStatus" role="status"></p>
@@ -253,7 +253,7 @@ async function refresh(){
    const pending=cityRequestRows.filter(r=>r.event_id===e.id&&r.status==='pending').map(r=>r.request_type);
    action.append(arButton('Solicită modificare',()=>beginEventEdit(e),pending.includes('edit')));
    action.append(arButton('Solicită retragere',async()=>{
-    const reason=prompt('Motivul retragerii pentru „'+e.title+'” (obligatoriu):');
+    const reason=prompt('Mesaj către AS: de ce solicitați retragerea evenimentului „'+e.title+'”? (obligatoriu):');
     if(reason===null)return;if(!reason.trim()){cityInfo('Motivul retragerii este obligatoriu.');return}
     if(!confirm('Trimiți o solicitare de retragere? Evenimentul NU va fi șters și rămâne public până la aprobarea PONT.'))return;
     try{await requestEventAction(e,'remove',reason);cityInfo('Cererea de retragere a fost transmisă. Evenimentul rămâne în istoric.')}catch(err){cityInfo(err.message)}
@@ -346,4 +346,8 @@ $('cityPosterFile').addEventListener('change',async evt=>{
 });
 $('logout').onclick=async()=>{if(db)await db.auth.signOut();location.replace('../login/')};
 start().catch(e=>{$('status').textContent=e.message;$('status').className='error'});
-</script><script defer src="../pont-navigation-history.js?v=admin-back-x23"></script></body></html>
+</script><style id="pont-ar-approval-message-20261115">
+body.pont-admin--city .pont-ar-approval-note{display:flex;flex-direction:column;gap:7px;margin:0 0 15px;padding:12px 14px;border:1px solid #d6b77b91;border-radius:11px;background:linear-gradient(120deg,#3e3528bb,#17383b);color:#f2e4c3}
+body.pont-admin--city .pont-ar-approval-note strong{font:750 12px/1.5 system-ui;color:#ffedc1}
+body.pont-admin--city .pont-ar-approval-note span{font:500 11px/1.55 system-ui;color:#cfe4dd}
+</style><script defer src="../pont-navigation-history.js?v=admin-back-x23"></script></body></html>
