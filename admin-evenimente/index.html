@@ -302,7 +302,7 @@ async function loadCitySubscription(){
   .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(80);
  if(paymentError)throw paymentError;
  const rows=payments||[],subs=rows.filter(p=>p.service_type==='subscription');
- const valid=subs.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date());
+ const valid=subs.find(p=>p.status==='confirmed'&&p.stripe_paid_at&&Number(p.stripe_paid_amount)===Number(p.amount)&&new Date(p.expires_at)>new Date());
  const stripeReceived=subs.find(p=>p.status==='pending'&&p.stripe_paid_at);
  citySubscriptionRequested=subs.some(p=>p.status==='pending');
  $('citySubscription').hidden=false;
