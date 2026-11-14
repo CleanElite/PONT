@@ -3,7 +3,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'pranz-slobozia/pont-app-icon-2026.svg'
+      - 'test/pont-app-icon-2026.svg'
       - '.github/workflows/pont-app-icon.yml'
   workflow_dispatch:
 permissions:
@@ -27,7 +27,7 @@ jobs:
           import base64, io, re
           from pathlib import Path
           from PIL import Image
-          root = Path('pranz-slobozia')
+          root = Path('test')
           source = (root / 'pont-app-icon-2026.svg').read_text(encoding='utf-8')
           match = re.search(r'data:image/jpeg;base64,([^"]+)', source)
           if not match:
@@ -45,7 +45,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add apple-touch-icon.png pranz-slobozia/pont-180.png pranz-slobozia/pont-192.png pranz-slobozia/pont-512.png pranz-slobozia/pont-maskable-512.png
+          git add apple-touch-icon.png test/pont-180.png test/pont-192.png test/pont-512.png test/pont-maskable-512.png
           if ! git diff --cached --quiet; then
             git commit -m "Build PONT iOS and Android icon PNGs"
             git pull --rebase origin main
