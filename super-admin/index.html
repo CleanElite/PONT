@@ -2446,9 +2446,9 @@ async function operateCommercialPayment(module,item,action,btn){
  let reason=null;
  if(action==='revoke'){
   if(!confirm('Retragi confirmarea? Serviciul aferent își va pierde autorizarea plătită. Datele restaurantului rămân păstrate.'))return;
-  reason=prompt('Motivul retragerii confirmării (minimum 3 caractere):');
+  reason=prompt('Motivul retragerii confirmării (opțional):');
   if(reason===null)return;
-  if(reason.trim().length<3){$('pontPaymentsStatus').textContent='Introdu un motiv de cel puțin 3 caractere.';return}
+  reason=reason.trim()||null;
  }else if(!confirm('Confirmi încasarea pentru '+pontPaymentRestaurantName(item.restaurant_id)+'? Serviciu: '+(module==='menu'?'Licitații':pontPaymentServiceNames[item.service_type])+'.'))return;
  pontPaymentBusy=true;btn.disabled=true;
  try{
@@ -2703,6 +2703,8 @@ async function enter() {
   const requestedPanel=location.hash.slice(1);
   if(['cityDashboard','cityModeration','cityPromotion'].includes(requestedPanel)){
    selectCityPanel(requestedPanel,false);
+  }else if(requestedPanel==='commercialPayments'){
+   selectPlatformPanel('commercialPayments',false);
   }else{
    history.replaceState(null, '', location.pathname+location.search+'#analytics');
    selectPlatformPanel('analytics', false);
