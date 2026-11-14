@@ -834,7 +834,7 @@ $('pontDishRemovePhoto').onclick = () => {
   dishPhotoRemoved = true;
   if (dishFormMessage.textContent === photoValidationMessage) dishFormMessage.textContent = '';
   renderDishPhoto();
-  input.focus();
+  
 };
 $('pontDishCategory').onchange = syncDishPrice;
 $('pontDishCancel').onclick = () => {
@@ -848,7 +848,7 @@ $('pontDishNew').onclick = () => {
   resetDish();
   dishListMessage.textContent = '';
   dishEditor.hidden = false;
-  $('pontDishName').focus();
+ 
 };
 $('pontDishForm').onsubmit = async event => {
   event.preventDefault();
@@ -941,7 +941,7 @@ $('pontDishList').onclick = async event => {
     renderDishPhoto();
     dishListMessage.textContent = '';
     dishEditor.hidden = false;
-    $('pontDishName').focus();
+ 
   }
   if (del && confirm('Ștergi preparatul ' + dish.name + '? Meniurile deja publicate nu vor fi afectate.')) {
     const {error} = await db.from('pont_dishes').delete().eq('id', dish.id);
