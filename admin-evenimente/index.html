@@ -191,4 +191,4 @@ $('eventForm').onsubmit=async e=>{
 };
 $('logout').onclick=async()=>{if(db)await db.auth.signOut();location.replace('../login/')};
 start().catch(e=>{$('status').textContent=e.message;$('status').className='error'});
-</script></body></html>
+</script><script defer src="../pont-navigation-history.js?v=admin-back-x23"></script></body></html>
