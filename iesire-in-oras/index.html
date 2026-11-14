@@ -166,7 +166,17 @@ body.lunch .pont-footer-simple>small{font-size:11px!important;color:#84aaa2!impo
 @media(max-width:500px){body.lunch .pont-footer-simple{margin-top:29px!important;padding:24px 16px 30px!important}body.lunch .pont-footer-links{gap:6px 15px!important}body.lunch .pont-footer-links a{font-size:11px!important}}
 body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;height:17px!important;margin:8px auto 20px!important;padding:0!important;border:0!important;background:white!important;border-radius:4px!important;align-items:center;justify-content:center;overflow:hidden}body.lunch .pont-sal-pictogram img{display:block!important;width:68px!important;height:17px!important;max-width:none!important;object-fit:contain!important}body.lunch .pont-sal-pictogram:hover{outline:2px solid #92e8d9;outline-offset:3px}
 #eventList .event-card.event-card-no-photo{justify-content:center;background:linear-gradient(135deg,#061b1e,#0c3030 58%,#092022);}\n#eventList .event-card.event-card-no-photo .menu-card-copy{width:100%;max-width:680px;align-items:center;text-align:center;}\n#eventList .event-card.event-card-no-photo::after{display:none;}\n</style>
-</head>
+<style id="pont-public-paid-placements-20261115">
+#pontPaidCityBanner[hidden]{display:none!important}
+#pontPaidCityBanner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:15px 20px;margin:0 0 15px;border:1px solid #e4c58ab8;border-radius:14px;background:linear-gradient(110deg,#153b3d,#0c292d 60%,#2c3124);box-shadow:0 5px 24px #0004}
+#pontPaidCityBanner span{font:800 9px/1.2 system-ui;letter-spacing:.16em;color:#e8cf98}
+#pontPaidCityBanner strong{font:600 clamp(14px,3.5vw,19px)/1.2 Georgia,serif;color:#fff5de;flex:1 1 200px}
+#pontPaidCityBanner button{border:1px solid #e4cc99;border-radius:9px;background:#decca2;color:#142c2c;padding:9px 13px;font:750 11px system-ui;cursor:pointer}
+#eventList .pont-promoted-position .event-card{min-height:clamp(88px,14vw,126px)!important;border:1px solid #e3ca8daa!important;box-shadow:0 0 18px #cbb1782b}
+#eventList .pont-promoted-position .menu-card-copy{gap:2px!important}
+#eventList .pont-city-sponsored-label{font:750 9px/1.25 system-ui;letter-spacing:.10em;color:#e5c88d}
+@media(max-width:520px){#eventList .pont-promoted-position .event-card{min-height:100px!important;padding:8px 12px!important}#eventList .pont-city-sponsored-label{font-size:8px}}
+</style></head>
 <body class="lunch menu-showcase">
 <div class="menu-art" aria-hidden="true"></div>
 <header class="menu-header">
@@ -180,6 +190,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
  </section>
  <div class="pont-sponsor" aria-label="Această pagină este sponsorizată de Biblos Grivița"><div class="pont-sponsor__track" aria-hidden="true"><div class="pont-sponsor__run"><span class="pont-sponsor__eyebrow">Seri de neuitat</span><span class="pont-sponsor__separator">✦</span><span class="pont-sponsor__caption">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator">✦</span><strong class="pont-sponsor__brand">Biblos Grivița</strong><span class="pont-sponsor__separator">✦</span></div><div class="pont-sponsor__run"><span class="pont-sponsor__eyebrow">Seri de neuitat</span><span class="pont-sponsor__separator">✦</span><span class="pont-sponsor__caption">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator">✦</span><strong class="pont-sponsor__brand">Biblos Grivița</strong><span class="pont-sponsor__separator">✦</span></div></div></div>
  <section id="events" aria-label="Evenimente în Slobozia și împrejurimi">
+  <div id="pontPaidCityBanner" class="pont-paid-city-banner" hidden></div>
   <div id="eventList" aria-live="polite"><div class="event-empty"><h2>Se pregătesc noi evenimente</h2><p>Revino pentru petreceri, seri cu lăutari, muzică live și alte experiențe din zonă.</p></div></div>
  </section>
  <section class="event-publisher" aria-labelledby="publishEventTitle">
@@ -212,13 +223,30 @@ const $=id=>document.getElementById(id);
 const todayLocal=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 const escDate=value=>{const [y,m,d]=(value||'').split('-').map(Number);return y&&m&&d?new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,d,12))):''};
 const fallbackPhoto="./ambient.webp";
-let db=null,restaurantId=null,canPost=false,allEvents=[];
+let db=null,restaurantId=null,canPost=false,allEvents=[],activePromotions=[];
 const config=window.PONT_CONFIG||{};
 // Preview content is kept in the page only; never inserted in Supabase.
 const eventDialog=$('eventDetails');
 eventDialog.querySelector('.event-dialog-close').onclick=()=>eventDialog.close();
 eventDialog.addEventListener('click',e=>{if(e.target===eventDialog)eventDialog.close()});
-function refreshEvents(){renderEvents(allEvents)}
+function refreshEvents(){
+ const pinned=activePromotions.filter(x=>x.service_type==='pinned_event').map(x=>x.event_id);
+ const sorted=[...allEvents].sort((a,b)=>{
+  const ar=pinned.indexOf(a.id),br=pinned.indexOf(b.id);
+  if(ar>=0&&br>=0)return ar-br;
+  if(ar>=0)return -1;if(br>=0)return 1;
+  return a.event_date.localeCompare(b.event_date)||String(a.start_time).localeCompare(String(b.start_time));
+ });
+ const bannerEvent=activePromotions.filter(x=>x.service_type==='exclusive_banner').map(p=>allEvents.find(e=>e.id===p.event_id)).find(Boolean);
+ const banner=$('pontPaidCityBanner');banner.replaceChildren();banner.hidden=!bannerEvent;
+ if(bannerEvent){
+  const kicker=document.createElement('span');kicker.textContent='BANDĂ PROMOVATĂ';
+  const title=document.createElement('strong');title.textContent=bannerEvent.title+' · '+bannerEvent.venue;
+  const action=document.createElement('button');action.type='button';action.textContent='Vezi evenimentul';action.onclick=()=>showDetails(bannerEvent);
+  banner.append(kicker,title,action);
+ }
+ renderEvents(sorted);
+}
 function renderEvents(events){
  const list=$('eventList');list.replaceChildren();
  if(!events.length){
@@ -229,6 +257,8 @@ function renderEvents(events){
  }
  for(const [i,event] of events.entries()){
   const outer=document.createElement('div');outer.className='event-tile menu-tile';
+  const isFixed=activePromotions.some(p=>p.service_type==='pinned_event'&&p.event_id===event.id);
+  if(isFixed)outer.classList.add('pont-promoted-position');
   const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
   const hasPoster=!!(event.poster_url&&/^https:\/\//i.test(event.poster_url));if(!hasPoster)button.classList.add('event-card-no-photo');const img=hasPoster?document.createElement('img'):null;if(img){img.className='menu-card-photo';img.src=event.poster_url;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';img.onerror=()=>{img.remove();button.classList.add('event-card-no-photo')};}
   const badge=document.createElement('span');badge.className='event-date';badge.textContent=escDate(event.event_date);
@@ -237,6 +267,7 @@ function renderEvents(events){
   const place=document.createElement('span');place.className='menu-card-location';place.textContent=event.venue+' · '+event.locality;
   const hour=document.createElement('span');hour.className='event-category';hour.textContent='Ora '+String(event.start_time||'').slice(0,5);
   const meta=document.createElement('span');meta.className='event-card-meta';meta.append(place,hour);
+  if(isFixed){const premium=document.createElement('span');premium.className='pont-city-sponsored-label';premium.textContent='PROMOVAT · POZIȚIE FIXĂ';copy.append(premium)}
   copy.append(badge,name,meta);if(img)button.append(img);button.append(copy);
   button.addEventListener('click',()=>showDetails(event));outer.append(button);list.append(outer);
  }
@@ -252,8 +283,15 @@ function showDetails(event){
 }
 async function loadEvents(){
  if(!db)return;
- const {data,error}=await db.from('pont_city_events').select('id,title,description,event_date,start_time,locality,venue,contact_phone,poster_url').eq('status','approved').gte('event_date',todayLocal()).order('event_date',{ascending:true}).order('start_time',{ascending:true}).limit(80);
- if(error)throw error;allEvents=data||[];refreshEvents();
+ const [events,promos]=await Promise.all([
+  db.from('pont_city_events').select('id,title,description,event_date,start_time,locality,venue,contact_phone,poster_url').eq('status','approved').gte('event_date',todayLocal()).order('event_date',{ascending:true}).order('start_time',{ascending:true}).limit(80),
+  db.rpc('pont_public_city_promotions')
+ ]);
+ if(events.error)throw events.error;
+ allEvents=events.data||[];
+ if(promos.error){console.warn('Promovările PONT nu au fost încărcate:',promos.error);activePromotions=[]}
+ else activePromotions=promos.data||[];
+ refreshEvents();
 }
 async function setupPublisher(){
  const {data:{user},error}=await db.auth.getUser();if(error||!user)return;
