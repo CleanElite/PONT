@@ -1710,10 +1710,13 @@ function pontRestaurantPaymentOverview(r){
  const subs=pontCityPaymentRows.filter(p=>p.restaurant_id===r.id&&p.service_type==='subscription');
  const subscription=subs.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date())||subs.find(p=>p.status==='pending')||subs[0];
  const cityDue=Number(subscription?.amount||0),cityPaid=pontVerifiedStripeCityAmount(subscription);
+ const waiting=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id&&x.status==='pending'&&x.stripe_paid_at);
+ const newCheckout=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id&&x.status==='pending'&&!x.stripe_paid_at);
  const fmt=v=>Number(v).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
  return '<div class="pont-restaurant-stripe-overview">'+
  '<div><strong>Meniul zilei</strong><span>Licitat '+fmt(menuDue)+offerMonth+' · Stripe '+fmt(menuPaid)+'</span></div>'+
  '<div><strong>Ieșire în oraș</strong><span>Abonament '+fmt(cityDue)+' · Stripe '+fmt(cityPaid)+'</span></div>'+
+ (waiting.length?'<div class="pont-stripe-alert"><strong>De validat în AS</strong><span>'+waiting.length+' plată/plăți Stripe confirmate · '+fmt(waiting.reduce((n,x)=>n+pontVerifiedStripeCityAmount(x),0))+'</span></div>':newCheckout.length?'<div class="pont-stripe-alert"><strong>Plată inițiată</strong><span>'+newCheckout.length+' serviciu/servicii neplătite</span></div>':'')+
  '</div>';
 }
 function pontCommerceDetailsHtml(r){
@@ -1762,7 +1765,8 @@ async function loadRestaurantCommercialData(){
   pontCommerceOfferRows=data||[];
   pontCommerceMonth=month;
   renderRestaurants();
-  $('pontRestaurantCommerceNotice').textContent='Luna '+month+' · Sumele și autorizațiile sunt actualizate.';
+  const dueCount=pontCityPaymentRows.filter(x=>x.status==='pending'&&x.stripe_paid_at).length;
+  $('pontRestaurantCommerceNotice').textContent='Luna '+month+' · '+(dueCount?dueCount+' plată/plăți Stripe așteaptă validarea manuală.':'Nu există plăți Stripe în așteptarea validării.');
  }catch(e){$('pontRestaurantCommerceNotice').textContent='Datele comerciale nu au putut fi încărcate: '+e.message}
  finally{pontCommerceLoading=false}
 }
