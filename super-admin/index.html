@@ -1352,7 +1352,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   <dialog id="auctionRankingDialog" class="pont-auction-ranking-dialog" aria-labelledby="auctionRankingTitle">
     <div class="pont-auction-ranking-head">
       <div><span class="pont-auction-ranking-kicker">CLASAMENT</span><h3 id="auctionRankingTitle">Rezumat licitații</h3><label class="pont-auction-ranking-month-label" for="auctionRankingMonth">Luna licitației<input type="month" id="auctionRankingMonth"></label></div>
-      <button type="button" id="closeAuctionRanking" class="pont-auction-ranking-close" aria-label="Închide rezumatul" autofocus><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <button type="button" id="closeAuctionRanking" class="pont-auction-ranking-close" aria-label="Închide rezumatul"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
     <p id="auctionRankingInfo" class="pont-auction-ranking-info" role="status" aria-live="polite"></p>
     <div id="auctionRankingRows" class="pont-auction-ranking-rows"></div>
@@ -3177,7 +3177,6 @@ function openRestaurantEditor(restaurant = null) {
  $('saveRestaurantButton').textContent = 'Salvează modificările';
  $('restaurantAccess').hidden = !restaurant || !hasMember(restaurant.id);
  window.pontOperations?.editRestaurant(restaurant?.id || null);
- try{$('name').focus({preventScroll:true})}catch(_){$('name').focus()}
 }
 $('cancelRestaurant').onclick = () => {
  const id=$('editingRestaurant').value;
@@ -3196,7 +3195,6 @@ $('restaurantForm').onsubmit = async event => {
  if (!id) { showMessage('restaurantFormStatus', 'Creează restaurante noi folosind «Adaugă restaurant», împreună cu un cont de administrator.', true); return; }
  if (!name) {
   showMessage('restaurantFormStatus', 'Introdu numele restaurantului.', true);
-  $('name').focus();
   return;
  }
  const phone=$('restaurantContactPhone').value.trim();
@@ -3204,7 +3202,6 @@ $('restaurantForm').onsubmit = async event => {
  const menuPrice=Number($('restaurantMenuPrice').value);
  if($('restaurantMenuAccess').checked&&(!Number.isFinite(menuPrice)||menuPrice<=0||menuPrice>10000)) {
   showMessage('restaurantFormStatus','Introdu un preț valid pentru meniul zilei.',true);
-  $('restaurantMenuPrice').focus();
   return;
  }
  const values = {name,phone:phone||null,accepts_card:$('restaurantAcceptsCard').checked,menu_price:menuPrice,
@@ -3313,7 +3310,6 @@ function openMemberEditor(restaurant = null) {
  }
  $('pontInlineAccountCreator').hidden=false;
  $('pontInlineAccountCreator').scrollIntoView({block:'start',behavior:'smooth'});
- $(restaurant ? 'uid' : 'memberRestaurantName').focus();
 }
 $('addRestaurantAccount').onclick = () => openMemberEditor();
 $('pontCloseAccountCreator').onclick=closeMemberEditor;
@@ -3369,7 +3365,6 @@ $('memberForm').onsubmit = async event => {
  const username = $('uid').value.trim(), password = $('memberPassword').value, phone=$('memberRestaurantPhone').value.trim();
  if (!checkMemberPasswordMatch()) {
   showMessage('memberFormStatus', 'Parolele introduse nu coincid.', true);
-  $('memberPasswordConfirm').focus();
   return;
  }
  if(phone&&!/^\+?[0-9 ()-]{8,24}$/.test(phone)){showMessage('memberFormStatus','Introdu un număr de telefon valid sau lasă câmpul gol.',true);return}
