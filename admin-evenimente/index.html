@@ -7,12 +7,132 @@ h1{font:500 clamp(28px,6vw,48px)/1.1 Georgia,serif;margin:27px 0 8px}h2{font:500
 form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}label{display:grid;gap:5px;color:#d1e9e4;font-weight:600;font-size:12px}.wide{grid-column:1/-1}input,textarea{width:100%;min-width:0;border:1px solid #527c7c;border-radius:10px;background:#06232b;color:#f8ffff;padding:11px;font:16px system-ui}textarea{min-height:88px;resize:vertical}
 .event{padding:13px 0;border-bottom:1px solid #7caea344}.event:last-child{border:0}.event strong{font-size:16px}.event small{display:block;color:#b9dad4}.state{display:inline-block;font-size:11px;border:1px solid #e6cd936b;background:#4b3b2080;color:#f9e5b4;border-radius:20px;padding:2px 9px;margin:5px 0}.error{color:#ffb7ac}.status{min-height:18px;color:#f4d79c}
 @media(max-width:600px){.metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.metric{padding:9px}.metric strong{font-size:23px}form{grid-template-columns:1fr}.wide{grid-column:1/-1}}
+</style><style id="pont-ar-city-premium-parity-20261115">
+:root{color-scheme:dark}
+html{scroll-behavior:smooth}
+body.pont-admin--city{
+ min-height:100dvh;
+ background:radial-gradient(ellipse 70% 50% at 100% 0%,#174c49 0%,transparent 67%),
+ radial-gradient(ellipse 80% 55% at 0% 100%,#153b42 0%,transparent 68%),#071e27;
+ color:#edf9f5;font:14px/1.5 system-ui,-apple-system,sans-serif;
+}
+body.pont-admin--city main{max-width:940px;margin:auto;padding:16px clamp(12px,3.5vw,24px) 80px}
+body.pont-admin--city .pont-ar-city-topbar{
+ display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px;
+ padding:2px 0 13px;border-bottom:1px solid #83b8aa50;
+}
+body.pont-admin--city .pont-ar-brand{display:flex;align-items:center;justify-content:center}
+body.pont-admin--city .pont-ar-brand img{width:clamp(85px,23vw,118px);height:auto;object-fit:contain}
+body.pont-admin--city .pont-ar-back,body.pont-admin--city .pont-ar-logout{
+ justify-self:start;text-decoration:none;color:#dff3ed;background:#102f37;
+ border:1px solid #65948c;border-radius:9px;padding:8px 11px;
+ font:700 clamp(11px,2.6vw,13px)/1.2 system-ui;white-space:nowrap;
+}
+body.pont-admin--city .pont-ar-logout{justify-self:end;color:#f7e5c5;border-color:#826f59}
+body.pont-admin--city .pont-ar-city-heading{
+ display:flex;align-items:end;justify-content:space-between;gap:12px;
+ margin:14px 0 12px;padding:12px 14px;border:1px solid #75ae9d7d;border-radius:15px;
+ background:linear-gradient(130deg,#124145,#092b34);
+}
+body.pont-admin--city .pont-ar-kicker{font:700 9px/1.3 system-ui;letter-spacing:.12em;color:#c3a779;margin:0 0 5px}
+body.pont-admin--city h1{font:750 clamp(20px,4.8vw,29px)/1.2 system-ui;letter-spacing:-.035em;margin:0;color:#fff9e9}
+body.pont-admin--city .pont-ar-city-label{color:#b7e6d8;font:700 11px/1.3 system-ui}
+body.pont-admin--city .pont-ar-module-switch{
+ display:flex;align-items:center;gap:clamp(6px,2vw,11px);width:100%;
+ margin:0 0 11px;padding:8px;border:1px solid #8cd6c566;border-radius:14px;
+ background:linear-gradient(130deg,#0c383b,#07272e);box-shadow:inset 0 1px 0 #ffffff15;
+}
+body.pont-admin--city .pont-ar-switch-label{font:700 10px/1.2 system-ui;color:#cfbd8b;text-transform:uppercase;letter-spacing:.09em;white-space:nowrap;margin-right:auto}
+body.pont-admin--city .pont-ar-module-link{
+ display:flex;flex:1 1 0;min-width:0;min-height:39px;
+ align-items:center;justify-content:center;padding:8px 11px;
+ border:1px solid #618d84;border-radius:10px;
+ background:linear-gradient(145deg,#103c40,#0a2d36);
+ color:#e9f7f4;text-decoration:none;text-align:center;
+ font:750 clamp(11px,2.8vw,13px)/1.2 system-ui;white-space:nowrap;
+}
+body.pont-admin--city .pont-ar-module-link[aria-current="page"]{
+ border-color:#e1d09e;color:#f9e6b8;background:linear-gradient(145deg,#17685c,#0d4746);
+ box-shadow:inset 0 0 0 1px #ffebba21;
+}
+body.pont-admin--city .pont-ar-module-link[hidden]{display:none}
+body.pont-admin--city .pont-ar-city-navigation{
+ display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;
+ margin:0 0 13px;padding:7px;border:1px solid #6e9e915c;border-radius:13px;
+ background:linear-gradient(130deg,#0d3338,#07252e);
+}
+body.pont-admin--city .pont-ar-city-navigation a{
+ display:flex;align-items:center;justify-content:center;
+ min-width:0;min-height:39px;text-decoration:none;text-align:center;
+ font:700 clamp(10px,2.65vw,12px)/1.2 system-ui;color:#ecfaf5;
+ border:1px solid #5e908786;border-radius:9px;padding:8px 5px;
+ background:linear-gradient(145deg,#12504b,#0a353a);
+}
+body.pont-admin--city .status{min-height:0;margin:10px 0;font:600 12px/1.5 system-ui;color:#e9d19b}
+body.pont-admin--city .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:13px 0}
+body.pont-admin--city .metric{
+ min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+ padding:12px 6px;border:1px solid #60998d7a;border-radius:12px;
+ background:linear-gradient(145deg,#124245,#092a34);
+}
+body.pont-admin--city .metric strong{font:800 clamp(21px,4vw,29px)/1.1 system-ui;color:#f3d99e}
+body.pont-admin--city .metric span{text-align:center;font:650 11px/1.4 system-ui;color:#c4dcd5;margin-top:4px}
+body.pont-admin--city .panel{
+ border:1px solid #76ac9b78;border-radius:16px;
+ padding:clamp(14px,3.2vw,22px);margin:13px 0;
+ background:linear-gradient(140deg,#0e393c,#09262f 75%);
+ box-shadow:inset 0 1px 0 #d3fff111,0 8px 18px #00151d25;
+}
+body.pont-admin--city h2{font:750 clamp(17px,3.5vw,21px)/1.25 system-ui;letter-spacing:-.025em;color:#f7e9c8;margin:0 0 10px}
+body.pont-admin--city .panel>p{margin:0 0 14px;color:#b9d7d0;font-size:12px}
+body.pont-admin--city form{gap:10px}
+body.pont-admin--city label{font:650 12px/1.4 system-ui;color:#d1e9e4;gap:5px}
+body.pont-admin--city input,body.pont-admin--city textarea{
+ background:#07252e;border:1px solid #59877c;border-radius:10px;
+ color:#f8ffff;box-shadow:inset 0 1px 4px #0002;padding:10px 11px;
+}
+body.pont-admin--city :is(input,textarea,button,a):focus-visible{outline:2px solid #e9d19b;outline-offset:2px}
+body.pont-admin--city button.primary{
+ min-height:42px;border-radius:10px;background:linear-gradient(125deg,#c9ad77,#f5dca9);
+ color:#173233;font:800 13px system-ui;border-color:#ead29b;
+}
+body.pont-admin--city .event{margin:0;padding:13px 0;border-bottom:1px solid #7caea344}
+body.pont-admin--city .event strong{font:750 14px/1.4 system-ui;color:#effcf7}
+body.pont-admin--city .state{border-radius:8px;font:750 10px/1.3 system-ui}
+@media(max-width:550px){
+ body.pont-admin--city .pont-ar-switch-label{display:none}
+ body.pont-admin--city .pont-ar-module-switch{padding:7px;gap:6px}
+ body.pont-admin--city .pont-ar-module-link{min-height:36px;padding:7px 5px;font-size:12px}
+ body.pont-admin--city .pont-ar-city-heading{padding:11px 12px}
+ body.pont-admin--city .pont-ar-city-label{font-size:10px}
+ body.pont-admin--city .pont-ar-city-topbar{gap:4px}
+ body.pont-admin--city .pont-ar-back,body.pont-admin--city .pont-ar-logout{padding:8px 7px;font-size:11px}
+ body.pont-admin--city .pont-ar-city-navigation{gap:5px;padding:5px}
+ body.pont-admin--city .metric{padding:10px 4px}
+ body.pont-admin--city .metric span{font-size:10px}
+ body.pont-admin--city form{grid-template-columns:1fr}
+}
 </style></head>
-<body><main><header><div><strong>PONT</strong><div style="font-size:10px;color:#c4d3cf;letter-spacing:.16em">TE SCOATE ÎN ORAȘ</div></div><nav><a id="menuLink" href="../admin-v2/" hidden>Meniul zilei</a><a href="../iesire-in-oras/">Pagina publică</a><button id="logout" type="button">Deconectare</button></nav></header>
-<h1>Ieșire în oraș</h1><p id="restaurantName">Panou pentru publicarea și urmărirea evenimentelor.</p>
+<body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
+<header class="pont-ar-city-topbar">
+ <a class="pont-ar-back" href="../" aria-label="Acasă">Înapoi</a>
+ <a class="pont-ar-brand" href="../" aria-label="PONT - Acasă"><img src="../meniul-zilei/showcase/pont-wordmark.webp" alt="PONT" width="130" height="54"></a>
+ <button id="logout" class="pont-ar-logout" type="button">Deconectare</button>
+</header>
+<div class="pont-ar-city-heading"><div><p class="pont-ar-kicker">PANOU ADMINISTRATOR RESTAURANT</p><h1 id="restaurantName">Ieșire în oraș</h1></div><span class="pont-ar-city-label">Evenimente</span></div>
+<nav class="pont-ar-module-switch" aria-label="Modulele restaurantului">
+ <span class="pont-ar-switch-label">Module PONT</span>
+ <a id="menuLink" class="pont-ar-module-link" href="../admin-v2/" hidden>Meniul zilei</a>
+ <a class="pont-ar-module-link is-active" href="./" aria-current="page">Ieșire în oraș</a>
+</nav>
+<nav class="pont-ar-city-navigation" aria-label="Administrare evenimente">
+ <a href="#createEvent">Adaugă eveniment</a>
+ <a href="#myEvents">Evenimentele mele</a>
+ <a href="../iesire-in-oras/">Pagina publică</a>
+</nav>
 <p id="status" class="status" role="status">Se verifică permisiunile…</p>
 <div id="workspace" hidden><section class="metrics" aria-label="Statistici evenimente"><div class="metric"><strong id="pendingCount">0</strong><span>În așteptare</span></div><div class="metric"><strong id="approvedCount">0</strong><span>Aprobate</span></div><div class="metric"><strong id="rejectedCount">0</strong><span>Respinse</span></div></section>
-<section class="panel"><h2>Publică un eveniment</h2><p>Completează informațiile reale. Anunțul va fi vizibil numai după aprobarea PONT.</p><form id="eventForm">
+<section class="panel" id="createEvent"><h2>Publică un eveniment</h2><p>Completează informațiile reale. Anunțul va fi vizibil numai după aprobarea PONT.</p><form id="eventForm">
 <label class="wide">Titlul evenimentului<input name="title" required minlength="5" maxlength="100" placeholder="Ex.: Seară cu muzică live"></label>
 <label>Data evenimentului<input name="event_date" type="date" required></label><label>Ora începerii<input name="start_time" type="time" required></label>
 <label>Localitate<input name="locality" required maxlength="80" placeholder="Slobozia"></label><label>Locație / restaurant<input name="venue" required maxlength="120"></label>
@@ -20,7 +140,7 @@ form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}label{d
 <label class="wide">Imagine / afiș (URL HTTPS)<input name="poster_url" type="url" maxlength="700" placeholder="https://..."></label>
 <label class="wide">Detalii eveniment<textarea name="description" maxlength="1200" placeholder="Program, artiști, detalii privind rezervările"></textarea></label>
 <button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
-<section class="panel"><h2>Evenimentele mele</h2><div id="events"></div></section></div>
+<section class="panel" id="myEvents"><h2>Evenimentele mele</h2><div id="events"></div></section></div>
 </main><script src="../super-admin/config.js"></script><script type="module">
 const $=id=>document.getElementById(id);const cfg=window.PONT_CONFIG||{};
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
