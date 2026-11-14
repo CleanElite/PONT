@@ -1195,6 +1195,7 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
     <button type="button" data-tab="auctions" aria-pressed="false" aria-controls="auctions"><span>Licitații</span></button>
+    <button type="button" id="pontOpenCityRequestsFromMenu"><span>Solicitări AR</span></button>
     <a id="pontPromotionNavLink" href="../promovare/?v=bid-keyboard-fit-20261113d"><span>Promovare</span></a>
   </div>
 </nav>
@@ -1202,6 +1203,7 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
   <div class="pont-nav-cluster pont-nav-cluster--content" role="group" aria-label="Evenimente">
     <button type="button" data-city-tab="cityDashboard" aria-pressed="false"><span>Dashboard</span></button>
     <button type="button" data-city-tab="cityModeration" aria-pressed="false"><span>Evenimente</span></button>
+    <button type="button" data-city-tab="cityRequests" aria-pressed="false"><span>Solicitări AR <small id="pontCityRequestsNavCount"></small></span></button>
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--management" role="group" aria-label="Restaurante și conturi">
     <button type="button" data-city-tab="adminRestaurants" aria-pressed="false" aria-controls="adminRestaurants"><span>Restaurante</span></button>
@@ -1465,12 +1467,25 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
   <div id="cityRecent" class="pont-city-list" aria-live="polite"></div>
   <p id="cityStatus" class="dashboard-message" role="status"></p>
 </section>
+<section id="cityRequests" class="card dashboard-panel" hidden aria-labelledby="cityRequestsTitle">
+  <div class="dashboard-heading"><div><h2 id="cityRequestsTitle">Solicitări AR</h2><p>Evenimentele și intențiile de plată sunt urmărite separat.</p></div><button type="button" id="cityRequestsRefresh" class="primary">Actualizează</button></div>
+  <div class="pont-ar-requests-branches" role="group" aria-label="Tipul solicitărilor AR">
+    <button type="button" id="cityRequestsEventTab" aria-pressed="true">Solicitări evenimente <span id="cityRequestsPendingLabel"></span></button>
+    <button type="button" id="cityRequestsPaymentTab" aria-pressed="false">Solicitări plăți <span id="cityPaymentAttemptsCount"></span></button>
+  </div>
+  <section id="cityRequestsEventBranch" aria-label="Solicitări evenimente">
+    <p class="pont-city-requests-note">Aici verifici cererile de publicare, modificare, retragere sau promovare. Confirmările se păstrează în istoric.</p>
+    <div id="cityEventRequestRows" class="pont-city-list"></div>
+  </section>
+  <section id="cityRequestsPaymentBranch" aria-label="Încercări de plată Stripe" hidden>
+    <p class="pont-city-requests-note">Notificarea apare când AR apasă „Finalizează plata” și formularul Stripe este pregătit. Nu înseamnă că banii au fost încasați. Încasarea și validarea accesului se verifică separat la Restaurante.</p>
+    <div id="cityCheckoutAttemptRows" class="pont-city-list"></div>
+    <p id="cityCheckoutAttemptStatus" class="dashboard-message" role="status"></p>
+  </section>
+</section>
 <section id="cityModeration" class="card dashboard-panel" hidden aria-labelledby="cityModerationTitle">
   <div class="dashboard-heading"><div><h2 id="cityModerationTitle">Moderare evenimente</h2><p>Verifică fiecare anunț înainte să apară public.</p></div><button type="button" id="cityModerationRefresh" class="primary">Actualizează</button></div>
   <p id="cityModerationStatus" class="dashboard-message" role="status"></p>
-  <div class="pont-city-section-heading"><h3>Solicitări AR <span id="cityRequestsPendingLabel"></span></h3></div>
-  <p class="pont-city-requests-note">Retragerile sunt păstrate în istoric. Modificările sunt aplicate doar după aprobare. Promovările aprobate generează o plată în așteptare, nu activează automat reclama.</p>
-  <div id="cityEventRequestRows" class="pont-city-list"></div>
   <div class="pont-city-section-heading"><h3>În așteptare <span id="cityPendingLabel"></span></h3></div>
   <div id="cityPendingRows" class="pont-city-list"></div>
   <div class="pont-city-section-heading"><h3>Aprobate</h3></div>
@@ -2930,7 +2945,7 @@ $('pontOpenPaymentsFromAuction').onclick=()=>selectPlatformPanel('adminRestauran
 
 const platformTabs = [...document.querySelectorAll('#pontMenuSuperNav button[data-tab], .pont-hero-dashboard[data-tab]')];
 const cityTabs=[...document.querySelectorAll('#pontCitySuperNav button[data-city-tab]')];
-const cityExclusivePanels=['cityDashboard','cityModeration'];
+const cityExclusivePanels=['cityDashboard','cityModeration','cityRequests'];
 let cityMode=false,cityEventsLoaded=[],cityHistoryComplete=true;
 const panelLoaders = {
  menus:() => {renderTodayMenu(true);window.pontMenuModels?.refresh()},
@@ -2969,15 +2984,52 @@ function selectCityPanel(id='cityDashboard', remember=true){
  if(managed){pontManageActiveTab='restaurants';id='adminRestaurants';}
  pontSetWorkspace(true);
  platformTabs.forEach(tab=>{ $(tab.dataset.tab).hidden=true;tab.setAttribute('aria-pressed','false') });
- const panel=['cityDashboard','cityModeration','adminRestaurants','members'].includes(id)?id:'cityDashboard';
+ const panel=['cityDashboard','cityModeration','cityRequests','adminRestaurants','members'].includes(id)?id:'cityDashboard';
  cityExclusivePanels.forEach(name=>$(name).hidden=name!==panel);
  if(panel==='adminRestaurants'||panel==='members')$(panel).hidden=false;
  if(panel==='adminRestaurants')pontSelectManageTab('restaurants',remember);
  cityTabs.forEach(tab=>tab.setAttribute('aria-pressed',String(tab.dataset.cityTab===panel)));
  status('');
  if(remember&&panel!=='adminRestaurants')history.replaceState(null,'',location.pathname+location.search+'#'+panel);
- if(panel==='cityDashboard'||panel==='cityModeration')void loadCityEvents();
+ if(panel==='cityDashboard'||panel==='cityModeration'||panel==='cityRequests')void loadCityEvents();
+ if(panel==='cityRequests')void loadCityCheckoutAttempts();
  if(panel==='members')renderMembers();
+}
+$('pontOpenCityRequestsFromMenu').onclick=()=>selectCityPanel('cityRequests');
+let cityRequestBranch='events';
+function setCityRequestBranch(branch){
+ cityRequestBranch=branch==='payments'?'payments':'events';
+ $('cityRequestsEventBranch').hidden=cityRequestBranch!=='events';
+ $('cityRequestsPaymentBranch').hidden=cityRequestBranch!=='payments';
+ $('cityRequestsEventTab').setAttribute('aria-pressed',String(cityRequestBranch==='events'));
+ $('cityRequestsPaymentTab').setAttribute('aria-pressed',String(cityRequestBranch==='payments'));
+ if(cityRequestBranch==='payments')void loadCityCheckoutAttempts();
+}
+$('cityRequestsEventTab').onclick=()=>setCityRequestBranch('events');
+$('cityRequestsPaymentTab').onclick=()=>setCityRequestBranch('payments');
+$('cityRequestsRefresh').onclick=()=>{void loadCityEvents();void loadCityCheckoutAttempts()};
+async function loadCityCheckoutAttempts(){
+ const box=$('cityCheckoutAttemptRows'),msg=$('cityCheckoutAttemptStatus');
+ msg.textContent='Se verifică accesările formularului Stripe…';
+ const {data,error}=await db.from('pont_city_checkout_attempts')
+ .select('id,restaurant_id,actor_id,service_type,amount,created_at,stripe_checkout_session_id')
+ .order('created_at',{ascending:false}).limit(250);
+ if(error){msg.textContent='Nu se pot încărca notificările: '+error.message;return}
+ box.replaceChildren();
+ $('cityPaymentAttemptsCount').textContent=data?.length?'('+data.length+')':'';
+ for(const attempt of data||[]){
+  const restaurant=restaurants.find(r=>r.id===attempt.restaurant_id);
+  const label=attempt.service_type==='subscription'?'abonament Ieșire în oraș':attempt.service_type==='pinned_event'?'promovare pe poziție fixă':'promovare pe bandă';
+  const card=document.createElement('article');card.className='pont-city-event pont-ar-checkout-attempt';
+  const heading=document.createElement('strong');
+  heading.textContent=(restaurant?.name||'Restaurant')+' a inițiat plata pentru '+label+' · '+Number(attempt.amount).toLocaleString('ro-RO')+' lei';
+  const details=document.createElement('p');details.className='pont-city-meta';
+  details.textContent='Formular Stripe deschis: '+new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',dateStyle:'medium',timeStyle:'short'}).format(new Date(attempt.created_at));
+  const note=document.createElement('p');note.textContent='Intenție de plată, NU dovadă de încasare. Verifică suma Stripe la Restaurante înainte de validarea accesului.';
+  card.append(heading,details,note);box.append(card);
+ }
+ if(!data?.length){const empty=document.createElement('p');empty.textContent='Niciun restaurant nu a inițiat formularul Stripe.';box.append(empty)}
+ msg.textContent=(data?.length||0)+' încercări de plată înregistrate.';
 }
 function cityDate(date){
  const value=String(date||'');const parts=value.split('-').map(Number);
@@ -3173,6 +3225,7 @@ async function pontLoadCityRequests(){
  if(error)throw error;
  const rows=data||[];const pending=rows.filter(r=>r.status==='pending');
  $('cityRequestsPendingLabel').textContent='('+pending.length+')';
+ $('pontCityRequestsNavCount').textContent=pending.length?'('+pending.length+')':'';
  for(const item of [...pending,...rows.filter(r=>r.status!=='pending')])box.append(pontCityRequestCard(item));
  if(!rows.length){const p=document.createElement('p');p.textContent='Nu există solicitări de la AR.';box.append(p)}
 }
@@ -4205,4 +4258,14 @@ body.pont-admin--platform #pontCityAsEditDialog>h2,body.pont-admin--platform #po
 #restaurants .pont-restaurant-stripe-overview>div+div{border-top:1px solid #9cbdac33}
 #restaurants .pont-restaurant-stripe-overview strong{font:750 11px/1.4 system-ui;color:#dfd4b2}
 #restaurants .pont-restaurant-stripe-overview span{font:650 11px/1.4 system-ui;color:#e6fcf4;font-variant-numeric:tabular-nums}
+</style><style id="pont-ar-requests-main-section-20261115">
+#cityRequests .pont-ar-requests-branches{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:15px 0}
+#cityRequests .pont-ar-requests-branches button{min-height:50px;border:1px solid #5da3958c;border-radius:12px;background:linear-gradient(135deg,#104044,#082b32);color:#e7f9f1;font:750 12px/1.4 system-ui;padding:9px}
+#cityRequests .pont-ar-requests-branches button[aria-pressed="true"]{border-color:#d9c591;background:linear-gradient(135deg,#e7d6a6,#bfa569);color:#0b292b}
+#cityRequests .pont-ar-requests-branches span{white-space:nowrap}
+#cityRequests #cityRequestsEventBranch[hidden],#cityRequests #cityRequestsPaymentBranch[hidden]{display:none!important}
+#cityRequests .pont-ar-checkout-attempt{border-color:#8dc7b060}
+#cityRequests .pont-ar-checkout-attempt p{font-size:12px;line-height:1.5;color:#d6e6df}
+#pontCityRequestsNavCount{font-size:10px;color:#e5d29b}
+@media(max-width:510px){#cityRequests .pont-ar-requests-branches{gap:6px}#cityRequests .pont-ar-requests-branches button{font-size:11px;padding:8px 5px}}
 </style></body></html>
