@@ -1,9 +1,32 @@
 <!doctype html><html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#02191c"><title>Moderare evenimente · PONT Super Admin</title>
 <style>
-:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at 90% 10%,#084746,#02181d 65%);color:#f3f9f8;font:14px/1.45 system-ui,sans-serif}main{width:min(92%,980px);margin:auto;padding:24px 0 70px}a{color:#ffe1a0}header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:24px}header a{border:1px solid #68aaa3;border-radius:999px;padding:8px 14px;text-decoration:none;color:#e4f7f1}h1{font:600 clamp(27px,5vw,43px)/1.1 Georgia,serif;margin:0 0 9px}p{color:#c4d9d7}h2{font:600 23px Georgia,serif}.info{margin:0 0 25px}button{font:650 13px system-ui;cursor:pointer;padding:9px 14px;border-radius:11px;border:1px solid #89d7c6;background:#0d5755;color:#f6fdfb}button:disabled{opacity:.5;cursor:wait}.row{background:linear-gradient(130deg,#0b3539,#08282f);border:1px solid #518e86;border-radius:17px;padding:16px;margin:12px 0;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;min-width:0}.row h3{margin:0 0 5px;font-size:18px;overflow-wrap:anywhere}.row p{margin:5px 0;overflow-wrap:anywhere}.row .meta{color:#f4d595;font-weight:650}.row .buttons{display:flex;flex-wrap:wrap;gap:8px}.row .buttons .reject{background:#53333a;border-color:#cb9a99}.row img{width:110px;max-height:110px;object-fit:cover;border-radius:9px;float:right;margin:0 0 10px 10px}.panel{margin:30px 0}.status{color:#f6d69b;min-height:20px}small{color:#abc7c4}@media(max-width:550px){.row{grid-template-columns:1fr}.row .buttons{justify-content:flex-start}}
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at 90% 10%,#084746,#02181d 65%);color:#f3f9f8;font:14px/1.45 system-ui,sans-serif}main{width:min(92%,980px);margin:auto;padding:24px 0 70px}a{color:#ffe1a0}header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:24px}header a{border:1px solid #68aaa3;border-radius:999px;padding:8px 14px;text-decoration:none;color:#e4f7f1}h1{font:600 clamp(27px,5vw,43px)/1.1 Georgia,serif;margin:0 0 9px}p{color:#c4d9d7}h2{font:600 23px Georgia,serif}.info{margin:0 0 25px}button{font:650 13px system-ui;cursor:pointer;padding:9px 14px;border-radius:11px;border:1px solid #89d7c6;background:#0d5755;color:#f6fdfb}button:disabled{opacity:.5;cursor:wait}.row{background:linear-gradient(130deg,#0b3539,#08282f);border:1px solid #518e86;border-radius:17px;padding:16px;margin:12px 0;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;min-width:0}.row h3{margin:0 0 5px;font-size:18px;overflow-wrap:anywhere}.row p{margin:5px 0;overflow-wrap:anywhere}.row .meta{color:#f4d595;font-weight:650}.row .buttons{display:flex;flex-wrap:wrap;gap:8px}.row .buttons .reject{background:#53333a;border-color:#cb9a99}.row img{width:110px;max-height:110px;object-fit:cover;border-radius:9px;float:right;margin:0 0 10px 10px}.review-summary{margin:12px 0 1px;padding:10px 12px;border:1px solid #5d989075;border-radius:11px;background:#051e24;color:#c6e4dd;font:12px/1.5 system-ui;display:grid;gap:3px}.review-summary strong{color:#f7e3ac}.review-summary .review-warning{color:#ffcb99}.review-summary .review-ok{color:#9be3c9}
+.panel{margin:30px 0}.status{color:#f6d69b;min-height:20px}small{color:#abc7c4}@media(max-width:550px){.row{grid-template-columns:1fr}.row .buttons{justify-content:flex-start}}
 </style></head><body><main><header><a href="../#auctions">‹ Super Admin</a><a href="../../iesire-in-oras/">Vezi pagina publică</a></header><h1>Moderare evenimente</h1><p class="info">Anunțurile restaurantelor apar în „Ieșire în oraș” numai după aprobarea ta. Anunțurile respinse nu sunt afișate public.</p><p id="status" class="status" role="status">Se verifică accesul…</p><section class="panel"><h2>În așteptarea aprobării <span id="count"></span></h2><div id="pending"></div></section><section class="panel"><h2>Aprobate</h2><div id="approved"></div></section></main>
 <script src="../config.js"></script><script type="module">
-const $=id=>document.getElementById(id),cfg=window.PONT_CONFIG||{};let db,uid;
+const $=id=>document.getElementById(id),cfg=window.PONT_CONFIG||{};let db,uid,eventHistory=[],historyComplete=false;
+const normalized=v=>String(v||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('ro-RO').replace(/[^a-z0-9]+/g,' ').trim();
+function reviewSummary(event){
+ const box=document.createElement('div');box.className='review-summary';
+ const same=eventHistory.filter(x=>String(x.restaurant_id)===String(event.restaurant_id));
+ const chronological=same.slice().sort((a,b)=>String(a.created_at||'').localeCompare(String(b.created_at||'')));
+ const rank=chronological.findIndex(x=>x.id===event.id)+1;
+ const duplicates=same.filter(x=>x.id!==event.id&&x.event_date===event.event_date&&normalized(x.title)===normalized(event.title));
+ const line=(value,cls)=>{const el=document.createElement('span');el.textContent=value;if(cls)el.className=cls;box.append(el)};
+ if(!event.restaurant_id)line('Restaurant: identificator indisponibil — istoricul nu poate fi verificat.','review-warning');
+ else if(historyComplete)line('Evenimentul nr. '+(rank||'?')+' din '+same.length+' trimise de acest restaurant.');
+ else line('Istoric restaurant: verificare incompletă (nu se afișează un număr posibil greșit).','review-warning');
+ if(!event.restaurant_id||!historyComplete)line('Duplicate: verificare incompletă.','review-warning');
+ else if(duplicates.length)line('Posibil duplicat: '+duplicates.length+' anunț(uri) cu același titlu și aceeași dată. Verifică înainte de aprobare.','review-warning');
+ else line('Duplicate: niciunul identificat pentru aceeași dată și același titlu.','review-ok');
+ const issues=[];
+ if(!event.poster_url)issues.push('fără afiș');
+ if(!String(event.description||'').trim())issues.push('fără descriere');
+ if(!/^\+?[\d\s().-]{7,}$/.test(String(event.contact_phone||'')))issues.push('telefon de verificat');
+ if(event.event_date<new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date()))issues.push('data evenimentului a trecut');
+ line(issues.length?'De verificat: '+issues.join(' · ')+'.':'Date esențiale completate.',issues.length?'review-warning':'review-ok');
+ return box;
+}
 const dateText=(v)=>{const [y,m,d]=String(v||'').split('-').map(Number);return new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,d,12)))};
 function eventRow(event,pending){
 const item=document.createElement('article');item.className='row';
@@ -11,15 +34,20 @@ const content=document.createElement('div');const h=document.createElement('h3')
 const meta=document.createElement('p');meta.className='meta';meta.textContent=dateText(event.event_date)+' · '+String(event.start_time).slice(0,5)+' · '+event.venue+', '+event.locality;
 const details=document.createElement('p');details.textContent=event.description||'Fără descriere.';
 const contact=document.createElement('p');contact.textContent='Telefon: '+event.contact_phone;
-content.append(h,meta,details,contact);
+content.append(h,meta,details,contact);if(pending)content.append(reviewSummary(event));
 if(event.poster_url&&/^https:\/\//i.test(event.poster_url)){const link=document.createElement('a');link.href=event.poster_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Vezi afișul';content.append(link)}
 item.append(content);
 if(pending){const buttons=document.createElement('div');buttons.className='buttons';const approve=document.createElement('button');approve.textContent='Aprobă';const reject=document.createElement('button');reject.textContent='Respinge';reject.className='reject';approve.onclick=()=>review(event.id,'approved',buttons);reject.onclick=()=>review(event.id,'rejected',buttons);buttons.append(approve,reject);item.append(buttons)}
 return item;
 }
 async function load(){
- const {data,error}=await db.from('pont_city_events').select('id,title,description,event_date,start_time,venue,locality,contact_phone,poster_url,status').in('status',['pending','approved']).order('created_at',{ascending:false}).limit(150);
- if(error)throw error;const pending=(data||[]).filter(x=>x.status==='pending'),approved=(data||[]).filter(x=>x.status==='approved');
+ const {data,error}=await db.from('pont_city_events').select('id,restaurant_id,created_at,title,description,event_date,start_time,venue,locality,contact_phone,poster_url,status').in('status',['pending','approved']).order('created_at',{ascending:false}).limit(150);
+ if(error)throw error;
+ // Separate audit query includes rejected/expired submissions, not only visible events.
+ const history=await db.from('pont_city_events').select('id,restaurant_id,created_at,title,event_date').order('created_at',{ascending:true}).limit(1000);
+ eventHistory=history.error?[]:(history.data||[]);
+ historyComplete=!history.error&&eventHistory.length<1000;
+ const pending=(data||[]).filter(x=>x.status==='pending'),approved=(data||[]).filter(x=>x.status==='approved');
  $('count').textContent='('+pending.length+')';
  for(const [id,items,flag] of [['pending',pending,true],['approved',approved,false]]){const holder=$(id);holder.replaceChildren();if(items.length)items.forEach(x=>holder.append(eventRow(x,flag)));else{const p=document.createElement('p');p.textContent=flag?'Nu există anunțuri de aprobat.':'Nu există evenimente aprobate.';holder.append(p)}}
  $('status').textContent='Actualizat.';
