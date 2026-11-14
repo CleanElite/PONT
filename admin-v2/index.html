@@ -528,11 +528,11 @@ $('menus').onclick = async event => {
   status(error.message,true);
  }
 };
-const {initPontDishEditor}=await import('../dish-editor.js?v=return-menu-top-20261113');
+const {initPontDishEditor}=await import('../dish-editor.js?v=no-auto-focus-20261114');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:true});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
-const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=daily-status-icons-20261114');
+const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=no-auto-focus-20261114');
 const dailyExhaustedButton=$('toggleDailyExhausted');
  const dailyExhaustedHolder=dailyExhaustedButton?.parentElement;
  const renderTodayMenu=(resetExpanded=false)=>{
