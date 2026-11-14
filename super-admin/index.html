@@ -1876,7 +1876,7 @@ function pontOpenCityCharge(rid){
  $('pontCityChargeDialog').showModal();
 }
 function pontUpdateCityChargeEvents(){
- const enabled=$('pontCityChargeType').value==='pinned_event';
+ const enabled=['pinned_event','exclusive_banner'].includes($('pontCityChargeType').value);
  $('pontCityChargeEventWrap').hidden=!enabled;
  const select=$('pontCityChargeEvent');select.replaceChildren();
  const first=document.createElement('option');first.value='';first.textContent='Selectează evenimentul';select.append(first);
@@ -1893,11 +1893,11 @@ $('pontCityChargeCreate').onclick=async()=>{
  const rid=pontCityChargeRestaurant,kind=$('pontCityChargeType').value;
  if(kind==='subscription'&&pontExistingMonthSubscription(rid)){pontUpdateCitySubscriptionAvailability();return}
  const eventId=$('pontCityChargeEvent').value;
- if(kind==='pinned_event'&&!eventId){$('pontCityChargeAlert').textContent='Alege un eveniment aprobat.';return}
+ if(['pinned_event','exclusive_banner'].includes(kind)&&!eventId){$('pontCityChargeAlert').textContent='Alege un eveniment aprobat.';return}
  if(!confirm('Înregistrezi serviciul ca NEPLĂTIT? Confirmarea se face ulterior, din restaurant.'))return;
  pontPaymentBusy=true;$('pontCityChargeCreate').disabled=true;
  try{
-  const {error}=await db.rpc('pont_manage_city_payment',{p_action:'create',p_restaurant_id:rid,p_service_type:kind,p_event_id:kind==='pinned_event'?eventId:null});
+  const {error}=await db.rpc('pont_manage_city_payment',{p_action:'create',p_restaurant_id:rid,p_service_type:kind,p_event_id:kind==='subscription'?null:eventId});
   if(error)throw error;
   pontCloseCityCharge();pontPaymentBusy=false;
   await loadRestaurantCommercialData();
