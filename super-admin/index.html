@@ -1475,6 +1475,9 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
   </div>
   <section id="cityRequestsEventBranch" aria-label="Solicitări evenimente">
     <p class="pont-city-requests-note">Aici verifici cererile de publicare, modificare, retragere sau promovare. Confirmările se păstrează în istoric.</p>
+    <div class="pont-city-section-heading"><h3>Evenimente noi <span id="cityPendingLabel"></span></h3></div>
+    <div id="cityPendingRows" class="pont-city-list"></div>
+    <div class="pont-city-section-heading"><h3>Modificări, retrageri și promovări</h3></div>
     <div id="cityEventRequestRows" class="pont-city-list"></div>
   </section>
   <section id="cityRequestsPaymentBranch" aria-label="Încercări de plată Stripe" hidden>
@@ -1486,8 +1489,6 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
 <section id="cityModeration" class="card dashboard-panel" hidden aria-labelledby="cityModerationTitle">
   <div class="dashboard-heading"><div><h2 id="cityModerationTitle">Moderare evenimente</h2><p>Verifică fiecare anunț înainte să apară public.</p></div><button type="button" id="cityModerationRefresh" class="primary">Actualizează</button></div>
   <p id="cityModerationStatus" class="dashboard-message" role="status"></p>
-  <div class="pont-city-section-heading"><h3>În așteptare <span id="cityPendingLabel"></span></h3></div>
-  <div id="cityPendingRows" class="pont-city-list"></div>
   <div class="pont-city-section-heading"><h3>Aprobate</h3></div>
   <div id="cityApprovedRows" class="pont-city-list"></div>
   <div class="pont-city-section-heading"><h3>Respinse</h3></div>
