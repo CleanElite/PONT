@@ -5,7 +5,7 @@ self.addEventListener('activate', event => event.waitUntil(self.clients.claim())
 // Revalidate the public HTML while allowing the browser to cache static assets.
 const home = new URL(self.registration.scope);
 const publicPages = new Set(
-  ['./', './index.html', './meniul-zilei/', './meniul-zilei/index.html', './promovare/', './promovare/index.html']
+  ['./', './index.html', './meniul-zilei/', './meniul-zilei/index.html', './iesire-in-oras/', './iesire-in-oras/index.html', './promovare/', './promovare/index.html']
     .map(path => new URL(path, home).pathname)
 );
 
