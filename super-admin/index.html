@@ -2248,7 +2248,10 @@ setInterval(() => {
  }
 }, 15000);
 
-const platformTabs = [...document.querySelectorAll('.admin-nav button[data-tab], .pont-hero-dashboard[data-tab]')];
+const platformTabs = [...document.querySelectorAll('#pontMenuSuperNav button[data-tab], .pont-hero-dashboard[data-tab]')];
+const cityTabs=[...document.querySelectorAll('#pontCitySuperNav button[data-city-tab]')];
+const cityExclusivePanels=['cityDashboard','cityModeration','cityPromotion'];
+let cityMode=false,cityEventsLoaded=[],cityHistoryComplete=true;
 const panelLoaders = {
  menus:() => {renderTodayMenu(true);window.pontMenuModels?.refresh()},
  auctions:() => { loadAuctions(); loadAuctionControl(); loadAuctionBidHistory(selectedAuctionMonth()); },
@@ -2256,7 +2259,17 @@ const panelLoaders = {
  analytics:() => {loadAnalytics();loadAnalyticsRevenue()},
  customers:loadCustomers
 };
+function pontSetWorkspace(isCity){
+ cityMode=isCity;
+ $('pontMenuSuperNav').hidden=isCity;
+ $('pontCitySuperNav').hidden=!isCity;
+ $('pontCityModuleToggle').setAttribute('aria-pressed',String(isCity));
+ document.querySelector('.pont-dashboard-modules .pont-hero-dashboard').setAttribute('aria-pressed',String(!isCity));
+}
 function selectPlatformPanel(id, remember = true) {
+ pontSetWorkspace(false);
+ cityExclusivePanels.forEach(name=>$(name).hidden=true);
+ cityTabs.forEach(tab=>tab.setAttribute('aria-pressed','false'));
  const button = platformTabs.find(tab => tab.dataset.tab === id) || platformTabs.find(tab => tab.dataset.tab === 'analytics');
  for (const tab of platformTabs) {
   const active = tab === button;
@@ -2267,9 +2280,104 @@ function selectPlatformPanel(id, remember = true) {
  if (remember) history.replaceState(null, '', location.pathname+location.search+'#' + button.dataset.tab);
  panelLoaders[button.dataset.tab]?.();
 }
-for (const button of platformTabs) button.onclick = () => selectPlatformPanel(button.dataset.tab);
-window.addEventListener('hashchange', () => {
- if (!$('app').hidden) selectPlatformPanel(location.hash.slice(1), false);
+function selectCityPanel(id='cityDashboard', remember=true){
+ pontSetWorkspace(true);
+ platformTabs.forEach(tab=>{ $(tab.dataset.tab).hidden=true;tab.setAttribute('aria-pressed','false') });
+ const panel=['cityDashboard','cityModeration','restaurants','members','cityPromotion'].includes(id)?id:'cityDashboard';
+ cityExclusivePanels.forEach(name=>$(name).hidden=name!==panel);
+ if(panel==='restaurants'||panel==='members')$(panel).hidden=false;
+ cityTabs.forEach(tab=>tab.setAttribute('aria-pressed',String(tab.dataset.cityTab===panel)));
+ status('');
+ if(remember)history.replaceState(null,'',location.pathname+location.search+'#'+panel);
+ if(panel==='cityDashboard'||panel==='cityModeration')void loadCityEvents();
+ if(panel==='restaurants')renderRestaurants();
+ if(panel==='members')renderMembers();
+}
+function cityDate(date){
+ const value=String(date||'');const parts=value.split('-').map(Number);
+ if(parts.length!==3||parts.some(n=>!Number.isFinite(n)))return value;
+ return new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(parts[0],parts[1]-1,parts[2],12)));
+}
+function cityNormalize(x){return String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('ro-RO').replace(/[^a-z0-9]+/g,' ').trim()}
+function cityRow(e,pending=false){
+ const article=document.createElement('article');article.className='pont-city-event';
+ const name=document.createElement('strong');name.textContent=e.title||'Eveniment fără titlu';article.append(name);
+ const venue=document.createElement('p');venue.className='pont-city-meta';
+ const restaurant=restaurants.find(x=>x.id===e.restaurant_id);
+ venue.textContent=(restaurant?.name||e.venue||'Restaurant')+' · '+cityDate(e.event_date)+' · '+String(e.start_time||'').slice(0,5);article.append(venue);
+ const location=document.createElement('p');location.textContent=(e.venue||'')+' · '+(e.locality||'')+' · '+(e.contact_phone||'');article.append(location);
+ if(e.description){const p=document.createElement('p');p.textContent=e.description;article.append(p)}
+ if(e.poster_url&&/^https:\/\//i.test(e.poster_url)){
+  const link=document.createElement('a');link.href=e.poster_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Deschide afișul';article.append(link);
+ }
+ if(pending){
+  const audit=document.createElement('div');audit.className='pont-city-audit';
+  const same=cityEventsLoaded.filter(x=>x.restaurant_id===e.restaurant_id).sort((a,b)=>String(a.created_at).localeCompare(String(b.created_at)));
+  const n=same.findIndex(x=>x.id===e.id)+1;
+  const dup=same.filter(x=>x.id!==e.id&&x.event_date===e.event_date&&String(x.start_time).slice(0,5)===String(e.start_time).slice(0,5)&&cityNormalize(x.title)===cityNormalize(e.title));
+  for(const [msg,warn] of [
+   [cityHistoryComplete?'Evenimentul nr. '+(n||'?')+' din '+same.length+' trimise de acest restaurant.':'Istoric incomplet: numărul total nu poate fi confirmat.',!cityHistoryComplete],
+   [!cityHistoryComplete?'Duplicate: verificare incompletă.':dup.length?'Posibil duplicat: '+dup.length+' eveniment(e) cu aceeași dată, oră și titlu.':'Duplicate: niciunul identificat la aceeași dată, oră și titlu.',!cityHistoryComplete||dup.length>0],
+   [!e.poster_url?'Afiș neatașat — verifică anunțul.':'Afiș furnizat.',!e.poster_url]
+  ]){const line=document.createElement('span');line.textContent=msg;if(warn)line.className='pont-city-alert';audit.append(line)}
+  article.append(audit);
+  const actions=document.createElement('div');actions.className='pont-city-actions';
+  for(const [label,next,css] of [['Aprobă','approved','primary'],['Respinge','rejected','pont-city-reject']]){
+   const button=document.createElement('button');button.type='button';button.className=css;button.textContent=label;
+   button.addEventListener('click',async()=>{
+    if(next==='rejected'&&!confirm('Respingi evenimentul „'+e.title+'”?'))return;
+    [...actions.querySelectorAll('button')].forEach(b=>b.disabled=true);
+    $('cityModerationStatus').textContent='Se salvează decizia…';
+    try{
+     const {data,error}=await db.from('pont_city_events').update({status:next,reviewed_at:new Date().toISOString(),reviewed_by:(await db.auth.getUser()).data.user?.id}).eq('id',e.id).eq('status','pending').select('id');
+     if(error)throw error;
+     if(!data?.length)throw Error('Anunțul a fost modificat între timp; reîncarcă lista.');
+     await loadCityEvents();
+     $('cityModerationStatus').textContent=next==='approved'?'Eveniment aprobat.':'Eveniment respins.';
+    }catch(err){$('cityModerationStatus').textContent='Eroare: '+err.message;[...actions.querySelectorAll('button')].forEach(b=>b.disabled=false)}
+   });actions.append(button);
+  }article.append(actions);
+ }
+ return article;
+}
+async function loadCityEvents(){
+ const cityStatus=$('cityStatus'),moderationStatus=$('cityModerationStatus');
+ cityStatus.textContent='Se actualizează evenimentele…';
+ try{
+  const result=await db.from('pont_city_events').select('id,restaurant_id,title,description,event_date,start_time,venue,locality,contact_phone,poster_url,status,created_at',{count:'exact'}).order('created_at',{ascending:false}).limit(999);
+  if(result.error)throw result.error;
+  cityEventsLoaded=result.data||[];cityHistoryComplete=(result.count??cityEventsLoaded.length)<1000;
+  const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+  const events=cityEventsLoaded;
+  for(const [id,count] of [['cityPending',events.filter(e=>e.status==='pending').length],['cityApproved',events.filter(e=>e.status==='approved').length],['cityRejected',events.filter(e=>e.status==='rejected').length],['cityUpcoming',events.filter(e=>e.status==='approved'&&e.event_date>=today).length],['cityRestaurantsCount',restaurants.filter(r=>r.access_iesire_in_oras&&r.enabled).length],['cityTotal',result.count??events.length]]){
+   $(id).textContent=String(count);
+  }
+  const recent=$('cityRecent');recent.replaceChildren();
+  for(const event of events.slice(0,8))recent.append(cityRow(event));
+  if(!events.length){const p=document.createElement('p');p.textContent='Nu există încă evenimente înregistrate.';recent.append(p)}
+  const groups=[['cityPendingRows','pending'],['cityApprovedRows','approved'],['cityRejectedRows','rejected']];
+  for(const [id,state] of groups){
+   const node=$(id);node.replaceChildren();const items=events.filter(x=>x.status===state);
+   items.forEach(x=>node.append(cityRow(x,state==='pending')));
+   if(!items.length){const p=document.createElement('p');p.textContent='Nu există evenimente în această categorie.';node.append(p)}
+  }
+  $('cityPendingLabel').textContent='('+events.filter(e=>e.status==='pending').length+')';
+  cityStatus.textContent=cityHistoryComplete?'Actualizat.':'Actualizat parțial: istoricul depășește limita afișării.';
+  moderationStatus.textContent=cityHistoryComplete?'':'Istoric parțial: verifică duplicatele manual.';
+ }catch(error){cityStatus.textContent='Nu se pot încărca datele: '+error.message;moderationStatus.textContent=cityStatus.textContent}
+}
+for(const button of platformTabs)button.onclick=()=>selectPlatformPanel(button.dataset.tab);
+for(const button of cityTabs)button.onclick=()=>selectCityPanel(button.dataset.cityTab);
+$('pontCityModuleToggle').onclick=()=>selectCityPanel('cityDashboard');
+$('cityRefresh').onclick=()=>void loadCityEvents();
+$('cityModerationRefresh').onclick=()=>void loadCityEvents();
+document.querySelectorAll('[data-city-goto]').forEach(button=>button.onclick=()=>selectCityPanel(button.dataset.cityGoto));
+window.addEventListener('hashchange',()=>{
+ if($('app').hidden)return;
+ const panel=location.hash.slice(1);
+ if(['cityDashboard','cityModeration','cityPromotion'].includes(panel))selectCityPanel(panel,false);
+ else if(cityMode&&['restaurants','members'].includes(panel))selectCityPanel(panel,false);
+ else selectPlatformPanel(panel,false);
 });
 
 let pontLoginAlertLoading=false;
