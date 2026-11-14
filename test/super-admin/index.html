@@ -1141,7 +1141,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   <dialog id="auctionRankingDialog" class="pont-auction-ranking-dialog" aria-labelledby="auctionRankingTitle">
     <div class="pont-auction-ranking-head">
       <div><span class="pont-auction-ranking-kicker">CLASAMENT</span><h3 id="auctionRankingTitle">Rezumat licitații</h3><label class="pont-auction-ranking-month-label" for="auctionRankingMonth">Luna licitației<input type="month" id="auctionRankingMonth"></label></div>
-      <button type="button" id="closeAuctionRanking" class="pont-auction-ranking-close" aria-label="Închide rezumatul" autofocus><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+      <button type="button" id="closeAuctionRanking" class="pont-auction-ranking-close" aria-label="Închide rezumatul"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
     <p id="auctionRankingInfo" class="pont-auction-ranking-info" role="status" aria-live="polite"></p>
     <div id="auctionRankingRows" class="pont-auction-ranking-rows"></div>
@@ -2340,11 +2340,11 @@ function openRestaurantEditor(restaurant = null) {
  $('saveRestaurantButton').textContent = restaurant ? 'Salvează modificările' : 'Adaugă restaurant';
  $('restaurantAccess').hidden = !restaurant || !hasMember(restaurant.id);
  window.pontOperations?.editRestaurant(restaurant?.id || null);
- $('name').focus();
+
 }
 $('addRestaurantOnly').onclick = () => {
  if ($('restaurantForm').hidden || $('editingRestaurant').value) openRestaurantEditor();
- else $('name').focus();
+ else
 };
 $('cancelRestaurant').onclick = () => {
  closeRestaurantEditor();
@@ -2361,7 +2361,7 @@ $('restaurantForm').onsubmit = async event => {
  const id = $('editingRestaurant').value, name = $('name').value.trim();
  if (!name) {
   showMessage('restaurantFormStatus', 'Introdu numele restaurantului.', true);
-  $('name').focus();
+ 
   return;
  }
  const phone=$('restaurantContactPhone').value.trim();
@@ -2369,7 +2369,7 @@ $('restaurantForm').onsubmit = async event => {
  const menuPrice=Number($('restaurantMenuPrice').value);
  if(!Number.isFinite(menuPrice)||menuPrice<=0||menuPrice>10000){
   showMessage('restaurantFormStatus','Introdu un preț valid pentru meniul zilei.',true);
-  $('restaurantMenuPrice').focus();
+ 
   return;
  }
  const values = {name,phone:phone||null,accepts_card:$('restaurantAcceptsCard').checked,menu_price:menuPrice};
@@ -2468,7 +2468,7 @@ function openMemberEditor(restaurant = null) {
   $('memberForm').hidden = false;
   $('newMember').setAttribute('aria-expanded','true');
  }
- $(restaurant ? 'uid' : 'memberRestaurantName').focus();
+
 }
 $('addRestaurantAccount').onclick = () => openMemberEditor();
 $('newMember').onclick = () => openMemberEditor();
@@ -2523,7 +2523,7 @@ $('memberForm').onsubmit = async event => {
  const username = $('uid').value.trim(), password = $('memberPassword').value, phone=$('memberRestaurantPhone').value.trim();
  if (!checkMemberPasswordMatch()) {
   showMessage('memberFormStatus', 'Parolele introduse nu coincid.', true);
-  $('memberPasswordConfirm').focus();
+ 
   return;
  }
  if(phone&&!/^\+?[0-9 ()-]{8,24}$/.test(phone)){showMessage('memberFormStatus','Introdu un număr de telefon valid sau lasă câmpul gol.',true);return}
@@ -2611,11 +2611,11 @@ $('restaurantChangePassword').onclick=async()=>{
  }catch(e){notice.textContent=e.message}finally{btn.disabled=false}
 };
 $('memberRows').onclick=async e=>{let b=e.target.closest('[data-revoke]');if(!b||!confirm('Revoci accesul?'))return;try{await req(db.from('restaurant_members').delete().eq('user_id',b.dataset.revoke).eq('restaurant_id',b.dataset.restaurant));await load()}catch(e){status(e.message,true)}};
-const {initPontDishEditor}=await import('../dish-editor.js?v=return-menu-top-20261113');
+const {initPontDishEditor}=await import('../dish-editor.js?v=no-auto-focus-20261114');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
-const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=daily-status-icons-20261114');
+const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=no-auto-focus-20261114');
 const renderTodayMenu=(resetExpanded=false)=>renderPublishedToday($('pontTodayMenu'), menus, restaurants, true, resetExpanded);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) renderTodayMenu(); });
 $('pontTodayMenu').addEventListener('click', async event => {
