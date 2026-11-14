@@ -240,6 +240,12 @@
 
 #restaurantRows .restaurant-admin-actions .restaurant-day-toggle{grid-column:1/-1;min-height:36px;padding:7px 12px;border:1px solid #c9a76a;background:rgba(20,58,59,.85);color:#f6ddb2;font-size:12px;font-weight:750}
 #restaurantRows .restaurant-admin-actions .restaurant-day-toggle[aria-pressed="true"]{background:#e4c17d;color:#103132;border-color:#f8e0ae}
+
+.pont-module-access{display:grid;grid-column:1/-1;gap:9px;padding:14px;border:1px solid #6dbaae77;border-radius:13px;background:#0b3039}
+.pont-module-access>strong{font-size:14px;color:#e0f9f1}
+.pont-module-access label{display:flex!important;align-items:center;gap:10px!important;margin:0!important;cursor:pointer;font-weight:600;font-size:13px}
+.pont-module-access input{width:18px!important;height:18px;accent-color:#7be6cf;flex:none;margin:0}
+.pont-module-access small{color:#adcfc7;font-size:11px;line-height:1.4}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-auction-period-save-c15">
@@ -1027,6 +1033,12 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
       <label class="restaurant-menu-price" for="restaurantMenuPrice">Preț meniul zilei (lei)
         <input id="restaurantMenuPrice" type="number" min="0.01" max="10000" step="0.01" inputmode="decimal" value="30" required>
       </label>
+      <div class="pont-module-access" role="group" aria-label="Acces la modulele PONT">
+        <strong>Acces la modulele PONT</strong>
+        <label><input id="restaurantMenuAccess" type="checkbox" checked> Acces Meniul zilei</label>
+        <label><input id="restaurantEventsAccess" type="checkbox"> Acces Ieșire în oraș</label>
+        <small>Dezactivarea accesului nu șterge preparatele, meniurile sau evenimentele salvate.</small>
+      </div>
       <label class="restaurant-card-toggle">
         <span>Plata cu cardul</span>
         <input id="restaurantAcceptsCard" type="checkbox" aria-label="Plata cu cardul">
@@ -1366,6 +1378,8 @@ function renderRestaurants() {
    (enabled ? 'Activ' : 'Suspendat') + '</span>' +
    (restaurant.accepts_card ? '<span class="dashboard-badge">Acceptă card</span>' : '') +
    (access ? '' : '<span class="dashboard-badge">Fără cont</span>') +
+   '<span class="dashboard-badge">Meniu: '+(restaurant.access_meniul_zilei?'ON':'OFF')+'</span>' +
+   '<span class="dashboard-badge">Evenimente: '+(restaurant.access_iesire_in_oras?'ON':'OFF')+'</span>' +
    restaurantAuctionPaymentBadge(restaurant.id) +
    '</div></div><div class="restaurant-admin-actions">' +
    '<button type="button" data-edit-restaurant="' + id + '">Editează</button>' +
@@ -2335,6 +2349,8 @@ function openRestaurantEditor(restaurant = null) {
  $('name').value = restaurant?.name ?? '';
  $('restaurantContactPhone').value=restaurant?.phone??'';
  $('restaurantAcceptsCard').checked = Boolean(restaurant?.accepts_card);
+ $('restaurantMenuAccess').checked = restaurant ? restaurant.access_meniul_zilei !== false : true;
+ $('restaurantEventsAccess').checked = Boolean(restaurant?.access_iesire_in_oras);
  $('restaurantMenuPrice').value = restaurant?.menu_price ?? 30;
  $('restaurantFormTitle').textContent = restaurant ? 'Editează restaurantul' : 'Adaugă restaurant fără cont';
  $('saveRestaurantButton').textContent = restaurant ? 'Salvează modificările' : 'Adaugă restaurant';
@@ -2372,7 +2388,8 @@ $('restaurantForm').onsubmit = async event => {
   $('restaurantMenuPrice').focus();
   return;
  }
- const values = {name,phone:phone||null,accepts_card:$('restaurantAcceptsCard').checked,menu_price:menuPrice};
+ const values = {name,phone:phone||null,accepts_card:$('restaurantAcceptsCard').checked,menu_price:menuPrice,
+ access_meniul_zilei:$('restaurantMenuAccess').checked,access_iesire_in_oras:$('restaurantEventsAccess').checked};
  button.disabled = true;
  try {
   if(id)await window.pontOperations?.validateRestaurantSettings(id);
