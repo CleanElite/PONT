@@ -1918,7 +1918,7 @@ function renderRestaurants(){
   return '<article data-restaurant-card="'+id+'" class="restaurant-admin-item restaurant-status-'+state+'">'+
   '<div class="restaurant-admin-heading"><span class="restaurant-list-number">'+String(index+1).padStart(2,'0')+'</span>'+
   '<strong class="restaurant-list-name"><span class="pont-live-dot '+(restaurantOnlineIds.has(String(r.id))?'is-online':'is-offline')+'" aria-hidden="true"></span>'+esc(r.name)+'</strong>'+
-  '<div class="restaurant-list-meta"><span>Cod '+esc(r.short_code||'—')+'</span><span>'+esc(r.phone||'Telefon neconfigurat')+'</span></div>'+pontRestaurantPaymentOverview(r)
+  '<div class="restaurant-list-meta"><span>Cod '+esc(r.short_code||'—')+'</span><span>'+esc(r.phone||'Telefon neconfigurat')+'</span></div>'+pontRestaurantPaymentOverview(r)+
   '<div class="dashboard-badges"><span class="dashboard-badge" data-state="'+(r.enabled?'enabled':'disabled')+'">'+(r.enabled?'Activ':'Suspendat')+'</span>'+
   '<span class="dashboard-badge">Meniu '+(r.access_meniul_zilei?'ON':'OFF')+'</span>'+
   '<span class="dashboard-badge">Evenimente '+(r.access_iesire_in_oras?'ON':'OFF')+'</span>'+
