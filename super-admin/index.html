@@ -3029,6 +3029,11 @@ function pontCityRequestCard(req){
  const details=document.createElement('p');details.className='pont-city-meta';
  details.textContent='Solicitat: '+new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',dateStyle:'medium',timeStyle:'short'}).format(new Date(req.created_at))+' · '+(pontCityRequestStatuses[req.status]||req.status);
  card.append(heading,event,details);
+ if(['pinned_event','exclusive_banner'].includes(req.request_type)&&req.proposed_changes?.requested_start_date){
+  const requested=document.createElement('p');requested.className='pont-city-meta';
+  requested.textContent='Data de începere dorită: '+req.proposed_changes.requested_start_date+' (neconfirmată)';
+  card.append(requested);
+ }
  if(req.reason){const reason=document.createElement('p');reason.textContent='Motiv: '+req.reason;card.append(reason)}
  if(req.request_type==='edit'){
   const previous=req.event_snapshot||{};
