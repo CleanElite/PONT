@@ -1708,7 +1708,7 @@ function pontRestaurantPaymentOverview(r){
  const menuDue=Number(offer?.amount||0),menuPaid=pontVerifiedStripeMenuAmount(offer);
  const offerMonth=offer?.campaign_month?' · '+offer.campaign_month.slice(0,7):'';
  const subs=pontCityPaymentRows.filter(p=>p.restaurant_id===r.id&&p.service_type==='subscription');
- const subscription=subs.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date())||subs.find(p=>p.status==='pending')||subs[0];
+ const subscription=subs.find(p=>p.status==='confirmed'&&p.stripe_paid_at&&new Date(p.expires_at)>new Date())||subs.find(p=>p.status==='pending'&&p.stripe_paid_at)||subs.find(p=>p.status==='pending')||subs[0];
  const cityDue=Number(subscription?.amount||0),cityPaid=pontVerifiedStripeCityAmount(subscription);
  const waiting=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id&&x.status==='pending'&&x.stripe_paid_at);
  const newCheckout=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id&&x.status==='pending'&&!x.stripe_paid_at);
