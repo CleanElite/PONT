@@ -119,6 +119,21 @@ body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
 }
 @media(prefers-reduced-motion:reduce){.pont-sponsor__track{animation:none}.pont-sponsor{overflow-x:auto}}
 
+
+/* Sponsor: same height, spacing and animation cycle as Meniul zilei. */
+.pont-sponsor{min-height:38px;height:38px;padding:0;margin-top:clamp(12px,2vw,18px);margin-bottom:clamp(19px,3vw,27px);border-top:1px solid rgba(255,233,141,.34);border-bottom:1px solid rgba(255,233,141,.28);box-shadow:0 7px 21px rgba(3,19,23,.12)}
+.pont-sponsor__track{height:100%;animation-duration:38s;will-change:transform}
+.pont-sponsor__run{height:100%}
+.pont-sponsor__eyebrow{font-size:10px}
+.pont-sponsor__caption{font-size:12px}
+.pont-sponsor__brand{font-size:20px}
+@media(max-width:520px){
+ .pont-sponsor{min-height:34px;height:34px;margin-top:10px;margin-bottom:17px}
+ .pont-sponsor__run{gap:18px}
+ .pont-sponsor__eyebrow{font-size:9px}
+ .pont-sponsor__caption{font-size:10px}
+ .pont-sponsor__brand{font-size:18px}
+}
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -133,18 +148,6 @@ body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
   <p>Descoperă petreceri, muzică live și evenimente speciale din Slobozia și împrejurimi.</p>
  </section>
  <div class="pont-sponsor" aria-label="Această pagină este sponsorizată de Biblos Grivița"><div class="pont-sponsor__track" aria-hidden="true"><div class="pont-sponsor__run"><span class="pont-sponsor__eyebrow">Seri de neuitat</span><span class="pont-sponsor__separator">✦</span><span class="pont-sponsor__caption">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator">✦</span><strong class="pont-sponsor__brand">Biblos Grivița</strong><span class="pont-sponsor__separator">✦</span></div><div class="pont-sponsor__run"><span class="pont-sponsor__eyebrow">Seri de neuitat</span><span class="pont-sponsor__separator">✦</span><span class="pont-sponsor__caption">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator">✦</span><strong class="pont-sponsor__brand">Biblos Grivița</strong><span class="pont-sponsor__separator">✦</span></div></div></div>
- <section class="holiday-discovery" aria-labelledby="holidayTitle">
-  <span class="holiday-discovery__eyebrow">Ocazii speciale</span>
-  <h2 id="holidayTitle">N-ai planuri de Revelion? Sau pregătești o aniversare?</h2>
-  <p>Descoperă unde poți petrece sărbătorile sau organiza o seară specială. Alege ocazia care te interesează.</p>
-  <div class="holiday-discovery__filters" role="group" aria-label="Filtrează evenimentele după ocazie">
-   <button class="holiday-filter" type="button" data-event-filter="revelion" aria-pressed="false">Revelion</button>
-   <button class="holiday-filter" type="button" data-event-filter="craciun" aria-pressed="false">Crăciun</button>
-   <button class="holiday-filter" type="button" data-event-filter="paste" aria-pressed="false">Paște</button>
-   <button class="holiday-filter" type="button" data-event-filter="aniversari" aria-pressed="false">Aniversări</button>
-   <button class="holiday-filter" type="button" data-event-filter="toate" aria-pressed="true">Toate evenimentele</button>
-  </div>
- </section>
  <section id="events" aria-label="Evenimente în Slobozia și împrejurimi">
   <div id="eventList" aria-live="polite"><div class="event-empty"><h2>Se pregătesc noi evenimente</h2><p>Revino pentru petreceri, seri cu lăutari, muzică live și alte experiențe din zonă.</p></div></div>
  </section>
@@ -178,7 +181,7 @@ const $=id=>document.getElementById(id);
 const todayLocal=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 const escDate=value=>{const [y,m,d]=(value||'').split('-').map(Number);return y&&m&&d?new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,d,12))):''};
 const fallbackPhoto="./ambient.webp";
-let db=null,restaurantId=null,canPost=false,allEvents=[],activeFilter='toate';
+let db=null,restaurantId=null,canPost=false,allEvents=[];
 const config=window.PONT_CONFIG||{};
 // Preview content is kept in the page only; never inserted in Supabase.
 const demoEvents=[
@@ -192,25 +195,13 @@ const demoEvents=[
 const eventDialog=$('eventDetails');
 eventDialog.querySelector('.event-dialog-close').onclick=()=>eventDialog.close();
 eventDialog.addEventListener('click',e=>{if(e.target===eventDialog)eventDialog.close()});
-function matchEventFilter(event,filter){
- if(filter==='toate')return true;
- const source=[event.title,event.description,event.venue].join(' ').toLocaleLowerCase('ro-RO').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
- const words={revelion:/revelion|anul nou|new year/,craciun:/craciun|christmas|mos craciun|ajun|petrecere de iarna/,paste:/paste|pascal|inviere/,aniversari:/aniversar|zi de nastere|birthday|majorat/};
- return words[filter]?.test(source)||false;
-}
-function refreshEvents(){renderEvents([...demoEvents,...allEvents].filter(e=>matchEventFilter(e,activeFilter)))}
-document.querySelectorAll('[data-event-filter]').forEach(btn=>btn.addEventListener('click',()=>{
- activeFilter=btn.dataset.eventFilter;
- document.querySelectorAll('[data-event-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));
- refreshEvents();
- $('events').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
-}));
+function refreshEvents(){renderEvents([...demoEvents,...allEvents])}
 function renderEvents(events){
  const list=$('eventList');list.replaceChildren();
  if(!events.length){
   const empty=document.createElement('div');empty.className='event-empty';
   const h=document.createElement('h2');h.textContent='Se pregătesc noi evenimente';
-  const p=document.createElement('p');p.textContent=activeFilter==='toate'?'Momentan nu sunt evenimente anunțate. Revino pentru noi experiențe din Slobozia și împrejurimi.':'Nu există încă evenimente anunțate pentru această ocazie. Poți consulta toate evenimentele disponibile.';
+  const p=document.createElement('p');p.textContent='Momentan nu sunt evenimente anunțate. Revino pentru noi experiențe din Slobozia și împrejurimi.';
   empty.append(h,p);list.append(empty);return;
  }
  for(const [i,event] of events.entries()){
