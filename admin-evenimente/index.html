@@ -227,7 +227,7 @@ body.pont-admin--city #cityStripeConfirmDialog form .primary{background:linear-g
  <p id="pontPromotionDescription"></p>
  <form id="pontPromotionForm">
   <label class="wide">Data de începere dorită<input type="date" name="requested_start_date" id="pontPromotionStartDate" required></label>
-  <p class="wide">Data este o solicitare, nu o rezervare confirmată. Promovarea începe doar după aprobarea PONT, verificarea disponibilității și confirmarea plății.</p>
+  <p class="wide">Mai întâi alegi data și continui către plata Stripe. Dacă serviciul este deja achitat sau AS a validat plata cash/test, poți trimite cererea spre aprobare. Poziția se activează numai după confirmarea AS.</p>
   <p class="wide status" id="pontPromotionStatus" role="status"></p>
   <div class="wide pont-city-edit-actions"><button type="button" id="pontPromotionCancel">Anulează</button><button type="submit" class="primary" id="pontPromotionSubmit">Trimite cererea</button></div>
  </form>
@@ -277,6 +277,7 @@ function openCityPromotion(event,type,price){
  $('pontPromotionDescription').textContent=event.title+' · '+price+' lei. Selectează data de la care dorești să înceapă promovarea.';
  const date=$('pontPromotionStartDate');date.min=today();date.value=today();
  $('pontPromotionStatus').textContent='';
+ $('pontPromotionSubmit').textContent='Continuă către plată sau trimite cererea';
  $('pontPromotionDialog').showModal();
 }
 $('pontPromotionCancel').onclick=()=>$('pontPromotionDialog').close();
@@ -287,9 +288,25 @@ $('pontPromotionForm').onsubmit=async e=>{
  if(!date||date<today()){$('pontPromotionStatus').textContent='Selectează o dată de astăzi sau ulterioară.';return}
  const button=$('pontPromotionSubmit');button.disabled=true;
  try{
-  await requestEventAction(cityPromotionEvent,cityPromotionType,'Solicitare promovare de la '+date+'.',{requested_start_date:date});
-  $('pontPromotionDialog').close();
-  $('status').textContent='Solicitarea a fost trimisă pentru '+date+'. Activarea necesită aprobarea PONT și confirmarea plății.';
+  const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests')
+   .select('id,service_type,requested_start_date,status,stripe_paid_at')
+   .eq('restaurant_id',restaurant.id).eq('service_type',cityPromotionType)
+   .eq('promoted_event_id',cityPromotionEvent.id).eq('requested_start_date',date)
+   .order('created_at',{ascending:false}).limit(10);
+  if(paymentError)throw paymentError;
+  const ready=(payments||[]).find(p=>p.stripe_paid_at||p.status==='confirmed');
+  if(ready){
+   const duplicate=cityRequestRows.some(r=>r.event_id===cityPromotionEvent.id&&r.request_type===cityPromotionType&&r.status==='pending'&&r.proposed_changes?.requested_start_date===date);
+   if(duplicate)throw Error('Solicitarea este deja trimisă și așteaptă decizia AS.');
+   await requestEventAction(cityPromotionEvent,cityPromotionType,'Solicitare promovare de la '+date+'.',{requested_start_date:date});
+   $('pontPromotionDialog').close();
+   $('status').textContent='Solicitarea de promovare a fost trimisă spre aprobare. Plata și validarea accesului sunt evidențiate separat în AS.';
+  }else{
+   const selectedType=cityPromotionType,selectedEvent=cityPromotionEvent,price=cityPromotionPrice;
+   $('pontPromotionDialog').close();
+   const advanced=await cityStartStripeCheckout(selectedType,null,price,selectedEvent.id,date);
+   if(!advanced)$('status').textContent='Plata nu a fost inițiată. Poți reveni oricând sau poți discuta cu PONT despre plata cash.';
+  }
  }catch(err){$('pontPromotionStatus').textContent=err.message}
  finally{button.disabled=false}
 };
@@ -353,14 +370,14 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
   dialog.showModal();
  });
 }
-async function cityStartStripeCheckout(serviceType,paymentId=null,amount=50){
- const approved=await cityConfirmStripePayment(serviceType,amount,paymentId);
+async function cityStartStripeCheckout(serviceType,paymentId=null,amount=50,eventId=null,requestedStartDate=null){
+ const approved=await cityConfirmStripePayment(serviceType,amount,paymentId,eventId);
  if(!approved)return false;
  const {data:{session}}=await db.auth.getSession();
  if(!session?.access_token)throw Error('Sesiunea a expirat. Autentifică-te din nou.');
  const response=await fetch(cfg.url+'/functions/v1/pont-stripe-auctions?action=create-city',{
   method:'POST',headers:{'content-type':'application/json',apikey:cfg.anonKey,authorization:'Bearer '+session.access_token},
-  body:JSON.stringify({serviceType,paymentId})
+  body:JSON.stringify({serviceType,paymentId,eventId,requestedStartDate})
  });
  const data=await response.json().catch(()=>({}));
  if(!response.ok)throw Error(data.error||'Checkout Stripe indisponibil.');
@@ -374,7 +391,7 @@ async function loadCitySubscription(){
  if(activeError)throw activeError;
  citySubscriptionActive=Boolean(active);
  const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests')
-  .select('id,status,service_type,amount,event_id,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount')
+  .select('id,status,service_type,amount,event_id,promoted_event_id,requested_start_date,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount')
   .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(80);
  if(paymentError)throw paymentError;
  const rows=payments||[],subs=rows.filter(p=>p.service_type==='subscription');
@@ -391,7 +408,7 @@ async function loadCitySubscription(){
  $('submitEvent').disabled=!citySubscriptionActive;
  $('eventForm').hidden=!citySubscriptionActive;
  $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'Publicarea este blocată până la plata și confirmarea abonamentului.';
- const promotion=rows.filter(p=>p.service_type!=='subscription'&&p.status==='pending');
+ const promotion=rows.filter(p=>p.service_type!=='subscription'&&['pending','confirmed'].includes(p.status));
  const paymentPanel=$('cityPromotionPayments'),list=$('cityPromotionPaymentList');list.replaceChildren();
  paymentPanel.hidden=cityPage==='adauga'||!promotion.length;
  for(const item of promotion){
@@ -401,7 +418,21 @@ async function loadCitySubscription(){
   const status=document.createElement('small');
   status.textContent=item.stripe_paid_at?'Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei încasați · Așteaptă validarea AS':'Stripe: 0 lei încasați';
   card.append(title,status);
-  if(!item.stripe_paid_at){
+  const isPaid=Boolean(item.stripe_paid_at)||item.status==='confirmed';
+  const linkedEvent=cityEventRows.find(e=>e.id===(item.promoted_event_id||item.event_id));
+  const alreadyRequested=cityRequestRows.some(req=>req.event_id===linkedEvent?.id&&req.request_type===item.service_type
+   &&['pending','approved'].includes(req.status)&&req.proposed_changes?.requested_start_date===item.requested_start_date);
+  if(isPaid&&linkedEvent&&item.requested_start_date&&!alreadyRequested){
+   const send=arButton('Trimite cererea de promovare',async()=>{
+    send.disabled=true;
+    try{
+     await requestEventAction(linkedEvent,item.service_type,'Solicitare promovare de la '+item.requested_start_date+'.',{requested_start_date:item.requested_start_date});
+     $('status').textContent='Cererea a fost trimisă spre aprobarea AS.';
+    }catch(err){status.textContent='Eroare: '+err.message;send.disabled=false}
+   });card.append(send);
+  }
+  if(alreadyRequested){const info=document.createElement('small');info.textContent='Cererea de promovare este deja în analiză sau aprobată.';card.append(info)}
+  if(!isPaid){
    const btn=arButton('Plătește în Stripe',async()=>{
     btn.disabled=true;
     try{await cityStartStripeCheckout(item.service_type,item.id,item.amount)}catch(error){status.textContent='Eroare: '+error.message}finally{btn.disabled=false}
