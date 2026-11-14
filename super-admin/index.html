@@ -2346,6 +2346,14 @@ function closeRestaurantEditor() {
  $('addRestaurantOnly').setAttribute('aria-expanded', 'false');
  showMessage('restaurantFormStatus', '');
 }
+function syncRestaurantModuleFields(){
+ const menuEnabled=$('restaurantMenuAccess').checked;
+ const price=$('restaurantMenuPrice');
+ price.closest('label').hidden=!menuEnabled;
+ price.required=menuEnabled;
+ $('restaurantAcceptsCard').closest('label').hidden=!menuEnabled;
+}
+$('restaurantMenuAccess').addEventListener('change',syncRestaurantModuleFields);
 function openRestaurantEditor(restaurant = null) {
  closeRestaurantEditor();
  $('restaurantForm').hidden = false;
@@ -2356,6 +2364,7 @@ function openRestaurantEditor(restaurant = null) {
  $('restaurantAcceptsCard').checked = Boolean(restaurant?.accepts_card);
  $('restaurantMenuAccess').checked = restaurant ? restaurant.access_meniul_zilei !== false : true;
  $('restaurantEventsAccess').checked = Boolean(restaurant?.access_iesire_in_oras);
+ syncRestaurantModuleFields();
  $('restaurantMenuPrice').value = restaurant?.menu_price ?? 30;
  $('restaurantFormTitle').textContent = restaurant ? 'Editează restaurantul' : 'Adaugă restaurant fără cont';
  $('saveRestaurantButton').textContent = restaurant ? 'Salvează modificările' : 'Adaugă restaurant';
@@ -2388,7 +2397,7 @@ $('restaurantForm').onsubmit = async event => {
  const phone=$('restaurantContactPhone').value.trim();
  if(phone&&!/^\+?[0-9 ()-]{8,24}$/.test(phone)){showMessage('restaurantFormStatus','Introdu un număr de telefon valid.',true);return}
  const menuPrice=Number($('restaurantMenuPrice').value);
- if(!Number.isFinite(menuPrice)||menuPrice<=0||menuPrice>10000){
+ if($('restaurantMenuAccess').checked&&(!Number.isFinite(menuPrice)||menuPrice<=0||menuPrice>10000)) {
   showMessage('restaurantFormStatus','Introdu un preț valid pentru meniul zilei.',true);
   $('restaurantMenuPrice').focus();
   return;
