@@ -1,15 +1,16 @@
-# PONT — VARIANTĂ DE TEST
+# PONT — COPIE DE VERIFICARE (PRELANSARE)
 
-Folder: `/test/`
-Status: COPIE DE TEST (nefolosită în navigarea principală)
+## Regula curentă, până la lansarea către restaurante și public
+- `https://pont.city/` este versiunea principală pe care o modificăm.
+- `https://pont.city/test/` este copia sincronizată cu versiunea publică.
+- Fiecare modificare nouă aprobată pe versiunea principală trebuie aplicată și în `/test/` în aceeași intervenție.
+- Nu păstrăm funcții sau evenimente demonstrative diferite în `/test/` cât timp funcționează această regulă.
+- Paginile au titluri normale, fără prefix „TEST”. Pagina de start, Meniul zilei și Ieșire în oraș din `/test/` folosesc doar marcaj tehnic `noindex,nofollow`.
 
-## Producție
-Versiunea publică principală se află în rădăcina repository-ului și este accesată de la `https://pont.city/`.
-Pagina publică principală trimite utilizatorii către `/meniul-zilei/` și `/iesire-in-oras/` (fără prefixul `pranz-slobozia`).
+## După lansarea publică
+Se poate inversa fluxul: dezvoltare în `/test/`, testare, apoi transfer controlat în versiunea principală numai după aprobare explicită.
 
-## Regulă de întreținere
-Modificările viitoare se aplică **mai întâi doar variantei principale**. Această copie NU se sincronizează automat; actualizarea pentru test se face numai când este cerută expres, iar testele se desfășoară pe URL-urile cu prefixul `/test/`.
-
-IMPORTANT: nu ștergeți acest folder fără adaptarea fluxului `.github/workflows/deploy-pages.yml` — acesta verifică existența paginilor secundare și folosește `test/build_icons.py` la publicare.
-
-Paginile secundare principale (intrarea, meniul zilei, ieșire în oraș) au marcajul `noindex,nofollow` fără modificarea titlurilor paginilor pentru a evita confundarea cu paginile de producție.
+## Atenționări
+- Copia de test **nu** are bază de date izolată: Supabase este comun. Testele care scriu date pot afecta utilizatorii reali.
+- Modificările în `/test/` pe ramura `main` declanșează fluxul obișnuit de publicare GitHub Pages, dar nu rescriu automat fișierele publice din rădăcină.
+- Nu activați servicii, consum sau planuri suplimentare plătite.
