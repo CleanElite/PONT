@@ -308,8 +308,21 @@ function renderCityNotifications(){
   item.append(title,reason,date);list.append(item);
  }
 }
-function cityConfirmStripePayment(serviceType,amount){
- return new Promise(resolve=>{
+async function cityPaymentDialogEvent(operation,details={}){
+ const {data:{session}}=await db.auth.getSession();
+ if(!session?.access_token)throw Error('Sesiune expirată. Autentifică-te din nou.');
+ const res=await fetch(cfg.url+'/functions/v1/pont-stripe-auctions?action=city-payment-dialog',{
+  method:'POST',headers:{'content-type':'application/json',apikey:cfg.anonKey,authorization:'Bearer '+session.access_token},
+  body:JSON.stringify({operation,...details})
+ });
+ const result=await res.json().catch(()=>({}));
+ if(!res.ok)throw Error(result.error||'Nu s-a putut înregistra acțiunea de plată.');
+ return result;
+}
+async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventId=null){
+ // AS sees interest when this dialog is opened, even if checkout is never started.
+ const track=await cityPaymentDialogEvent('open',{serviceType,paymentId,eventId});
+ return await new Promise(resolve=>{
   const dialog=$('cityStripeConfirmDialog'),form=$('cityStripeConfirmForm');
   const label=serviceType==='subscription'?'Abonament Ieșire în oraș · 30 zile':serviceType==='pinned_event'?'Promovare pe poziție fixă':'Promovare pe bandă publicitară';
   $('cityStripeConfirmTitle').textContent='Confirmi plata de '+Number(amount).toLocaleString('ro-RO')+' lei?';
@@ -317,20 +330,31 @@ function cityConfirmStripePayment(serviceType,amount){
   $('cityStripeConfirmService').textContent=label;
   $('cityStripeConfirmAmount').textContent=Number(amount).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei';
   $('cityStripeConfirmStatus').textContent='';
-  let resolved=false;
-  const finish=approved=>{
-   if(resolved)return;resolved=true;
+  let finished=false;
+  const finish=async approved=>{
+   if(finished)return;finished=true;
    form.onsubmit=null;dialog.oncancel=null;$('cityStripeConfirmCancel').onclick=null;
-   if(dialog.open)dialog.close();resolve(approved);
+   $('cityStripeConfirmProceed').disabled=true;
+   try{
+    await cityPaymentDialogEvent(approved?'continue':'cancel',{dialogId:track.dialogId});
+    if(dialog.open)dialog.close();
+    resolve(approved);
+   }catch(err){
+    $('cityStripeConfirmStatus').textContent='Nu s-a putut înregistra alegerea: '+err.message;
+    finished=false;$('cityStripeConfirmProceed').disabled=false;
+    form.onsubmit=e=>{e.preventDefault();void finish(true)};
+    $('cityStripeConfirmCancel').onclick=()=>void finish(false);
+   }
   };
-  form.onsubmit=e=>{e.preventDefault();finish(true)};
-  $('cityStripeConfirmCancel').onclick=()=>finish(false);
-  dialog.oncancel=e=>{e.preventDefault();finish(false)};
+  form.onsubmit=e=>{e.preventDefault();void finish(true)};
+  $('cityStripeConfirmCancel').onclick=()=>void finish(false);
+  dialog.oncancel=e=>{e.preventDefault();void finish(false)};
+  $('cityStripeConfirmProceed').disabled=false;
   dialog.showModal();
  });
 }
 async function cityStartStripeCheckout(serviceType,paymentId=null,amount=50){
- const approved=await cityConfirmStripePayment(serviceType,amount);
+ const approved=await cityConfirmStripePayment(serviceType,amount,paymentId);
  if(!approved)return false;
  const {data:{session}}=await db.auth.getSession();
  if(!session?.access_token)throw Error('Sesiunea a expirat. Autentifică-te din nou.');
