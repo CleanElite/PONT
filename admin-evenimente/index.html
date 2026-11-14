@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><meta name="theme-color" content="#031c24"><title>Ieșire în oraș · Panou restaurant PONT</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100dvh;color:#f2faf6;background:radial-gradient(ellipse at 80% 0%,#145052,#031b23 66%);font:14px/1.5 system-ui,-apple-system,sans-serif}main{max-width:930px;margin:0 auto;padding:20px 15px 65px}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding-bottom:17px;border-bottom:1px solid #6aaea447}header strong{font-size:22px;letter-spacing:.12em}a{color:#b8efda;text-underline-offset:3px}header nav{display:flex;gap:13px;flex-wrap:wrap;align-items:center}button{cursor:pointer;font:650 13px system-ui;border:1px solid #86d0c1;background:#10454b;color:#f8fffc;padding:10px 15px;border-radius:10px}button.primary{background:#e9d19b;color:#112b2e;border-color:#eedaa6}button:disabled{opacity:.55;cursor:wait}
+h1{font:500 clamp(28px,6vw,48px)/1.1 Georgia,serif;margin:27px 0 8px}h2{font:500 24px Georgia,serif;margin:0 0 12px}p{color:#b9d9d5}.panel{background:linear-gradient(130deg,#09353a,#092630);border:1px solid #538d897a;padding:clamp(16px,4vw,25px);border-radius:17px;margin:19px 0}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.metric{background:#102e35;border:1px solid #39636b;border-radius:12px;padding:14px}.metric strong{display:block;font-size:26px;color:#f6dfae}.metric span{font-size:11px;color:#c4d9d7}
+form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}label{display:grid;gap:5px;color:#d1e9e4;font-weight:600;font-size:12px}.wide{grid-column:1/-1}input,textarea{width:100%;min-width:0;border:1px solid #527c7c;border-radius:10px;background:#06232b;color:#f8ffff;padding:11px;font:16px system-ui}textarea{min-height:88px;resize:vertical}
+.event{padding:13px 0;border-bottom:1px solid #7caea344}.event:last-child{border:0}.event strong{font-size:16px}.event small{display:block;color:#b9dad4}.state{display:inline-block;font-size:11px;border:1px solid #e6cd936b;background:#4b3b2080;color:#f9e5b4;border-radius:20px;padding:2px 9px;margin:5px 0}.error{color:#ffb7ac}.status{min-height:18px;color:#f4d79c}
+@media(max-width:600px){.metrics{grid-template-columns:repeat(3,minmax(0,1fr))}.metric{padding:9px}.metric strong{font-size:23px}form{grid-template-columns:1fr}.wide{grid-column:1/-1}}
+</style></head>
+<body><main><header><div><strong>PONT</strong><div style="font-size:10px;color:#c4d3cf;letter-spacing:.16em">TE SCOATE ÎN ORAȘ</div></div><nav><a id="menuLink" href="../admin-v2/" hidden>Meniul zilei</a><a href="../iesire-in-oras/">Pagina publică</a><button id="logout" type="button">Deconectare</button></nav></header>
+<h1>Ieșire în oraș</h1><p id="restaurantName">Panou pentru publicarea și urmărirea evenimentelor.</p>
+<p id="status" class="status" role="status">Se verifică permisiunile…</p>
+<div id="workspace" hidden><section class="metrics" aria-label="Statistici evenimente"><div class="metric"><strong id="pendingCount">0</strong><span>În așteptare</span></div><div class="metric"><strong id="approvedCount">0</strong><span>Aprobate</span></div><div class="metric"><strong id="rejectedCount">0</strong><span>Respinse</span></div></section>
+<section class="panel"><h2>Publică un eveniment</h2><p>Completează informațiile reale. Anunțul va fi vizibil numai după aprobarea PONT.</p><form id="eventForm">
+<label class="wide">Titlul evenimentului<input name="title" required minlength="5" maxlength="100" placeholder="Ex.: Seară cu muzică live"></label>
+<label>Data evenimentului<input name="event_date" type="date" required></label><label>Ora începerii<input name="start_time" type="time" required></label>
+<label>Localitate<input name="locality" required maxlength="80" placeholder="Slobozia"></label><label>Locație / restaurant<input name="venue" required maxlength="120"></label>
+<label class="wide">Telefon pentru rezervări<input name="contact_phone" required maxlength="32" inputmode="tel" autocomplete="tel"></label>
+<label class="wide">Imagine / afiș (URL HTTPS)<input name="poster_url" type="url" maxlength="700" placeholder="https://..."></label>
+<label class="wide">Detalii eveniment<textarea name="description" maxlength="1200" placeholder="Program, artiști, detalii privind rezervările"></textarea></label>
+<button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
+<section class="panel"><h2>Evenimentele mele</h2><div id="events"></div></section></div>
+</main><script src="../super-admin/config.js"></script><script type="module">
+const $=id=>document.getElementById(id);const cfg=window.PONT_CONFIG||{};
+const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+let db,restaurant,user;
+const stateNames={pending:'În așteptare',approved:'Aprobat',rejected:'Respins'};
+async function refresh(){
+ const {data,error}=await db.from('pont_city_events').select('id,title,venue,event_date,start_time,status,created_at').eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(100);
+ if(error)throw error;const rows=data||[];
+ for(const status of ['pending','approved','rejected'])$(status+'Count').textContent=rows.filter(e=>e.status===status).length;
+ const container=$('events');container.replaceChildren();
+ if(!rows.length){const p=document.createElement('p');p.textContent='Nu ai publicat încă evenimente.';container.append(p)}
+ for(const e of rows){const card=document.createElement('article');card.className='event';const title=document.createElement('strong');title.textContent=e.title;const details=document.createElement('small');details.textContent=e.venue+' · '+e.event_date+' · '+String(e.start_time).slice(0,5);const badge=document.createElement('span');badge.className='state';badge.textContent=stateNames[e.status]||e.status;card.append(title,details,badge);container.append(card)}
+}
+async function start(){
+ if(!cfg.url||!cfg.anonKey)throw Error('Conexiunea PONT nu este configurată.');
+ const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');db=createClient(cfg.url,cfg.anonKey);
+ const {data:{user:current},error:authError}=await db.auth.getUser();if(authError||!current){location.replace('../login/');return}user=current;
+ const {data:profile,error:profileError}=await db.from('profiles').select('role').eq('user_id',user.id).single();if(profileError)throw profileError;
+ const {data:membership,error:memberError}=await db.from('restaurant_members').select('restaurant_id').eq('user_id',user.id).limit(1).maybeSingle();if(memberError)throw memberError;
+ if(!membership?.restaurant_id){if(profile.role==='super_admin'){$('status').textContent='SuperAdmin: deschide un restaurant din secțiunea Restaurante.';return}throw Error('Contul nu are un restaurant atribuit.')}
+ const {data:row,error:restaurantError}=await db.from('restaurants').select('id,name,enabled,access_meniul_zilei,access_iesire_in_oras').eq('id',membership.restaurant_id).single();if(restaurantError)throw restaurantError;
+ if(!row.enabled||!row.access_iesire_in_oras)throw Error('Accesul la Ieșire în oraș nu este activ pentru acest restaurant.');
+ restaurant=row;$('restaurantName').textContent=row.name+' · Administrarea evenimentelor';
+ $('menuLink').hidden=!row.access_meniul_zilei;
+ $('eventForm').elements.event_date.min=today();
+ $('workspace').hidden=false;$('status').textContent='Acces activ. Evenimentele sunt verificate înainte de publicare.';
+ await refresh();
+}
+$('eventForm').onsubmit=async e=>{
+ e.preventDefault();if(!db||!restaurant)return;const form=e.currentTarget;const button=$('submitEvent');const msg=$('formStatus');const v=Object.fromEntries(new FormData(form).entries());
+ if(v.event_date<today()){msg.textContent='Alege o dată viitoare.';return}
+ if(v.poster_url&&!/^https:\/\//i.test(v.poster_url)){msg.textContent='Afișul trebuie să aibă un link HTTPS.';return}
+ button.disabled=true;msg.textContent='Se verifică anunțul…';
+ try{
+  const {data:similar,error:similarError}=await db.from('pont_city_events').select('id,title').eq('restaurant_id',restaurant.id).eq('event_date',v.event_date).limit(100);
+  if(similarError)throw similarError;
+  const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  if((similar||[]).some(x=>norm(x.title)===norm(v.title)))throw Error('Există deja un eveniment cu același titlu și aceeași dată.');
+  const payload={restaurant_id:restaurant.id,title:v.title.trim(),event_date:v.event_date,start_time:v.start_time,locality:v.locality.trim(),venue:v.venue.trim(),contact_phone:v.contact_phone.trim(),description:v.description.trim(),poster_url:v.poster_url.trim()||null};
+  const {error}=await db.from('pont_city_events').insert(payload);if(error)throw error;
+  form.reset();msg.textContent='Eveniment trimis spre aprobare.';await refresh();
+ }catch(err){msg.textContent='Nu a fost trimis: '+err.message}finally{button.disabled=false}
+};
+$('logout').onclick=async()=>{if(db)await db.auth.signOut();location.replace('../login/')};
+start().catch(e=>{$('status').textContent=e.message;$('status').className='error'});
+</script></body></html>
