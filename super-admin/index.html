@@ -1472,7 +1472,7 @@ function renderRestaurants(){
   const id=esc(r.id),accounts=members.filter(m=>m.restaurant_id===r.id);
   const hasAccount=accounts.length>0,revoked=hasAccount&&accounts.every(m=>m.access_revoked===true);
   const state=!r.enabled?'suspended':!hasAccount?'no-access':revoked?'revoked':'active';
-  const accountRows=accounts.map(m=>'<div class="pont-account-entry"><div><strong>Administrator '+esc(m.short_code||'—')+'</strong><small>'+(m.access_revoked?'Acces revocat · parola și datele păstrate':'Acces permis')+'</small></div><button type="button" class="'+(m.access_revoked?'pont-account-restore':'pont-account-revoke')+'" data-account-toggle="'+esc(m.user_id)+'" data-account-restaurant="'+id+'">'+(m.access_revoked?'Redă accesul':'Revocă accesul')+'</button></div>').join('');
+  const accountRows=accounts.map(m=>'<div class="pont-account-entry"><div><strong>Administrator '+esc(m.short_code||'—')+'</strong><small>'+(m.access_revoked?'Cont blocat · parola și datele păstrate':'Acces permis')+'</small></div><button type="button" class="'+(m.access_revoked?'pont-account-restore':'pont-account-revoke')+'" data-account-toggle="'+esc(m.user_id)+'" data-account-restaurant="'+id+'">'+(m.access_revoked?'Deblochează contul':'Blochează contul')+'</button></div>').join('');
   return '<article class="restaurant-admin-item restaurant-status-'+state+'">'+
   '<div class="restaurant-admin-heading"><span class="restaurant-list-number">'+String(index+1).padStart(2,'0')+'</span>'+
   '<strong class="restaurant-list-name"><span class="pont-live-dot '+(restaurantOnlineIds.has(String(r.id))?'is-online':'is-offline')+'" aria-hidden="true"></span>'+esc(r.name)+'</strong>'+
@@ -1480,8 +1480,8 @@ function renderRestaurants(){
   '<div class="dashboard-badges"><span class="dashboard-badge" data-state="'+(r.enabled?'enabled':'disabled')+'">'+(r.enabled?'Activ':'Suspendat')+'</span>'+
   '<span class="dashboard-badge">Meniul zilei: '+(r.access_meniul_zilei?'Activ':'Inactiv')+'</span>'+
   '<span class="dashboard-badge">Ieșire în oraș: '+(r.access_iesire_in_oras?'Activ':'Inactiv')+'</span>'+
-  (!hasAccount?'<span class="dashboard-badge">Fără cont</span>':revoked?'<span class="dashboard-badge">Acces revocat</span>':'')+'</div></div>'+
-  '<div class="restaurant-admin-actions pont-restaurant-compact-actions"><button type="button" data-edit-restaurant="'+id+'">Editează</button><button type="button" data-toggle="'+id+'">'+(r.enabled?'Suspendă':'Reactivează')+'</button></div>'+
+  (!hasAccount?'<span class="dashboard-badge">Fără cont</span>':revoked?'<span class="dashboard-badge">Cont blocat</span>':'')+'</div></div>'+
+  '<div class="restaurant-admin-actions pont-restaurant-compact-actions"><button type="button" data-edit-restaurant="'+id+'">Editează</button><button type="button" data-toggle="'+id+'">'+(r.enabled?'Suspendă restaurantul':'Reactivează restaurantul')+'</button></div>'+
   '<details class="pont-account-details" data-account-panel="'+id+'" '+(accountPanelOpenId===r.id?'open':'')+'><summary>Administrare cont și date</summary><div class="pont-account-body">'+
   '<h4>Cont și autentificare</h4>'+(accountRows||'<p>Nu există încă un cont de administrator.</p>')+
   (!hasAccount?'<button type="button" class="restaurant-create-access" data-create-access="'+id+'">Creează cont</button>':'')+
@@ -1503,7 +1503,7 @@ function renderMembers() {
  $('memberRows').innerHTML = result.length ? result.map(member =>
   '<div class="dashboard-member"><div><strong>' + esc(restaurantName(member.restaurant_id)) + '</strong><small>Cod administrator · ' +
   esc(member.short_code || '—') + ' · Restaurant ' + esc(restaurants.find(r => r.id === member.restaurant_id)?.short_code || '—') + '</small></div><button type="button" class="admin-danger" data-revoke="' + esc(member.user_id) +
-  '" data-restaurant="' + esc(member.restaurant_id) + '">' + (member.access_revoked ? 'Redă accesul':'Revocă accesul') + '</button></div>').join('') :
+  '" data-restaurant="' + esc(member.restaurant_id) + '">' + (member.access_revoked ? 'Deblochează contul':'Blochează contul') + '</button></div>').join('') :
   emptyMessage('Niciun cont pentru selecția curentă.');
 }
 
@@ -2860,13 +2860,13 @@ async function toggleRestaurantAccountAccess(userId,restaurantId,button){
  const member=members.find(m=>m.user_id===userId&&m.restaurant_id===restaurantId);
  if(!member){status('Contul nu a fost găsit.',true);return}
  const restore=member.access_revoked===true;
- if(!confirm(restore?'Redai accesul administratorului? Va folosi aceeași parolă.':'Revoci accesul? Contul, parola și toate datele vor fi păstrate.'))return;
+ if(!confirm(restore?'Deblochezi contul administratorului? Va folosi aceeași parolă.':'Blochezi contul administratorului? Contul, parola și toate datele vor fi păstrate.'))return;
  if(button)button.disabled=true;
  try{
   const {data,error}=await db.from('restaurant_members').update({access_revoked:!restore}).eq('user_id',userId).eq('restaurant_id',restaurantId).select('user_id,access_revoked');
   if(error)throw error;
   if(!data?.length)throw Error('Actualizarea accesului nu a fost confirmată.');
-  await load();status(restore?'Acces redat cu aceeași parolă.':'Acces revocat. Datele și parola sunt păstrate.');
+  await load();status(restore?'Cont deblocat cu aceeași parolă.':'Cont blocat. Datele și parola sunt păstrate.');
  }catch(e){if(button)button.disabled=false;status(e.message,true)}
 }
 $('memberRows').onclick=e=>{const b=e.target.closest('[data-revoke]');if(b)void toggleRestaurantAccountAccess(b.dataset.revoke,b.dataset.restaurant,b)};
