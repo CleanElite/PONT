@@ -1218,8 +1218,8 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
    <div class="auction-choice-header"><h3 id="pontRestaurantAccessTitle">Confirmare acces</h3><button type="button" id="pontRestaurantAccessClose" aria-label="Închide">×</button></div>
    <p id="pontRestaurantAccessName"></p>
    <div class="auction-choice-options">
-    <label><input type="radio" name="pontRestaurantAccessChoice" value="authorization"><span><strong>Doar acces</strong><small>Autorizează fără înregistrarea unei încasări.</small></span></label>
-    <label><input type="radio" name="pontRestaurantAccessChoice" value="paid"><span><strong>Plătit</strong><small>Confirmă manual plata pentru luna selectată.</small></span></label>
+    <label><input type="radio" name="pontRestaurantAccessChoice" value="authorization"><span><strong>Acces</strong></span></label>
+    <label><input type="radio" name="pontRestaurantAccessChoice" value="paid"><span><strong>Plătit</strong></span></label>
    </div>
    <p id="pontRestaurantAccessAlert" class="auction-choice-alert" role="status"></p>
    <div class="auction-choice-buttons"><button type="button" id="pontRestaurantAccessRemove" class="auction-choice-remove">Retrage confirmarea</button><button type="button" id="pontRestaurantAccessCancel">Anulează</button><button type="button" class="primary" id="pontRestaurantAccessApply">Aplică</button></div>
@@ -1606,7 +1606,7 @@ function pontCommerceRank(rid,month){
 }
 function pontCommerceDetailsHtml(r){
  const month=pontCommerceMonthValue(),offer=pontCommerceMonthOffer(r.id,month),mode=pontCommerceCurrentMode(r.id,month);
- const rank=pontCommerceRank(r.id,month),labels={paid:'Plătit',authorization:'Doar acces',none:'Neconfirmat'};
+ const rank=pontCommerceRank(r.id,month),labels={paid:'Plătit',authorization:'Acces',none:'Neconfirmat'};
  let output='<div class="pont-commerce-line"><header><strong>Meniul zilei · '+esc(month)+'</strong><span class="dashboard-badge">'+esc(labels[mode])+'</span></header>'+
  '<div class="pont-commerce-facts"><span>'+(offer?'Licitație: '+esc(auctionMoney(offer.amount)):'Fără ofertă')+'</span>'+
  '<span>'+(rank?'Locul '+rank:'Fără poziție licitată')+'</span><span>'+(offer?'Runda '+esc(offer.round):'—')+'</span></div>'+
@@ -1705,7 +1705,7 @@ $('pontRestaurantAccessCancel').onclick=pontCloseRestaurantAccess;
 $('pontRestaurantAccessDialog').addEventListener('close',()=>{pontCommerceDialogRestaurant=null});
 $('pontRestaurantAccessApply').onclick=()=>{
  const checked=$('pontRestaurantAccessDialog').querySelector('input[name="pontRestaurantAccessChoice"]:checked');
- if(!checked){$('pontRestaurantAccessAlert').textContent='Selectează Doar acces sau Plătit.';return}
+ if(!checked){$('pontRestaurantAccessAlert').textContent='Selectează Acces sau Plătit.';return}
  void pontApplyRestaurantAccess(checked.value);
 };
 $('pontRestaurantAccessRemove').onclick=()=>void pontApplyRestaurantAccess('none');
@@ -2764,7 +2764,7 @@ const pontUnifiedContainer=$('pontManagePanels');
 for(const name of ['restaurants','commercialPayments','auctions'])pontUnifiedContainer.append($(name));
 let pontManageActiveTab='restaurants';
 function pontSelectManageTab(id='restaurants', remember=true){
- const target=['restaurants','commercialPayments','auctions'].includes(id)?id:'restaurants';
+ const target=['restaurants','auctions'].includes(id)?id:'restaurants';
  const old=pontManageActiveTab;
  if(old!==target&&auctionEdits.size){
   if(!confirm('Ai modificări nesalvate la licitații. Le abandonezi?'))return;
@@ -2808,7 +2808,7 @@ function pontSetWorkspace(isCity){
 }
 function selectPlatformPanel(id, remember = true) {
  const managed=['restaurants','commercialPayments','auctions'].includes(id);
- if(managed){pontManageActiveTab=id;id='adminRestaurants';}
+ if(managed){pontManageActiveTab=id==='commercialPayments'?'restaurants':id;id='adminRestaurants';}
  pontSetWorkspace(false);
  cityExclusivePanels.forEach(name=>$(name).hidden=true);
  cityTabs.forEach(tab=>tab.setAttribute('aria-pressed','false'));
@@ -2825,7 +2825,7 @@ function selectPlatformPanel(id, remember = true) {
 }
 function selectCityPanel(id='cityDashboard', remember=true){
  const managed=['restaurants','commercialPayments','auctions'].includes(id);
- if(managed){pontManageActiveTab=id;id='adminRestaurants';}
+ if(managed){pontManageActiveTab=id==='commercialPayments'?'restaurants':id;id='adminRestaurants';}
  pontSetWorkspace(true);
  platformTabs.forEach(tab=>{ $(tab.dataset.tab).hidden=true;tab.setAttribute('aria-pressed','false') });
  const panel=['cityDashboard','cityModeration','adminRestaurants','members','cityPromotion'].includes(id)?id:'cityDashboard';
@@ -3014,9 +3014,9 @@ async function enter() {
    selectCityPanel(requestedPanel,false);
   }else if(requestedPanel==='adminRestaurants'||requestedPanel.startsWith('adminRestaurants-')){
    const tab=requestedPanel.split('-')[1];
-   selectPlatformPanel(['restaurants','commercialPayments','auctions'].includes(tab)?tab:'restaurants',false);
+   selectPlatformPanel(['restaurants','auctions'].includes(tab)?tab:'restaurants',false);
   }else if(['commercialPayments','restaurants','auctions'].includes(requestedPanel)){
-   selectPlatformPanel(requestedPanel,false);
+   selectPlatformPanel(requestedPanel==='commercialPayments'?'restaurants':requestedPanel,false);
   }else{
    history.replaceState(null, '', location.pathname+location.search+'#analytics');
    selectPlatformPanel('analytics', false);
