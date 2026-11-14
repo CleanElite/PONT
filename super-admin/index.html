@@ -2664,10 +2664,9 @@ $('restaurantRows').onclick = async event => {
  if (deleteRestaurant) {status('Ștergerea definitivă nu este disponibilă în panoul obișnuit.',true);return;}
  button.disabled = true;
  try {
-  await req(deleteRestaurant ? db.from('restaurants').delete().eq('id', restaurant.id) :
-   db.from('restaurants').update({enabled:!restaurant.enabled}).eq('id', restaurant.id));
+  await req(db.from('restaurants').update({enabled:!restaurant.enabled}).eq('id', restaurant.id));
   await load();
-  status(deleteRestaurant ? 'Restaurantul a fost șters.' : (restaurant.enabled ? 'Restaurantul a fost suspendat.' : 'Restaurantul a fost activat.'));
+  status(restaurant.enabled ? 'Restaurantul a fost suspendat. Datele au fost păstrate.' : 'Restaurantul a fost reactivat.');
  } catch (error) {
   button.disabled = false;
   status(error.message, true);
@@ -2718,6 +2717,7 @@ function openMemberEditor(restaurant = null) {
   $('memberForm').hidden = false;
   $('newMember').setAttribute('aria-expanded','true');
  }
+ $('pontInlineAccountCreator').hidden=false;
  $('pontInlineAccountCreator').scrollIntoView({block:'start',behavior:'smooth'});
  $(restaurant ? 'uid' : 'memberRestaurantName').focus();
 }
