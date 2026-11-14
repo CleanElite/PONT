@@ -135,6 +135,18 @@ body.pont-admin--city .panel[hidden]{display:none!important}
 body.pont-admin--city .pont-ar-city-navigation a.is-active{background:linear-gradient(145deg,#d8c18d,#a78b54);color:#0b2628;border-color:#eedbaa;font-weight:800}
 body.pont-admin--city #pontPromotionDialog .wide{grid-column:1/-1}
 body.pont-admin--city #pontPromotionDialog .pont-city-edit-actions{display:flex;justify-content:flex-end;gap:9px}
+</style><style id="pont-city-fullscreen-edits-and-subscription-20261115">
+body.pont-admin--city.pont-city-modal-open{overflow:hidden!important;overscroll-behavior:none;touch-action:none}
+body.pont-admin--city #eventEditDialog.pont-city-edit-dialog{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;margin:0!important;padding:clamp(17px,4vw,36px)!important;border:0!important;border-radius:0!important;overflow-y:auto!important;overscroll-behavior:contain!important;touch-action:pan-y!important;background:linear-gradient(140deg,#0a3438,#031923 83%)!important}
+body.pont-admin--city #eventEditDialog form{max-width:850px;margin:0 auto}
+body.pont-admin--city #eventEditDialog>h2,body.pont-admin--city #eventEditDialog>p{max-width:850px;margin-left:auto;margin-right:auto}
+body.pont-admin--city .pont-city-payment-gate{text-align:center;border-color:#d9c28a88;background:linear-gradient(140deg,#183b37,#10272b)}
+body.pont-admin--city .pont-city-payment-gate button{margin:12px auto}
+body.pont-admin--city #eventForm[hidden]{display:none!important}
+body.pont-admin--city .pont-city-rejected-note,body.pont-admin--city .pont-city-notification{border:1px solid #d7b78891;background:#452e2c88;border-radius:12px;padding:12px;margin:8px 0;color:#ffe2cf;font:600 12px/1.5 system-ui}
+body.pont-admin--city .pont-city-notification p{margin:5px 0;color:#ffded3}
+body.pont-admin--city .pont-city-notification small{color:#e9d4cc}
+body.pont-admin--city .pont-city-notifications[hidden],body.pont-admin--city .pont-city-payment-gate[hidden]{display:none!important}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -156,6 +168,17 @@ body.pont-admin--city #pontPromotionDialog .pont-city-edit-actions{display:flex;
 <section id="citySubscription" class="pont-city-subscription" hidden aria-label="Abonamentul meu">
  <div><small>ABONAMENTUL MEU</small><strong id="citySubscriptionState">Se verifică…</strong><span id="citySubscriptionUntil"></span></div>
  <span class="pont-city-price">50 lei / 30 zile</span>
+</section>
+<section id="citySubscriptionRequest" class="panel pont-city-payment-gate" hidden>
+ <h2>Abonament necesar · 50 lei</h2>
+ <p>Pentru a adăuga evenimente, restaurantul trebuie să aibă un abonament activ de 50 lei / 30 zile, confirmat de PONT.</p>
+ <button type="button" id="requestCitySubscription" class="primary">Solicită abonament · 50 lei</button>
+ <p id="citySubscriptionRequestStatus" class="status" role="status"></p>
+ <small>Solicitarea ajunge în panoul AS. Plata online va fi disponibilă după configurarea metodei de plată. Publicarea rămâne blocată până la confirmarea plății.</small>
+</section>
+<section id="cityNotifications" class="panel pont-city-notifications" hidden aria-label="Notificări de la administrator">
+ <h2>Notificări <span id="cityNotificationCount"></span></h2>
+ <div id="cityNotificationList"></div>
 </section>
 <div id="workspace" hidden><section class="metrics" aria-label="Statistici evenimente"><div class="metric"><strong id="pendingCount">0</strong><span>În așteptare</span></div><div class="metric"><strong id="approvedCount">0</strong><span>Aprobate</span></div><div class="metric"><strong id="rejectedCount">0</strong><span>Respinse</span></div></section>
 <section class="panel" id="createEvent"><h2>Publică un eveniment</h2><p>Completează informațiile reale. Anunțul va fi vizibil numai după aprobarea PONT.</p><form id="eventForm">
@@ -200,7 +223,7 @@ body.pont-admin--city #pontPromotionDialog .pont-city-edit-actions{display:flex;
 </main><script src="../super-admin/config.js"></script><script type="module">
 const $=id=>document.getElementById(id);const cfg=window.PONT_CONFIG||{};
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-let db,restaurant,user,citySubscriptionActive=false,cityUploadedPoster='',cityEventRows=[],cityRequestRows=[],cityEditingEvent=null;
+let db,restaurant,user,citySubscriptionActive=false,citySubscriptionRequested=false,cityUploadedPoster='',cityEventRows=[],cityRequestRows=[],cityEditingEvent=null;
 const stateNames={pending:'În așteptare',approved:'Aprobat',rejected:'Respins',removed:'Retras'};
 const requestLabels={remove:'Solicitare retragere',edit:'Solicitare modificare',pinned_event:'Fixare eveniment · 50 lei',exclusive_banner:'Bandă exclusivă · 100 lei'};
 const requestStates={pending:'În analiză',approved:'Aprobată',rejected:'Respinsă'};
@@ -243,6 +266,50 @@ $('pontPromotionForm').onsubmit=async e=>{
 };
 
 function cityDate(iso){if(!iso)return '—';const d=new Date(iso);return Number.isNaN(d.getTime())?'—':new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',day:'2-digit',month:'long',year:'numeric'}).format(d)}
+function renderCityNotifications(){
+ const panel=$('cityNotifications'),list=$('cityNotificationList');list.replaceChildren();
+ const rejected=cityRequestRows.filter(r=>r.status==='rejected');
+ panel.hidden=!rejected.length;
+ $('cityNotificationCount').textContent=rejected.length?'('+rejected.length+')':'';
+ for(const req of rejected){
+  const item=document.createElement('article');item.className='pont-city-notification';
+  const title=document.createElement('strong');title.textContent='Solicitare respinsă · '+(requestLabels[req.request_type]||req.request_type);
+  const reason=document.createElement('p');reason.textContent='Motiv AS: '+(req.review_note||'Nu a fost comunicat un motiv. Contactează administratorul PONT.');
+  const date=document.createElement('small');date.textContent=cityDate(req.created_at);
+  item.append(title,reason,date);list.append(item);
+ }
+}
+async function loadCitySubscription(){
+ if(!db||!restaurant)return;
+ const {data:active,error:activeError}=await db.rpc('pont_has_active_city_subscription',{p_restaurant_id:restaurant.id});
+ if(activeError)throw activeError;
+ citySubscriptionActive=Boolean(active);
+ const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests').select('id,status,confirmed_at,expires_at')
+ .eq('restaurant_id',restaurant.id).eq('service_type','subscription').order('created_at',{ascending:false}).limit(24);
+ if(paymentError)throw paymentError;
+ const rows=payments||[];
+ const valid=rows.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date());
+ citySubscriptionRequested=rows.some(p=>p.status==='pending');
+ $('citySubscription').hidden=false;
+ $('citySubscriptionState').textContent=citySubscriptionActive?'Activ':citySubscriptionRequested?'În așteptarea confirmării':'Inactiv';
+ $('citySubscriptionUntil').textContent=valid?'Valabil până la '+cityDate(valid.expires_at):citySubscriptionRequested?'Cererea de abonament a fost trimisă către AS':'Este necesară plata abonamentului';
+ $('citySubscriptionRequest').hidden=citySubscriptionActive||cityPage!=='adauga';
+ $('requestCitySubscription').disabled=citySubscriptionRequested;
+ $('requestCitySubscription').textContent=citySubscriptionRequested?'Solicitare trimisă · în analiză':'Solicită abonament · 50 lei';
+ $('citySubscriptionRequestStatus').textContent=citySubscriptionRequested?'Așteptăm confirmarea plății de către AS.':'Plata nu a fost confirmată.';
+ $('submitEvent').disabled=!citySubscriptionActive;
+ $('eventForm').hidden=!citySubscriptionActive;
+ $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'Publicarea evenimentelor este blocată până la confirmarea abonamentului.';
+}
+$('requestCitySubscription').onclick=async()=>{
+ if(!db||!restaurant||citySubscriptionRequested)return;
+ const btn=$('requestCitySubscription');btn.disabled=true;
+ try{
+  const {error}=await db.from('pont_city_payment_requests').insert({restaurant_id:restaurant.id,service_type:'subscription',event_id:null,amount:50,status:'pending',created_by:user.id});
+  if(error)throw error;
+  await loadCitySubscription();
+ }catch(err){$('citySubscriptionRequestStatus').textContent='Solicitarea nu a fost trimisă: '+err.message;btn.disabled=false}
+};
 function cityInfo(message){const el=$('formStatus');el.textContent=message;el.scrollIntoView({block:'nearest',behavior:'smooth'})}
 async function requestEventAction(event,type,reason,proposed={}){
  const {error}=await db.from('pont_city_event_requests').insert({
@@ -264,8 +331,10 @@ function beginEventEdit(e){
  f.elements.reason.value='';
  $('eventEditStatus').textContent='';
  $('eventEditDialog').showModal();
+ document.body.classList.add('pont-city-modal-open');
 }
 $('cancelEventEdit').onclick=()=>$('eventEditDialog').close();
+$('eventEditDialog').addEventListener('close',()=>document.body.classList.remove('pont-city-modal-open'));
 $('eventEditForm').onsubmit=async evt=>{
  evt.preventDefault();
  const event=cityEditingEvent;
@@ -319,6 +388,7 @@ async function refresh(){
   }
   container.append(card);
  }
+ renderCityNotifications();
  const requestBox=$('cityRequests');requestBox.replaceChildren();
  if(!cityRequestRows.length){const p=document.createElement('p');p.textContent='Nu există solicitări.';requestBox.append(p)}
  for(const req of cityRequestRows){
@@ -332,7 +402,11 @@ async function refresh(){
    dateLine.textContent='Data de începere solicitată: '+req.proposed_changes.requested_start_date;
    item.append(dateLine);
   }
-  if(req.review_note){const p=document.createElement('small');p.textContent='Răspuns PONT: '+req.review_note;item.append(p)}
+  if(req.status==='rejected'){
+   const warning=document.createElement('div');warning.className='pont-city-rejected-note';
+   warning.textContent='Cerere respinsă de AS. Motiv: '+(req.review_note||'Motivul nu a fost comunicat. Contactează administratorul PONT.');
+   item.append(warning);
+  }else if(req.review_note){const p=document.createElement('small');p.textContent='Răspuns PONT: '+req.review_note;item.append(p)}
   if(req.status==='approved'&&['pinned_event','exclusive_banner'].includes(req.request_type)){const p=document.createElement('small');p.textContent='Cerere aprobată. Promovarea se activează după confirmarea plății și disponibilității.';item.append(p)}
   requestBox.append(item);
  }
@@ -350,23 +424,11 @@ async function start(){
  $('menuLink').hidden=!row.access_meniul_zilei;
  $('eventForm').elements.event_date.min=today();
  $('workspace').hidden=false;
- const {data:subscriptionActive,error:subscriptionError}=await db.rpc('pont_has_active_city_subscription',{p_restaurant_id:restaurant.id});
- if(subscriptionError)throw subscriptionError;
- citySubscriptionActive=Boolean(subscriptionActive);
- const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests').select('id,status,confirmed_at,expires_at')
-  .eq('restaurant_id',restaurant.id).eq('service_type','subscription').order('created_at',{ascending:false}).limit(24);
- if(paymentError)throw paymentError;
- const activePayment=(payments||[]).filter(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date()).sort((a,b)=>new Date(b.expires_at)-new Date(a.expires_at))[0];
- $('citySubscription').hidden=false;
- $('citySubscriptionState').textContent=citySubscriptionActive?'Activ':'Inactiv';
- $('citySubscriptionUntil').textContent=activePayment?'Valabil până la '+cityDate(activePayment.expires_at):'Publicarea necesită confirmarea abonamentului';
- $('submitEvent').disabled=!subscriptionActive;
- $('status').textContent=subscriptionActive?'Abonament activ. Evenimentele sunt verificate înainte de publicare.':'Acces administrare activ, dar abonamentul pentru publicare nu este confirmat sau a expirat. Contactează administratorul PONT.';
- if(!subscriptionActive)$('formStatus').textContent='Publicarea se activează după confirmarea manuală a plății abonamentului de 50 lei / 30 zile.';
+ await loadCitySubscription();
  await refresh();
 }
 $('eventForm').onsubmit=async e=>{
- e.preventDefault();if(!db||!restaurant)return;const form=e.currentTarget;const button=$('submitEvent');const msg=$('formStatus');const v=Object.fromEntries(new FormData(form).entries());
+ e.preventDefault();if(!db||!restaurant)return;if(!citySubscriptionActive){$('formStatus').textContent='Publicarea necesită abonament confirmat.';return}const form=e.currentTarget;const button=$('submitEvent');const msg=$('formStatus');const v=Object.fromEntries(new FormData(form).entries());
  if(v.event_date<today()){msg.textContent='Alege o dată viitoare.';return}
  if(v.poster_url&&!/^https:\/\//i.test(v.poster_url)){msg.textContent='Afișul trebuie să aibă un link HTTPS.';return}
  button.disabled=true;msg.textContent='Se verifică anunțul…';
