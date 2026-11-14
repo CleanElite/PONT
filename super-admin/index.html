@@ -1600,7 +1600,7 @@ function pontCommerceCurrentMode(rid,month){
  return 'none';
 }
 function pontCommerceRank(rid,month){
- const offers=pontCommerceOfferRows.filter(x=>x.campaign_month===month+'-01').sort((a,b)=>Number(b.amount)-Number(a.amount)||(new Date(a.bid_rank_at||a.created_at)-new Date(b.bid_rank_at||b.created_at)));
+ const offers=rankedAuctionOffers(pontCommerceOfferRows.filter(x=>x.campaign_month===month+'-01'));
  const index=offers.findIndex(x=>x.restaurant_id===rid);
  return index<0?null:index+1;
 }
