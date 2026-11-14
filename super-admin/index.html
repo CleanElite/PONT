@@ -1439,6 +1439,9 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
 <section id="cityModeration" class="card dashboard-panel" hidden aria-labelledby="cityModerationTitle">
   <div class="dashboard-heading"><div><h2 id="cityModerationTitle">Moderare evenimente</h2><p>Verifică fiecare anunț înainte să apară public.</p></div><button type="button" id="cityModerationRefresh" class="primary">Actualizează</button></div>
   <p id="cityModerationStatus" class="dashboard-message" role="status"></p>
+  <div class="pont-city-section-heading"><h3>Solicitări AR <span id="cityRequestsPendingLabel"></span></h3></div>
+  <p class="pont-city-requests-note">Retragerile sunt păstrate în istoric. Modificările sunt aplicate doar după aprobare. Promovările aprobate generează o plată în așteptare, nu activează automat reclama.</p>
+  <div id="cityEventRequestRows" class="pont-city-list"></div>
   <div class="pont-city-section-heading"><h3>În așteptare <span id="cityPendingLabel"></span></h3></div>
   <div id="cityPendingRows" class="pont-city-list"></div>
   <div class="pont-city-section-heading"><h3>Aprobate</h3></div>
@@ -2947,6 +2950,66 @@ function cityRow(e,pending=false){
  }
  return article;
 }
+const pontCityRequestLabels={remove:'Retragere eveniment',edit:'Modificare eveniment',pinned_event:'Promovare: poziție fixă · 50 lei',exclusive_banner:'Promovare: bandă exclusivă · 100 lei'};
+const pontCityRequestStatuses={pending:'În așteptare',approved:'Aprobată',rejected:'Respinsă'};
+function pontCityRequestCard(req){
+ const card=document.createElement('article');card.className='pont-city-event pont-city-request-card';
+ const e=cityEventsLoaded.find(x=>x.id===req.event_id);
+ const restaurant=restaurants.find(x=>x.id===req.restaurant_id);
+ const heading=document.createElement('strong');heading.textContent=(pontCityRequestLabels[req.request_type]||req.request_type)+' — '+(restaurant?.name||'Restaurant');
+ const event=document.createElement('p');event.className='pont-city-meta';event.textContent='Eveniment: '+(req.event_snapshot?.title||e?.title||req.event_id);
+ const details=document.createElement('p');details.className='pont-city-meta';
+ details.textContent='Solicitat: '+new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',dateStyle:'medium',timeStyle:'short'}).format(new Date(req.created_at))+' · '+(pontCityRequestStatuses[req.status]||req.status);
+ card.append(heading,event,details);
+ if(req.reason){const reason=document.createElement('p');reason.textContent='Motiv: '+req.reason;card.append(reason)}
+ if(req.request_type==='edit'){
+  const previous=req.event_snapshot||{};
+  const changes=req.proposed_changes||{};
+  const labels={title:'Titlu',event_date:'Data',start_time:'Ora',venue:'Locație',locality:'Localitate',contact_phone:'Telefon',description:'Descriere',poster_url:'Afiș'};
+  const changesBox=document.createElement('div');changesBox.className='pont-city-request-changes';
+  for(const [key,val] of Object.entries(changes)){
+   if(!(key in labels))continue;
+   const line=document.createElement('p');
+   line.textContent=labels[key]+': '+String(previous[key]??'—')+' → '+String(val||'—');
+   changesBox.append(line);
+  }
+  card.append(changesBox);
+ }
+ if(req.review_note){const note=document.createElement('p');note.textContent='Răspuns: '+req.review_note;card.append(note)}
+ if(req.status==='pending'){
+  const actions=document.createElement('div');actions.className='pont-city-actions';
+  for(const [label,status,className] of [['Aprobă','approved','primary'],['Respinge','rejected','pont-city-reject']]){
+   const btn=document.createElement('button');btn.type='button';btn.className=className;btn.textContent=label;
+   btn.addEventListener('click',async()=>{
+    if(status==='approved'&&!confirm('Aprobi „'+(pontCityRequestLabels[req.request_type]||req.request_type)+'”? Decizia și evenimentul rămân în istoric.'))return;
+    const note=status==='rejected'?prompt('Motivul respingerii (obligatoriu):'):null;
+    if(status==='rejected'&&(note===null||!note.trim()))return;
+    actions.querySelectorAll('button').forEach(b=>b.disabled=true);
+    $('cityModerationStatus').textContent='Se salvează decizia…';
+    try{
+     const update={status,review_note:status==='rejected'?note.trim():null};
+     const {data,error}=await db.from('pont_city_event_requests').update(update).eq('id',req.id).eq('status','pending').select('id');
+     if(error)throw error;if(!data?.length)throw Error('Cererea a fost deja soluționată.');
+     await loadCityEvents();
+     $('cityModerationStatus').textContent=status==='approved'?'Cerere aprobată.':'Cerere respinsă.';
+    }catch(err){$('cityModerationStatus').textContent='Eroare: '+err.message;actions.querySelectorAll('button').forEach(b=>b.disabled=false)}
+   });
+   actions.append(btn);
+  }
+  card.append(actions);
+ }
+ return card;
+}
+async function pontLoadCityRequests(){
+ const box=$('cityEventRequestRows');box.replaceChildren();
+ const {data,error}=await db.from('pont_city_event_requests').select('id,event_id,restaurant_id,request_type,reason,proposed_changes,event_snapshot,status,created_at,review_note')
+  .order('created_at',{ascending:false}).limit(250);
+ if(error)throw error;
+ const rows=data||[];const pending=rows.filter(r=>r.status==='pending');
+ $('cityRequestsPendingLabel').textContent='('+pending.length+')';
+ for(const item of [...pending,...rows.filter(r=>r.status!=='pending')])box.append(pontCityRequestCard(item));
+ if(!rows.length){const p=document.createElement('p');p.textContent='Nu există solicitări de la AR.';box.append(p)}
+}
 async function loadCityEvents(){
  const cityStatus=$('cityStatus'),moderationStatus=$('cityModerationStatus');
  cityStatus.textContent='Se actualizează evenimentele…';
@@ -2969,6 +3032,9 @@ async function loadCityEvents(){
    if(!items.length){const p=document.createElement('p');p.textContent='Nu există evenimente în această categorie.';node.append(p)}
   }
   $('cityPendingLabel').textContent='('+events.filter(e=>e.status==='pending').length+')';
+  try{await pontLoadCityRequests()}catch(requestError){
+   $('cityEventRequestRows').textContent='Nu s-au putut încărca solicitările: '+requestError.message;
+  }
   cityStatus.textContent=cityHistoryComplete?'Actualizat.':'Actualizat parțial: istoricul depășește limita afișării.';
   moderationStatus.textContent=cityHistoryComplete?'':'Istoric parțial: verifică duplicatele manual.';
  }catch(error){cityStatus.textContent='Nu se pot încărca datele: '+error.message;moderationStatus.textContent=cityStatus.textContent}
@@ -3939,4 +4005,13 @@ body.pont-admin--platform #app .admin-nav.pont-admin-grouped-nav>.pont-nav-clust
  body.pont-admin--platform #app #pontMenuSuperNav.admin-nav.pont-admin-grouped-nav:not([hidden]){gap:3px!important;padding:4px!important}
  body.pont-admin--platform #app .admin-nav.pont-admin-grouped-nav>.pont-nav-cluster>:is(button,a){font-size:8px!important;letter-spacing:-.035em!important}
 }
+</style><style id="pont-city-requests-admin-20261115">
+#cityModeration .pont-city-requests-note{font:500 11px/1.55 system-ui;color:#bcd5cc;margin:0 0 10px}
+#cityModeration .pont-city-request-card{border:1px solid rgba(167,209,192,.34);padding:13px;border-radius:12px;margin:9px 0;background:linear-gradient(135deg,#12383d,#092b33)}
+#cityModeration .pont-city-request-card>strong{color:#f7dfad}
+#cityModeration .pont-city-request-card .pont-city-meta{font-size:11px;color:#bcd9d3;margin:5px 0}
+#cityModeration .pont-city-request-changes{padding:8px 10px;border-radius:8px;background:#09272d}
+#cityModeration .pont-city-request-changes p{margin:4px 0;color:#d7f0e9;font:600 11px/1.5 system-ui;overflow-wrap:anywhere}
+#cityModeration .pont-city-request-card .pont-city-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+#cityModeration .pont-city-request-card .pont-city-actions button{min-height:37px;flex:1 1 100px}
 </style><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script></body></html>
