@@ -246,6 +246,11 @@
 .pont-module-access label{display:flex!important;align-items:center;gap:10px!important;margin:0!important;cursor:pointer;font-weight:600;font-size:13px}
 .pont-module-access input{width:18px!important;height:18px;accent-color:#7be6cf;flex:none;margin:0}
 .pont-module-access small{color:#adcfc7;font-size:11px;line-height:1.4}
+
+.pont-dashboard-modules{display:flex;align-items:center;justify-content:flex-end;gap:7px;flex-wrap:wrap}
+.pont-dashboard-modules .pont-events-dashboard-link{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;min-height:41px;border:1px solid #d5b979;border-radius:11px;background:#153941;color:#f4dfaa;font:700 clamp(11px,2.7vw,13px)/1.2 system-ui;text-decoration:none}
+.pont-dashboard-modules .pont-events-dashboard-link:hover{background:#215159}
+@media(max-width:430px){.pont-dashboard-modules{gap:4px}.pont-dashboard-modules .pont-events-dashboard-link{padding:7px 8px;font-size:11px;min-height:38px}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-auction-period-save-c15">
@@ -973,7 +978,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
 <section id="setup" class="card" hidden><h1>Activare securizată</h1><p>Interfața este instalată. Pentru utilizare reală trebuie configurat Supabase și executat fișierul schema.sql în baza de date. Fără această configurare nu există acces la datele restaurantelor.</p></section><section id="login" class="card" hidden><h1>Conectare Super Admin</h1><form id="auth" autocomplete="on"><label for="email">Email</label><input id="email" name="username" type="email" required autocomplete="username" autocapitalize="none" spellcheck="false"><label for="password">Parolă</label><input id="password" name="password" type="password" required autocomplete="current-password"><p><button class="primary">Conectare</button></p></form><p id="error" class="error"></p></section><section id="app" hidden><button type="button" id="logout" class="admin-logout" aria-label="Deconectare"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#sign-out"></use></svg><span class="admin-control-text">Deconectare</span></button>
 <div class="admin-hero dashboard-intro">
   <div class="admin-hero-copy"><h1>Super Admin</h1><p>Administrarea platformei PONT</p></div>
-  <button type="button" class="pont-hero-dashboard" data-tab="analytics" aria-controls="analytics" aria-pressed="true">Dashboard</button>
+  <div class="pont-dashboard-modules"><button type="button" class="pont-hero-dashboard" data-tab="analytics" aria-controls="analytics" aria-pressed="true">Meniul zilei</button><a class="pont-events-dashboard-link" href="./iesire-in-oras/">Ieșire în oraș</a></div>
 </div>
 <div class="pont-live-datetime" role="group" aria-label="Data și ora României"><span class="pont-live-datetime__date" data-pont-clock-date>—</span><span class="pont-live-datetime__separator" aria-hidden="true"></span><time class="pont-live-datetime__time" data-pont-clock-time>--:--</time></div> <nav class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Super Admin">
   <div class="pont-nav-cluster pont-nav-cluster--content" role="group" aria-label="Meniuri și preparate">
