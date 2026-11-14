@@ -2964,9 +2964,10 @@ function pontCityAsEdit(e){
   form.elements[k].value=k==='start_time'?String(e[k]||'').slice(0,5):String(e[k]||'');
  }
  $('pontCityAsEditStatus').textContent='';
- $('pontCityAsEditDialog').showModal();
+ $('pontCityAsEditDialog').showModal();document.body.classList.add('pont-as-city-edit-open');
 }
 $('pontCityAsEditCancel').onclick=()=>$('pontCityAsEditDialog').close();
+$('pontCityAsEditDialog').addEventListener('close',()=>document.body.classList.remove('pont-as-city-edit-open'));
 $('pontCityAsEditForm').onsubmit=async ev=>{
  ev.preventDefault();
  if(!pontCityAsEditingEvent)return;
@@ -4164,4 +4165,9 @@ body.pont-admin--platform #app .admin-nav.pont-admin-grouped-nav>.pont-nav-clust
 .pont-city-as-edit-dialog textarea{min-height:84px}
 .pont-city-as-edit-buttons{display:flex;justify-content:flex-end;gap:8px}
 @media(max-width:580px){.pont-city-as-edit-dialog form{grid-template-columns:1fr}}
-</style><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script></body></html>
+</style><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script><style id="pont-as-city-fullscreen-editor-20261115">
+body.pont-admin--platform.pont-as-city-edit-open{overflow:hidden!important;overscroll-behavior:none;touch-action:none}
+body.pont-admin--platform #pontCityAsEditDialog.pont-city-as-edit-dialog{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;margin:0!important;padding:clamp(18px,4vw,38px)!important;border:0!important;border-radius:0!important;overflow-y:auto!important;overscroll-behavior:contain!important;touch-action:pan-y!important;background:linear-gradient(145deg,#11383a,#051d27 85%)!important}
+body.pont-admin--platform #pontCityAsEditDialog form{max-width:850px;margin:0 auto}
+body.pont-admin--platform #pontCityAsEditDialog>h2,body.pont-admin--platform #pontCityAsEditDialog>p{max-width:850px;margin-left:auto;margin-right:auto}
+</style></body></html>
