@@ -3466,11 +3466,11 @@ async function toggleRestaurantAccountAccess(userId,restaurantId,button){
 }
 $('memberRows').onclick=e=>{const b=e.target.closest('[data-revoke]');if(b)void toggleRestaurantAccountAccess(b.dataset.revoke,b.dataset.restaurant,b)};
 
-const {initPontDishEditor}=await import('../dish-editor.js?v=return-menu-top-20261113');
+const {initPontDishEditor}=await import('../dish-editor.js?v=no-auto-focus-20261114');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
-const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=daily-status-icons-20261114');
+const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=no-auto-focus-20261114');
 const renderTodayMenu=(resetExpanded=false)=>renderPublishedToday($('pontTodayMenu'), menus, restaurants, true, resetExpanded);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) renderTodayMenu(); });
 $('pontTodayMenu').addEventListener('click', async event => {
