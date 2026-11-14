@@ -345,6 +345,28 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #auctions .dashboard-auction-state{cursor:default!important;pointer-events:none!important}
 #auctions .pont-auction-bid-row .dashboard-auction-state small{display:none!important}
 @media(max-width:420px){.pont-unified-subnav{gap:5px}.pont-unified-subnav button{padding:11px 3px}}
+</style><style id="pont-restaurant-commerce-integration">
+#adminRestaurants .pont-unified-subnav{grid-template-columns:repeat(2,minmax(0,1fr))}
+#restaurants .pont-restaurant-commercial-period{display:flex;align-items:end;justify-content:space-between;flex-wrap:wrap;gap:9px;margin:0 0 12px;border:1px solid #65988777;border-radius:12px;padding:10px;background:#0b3039}
+#restaurants .pont-restaurant-commercial-period label{color:#cfe6d9;display:grid;gap:5px;font-size:11px}
+#restaurants .pont-restaurant-commercial-period input{border-radius:9px;border:1px solid #6c968c;background:#092630;color:#eefaf5;padding:8px 10px;min-height:37px}
+#restaurants .pont-restaurant-commercial-period button{min-height:37px;padding:8px 12px;font-size:12px}
+#restaurantRows .pont-commerce-line{border:1px solid #608c7a7d;border-radius:11px;padding:10px;margin:11px 0;background:linear-gradient(135deg,#123b3e,#092a30)}
+#restaurantRows .pont-commerce-line>header{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin:0 0 7px;padding:0;border:0}
+#restaurantRows .pont-commerce-line>header strong{font-size:13px;color:#f1deb0}
+#restaurantRows .pont-commerce-line .pont-commerce-facts{display:flex;flex-wrap:wrap;gap:7px;font-size:11px;color:#bfe1d7;line-height:1.5}
+#restaurantRows .pont-commerce-line .pont-commerce-facts span{border:1px solid #8bab985c;padding:4px 7px;border-radius:7px;max-width:100%;overflow-wrap:anywhere}
+#restaurantRows .pont-commerce-line button{min-height:34px;font-size:11px;padding:7px 11px;margin-top:9px}
+#restaurantRows .pont-commerce-payment{margin-top:9px;border-top:1px solid #7faaa25c;padding-top:9px;display:grid;gap:7px}
+#restaurantRows .pont-commerce-payment-item{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:11px;color:#d9e4d3}
+#restaurantRows .pont-commerce-payment-item button{margin:0}
+#restaurantRows .pont-commerce-note{font-size:11px;color:#b7d5cc}
+#restaurants #pontRestaurantAccessDialog,#restaurants #pontCityChargeDialog{max-width:min(430px,calc(100vw - 28px));width:100%;background:linear-gradient(135deg,#113b40,#081e2a);color:#f5fbef;border:1px solid #8fc1af;border-radius:17px;padding:20px;box-shadow:0 12px 60px #000a}
+#restaurants #pontRestaurantAccessDialog::backdrop,#restaurants #pontCityChargeDialog::backdrop{background:#020c13b9;backdrop-filter:blur(5px)}
+#restaurants #pontRestaurantAccessDialog .auction-choice-options{display:grid;gap:10px;margin:14px 0}
+#restaurants #pontCityChargeDialog label{display:grid;gap:8px;font-size:12px;margin:12px 0}
+#restaurants #pontCityChargeDialog select{width:100%;background:#0b303a;color:white;border:1px solid #789e91;border-radius:9px;padding:10px;font-size:15px}
+#auctions #auctionRows[hidden]{display:none!important}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-auction-period-save-c15">
@@ -1132,10 +1154,10 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
 </section>
 
 <section id="adminRestaurants" class="pont-unified-admin" hidden aria-labelledby="pontUnifiedAdminTitle">
-  <div class="pont-unified-admin-header"><div><h2 id="pontUnifiedAdminTitle">Administrare restaurante</h2><p>Restaurante, autorizări și licitații, într-un singur loc.</p></div></div>
+  <div class="pont-unified-admin-header"><div><h2 id="pontUnifiedAdminTitle">Administrare restaurante</h2><p>Restaurante, conturi, plăți și informații comerciale într-o singură listă.</p></div></div>
   <div class="pont-unified-subnav" role="tablist" aria-label="Administrare restaurante">
     <button type="button" role="tab" id="pontManageRestaurants" data-manage-tab="restaurants" aria-controls="restaurants" aria-selected="true">Restaurante și conturi</button>
-    <button type="button" role="tab" id="pontManagePayments" data-manage-tab="commercialPayments" aria-controls="commercialPayments" aria-selected="false">Plăți și autorizări</button>
+    
     <button type="button" role="tab" id="pontManageAuctions" data-manage-tab="auctions" aria-controls="auctions" aria-selected="false">Licitații și poziții</button>
   </div>
   <div id="pontManagePanels"></div>
@@ -1190,7 +1212,25 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
         <p class="dashboard-message" id="restaurantPasswordStatus" role="status"></p>
       </section>
     </details>
-  <div id="restaurantRows" class="pont-restaurant-list" aria-label="Lista restaurantelor"></div><section id="pontInlineAccountCreator" class="pont-inline-account-creator" hidden aria-label="Creare cont administrator"><div class="dashboard-heading"><h3>Cont nou pentru restaurant</h3><button type="button" id="pontCloseAccountCreator">Închide</button></div></section>
+  <div class="pont-restaurant-commercial-period"><label for="pontRestaurantCommercialMonth">Luna licitației și autorizărilor<input type="month" id="pontRestaurantCommercialMonth"></label><button type="button" id="pontRestaurantCommercialRefresh">↻ Actualizează</button></div><p id="pontRestaurantCommerceNotice" class="dashboard-message" role="status"></p>
+  <div id="restaurantRows" class="pont-restaurant-list" aria-label="Lista restaurantelor"></div>
+  <dialog id="pontRestaurantAccessDialog" class="auction-choice-dialog" aria-labelledby="pontRestaurantAccessTitle">
+   <div class="auction-choice-header"><h3 id="pontRestaurantAccessTitle">Confirmare acces</h3><button type="button" id="pontRestaurantAccessClose" aria-label="Închide">×</button></div>
+   <p id="pontRestaurantAccessName"></p>
+   <div class="auction-choice-options">
+    <label><input type="radio" name="pontRestaurantAccessChoice" value="authorization"><span><strong>Doar acces</strong><small>Autorizează fără înregistrarea unei încasări.</small></span></label>
+    <label><input type="radio" name="pontRestaurantAccessChoice" value="paid"><span><strong>Plătit</strong><small>Confirmă manual plata pentru luna selectată.</small></span></label>
+   </div>
+   <p id="pontRestaurantAccessAlert" class="auction-choice-alert" role="status"></p>
+   <div class="auction-choice-buttons"><button type="button" id="pontRestaurantAccessRemove" class="auction-choice-remove">Retrage confirmarea</button><button type="button" id="pontRestaurantAccessCancel">Anulează</button><button type="button" class="primary" id="pontRestaurantAccessApply">Aplică</button></div>
+  </dialog>
+  <dialog id="pontCityChargeDialog" class="auction-choice-dialog" aria-labelledby="pontCityChargeTitle">
+   <div class="auction-choice-header"><h3 id="pontCityChargeTitle">Serviciu Ieșire în oraș</h3><button type="button" id="pontCityChargeClose" aria-label="Închide">×</button></div>
+   <p id="pontCityChargeName"></p><label>Serviciu<select id="pontCityChargeType"><option value="subscription">Abonament · 50 lei / 30 zile</option><option value="pinned_event">Eveniment promovat · 50 lei</option><option value="exclusive_banner">Bandă publicitară · 100 lei</option></select></label>
+   <label id="pontCityChargeEventWrap" hidden>Eveniment aprobat<select id="pontCityChargeEvent"></select></label>
+   <p id="pontCityChargeAlert" class="auction-choice-alert" role="status"></p>
+   <div class="auction-choice-buttons"><button type="button" id="pontCityChargeCancel">Anulează</button><button type="button" id="pontCityChargeCreate" class="primary">Înregistrează</button></div>
+  </dialog><section id="pontInlineAccountCreator" class="pont-inline-account-creator" hidden aria-label="Creare cont administrator"><div class="dashboard-heading"><h3>Cont nou pentru restaurant</h3><button type="button" id="pontCloseAccountCreator">Închide</button></div></section>
 </section>
 
 <section id="members" class="card dashboard-panel" aria-labelledby="membersTitle" hidden>
@@ -1266,13 +1306,13 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
     <button type="button" class="primary" id="saveAuctionPayments" aria-label="Salvează modificările" disabled>Salvează</button>
   </div>
   <span id="auctionCount" hidden></span><span id="auctionSaveHint" role="status" hidden></span>
-  <p id="auctionFeedback" class="dashboard-message" role="status"></p><p class="pont-auction-payment-info">Statusurile sunt informative. Confirmările, retragerile și autorizările se gestionează exclusiv în subsecțiunea <button type="button" class="pont-inline-payments-link" id="pontOpenPaymentsFromAuction">Plăți și autorizări</button>.</p>
+  <p id="auctionFeedback" class="dashboard-message" role="status"></p><p class="pont-auction-payment-info">Datele despre fiecare restaurant, sumele licitate și confirmările se află la <button type="button" class="pont-inline-payments-link" id="pontOpenPaymentsFromAuction">Restaurante și conturi</button>.</p>
   <div class="auction-summary dashboard-stats">
     <div class="stat">Total licitat<strong id="auctionTotal">—</strong></div>
     <div class="stat">Încasat din oferte<strong id="auctionPaid">—</strong></div>
     <div class="stat">De încasat<strong id="auctionPending">—</strong></div>
   </div>
-  <div id="auctionRows"></div>
+  <div id="auctionRows" hidden aria-hidden="true"></div>
   <dialog id="auctionRankingDialog" class="pont-auction-ranking-dialog" aria-labelledby="auctionRankingTitle">
     <div class="pont-auction-ranking-head">
       <div><span class="pont-auction-ranking-kicker">CLASAMENT</span><h3 id="auctionRankingTitle">Rezumat licitații</h3><label class="pont-auction-ranking-month-label" for="auctionRankingMonth">Luna licitației<input type="month" id="auctionRankingMonth"></label></div>
@@ -2575,14 +2615,14 @@ function pontSelectManageTab(id='restaurants', remember=true){
   b.tabIndex=b.dataset.manageTab===target?0:-1;
  });
  if(remember)history.replaceState(null,'',location.pathname+location.search+'#adminRestaurants-'+target);
- if(target==='restaurants')renderRestaurants();
+ if(target==='restaurants'){renderRestaurants();void loadRestaurantCommercialData();}
  if(target==='commercialPayments')void loadCommercialPayments();
  if(target==='auctions'){void loadAuctions();void loadAuctionControl();void loadAuctionBidHistory(selectedAuctionMonth());}
 }
 document.querySelectorAll('[data-manage-tab]').forEach(button=>{
  button.addEventListener('click',()=>pontSelectManageTab(button.dataset.manageTab));
 });
-$('pontOpenPaymentsFromAuction').onclick=()=>pontSelectManageTab('commercialPayments');
+$('pontOpenPaymentsFromAuction').onclick=()=>pontSelectManageTab('restaurants');
 
 const platformTabs = [...document.querySelectorAll('#pontMenuSuperNav button[data-tab], .pont-hero-dashboard[data-tab]')];
 const cityTabs=[...document.querySelectorAll('#pontCitySuperNav button[data-city-tab]')];
