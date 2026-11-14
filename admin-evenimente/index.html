@@ -146,7 +146,7 @@ body.pont-admin--city #eventForm[hidden]{display:none!important}
 body.pont-admin--city .pont-city-rejected-note,body.pont-admin--city .pont-city-notification{border:1px solid #d7b78891;background:#452e2c88;border-radius:12px;padding:12px;margin:8px 0;color:#ffe2cf;font:600 12px/1.5 system-ui}
 body.pont-admin--city .pont-city-notification p{margin:5px 0;color:#ffded3}
 body.pont-admin--city .pont-city-notification small{color:#e9d4cc}
-body.pont-admin--city .pont-city-notifications[hidden],body.pont-admin--city .pont-city-payment-gate[hidden]{display:none!important}
+body.pont-admin--city #cityPromotionPayments[hidden],body.pont-admin--city .pont-city-notifications[hidden],body.pont-admin--city .pont-city-payment-gate[hidden]{display:none!important}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -172,10 +172,11 @@ body.pont-admin--city .pont-city-notifications[hidden],body.pont-admin--city .po
 <section id="citySubscriptionRequest" class="panel pont-city-payment-gate" hidden>
  <h2>Abonament necesar · 50 lei</h2>
  <p>Pentru a adăuga evenimente, restaurantul trebuie să aibă un abonament activ de 50 lei / 30 zile, confirmat de PONT.</p>
- <button type="button" id="requestCitySubscription" class="primary">Solicită abonament · 50 lei</button>
+ <button type="button" id="requestCitySubscription" class="primary">Plătește abonamentul · 50 lei</button>
  <p id="citySubscriptionRequestStatus" class="status" role="status"></p>
- <small>Solicitarea ajunge în panoul AS. Plata online va fi disponibilă după configurarea metodei de plată. Publicarea rămâne blocată până la confirmarea plății.</small>
+ <small>Plata se efectuează în pagina securizată Stripe. AS va fi notificat automat când Stripe confirmă tranzacția, iar accesul este activat numai după validarea manuală.</small>
 </section>
+<section id="cityPromotionPayments" class="panel" hidden><h2>Plăți promovări</h2><div id="cityPromotionPaymentList"></div></section>
 <section id="cityNotifications" class="panel pont-city-notifications" hidden aria-label="Notificări de la administrator">
  <h2>Notificări <span id="cityNotificationCount"></span></h2>
  <div id="cityNotificationList"></div>
@@ -279,36 +280,63 @@ function renderCityNotifications(){
   item.append(title,reason,date);list.append(item);
  }
 }
+async function cityStartStripeCheckout(serviceType,paymentId=null){
+ const {data:{session}}=await db.auth.getSession();
+ if(!session?.access_token)throw Error('Sesiunea a expirat. Autentifică-te din nou.');
+ const response=await fetch(cfg.url+'/functions/v1/pont-stripe-auctions?action=create-city',{
+  method:'POST',headers:{'content-type':'application/json',apikey:cfg.anonKey,authorization:'Bearer '+session.access_token},
+  body:JSON.stringify({serviceType,paymentId})
+ });
+ const data=await response.json().catch(()=>({}));
+ if(!response.ok)throw Error(data.error||'Checkout Stripe indisponibil.');
+ if(!data.checkoutUrl||!/^https:\/\/checkout\.stripe\.com\//.test(data.checkoutUrl))throw Error('Link de plată Stripe invalid.');
+ window.location.assign(data.checkoutUrl);
+}
 async function loadCitySubscription(){
  if(!db||!restaurant)return;
  const {data:active,error:activeError}=await db.rpc('pont_has_active_city_subscription',{p_restaurant_id:restaurant.id});
  if(activeError)throw activeError;
  citySubscriptionActive=Boolean(active);
- const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests').select('id,status,confirmed_at,expires_at')
- .eq('restaurant_id',restaurant.id).eq('service_type','subscription').order('created_at',{ascending:false}).limit(24);
+ const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests')
+  .select('id,status,service_type,amount,event_id,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount')
+  .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(80);
  if(paymentError)throw paymentError;
- const rows=payments||[];
- const valid=rows.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date());
- citySubscriptionRequested=rows.some(p=>p.status==='pending');
+ const rows=payments||[],subs=rows.filter(p=>p.service_type==='subscription');
+ const valid=subs.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date());
+ const stripeReceived=subs.find(p=>p.status==='pending'&&p.stripe_paid_at);
+ citySubscriptionRequested=subs.some(p=>p.status==='pending');
  $('citySubscription').hidden=false;
- $('citySubscriptionState').textContent=citySubscriptionActive?'Activ':citySubscriptionRequested?'În așteptarea confirmării':'Inactiv';
- $('citySubscriptionUntil').textContent=valid?'Valabil până la '+cityDate(valid.expires_at):citySubscriptionRequested?'Cererea de abonament a fost trimisă către AS':'Este necesară plata abonamentului';
+ $('citySubscriptionState').textContent=citySubscriptionActive?'Activ':stripeReceived?'Plătit · așteaptă AS':'Neactivat';
+ $('citySubscriptionUntil').textContent=valid?'Valabil până la '+cityDate(valid.expires_at):stripeReceived?'Stripe a confirmat '+Number(stripeReceived.stripe_paid_amount).toFixed(2)+' lei. Se așteaptă aprobarea AS.':'Plătește abonamentul pentru acces';
  $('citySubscriptionRequest').hidden=citySubscriptionActive||cityPage!=='adauga';
- $('requestCitySubscription').disabled=citySubscriptionRequested;
- $('requestCitySubscription').textContent=citySubscriptionRequested?'Solicitare trimisă · în analiză':'Solicită abonament · 50 lei';
- $('citySubscriptionRequestStatus').textContent=citySubscriptionRequested?'Așteptăm confirmarea plății de către AS.':'Plata nu a fost confirmată.';
+ $('requestCitySubscription').disabled=Boolean(stripeReceived);
+ $('requestCitySubscription').textContent=stripeReceived?'Plată încasată · așteaptă AS':'Plătește abonamentul · 50 lei';
+ $('citySubscriptionRequestStatus').textContent=stripeReceived?'Stripe a confirmat plata. Activarea se face manual de AS.':'Achită online 50 lei prin Stripe pentru 30 de zile.';
  $('submitEvent').disabled=!citySubscriptionActive;
  $('eventForm').hidden=!citySubscriptionActive;
- $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'Publicarea evenimentelor este blocată până la confirmarea abonamentului.';
+ $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'Publicarea este blocată până la plata și confirmarea abonamentului.';
+ const promotion=rows.filter(p=>p.service_type!=='subscription'&&p.status==='pending');
+ const paymentPanel=$('cityPromotionPayments'),list=$('cityPromotionPaymentList');list.replaceChildren();
+ paymentPanel.hidden=cityPage==='adauga'||!promotion.length;
+ for(const item of promotion){
+  const card=document.createElement('article');card.className='event';
+  const title=document.createElement('strong');
+  title.textContent=(item.service_type==='pinned_event'?'Poziție fixă':'Bandă publicitară')+' · '+Number(item.amount).toFixed(2)+' lei';
+  const status=document.createElement('small');
+  status.textContent=item.stripe_paid_at?'Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei încasați · Așteaptă validarea AS':'Stripe: 0 lei încasați';
+  card.append(title,status);
+  if(!item.stripe_paid_at){
+   const btn=arButton('Plătește în Stripe',async()=>{
+    btn.disabled=true;
+    try{await cityStartStripeCheckout(item.service_type,item.id)}catch(error){status.textContent='Eroare: '+error.message;btn.disabled=false}
+   });card.append(btn);
+  }
+  list.append(card);
+ }
 }
 $('requestCitySubscription').onclick=async()=>{
- if(!db||!restaurant||citySubscriptionRequested)return;
  const btn=$('requestCitySubscription');btn.disabled=true;
- try{
-  const {error}=await db.from('pont_city_payment_requests').insert({restaurant_id:restaurant.id,service_type:'subscription',event_id:null,amount:50,status:'pending',created_by:user.id});
-  if(error)throw error;
-  await loadCitySubscription();
- }catch(err){$('citySubscriptionRequestStatus').textContent='Solicitarea nu a fost trimisă: '+err.message;btn.disabled=false}
+ try{await cityStartStripeCheckout('subscription')}catch(err){$('citySubscriptionRequestStatus').textContent='Plata nu a fost inițiată: '+err.message;btn.disabled=false}
 };
 function cityInfo(message){const el=$('formStatus');el.textContent=message;el.scrollIntoView({block:'nearest',behavior:'smooth'})}
 async function requestEventAction(event,type,reason,proposed={}){
