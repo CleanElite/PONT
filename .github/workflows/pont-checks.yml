@@ -4,13 +4,13 @@ on:
     branches: [main]
     paths:
       - 'backend/**'
-      - 'pranz-slobozia/**'
+      - 'test/**'
       - 'pont-navigation-history.js'
       - '.github/workflows/pont-checks.yml'
   pull_request:
     paths:
       - 'backend/**'
-      - 'pranz-slobozia/**'
+      - 'test/**'
 permissions:
   contents: read
 jobs:
@@ -26,7 +26,7 @@ jobs:
           node --input-type=module <<'NODE'
           import fs from 'node:fs';
           import vm from 'node:vm';
-          for (const file of ['pranz-slobozia/meniul-zilei/index.html','pranz-slobozia/admin/index.html']) {
+          for (const file of ['test/meniul-zilei/index.html','test/admin/index.html']) {
             const html=fs.readFileSync(file,'utf8');
             const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)];
             if (!scripts.length) throw Error('No scripts found: '+file);
