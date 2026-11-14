@@ -1704,14 +1704,15 @@ function pontVerifiedStripeCityAmount(item){
 }
 function pontRestaurantPaymentOverview(r){
  const month=pontCommerceMonthValue();
- const offer=pontCommerceMonthOffer(r.id,month);
+ const offer=pontCommerceMonthOffer(r.id,month)||pontMenuPaymentRows.filter(x=>x.restaurant_id===r.id).sort((a,b)=>b.campaign_month.localeCompare(a.campaign_month))[0];
  const menuDue=Number(offer?.amount||0),menuPaid=pontVerifiedStripeMenuAmount(offer);
+ const offerMonth=offer?.campaign_month?' · '+offer.campaign_month.slice(0,7):'';
  const subs=pontCityPaymentRows.filter(p=>p.restaurant_id===r.id&&p.service_type==='subscription');
  const subscription=subs.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date())||subs.find(p=>p.status==='pending')||subs[0];
  const cityDue=Number(subscription?.amount||0),cityPaid=pontVerifiedStripeCityAmount(subscription);
  const fmt=v=>Number(v).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
  return '<div class="pont-restaurant-stripe-overview">'+
- '<div><strong>Meniul zilei</strong><span>Licitat '+fmt(menuDue)+' · Stripe '+fmt(menuPaid)+'</span></div>'+
+ '<div><strong>Meniul zilei</strong><span>Licitat '+fmt(menuDue)+offerMonth+' · Stripe '+fmt(menuPaid)+'</span></div>'+
  '<div><strong>Ieșire în oraș</strong><span>Abonament '+fmt(cityDue)+' · Stripe '+fmt(cityPaid)+'</span></div>'+
  '</div>';
 }
