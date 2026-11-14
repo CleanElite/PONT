@@ -1696,13 +1696,32 @@ function pontCommerceRank(rid,month){
  const index=offers.findIndex(x=>x.restaurant_id===rid);
  return index<0?null:index+1;
 }
+function pontVerifiedStripeMenuAmount(offer){
+ return offer?.payment_method==='stripe'&&String(offer.payment_reference||'').startsWith('pi_')?Number(offer.amount||0):0;
+}
+function pontVerifiedStripeCityAmount(item){
+ return item?.stripe_payment_intent_id&&item?.stripe_paid_at?Number(item.stripe_paid_amount||0):0;
+}
+function pontRestaurantPaymentOverview(r){
+ const month=pontCommerceMonthValue();
+ const offer=pontCommerceMonthOffer(r.id,month);
+ const menuDue=Number(offer?.amount||0),menuPaid=pontVerifiedStripeMenuAmount(offer);
+ const subs=pontCityPaymentRows.filter(p=>p.restaurant_id===r.id&&p.service_type==='subscription');
+ const subscription=subs.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date())||subs.find(p=>p.status==='pending')||subs[0];
+ const cityDue=Number(subscription?.amount||0),cityPaid=pontVerifiedStripeCityAmount(subscription);
+ const fmt=v=>Number(v).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
+ return '<div class="pont-restaurant-stripe-overview">'+
+ '<div><strong>Meniul zilei</strong><span>Licitat '+fmt(menuDue)+' · Stripe '+fmt(menuPaid)+'</span></div>'+
+ '<div><strong>Ieșire în oraș</strong><span>Abonament '+fmt(cityDue)+' · Stripe '+fmt(cityPaid)+'</span></div>'+
+ '</div>';
+}
 function pontCommerceDetailsHtml(r){
  const month=pontCommerceMonthValue(),offer=pontCommerceMonthOffer(r.id,month),mode=pontCommerceCurrentMode(r.id,month);
  const rank=pontCommerceRank(r.id,month),labels={paid:'Plătit',authorization:'Acces',none:'Neconfirmat'};
  const menuEnabled=r.access_meniul_zilei;
  let output='<div class="pont-commerce-line pont-commerce-menu"><header><strong>Meniul zilei</strong><span class="dashboard-badge" data-payment-state="'+mode+'">'+esc(labels[mode])+'</span></header>'+
  '<div class="pont-commerce-facts">'+
- (offer?'<span>'+esc(auctionMoney(offer.amount))+' licitați</span>':'')+
+ (offer?'<span>'+esc(auctionMoney(offer.amount))+' licitați</span><span>Stripe: '+esc(auctionMoney(pontVerifiedStripeMenuAmount(offer)))+' încasați</span>':'')+
  (rank?'<span>Locul '+rank+'</span>':'')+
  (offer?'<span>Runda '+esc(offer.round)+'</span>':'')+
  (!offer?'<span>Fără ofertă</span>':'')+
@@ -1717,9 +1736,10 @@ function pontCommerceDetailsHtml(r){
   for(const item of items){
    const names={subscription:'Abonament',pinned_event:'Eveniment fix',exclusive_banner:'Bandă publicitară'};
    const canRevoke=item.status==='confirmed'&&new Date(item.expires_at)>new Date();
-   const statusLabel=item.status==='pending'?'Neconfirmat':item.status==='revoked'?'Anulat':new Date(item.expires_at)<=new Date()?'Expirat':'Plătit';
-   output+='<div class="pont-commerce-payment-item"><span>'+esc(names[item.service_type]||item.service_type)+' · '+esc(auctionMoney(item.amount))+' · '+statusLabel+'</span>'+
-   '<button type="button" data-commerce-city-payment="'+esc(item.id)+'" data-commerce-city-action="'+(canRevoke?'revoke':'confirm')+'" '+(item.status==='confirmed'&&!canRevoke?'disabled':'')+'>'+(canRevoke?'Anulează':item.status==='revoked'?'Reconfirmă':'Confirmă plata')+'</button></div>';
+   const stripeAmount=pontVerifiedStripeCityAmount(item);
+   const statusLabel=item.status==='pending'?(stripeAmount?'Plătit prin Stripe · așteaptă AS':'Neplătit în Stripe'):item.status==='revoked'?'Acces retras':new Date(item.expires_at)<=new Date()?'Expirat':stripeAmount?'Acces validat':'Activat manual, fără încasare Stripe';
+   output+='<div class="pont-commerce-payment-item"><span>'+esc(names[item.service_type]||item.service_type)+' · solicitat '+esc(auctionMoney(item.amount))+' · Stripe '+esc(auctionMoney(stripeAmount))+' · '+esc(statusLabel)+(item.stripe_paid_at?' · încasat '+esc(pontPaymentDate(item.stripe_paid_at)):'')+'</span>'+
+   '<button type="button" data-commerce-city-payment="'+esc(item.id)+'" data-commerce-city-action="'+(canRevoke?'revoke':'confirm')+'" '+((item.status==='confirmed'&&!canRevoke)||(!canRevoke&&!stripeAmount)?'disabled':'')+'>'+(canRevoke?'Anulează':!stripeAmount?'Așteaptă Stripe':'Validează accesul')+'</button></div>';
   }
   output+='</div>';
  }else output+='<p class="pont-commerce-note">Nicio plată înregistrată</p>';
@@ -1877,7 +1897,7 @@ function renderRestaurants(){
   return '<article data-restaurant-card="'+id+'" class="restaurant-admin-item restaurant-status-'+state+'">'+
   '<div class="restaurant-admin-heading"><span class="restaurant-list-number">'+String(index+1).padStart(2,'0')+'</span>'+
   '<strong class="restaurant-list-name"><span class="pont-live-dot '+(restaurantOnlineIds.has(String(r.id))?'is-online':'is-offline')+'" aria-hidden="true"></span>'+esc(r.name)+'</strong>'+
-  '<div class="restaurant-list-meta"><span>Cod '+esc(r.short_code||'—')+'</span><span>'+esc(r.phone||'Telefon neconfigurat')+'</span></div>'+
+  '<div class="restaurant-list-meta"><span>Cod '+esc(r.short_code||'—')+'</span><span>'+esc(r.phone||'Telefon neconfigurat')+'</span></div>'+pontRestaurantPaymentOverview(r)
   '<div class="dashboard-badges"><span class="dashboard-badge" data-state="'+(r.enabled?'enabled':'disabled')+'">'+(r.enabled?'Activ':'Suspendat')+'</span>'+
   '<span class="dashboard-badge">Meniu '+(r.access_meniul_zilei?'ON':'OFF')+'</span>'+
   '<span class="dashboard-badge">Evenimente '+(r.access_iesire_in_oras?'ON':'OFF')+'</span>'+
@@ -2726,22 +2746,22 @@ function pontPayElement(tag,text,cls){
 function pontPaymentRestaurantName(id){return restaurants.find(r=>r.id===id)?.name||'Restaurant necunoscut'}
 function pontPaymentStatusText(item,module){
  if(module==='menu'){
-  if(item.payment_status==='paid')return 'Confirmată';
+  if(item.payment_status==='paid')return item.payment_method==='stripe'?'Stripe: încasată':'Confirmare manuală (fără Stripe)';
   if(pontManualApprovals.some(x=>x.restaurant_id===item.restaurant_id&&x.campaign_month===item.campaign_month&&x.approval_type==='authorization'))return 'Doar autorizat (fără plată)';
   return 'Neconfirmată';
  }
- if(item.status==='pending')return 'În așteptare';
+ if(item.status==='pending')return pontVerifiedStripeCityAmount(item)?'Stripe a încasat · așteaptă AS':'Stripe neplătit';
  if(item.status==='revoked')return 'Confirmare anulată';
  if(item.expires_at&&new Date(item.expires_at)<=new Date())return 'Expirată';
- return 'Confirmată';
+ return pontVerifiedStripeCityAmount(item)?'Stripe încasat · acces validat':'Acces activat manual, fără Stripe';
 }
 async function loadCommercialPayments(){
  if(pontPaymentBusy)return;
  const st=$('pontPaymentsStatus');st.textContent='Se verifică plățile și istoricul…';
  try{
   const [city,menu,audit,approved,manual]=await Promise.all([
-   db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,event_id,amount,status,created_at,confirmed_at,confirmed_by,expires_at,revoked_at,revoked_by,revoke_reason').order('created_at',{ascending:false}).limit(500),
-   db.from('auction_offers').select('id,restaurant_id,campaign_month,amount,payment_status,paid_at,round').order('campaign_month',{ascending:false}).limit(500),
+   db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,event_id,amount,status,created_at,confirmed_at,confirmed_by,expires_at,revoked_at,revoked_by,revoke_reason,stripe_paid_at,stripe_paid_amount,stripe_currency,stripe_payment_intent_id,requested_start_date').order('created_at',{ascending:false}).limit(500),
+   db.from('auction_offers').select('id,restaurant_id,campaign_month,amount,payment_status,payment_method,payment_reference,paid_at,round').order('campaign_month',{ascending:false}).limit(500),
    db.from('pont_payment_audit').select('id,restaurant_id,module,service_type,reference_id,action,previous_state,new_state,amount,reason,actor_id,occurred_at').order('occurred_at',{ascending:false}).limit(300),
    db.from('pont_city_events').select('id,restaurant_id,title,event_date,status').eq('status','approved').order('event_date',{ascending:true}).limit(500),
    db.from('pont_manual_payment_approvals').select('restaurant_id,campaign_month,approval_type').limit(500)
@@ -2785,6 +2805,8 @@ function renderCommercialPayments(){
   const price=pontPayElement('span',module==='authorization'?'Fără sumă înregistrată':Number(item.amount).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei','pont-payment-price');head.append(title,price);card.append(head);
   const service=module==='authorization'?'Meniul zilei · Autorizare manuală '+item.campaign_month.slice(0,7):module==='menu'?'Meniul zilei · Licitație '+item.campaign_month.slice(0,7):'Ieșire în oraș · '+pontPaymentServiceNames[item.service_type];
   card.append(pontPayElement('p',service));
+  if(module==='city')card.append(pontPayElement('p','Stripe încasat: '+pontVerifiedStripeCityAmount(item).toFixed(2)+' lei'+(item.stripe_paid_at?' · '+pontPaymentDate(item.stripe_paid_at):'')));
+  else if(module==='menu')card.append(pontPayElement('p','Stripe încasat: '+pontVerifiedStripeMenuAmount(item).toFixed(2)+' lei'+(item.payment_method==='stripe'&&item.paid_at?' · '+pontPaymentDate(item.paid_at):'')));
   card.append(pontPayElement('p','Status: '+(module==='authorization'?(item.approval_type==='authorization'?'Doar autorizat (fără plată)':'Confirmare manuală (fără ofertă)'):pontPaymentStatusText(item,module)),'pont-payment-status'));
   if(module==='city'){
    if(item.service_type==='pinned_event'){
@@ -2802,12 +2824,14 @@ function renderCommercialPayments(){
    action='manage';label='Gestionează autorizarea';klass='primary';
   }else if(module==='city'){
    if(item.status==='confirmed'){action='revoke';label='Anulează confirmarea';klass='pont-payment-revoke'}
-   else{action='confirm';label=item.status==='revoked'?'Reconﬁrmă plata':'Confirmă plata';klass='primary'}
+   else{action='confirm';label=pontVerifiedStripeCityAmount(item)?'Validează accesul':'Așteaptă plata Stripe';klass='primary'}
   }else{
    if(item.payment_status==='paid'){action='revoke';label='Anulează confirmarea';klass='pont-payment-revoke'}
-   else{action='confirm';label='Confirmă plata';klass='primary'}
+   else{action='confirm';label='Încasarea este verificată de Stripe';klass='primary'}
   }
   const btn=pontPayElement('button',label,klass);btn.type='button';
+  if(module==='city'&&action==='confirm'&&!pontVerifiedStripeCityAmount(item))btn.disabled=true;
+  if(module==='menu'&&action==='confirm')btn.disabled=true;
   btn.addEventListener('click',()=>{if(action==='manage')void manageManualAuthorization(item,btn);else void operateCommercialPayment(module,item,action,btn)});actions.append(btn);
   if(module==='menu'){
    const jump=pontPayElement('button','Vezi licitația');
@@ -4170,4 +4194,10 @@ body.pont-admin--platform.pont-as-city-edit-open{overflow:hidden!important;overs
 body.pont-admin--platform #pontCityAsEditDialog.pont-city-as-edit-dialog{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;margin:0!important;padding:clamp(18px,4vw,38px)!important;border:0!important;border-radius:0!important;overflow-y:auto!important;overscroll-behavior:contain!important;touch-action:pan-y!important;background:linear-gradient(145deg,#11383a,#051d27 85%)!important}
 body.pont-admin--platform #pontCityAsEditDialog form{max-width:850px;margin:0 auto}
 body.pont-admin--platform #pontCityAsEditDialog>h2,body.pont-admin--platform #pontCityAsEditDialog>p{max-width:850px;margin-left:auto;margin-right:auto}
+</style><style id="pont-as-stripe-finance-overview-20261115">
+#restaurants .pont-restaurant-stripe-overview{display:grid;gap:4px;width:min(100%,620px);margin:9px auto 2px;padding:10px 12px;border:1px solid #7fb9a255;border-radius:11px;background:linear-gradient(115deg,#092b32,#123a3b)}
+#restaurants .pont-restaurant-stripe-overview>div{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:5px;padding:4px 0}
+#restaurants .pont-restaurant-stripe-overview>div+div{border-top:1px solid #9cbdac33}
+#restaurants .pont-restaurant-stripe-overview strong{font:750 11px/1.4 system-ui;color:#dfd4b2}
+#restaurants .pont-restaurant-stripe-overview span{font:650 11px/1.4 system-ui;color:#e6fcf4;font-variant-numeric:tabular-nums}
 </style></body></html>
