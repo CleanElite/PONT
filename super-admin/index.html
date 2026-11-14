@@ -2321,6 +2321,164 @@ setInterval(() => {
  }
 }, 15000);
 
+
+let pontPaymentFilter='all',pontPaymentBusy=false,pontCityPaymentRows=[],pontMenuPaymentRows=[],pontPaymentHistory=[],pontCityApprovedEvents=[],pontManualApprovals=[];
+const pontPaymentServiceNames={subscription:'Abonament evenimente',pinned_event:'Eveniment fix',exclusive_banner:'Bandă exclusivă',auction:'Licitație poziție'};
+const pontPaymentDate=v=>v?new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(v)):'—';
+function pontPayElement(tag,text,cls){
+ const el=document.createElement(tag);if(text!==undefined)el.textContent=String(text);if(cls)el.className=cls;return el;
+}
+function pontPaymentRestaurantName(id){return restaurants.find(r=>r.id===id)?.name||'Restaurant necunoscut'}
+function pontPaymentStatusText(item,module){
+ if(module==='menu'){
+  if(item.payment_status==='paid')return 'Confirmată';
+  if(pontManualApprovals.some(x=>x.restaurant_id===item.restaurant_id&&x.campaign_month===item.campaign_month&&x.approval_type==='authorization'))return 'Doar autorizat (fără plată)';
+  return 'Neconfirmată';
+ }
+ if(item.status==='pending')return 'În așteptare';
+ if(item.status==='revoked')return 'Confirmare anulată';
+ if(item.expires_at&&new Date(item.expires_at)<=new Date())return 'Expirată';
+ return 'Confirmată';
+}
+async function loadCommercialPayments(){
+ if(pontPaymentBusy)return;
+ const st=$('pontPaymentsStatus');st.textContent='Se verifică plățile și istoricul…';
+ try{
+  const [city,menu,audit,approved,manual]=await Promise.all([
+   db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,event_id,amount,status,created_at,confirmed_at,confirmed_by,expires_at,revoked_at,revoked_by,revoke_reason').order('created_at',{ascending:false}).limit(500),
+   db.from('auction_offers').select('id,restaurant_id,campaign_month,amount,payment_status,paid_at,round').order('campaign_month',{ascending:false}).limit(500),
+   db.from('pont_payment_audit').select('id,restaurant_id,module,service_type,reference_id,action,previous_state,new_state,amount,reason,actor_id,occurred_at').order('occurred_at',{ascending:false}).limit(300),
+   db.from('pont_city_events').select('id,restaurant_id,title,event_date,status').eq('status','approved').order('event_date',{ascending:true}).limit(500),
+   db.from('pont_manual_payment_approvals').select('restaurant_id,campaign_month,approval_type').limit(500)
+  ]);
+  for(const x of [city,menu,audit,approved,manual])if(x.error)throw x.error;
+  pontCityPaymentRows=city.data||[];pontMenuPaymentRows=menu.data||[];pontPaymentHistory=audit.data||[];pontCityApprovedEvents=approved.data||[];pontManualApprovals=manual.data||[];
+  renderCommercialPayments();
+  st.textContent='Actualizat la '+new Intl.DateTimeFormat('ro-RO',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Bucharest'}).format(new Date())+'.';
+ }catch(e){st.textContent='Eroare la încărcarea plăților: '+e.message;}
+}
+function renderCommercialPayments(){
+ const target=$('pontPaymentsRows');target.replaceChildren();
+ const city= pontPaymentFilter==='menu'?[]:pontCityPaymentRows;
+ const menu= pontPaymentFilter==='city'?[]:pontMenuPaymentRows;
+ const combined=[...city.map(item=>({module:'city',item,date:item.created_at})),...menu.map(item=>({module:'menu',item,date:item.campaign_month+'T12:00:00Z'}))].sort((a,b)=>new Date(b.date)-new Date(a.date));
+ const activeCity=city.filter(x=>x.status==='confirmed'&&new Date(x.expires_at)>new Date()).length;
+ $('pontPaymentsPending').textContent=String(city.filter(x=>x.status==='pending').length+menu.filter(x=>x.payment_status!=='paid'&&!pontManualApprovals.some(m=>m.restaurant_id===x.restaurant_id&&m.campaign_month===x.campaign_month&&m.approval_type==='authorization')).length);
+ $('pontPaymentsConfirmed').textContent=String(activeCity+menu.filter(x=>x.payment_status==='paid').length);
+ $('pontPaymentsRevoked').textContent=String(city.filter(x=>x.status==='revoked').length);
+ $('pontPaymentsCount').textContent=combined.length+' înregistrări';
+ const create=$('pontCityPaymentCreate');create.hidden=pontPaymentFilter==='menu';
+ const restaurantSelect=$('pontPaymentRestaurant'),currentRestaurant=restaurantSelect.value;
+ restaurantSelect.replaceChildren(pontPayElement('option','Selectează restaurantul'));
+ restaurantSelect.firstChild.value='';
+ for(const r of restaurants.filter(r=>r.access_iesire_in_oras)){
+  const option=pontPayElement('option',r.name);option.value=r.id;restaurantSelect.append(option);
+ }
+ if([...restaurantSelect.options].some(x=>x.value===currentRestaurant))restaurantSelect.value=currentRestaurant;
+ refreshCityPaymentEventOptions();
+ if(!combined.length)target.append(pontPayElement('p','Nu există operațiuni pentru filtrul ales.'));
+ for(const {module,item} of combined){
+  const card=pontPayElement('article',undefined,'pont-payment-row');
+  const head=pontPayElement('header'),title=pontPayElement('strong',pontPaymentRestaurantName(item.restaurant_id));
+  const price=pontPayElement('span',Number(item.amount).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei','pont-payment-price');head.append(title,price);card.append(head);
+  const service=module==='menu'?'Meniul zilei · Licitație '+item.campaign_month.slice(0,7):'Ieșire în oraș · '+pontPaymentServiceNames[item.service_type];
+  card.append(pontPayElement('p',service));
+  card.append(pontPayElement('p','Status: '+pontPaymentStatusText(item,module),'pont-payment-status'));
+  if(module==='city'){
+   if(item.service_type==='pinned_event'){
+    const event=pontCityApprovedEvents.find(x=>x.id===item.event_id);
+    card.append(pontPayElement('p','Eveniment: '+(event?.title||'ID '+item.event_id)));
+   }
+   if(item.confirmed_at)card.append(pontPayElement('p','Confirmat: '+pontPaymentDate(item.confirmed_at)+(item.expires_at?' · expiră: '+pontPaymentDate(item.expires_at):'')));
+   if(item.revoked_at)card.append(pontPayElement('p','Retras: '+pontPaymentDate(item.revoked_at)+(item.revoke_reason?' · Motiv: '+item.revoke_reason:'')));
+  }else if(item.paid_at){
+   card.append(pontPayElement('p','Confirmat: '+pontPaymentDate(item.paid_at)));
+  }
+  const actions=pontPayElement('div',undefined,'pont-payment-actions');
+  let action=null,label='',klass='';
+  if(module==='city'){
+   if(item.status==='confirmed'){action='revoke';label='Anulează confirmarea';klass='pont-payment-revoke'}
+   else{action='confirm';label=item.status==='revoked'?'Reconﬁrmă plata':'Confirmă plata';klass='primary'}
+  }else{
+   if(item.payment_status==='paid'){action='revoke';label='Anulează confirmarea';klass='pont-payment-revoke'}
+   else{action='confirm';label='Confirmă plata';klass='primary'}
+  }
+  const btn=pontPayElement('button',label,klass);btn.type='button';
+  btn.addEventListener('click',()=>void operateCommercialPayment(module,item,action,btn));actions.append(btn);
+  if(module==='menu'){
+   const jump=pontPayElement('button','Deschide licitațiile');
+   jump.type='button';jump.onclick=()=>{
+    $('auctionMonth').value=item.campaign_month.slice(0,7);
+    selectPlatformPanel('auctions');
+   };actions.append(jump);
+  }
+  card.append(actions);target.append(card);
+ }
+ const audits=$('pontPaymentAudit');audits.replaceChildren();
+ const entries=pontPaymentHistory.filter(x=>pontPaymentFilter==='all'||x.module===pontPaymentFilter);
+ if(!entries.length)audits.append(pontPayElement('p','Nu există modificări înregistrate pentru acest filtru.'));
+ const labels={confirmed:'Confirmare',revoked:'Confirmare retrasă',authorized:'Autorizare fără plată',authorization_removed:'Autorizare retrasă',changed:'Modificare'};
+ for(const row of entries.slice(0,80)){
+  const item=pontPayElement('div',undefined,'pont-payment-audit-row');
+  item.append(pontPayElement('strong',pontPaymentRestaurantName(row.restaurant_id)+' · '+(row.module==='menu'?'Meniul zilei':'Ieșire în oraș')+' · '+(labels[row.action]||row.action)));
+  item.append(pontPayElement('small',pontPaymentDate(row.occurred_at)+' · '+(pontPaymentServiceNames[row.service_type]||row.service_type)+(row.amount?' · '+Number(row.amount).toLocaleString('ro-RO')+' lei':'')+' · Cont: '+(row.actor_id||'nespecificat')));
+  if(row.reason)item.append(pontPayElement('small','Motiv: '+row.reason));
+  audits.append(item);
+ }
+}
+function refreshCityPaymentEventOptions(){
+ const wrap=$('pontPaymentEventWrap'),select=$('pontPaymentEvent');
+ const isPin=$('pontPaymentService').value==='pinned_event';
+ wrap.hidden=!isPin;select.required=isPin;
+ const old=select.value;select.replaceChildren();
+ const first=pontPayElement('option','Selectează evenimentul aprobat');first.value='';select.append(first);
+ const rid=$('pontPaymentRestaurant').value;
+ for(const event of pontCityApprovedEvents.filter(e=>e.restaurant_id===rid)){
+  const option=pontPayElement('option',event.title+' · '+event.event_date);option.value=event.id;select.append(option);
+ }
+ if([...select.options].some(o=>o.value===old))select.value=old;
+}
+async function operateCommercialPayment(module,item,action,btn){
+ if(pontPaymentBusy)return;
+ let reason=null;
+ if(action==='revoke'){
+  if(!confirm('Retragi confirmarea? Serviciul aferent își va pierde autorizarea plătită. Datele restaurantului rămân păstrate.'))return;
+  reason=prompt('Motivul retragerii confirmării (minimum 3 caractere):');
+  if(reason===null)return;
+  if(reason.trim().length<3){$('pontPaymentsStatus').textContent='Introdu un motiv de cel puțin 3 caractere.';return}
+ }else if(!confirm('Confirmi încasarea pentru '+pontPaymentRestaurantName(item.restaurant_id)+'? Serviciu: '+(module==='menu'?'Licitații':pontPaymentServiceNames[item.service_type])+'.'))return;
+ pontPaymentBusy=true;btn.disabled=true;
+ try{
+  const params=module==='city'?{p_action:action,p_id:item.id,p_reason:reason}:{p_offer_id:item.id,p_action:action,p_reason:reason};
+  const {error}=await db.rpc(module==='city'?'pont_manage_city_payment':'pont_manage_auction_payment',params);
+  if(error)throw error;
+  pontPaymentBusy=false;
+  await loadCommercialPayments();
+  if(module==='menu'){void loadAuctions();void refreshRestaurantAuctionPayments();void loadAnalyticsRevenue();}
+  $('pontPaymentsStatus').textContent=action==='revoke'?'Confirmarea a fost retrasă. Operațiunea este în istoric.':'Plata a fost confirmată. Poți reveni asupra deciziei.';
+ }catch(e){pontPaymentBusy=false;btn.disabled=false;$('pontPaymentsStatus').textContent='Operațiunea nu s-a salvat: '+e.message}
+}
+$('pontPaymentsRefresh').onclick=()=>void loadCommercialPayments();
+for(const btn of document.querySelectorAll('[data-payment-filter]')){
+ btn.onclick=()=>{pontPaymentFilter=btn.dataset.paymentFilter;for(const b of document.querySelectorAll('[data-payment-filter]'))b.setAttribute('aria-pressed',String(b===btn));renderCommercialPayments()};
+}
+$('pontPaymentRestaurant').onchange=refreshCityPaymentEventOptions;
+$('pontPaymentService').onchange=refreshCityPaymentEventOptions;
+$('pontPaymentCreateForm').onsubmit=async event=>{
+ event.preventDefault();if(pontPaymentBusy)return;
+ const rid=$('pontPaymentRestaurant').value,kind=$('pontPaymentService').value,ev=$('pontPaymentEvent').value;
+ if(!rid||(kind==='pinned_event'&&!ev)){$('pontPaymentCreateStatus').textContent='Selectează restaurantul și evenimentul, când este cazul.';return}
+ if(!confirm('Înregistrezi solicitarea de plată? Nu se marchează încasată până nu apeși „Confirmă plata”.'))return;
+ pontPaymentBusy=true;$('pontPaymentCreateButton').disabled=true;
+ try{
+  const {error}=await db.rpc('pont_manage_city_payment',{p_action:'create',p_restaurant_id:rid,p_service_type:kind,p_event_id:kind==='pinned_event'?ev:null});
+  if(error)throw error;
+  pontPaymentBusy=false;$('pontPaymentCreateButton').disabled=false;
+  $('pontPaymentCreateForm').reset();await loadCommercialPayments();
+  $('pontPaymentCreateStatus').textContent='Solicitare înregistrată. Plata este în așteptare.';
+ }catch(e){pontPaymentBusy=false;$('pontPaymentCreateButton').disabled=false;$('pontPaymentCreateStatus').textContent='Nu s-a salvat: '+e.message}
+};
+
 const platformTabs = [...document.querySelectorAll('#pontMenuSuperNav button[data-tab], .pont-hero-dashboard[data-tab]')];
 const cityTabs=[...document.querySelectorAll('#pontCitySuperNav button[data-city-tab]')];
 const cityExclusivePanels=['cityDashboard','cityModeration','cityPromotion'];
