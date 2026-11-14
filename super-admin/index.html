@@ -1759,7 +1759,7 @@ function pontCommerceDetailsHtml(r){
    const stripeAmount=pontVerifiedStripeCityAmount(item);
    const statusLabel=item.status==='pending'?(stripeAmount?'Plătit prin Stripe · așteaptă AS':'Neplătit în Stripe'):item.status==='revoked'?'Acces retras':new Date(item.expires_at)<=new Date()?'Expirat':stripeAmount?'Acces validat':'Activat manual, fără încasare Stripe';
    output+='<div class="pont-commerce-payment-item"><span>'+esc(names[item.service_type]||item.service_type)+' · solicitat '+esc(auctionMoney(item.amount))+' · Stripe '+esc(auctionMoney(stripeAmount))+' · '+esc(statusLabel)+(item.stripe_paid_at?' · încasat '+esc(pontPaymentDate(item.stripe_paid_at)):'')+'</span>'+
-   '<button type="button" data-commerce-city-payment="'+esc(item.id)+'" data-commerce-city-action="'+(canRevoke?'revoke':'confirm')+'" '+((item.status==='confirmed'&&!canRevoke)||(!canRevoke&&!stripeAmount)?'disabled':'')+'>'+(canRevoke?'Anulează':!stripeAmount?'Așteaptă Stripe':'Validează accesul')+'</button></div>';
+   '<button type="button" data-commerce-city-payment="'+esc(item.id)+'" data-commerce-city-action="'+(canRevoke?'revoke':'confirm')+'" '+(item.status==='confirmed'&&!canRevoke?'disabled':'')+'>'+(canRevoke?'Anulează':stripeAmount?'Validează accesul':'Confirmă accesul · cash/test')+'</button></div>';
   }
   output+='</div>';
  }else output+='<p class="pont-commerce-note">Nicio plată înregistrată</p>';
@@ -2845,13 +2845,12 @@ function renderCommercialPayments(){
    action='manage';label='Gestionează autorizarea';klass='primary';
   }else if(module==='city'){
    if(item.status==='confirmed'){action='revoke';label='Anulează confirmarea';klass='pont-payment-revoke'}
-   else{action='confirm';label=pontVerifiedStripeCityAmount(item)?'Validează accesul':'Așteaptă plata Stripe';klass='primary'}
+   else{action='confirm';label=pontVerifiedStripeCityAmount(item)?'Validează accesul':'Confirmă accesul · cash/test';klass='primary'}
   }else{
    if(item.payment_status==='paid'){action='revoke';label='Anulează confirmarea';klass='pont-payment-revoke'}
    else{action='confirm';label='Încasarea este verificată de Stripe';klass='primary'}
   }
   const btn=pontPayElement('button',label,klass);btn.type='button';
-  if(module==='city'&&action==='confirm'&&!pontVerifiedStripeCityAmount(item))btn.disabled=true;
   if(module==='menu'&&action==='confirm')btn.disabled=true;
   btn.addEventListener('click',()=>{if(action==='manage')void manageManualAuthorization(item,btn);else void operateCommercialPayment(module,item,action,btn)});actions.append(btn);
   if(module==='menu'){
@@ -2895,7 +2894,7 @@ async function operateCommercialPayment(module,item,action,btn){
   reason=prompt('Motivul retragerii confirmării (opțional):');
   if(reason===null)return;
   reason=reason.trim()||null;
- }else if(!confirm('Confirmi încasarea pentru '+pontPaymentRestaurantName(item.restaurant_id)+'? Serviciu: '+(module==='menu'?'Licitații':pontPaymentServiceNames[item.service_type])+'.'))return;
+ }else if(!confirm('Confirmi activarea manuală pentru '+pontPaymentRestaurantName(item.restaurant_id)+'? Stripe este doar indicator de încasare. Serviciu: '+(module==='menu'?'Licitații':pontPaymentServiceNames[item.service_type])+'.'))return;
  pontPaymentBusy=true;btn.disabled=true;
  try{
   const params=module==='city'?{p_action:action,p_id:item.id,p_reason:reason}:{p_offer_id:item.id,p_action:action,p_reason:reason};
