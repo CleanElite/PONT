@@ -1165,8 +1165,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
     
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
-    
-    
+    <button type="button" data-tab="auctions" aria-pressed="false" aria-controls="auctions"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Licitații și poziții</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <a id="pontPromotionNavLink" href="../promovare/?v=bid-keyboard-fit-20261113d"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
   </div>
 </nav>
@@ -1213,11 +1212,6 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
 
 <section id="adminRestaurants" class="pont-unified-admin" hidden aria-labelledby="pontUnifiedAdminTitle">
   <div class="pont-unified-admin-header"><div><h2 id="pontUnifiedAdminTitle">Administrare restaurante</h2><p>Restaurante, conturi, plăți și informații comerciale într-o singură listă.</p></div></div>
-  <div class="pont-unified-subnav" role="tablist" aria-label="Administrare restaurante">
-    <button type="button" role="tab" id="pontManageRestaurants" data-manage-tab="restaurants" aria-controls="restaurants" aria-selected="true">Restaurante și conturi</button>
-    
-    <button type="button" role="tab" id="pontManageAuctions" data-manage-tab="auctions" aria-controls="auctions" aria-selected="false">Licitații și poziții</button>
-  </div>
   <div id="pontManagePanels"></div>
 </section>
 <section id="restaurants" class="card dashboard-panel" aria-labelledby="restaurantsTitle" hidden>
@@ -2842,31 +2836,18 @@ $('pontPaymentCreateForm').onsubmit=async event=>{
 };
 
 const pontUnifiedContainer=$('pontManagePanels');
-for(const name of ['restaurants','commercialPayments','auctions'])pontUnifiedContainer.append($(name));
+for(const name of ['restaurants','commercialPayments'])pontUnifiedContainer.append($(name));
 let pontManageActiveTab='restaurants';
 function pontSelectManageTab(id='restaurants', remember=true){
- const target=['restaurants','auctions'].includes(id)?id:'restaurants';
- const old=pontManageActiveTab;
- if(old!==target&&auctionEdits.size){
-  if(!confirm('Ai modificări nesalvate la licitații. Le abandonezi?'))return;
-  auctionEdits.clear();refreshAuctionSave();
- }
- pontManageActiveTab=target;
- for(const name of ['restaurants','commercialPayments','auctions'])$(name).hidden=name!==target;
+ pontManageActiveTab='restaurants';
+ $('restaurants').hidden=false;
+ $('commercialPayments').hidden=true;
  $('adminRestaurants').hidden=false;
- document.querySelectorAll('[data-manage-tab]').forEach(b=>{
-  b.setAttribute('aria-selected',String(b.dataset.manageTab===target));
-  b.tabIndex=b.dataset.manageTab===target?0:-1;
- });
- if(remember)history.replaceState(null,'',location.pathname+location.search+'#adminRestaurants-'+target);
- if(target==='restaurants'){renderRestaurants();void loadRestaurantCommercialData();}
- if(target==='commercialPayments')void loadCommercialPayments();
- if(target==='auctions'){void loadAuctions();void loadAuctionControl();void loadAuctionBidHistory(selectedAuctionMonth());}
+ if(remember)history.replaceState(null,'',location.pathname+location.search+'#adminRestaurants');
+ renderRestaurants();
+ void loadRestaurantCommercialData();
 }
-document.querySelectorAll('[data-manage-tab]').forEach(button=>{
- button.addEventListener('click',()=>pontSelectManageTab(button.dataset.manageTab));
-});
-$('pontOpenPaymentsFromAuction').onclick=()=>pontSelectManageTab('restaurants');
+$('pontOpenPaymentsFromAuction').onclick=()=>selectPlatformPanel('adminRestaurants');
 
 const platformTabs = [...document.querySelectorAll('#pontMenuSuperNav button[data-tab], .pont-hero-dashboard[data-tab]')];
 const cityTabs=[...document.querySelectorAll('#pontCitySuperNav button[data-city-tab]')];
@@ -2888,8 +2869,8 @@ function pontSetWorkspace(isCity){
  document.querySelector('.pont-dashboard-modules .pont-hero-dashboard').setAttribute('aria-pressed',String(!isCity));
 }
 function selectPlatformPanel(id, remember = true) {
- const managed=['restaurants','commercialPayments','auctions'].includes(id);
- if(managed){pontManageActiveTab=id==='commercialPayments'?'restaurants':id;id='adminRestaurants';}
+ const managed=['restaurants','commercialPayments'].includes(id);
+ if(managed){pontManageActiveTab='restaurants';id='adminRestaurants';}
  pontSetWorkspace(false);
  cityExclusivePanels.forEach(name=>$(name).hidden=true);
  cityTabs.forEach(tab=>tab.setAttribute('aria-pressed','false'));
@@ -2900,19 +2881,19 @@ function selectPlatformPanel(id, remember = true) {
   tab.setAttribute('aria-pressed', String(active));
  }
  status('');
- if(id==='adminRestaurants'){pontSelectManageTab(pontManageActiveTab,remember);return;}
+ if(id==='adminRestaurants'){pontSelectManageTab('restaurants',remember);return;}
  if(remember) history.replaceState(null, '', location.pathname+location.search+'#' + button.dataset.tab);
  panelLoaders[button.dataset.tab]?.();
 }
 function selectCityPanel(id='cityDashboard', remember=true){
- const managed=['restaurants','commercialPayments','auctions'].includes(id);
- if(managed){pontManageActiveTab=id==='commercialPayments'?'restaurants':id;id='adminRestaurants';}
+ const managed=['restaurants','commercialPayments'].includes(id);
+ if(managed){pontManageActiveTab='restaurants';id='adminRestaurants';}
  pontSetWorkspace(true);
  platformTabs.forEach(tab=>{ $(tab.dataset.tab).hidden=true;tab.setAttribute('aria-pressed','false') });
  const panel=['cityDashboard','cityModeration','adminRestaurants','members'].includes(id)?id:'cityDashboard';
  cityExclusivePanels.forEach(name=>$(name).hidden=name!==panel);
  if(panel==='adminRestaurants'||panel==='members')$(panel).hidden=false;
- if(panel==='adminRestaurants')pontSelectManageTab(pontManageActiveTab,remember);
+ if(panel==='adminRestaurants')pontSelectManageTab('restaurants',remember);
  cityTabs.forEach(tab=>tab.setAttribute('aria-pressed',String(tab.dataset.cityTab===panel)));
  status('');
  if(remember&&panel!=='adminRestaurants')history.replaceState(null,'',location.pathname+location.search+'#'+panel);
@@ -3095,7 +3076,7 @@ async function enter() {
    selectCityPanel(requestedPanel,false);
   }else if(requestedPanel==='adminRestaurants'||requestedPanel.startsWith('adminRestaurants-')){
    const tab=requestedPanel.split('-')[1];
-   selectPlatformPanel(['restaurants','auctions'].includes(tab)?tab:'restaurants',false);
+   selectPlatformPanel(tab==='auctions'?'auctions':'restaurants',false);
   }else if(['commercialPayments','restaurants','auctions'].includes(requestedPanel)){
    selectPlatformPanel(requestedPanel==='commercialPayments'?'restaurants':requestedPanel,false);
   }else{
