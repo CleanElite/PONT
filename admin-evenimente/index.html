@@ -130,6 +130,11 @@ body.pont-admin--city .pont-city-edit-dialog form{display:grid;grid-template-col
 body.pont-admin--city .pont-city-edit-actions{display:flex;justify-content:flex-end;gap:8px}
 body.pont-admin--city .pont-city-edit-actions button{font-size:12px}
 @media(max-width:550px){body.pont-admin--city .pont-city-edit-dialog form{grid-template-columns:1fr}body.pont-admin--city .pont-city-price{font-size:10px}}
+</style><style id="pont-city-separate-pages-20261115">
+body.pont-admin--city .panel[hidden]{display:none!important}
+body.pont-admin--city .pont-ar-city-navigation a.is-active{background:linear-gradient(145deg,#d8c18d,#a78b54);color:#0b2628;border-color:#eedbaa;font-weight:800}
+body.pont-admin--city #pontPromotionDialog .wide{grid-column:1/-1}
+body.pont-admin--city #pontPromotionDialog .pont-city-edit-actions{display:flex;justify-content:flex-end;gap:9px}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -144,9 +149,8 @@ body.pont-admin--city .pont-city-edit-actions button{font-size:12px}
  <a class="pont-ar-module-link is-active" href="./" aria-current="page">Ieșire în oraș</a>
 </nav>
 <nav class="pont-ar-city-navigation" aria-label="Administrare evenimente">
- <a href="#createEvent">Adaugă eveniment</a>
- <a href="#myEvents">Evenimentele mele</a>
- <a href="#myRequests">Cererile mele</a>
+ <a href="?pagina=adauga" id="cityCreateNav">Adaugă eveniment</a>
+ <a href="?pagina=evenimentele-mele" id="cityEventsNav">Evenimentele mele</a>
 </nav>
 <p id="status" class="status" role="status">Se verifică permisiunile…</p>
 <section id="citySubscription" class="pont-city-subscription" hidden aria-label="Abonamentul meu">
@@ -166,6 +170,16 @@ body.pont-admin--city .pont-city-edit-actions button{font-size:12px}
 <button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
 <section class="panel" id="myEvents"><h2>Evenimentele mele</h2><div class="pont-ar-approval-note"><strong>Pentru editarea sau retragerea unui eveniment, solicitați aprobarea AS.</strong><span>Alegeți evenimentul de mai jos, apăsați „Solicită modificare” sau „Solicită retragere” și trimiteți motivul. Cererea ajunge direct în panoul Administratorului Suprem. Nicio modificare nu se aplică automat.</span></div><div id="events"></div></section>
 <section class="panel" id="myRequests"><h2>Cererile mele</h2><p>Cereri de modificare, retragere și promovare — cu decizia administratorului.</p><div id="cityRequests"></div></section></div>
+<dialog id="pontPromotionDialog" class="pont-city-edit-dialog" aria-labelledby="pontPromotionTitle">
+ <h2 id="pontPromotionTitle">Solicită promovare</h2>
+ <p id="pontPromotionDescription"></p>
+ <form id="pontPromotionForm">
+  <label class="wide">Data de începere dorită<input type="date" name="requested_start_date" id="pontPromotionStartDate" required></label>
+  <p class="wide">Data este o solicitare, nu o rezervare confirmată. Promovarea începe doar după aprobarea PONT, verificarea disponibilității și confirmarea plății.</p>
+  <p class="wide status" id="pontPromotionStatus" role="status"></p>
+  <div class="wide pont-city-edit-actions"><button type="button" id="pontPromotionCancel">Anulează</button><button type="submit" class="primary" id="pontPromotionSubmit">Trimite cererea</button></div>
+ </form>
+</dialog>
 <dialog id="eventEditDialog" class="pont-city-edit-dialog" aria-labelledby="eventEditTitle">
  <h2 id="eventEditTitle">Solicită modificarea evenimentului</h2>
  <p>Modificările intră în vigoare numai după aprobarea PONT. Evenimentul original rămâne în istoric.</p>
@@ -190,6 +204,44 @@ let db,restaurant,user,citySubscriptionActive=false,cityUploadedPoster='',cityEv
 const stateNames={pending:'În așteptare',approved:'Aprobat',rejected:'Respins',removed:'Retras'};
 const requestLabels={remove:'Solicitare retragere',edit:'Solicitare modificare',pinned_event:'Fixare eveniment · 50 lei',exclusive_banner:'Bandă exclusivă · 100 lei'};
 const requestStates={pending:'În analiză',approved:'Aprobată',rejected:'Respinsă'};
+// Două ecrane distincte cu URL propriu, fără pierderea sesiunii AR.
+const cityPage=new URLSearchParams(location.search).get('pagina')==='adauga'?'adauga':'evenimentele-mele';
+function applyCityPage(){
+ const isCreate=cityPage==='adauga';
+ $('createEvent').hidden=!isCreate;
+ $('myEvents').hidden=isCreate;
+ $('myRequests').hidden=isCreate;
+ $('cityCreateNav').classList.toggle('is-active',isCreate);
+ $('cityEventsNav').classList.toggle('is-active',!isCreate);
+ if(isCreate)$('cityCreateNav').setAttribute('aria-current','page');
+ else $('cityEventsNav').setAttribute('aria-current','page');
+ document.title=(isCreate?'Adaugă eveniment':'Evenimentele mele')+' · PONT';
+}
+applyCityPage();
+let cityPromotionEvent=null,cityPromotionType=null,cityPromotionPrice=0;
+function openCityPromotion(event,type,price){
+ cityPromotionEvent=event;cityPromotionType=type;cityPromotionPrice=price;
+ $('pontPromotionTitle').textContent=type==='pinned_event'?'Promovare pe poziție fixă':'Promovare pe bandă';
+ $('pontPromotionDescription').textContent=event.title+' · '+price+' lei. Selectează data de la care dorești să înceapă promovarea.';
+ const date=$('pontPromotionStartDate');date.min=today();date.value=today();
+ $('pontPromotionStatus').textContent='';
+ $('pontPromotionDialog').showModal();
+}
+$('pontPromotionCancel').onclick=()=>$('pontPromotionDialog').close();
+$('pontPromotionForm').onsubmit=async e=>{
+ e.preventDefault();
+ if(!cityPromotionEvent||!cityPromotionType)return;
+ const date=$('pontPromotionStartDate').value;
+ if(!date||date<today()){$('pontPromotionStatus').textContent='Selectează o dată de astăzi sau ulterioară.';return}
+ const button=$('pontPromotionSubmit');button.disabled=true;
+ try{
+  await requestEventAction(cityPromotionEvent,cityPromotionType,'Solicitare promovare de la '+date+'.',{requested_start_date:date});
+  $('pontPromotionDialog').close();
+  $('status').textContent='Solicitarea a fost trimisă pentru '+date+'. Activarea necesită aprobarea PONT și confirmarea plății.';
+ }catch(err){$('pontPromotionStatus').textContent=err.message}
+ finally{button.disabled=false}
+};
+
 function cityDate(iso){if(!iso)return '—';const d=new Date(iso);return Number.isNaN(d.getTime())?'—':new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',day:'2-digit',month:'long',year:'numeric'}).format(d)}
 function cityInfo(message){const el=$('formStatus');el.textContent=message;el.scrollIntoView({block:'nearest',behavior:'smooth'})}
 async function requestEventAction(event,type,reason,proposed={}){
@@ -260,10 +312,7 @@ async function refresh(){
    },pending.includes('remove')));
    if(e.status==='approved'){
     for(const [label,type,price] of [['Promovează · poziție fixă','pinned_event',50],['Promovează · bandă','exclusive_banner',100]]){
-     action.append(arButton(label,async()=>{
-      if(!confirm('Solicitarea costă '+price+' lei după confirmare. Trimiți cererea pentru „'+e.title+'”?'))return;
-      try{await requestEventAction(e,type,'Solicitare promovare.');cityInfo('Cererea a fost înregistrată. Activarea se face numai după aprobarea PONT și confirmarea plății.')}catch(err){cityInfo(err.message)}
-     },pending.includes(type)));
+     action.append(arButton(label,()=>openCityPromotion(e,type,price),pending.includes(type)));
     }
    }
    card.append(action);
@@ -278,6 +327,11 @@ async function refresh(){
   const title=document.createElement('strong');title.textContent=(requestLabels[req.request_type]||req.request_type)+' · '+(ev?.title||req.event_id);
   const info=document.createElement('small');info.textContent=cityDate(req.created_at)+' · '+(requestStates[req.status]||req.status);
   item.append(title,info);
+  if(['pinned_event','exclusive_banner'].includes(req.request_type)&&req.proposed_changes?.requested_start_date){
+   const dateLine=document.createElement('small');
+   dateLine.textContent='Data de începere solicitată: '+req.proposed_changes.requested_start_date;
+   item.append(dateLine);
+  }
   if(req.review_note){const p=document.createElement('small');p.textContent='Răspuns PONT: '+req.review_note;item.append(p)}
   if(req.status==='approved'&&['pinned_event','exclusive_banner'].includes(req.request_type)){const p=document.createElement('small');p.textContent='Cerere aprobată. Promovarea se activează după confirmarea plății și disponibilității.';item.append(p)}
   requestBox.append(item);
