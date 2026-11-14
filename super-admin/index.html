@@ -301,6 +301,7 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #pontInlineAccountCreator{margin:18px 0;padding:16px;border:1px solid #608b8177;border-radius:15px;background:#0b2e37}
 #pontInlineAccountCreator[hidden]{display:none!important}
 #pontInlineAccountCreator #memberForm{margin:12px 0 0}
+#restaurantRows .restaurant-status-revoked{--restaurant-bg:linear-gradient(125deg,#344242,#25373c 48%,#213037 100%);--restaurant-edge:#9aafb0;--restaurant-glow:rgba(124,161,164,.17)}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-auction-period-save-c15">
@@ -1471,7 +1472,7 @@ function renderRestaurants(){
  $('restaurantRows').innerHTML=result.length?result.map((r,index)=>{
   const id=esc(r.id),accounts=members.filter(m=>m.restaurant_id===r.id);
   const hasAccount=accounts.length>0,revoked=hasAccount&&accounts.every(m=>m.access_revoked===true);
-  const state=!r.enabled?'suspended':!hasAccount?'no-access':revoked?'suspended':'active';
+  const state=!r.enabled?'suspended':!hasAccount?'no-access':revoked?'revoked':'active';
   const accountRows=accounts.map(m=>'<div class="pont-account-entry"><div><strong>Administrator '+esc(m.short_code||'—')+'</strong><small>'+(m.access_revoked?'Acces revocat · parola și datele păstrate':'Acces permis')+'</small></div><button type="button" class="'+(m.access_revoked?'pont-account-restore':'pont-account-revoke')+'" data-account-toggle="'+esc(m.user_id)+'" data-account-restaurant="'+id+'">'+(m.access_revoked?'Redă accesul':'Revocă accesul')+'</button></div>').join('');
   return '<article class="restaurant-admin-item restaurant-status-'+state+'">'+
   '<div class="restaurant-admin-heading"><span class="restaurant-list-number">'+String(index+1).padStart(2,'0')+'</span>'+
