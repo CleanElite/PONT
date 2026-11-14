@@ -147,6 +147,19 @@ body.pont-admin--city .pont-city-rejected-note,body.pont-admin--city .pont-city-
 body.pont-admin--city .pont-city-notification p{margin:5px 0;color:#ffded3}
 body.pont-admin--city .pont-city-notification small{color:#e9d4cc}
 body.pont-admin--city #cityPromotionPayments[hidden],body.pont-admin--city .pont-city-notifications[hidden],body.pont-admin--city .pont-city-payment-gate[hidden]{display:none!important}
+</style><style id="pont-city-checkout-confirm-20261115">
+body.pont-admin--city #cityStripeConfirmDialog{box-sizing:border-box;width:min(92vw,490px);max-height:90dvh;overflow:auto;margin:auto;padding:clamp(21px,5vw,32px);border:1px solid #c9bb87a8;border-radius:21px;background:linear-gradient(145deg,#114044,#082a32 62%,#031a24);color:#fff9e8;box-shadow:0 28px 85px #000b,inset 0 1px #e2fff036}
+body.pont-admin--city #cityStripeConfirmDialog::backdrop{background:rgba(0,10,15,.79);backdrop-filter:blur(7px)}
+body.pont-admin--city #cityStripeConfirmDialog .pont-stripe-eyebrow{font:750 10px/1.35 system-ui;color:#e3d09a;letter-spacing:.17em;margin-bottom:14px}
+body.pont-admin--city #cityStripeConfirmDialog h2{font:500 clamp(24px,5vw,32px)/1.15 Georgia,serif;color:#fff6da;margin:0 0 12px}
+body.pont-admin--city #cityStripeConfirmDialog p{font:450 13px/1.6 system-ui;color:#d6e5dc;margin:0 0 15px}
+body.pont-admin--city #cityStripeConfirmDialog .pont-stripe-confirm-details{display:grid;grid-template-columns:1fr auto;gap:12px;padding:17px;border:1px solid #89b6a459;border-radius:12px;background:#061f27;margin-bottom:16px}
+body.pont-admin--city #cityStripeConfirmDialog .pont-stripe-confirm-details span{font:550 12px system-ui;color:#b5d2c9}
+body.pont-admin--city #cityStripeConfirmDialog .pont-stripe-confirm-details strong{font:750 13px system-ui;color:#f6e0aa;text-align:right}
+body.pont-admin--city #cityStripeConfirmDialog .pont-stripe-confirm-info{font-size:11px;color:#bfcfc9}
+body.pont-admin--city #cityStripeConfirmDialog form{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 0}
+body.pont-admin--city #cityStripeConfirmDialog form button{min-width:0;min-height:46px;border-radius:11px}
+body.pont-admin--city #cityStripeConfirmDialog form .primary{background:linear-gradient(135deg,#f0dcaa,#bea06a);color:#132b2c;border-color:#f1dfa9}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -194,6 +207,21 @@ body.pont-admin--city #cityPromotionPayments[hidden],body.pont-admin--city .pont
 <button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
 <section class="panel" id="myEvents"><h2>Evenimentele mele</h2><div class="pont-ar-approval-note"><strong>Pentru editarea sau retragerea unui eveniment, solicitați aprobarea AS.</strong><span>Alegeți evenimentul de mai jos, apăsați „Solicită modificare” sau „Solicită retragere” și trimiteți motivul. Cererea ajunge direct în panoul Administratorului Suprem. Nicio modificare nu se aplică automat.</span></div><div id="events"></div></section>
 <section class="panel" id="myRequests"><h2>Cererile mele</h2><p>Cereri de modificare, retragere și promovare — cu decizia administratorului.</p><div id="cityRequests"></div></section></div>
+<dialog id="cityStripeConfirmDialog" class="pont-city-stripe-confirm" aria-labelledby="cityStripeConfirmTitle">
+ <div class="pont-stripe-eyebrow">PONT · FINALIZARE SERVICIU</div>
+ <h2 id="cityStripeConfirmTitle">Confirmă plata</h2>
+ <p id="cityStripeConfirmMessage"></p>
+ <div class="pont-stripe-confirm-details">
+  <span>Serviciu</span><strong id="cityStripeConfirmService"></strong>
+  <span>Total de plată</span><strong id="cityStripeConfirmAmount"></strong>
+ </div>
+ <p class="pont-stripe-confirm-info">După confirmare vei fi direcționat către formularul securizat Stripe. Plata nu acordă automat accesul: serviciul este activat numai după validarea Administratorului Suprem.</p>
+ <p id="cityStripeConfirmStatus" class="status" role="status"></p>
+ <form method="dialog" id="cityStripeConfirmForm">
+  <button type="button" id="cityStripeConfirmCancel">Renunță</button>
+  <button type="submit" id="cityStripeConfirmProceed" class="primary">Finalizează plata</button>
+ </form>
+</dialog>
 <dialog id="pontPromotionDialog" class="pont-city-edit-dialog" aria-labelledby="pontPromotionTitle">
  <h2 id="pontPromotionTitle">Solicită promovare</h2>
  <p id="pontPromotionDescription"></p>
@@ -280,7 +308,30 @@ function renderCityNotifications(){
   item.append(title,reason,date);list.append(item);
  }
 }
-async function cityStartStripeCheckout(serviceType,paymentId=null){
+function cityConfirmStripePayment(serviceType,amount){
+ return new Promise(resolve=>{
+  const dialog=$('cityStripeConfirmDialog'),form=$('cityStripeConfirmForm');
+  const label=serviceType==='subscription'?'Abonament Ieșire în oraș · 30 zile':serviceType==='pinned_event'?'Promovare pe poziție fixă':'Promovare pe bandă publicitară';
+  $('cityStripeConfirmTitle').textContent='Confirmi plata de '+Number(amount).toLocaleString('ro-RO')+' lei?';
+  $('cityStripeConfirmMessage').textContent='Vrei să continui cu plata pentru serviciul selectat?';
+  $('cityStripeConfirmService').textContent=label;
+  $('cityStripeConfirmAmount').textContent=Number(amount).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei';
+  $('cityStripeConfirmStatus').textContent='';
+  let resolved=false;
+  const finish=approved=>{
+   if(resolved)return;resolved=true;
+   form.onsubmit=null;dialog.oncancel=null;$('cityStripeConfirmCancel').onclick=null;
+   if(dialog.open)dialog.close();resolve(approved);
+  };
+  form.onsubmit=e=>{e.preventDefault();finish(true)};
+  $('cityStripeConfirmCancel').onclick=()=>finish(false);
+  dialog.oncancel=e=>{e.preventDefault();finish(false)};
+  dialog.showModal();
+ });
+}
+async function cityStartStripeCheckout(serviceType,paymentId=null,amount=50){
+ const approved=await cityConfirmStripePayment(serviceType,amount);
+ if(!approved)return false;
  const {data:{session}}=await db.auth.getSession();
  if(!session?.access_token)throw Error('Sesiunea a expirat. Autentifică-te din nou.');
  const response=await fetch(cfg.url+'/functions/v1/pont-stripe-auctions?action=create-city',{
@@ -291,6 +342,7 @@ async function cityStartStripeCheckout(serviceType,paymentId=null){
  if(!response.ok)throw Error(data.error||'Checkout Stripe indisponibil.');
  if(!data.checkoutUrl||!/^https:\/\/checkout\.stripe\.com\//.test(data.checkoutUrl))throw Error('Link de plată Stripe invalid.');
  window.location.assign(data.checkoutUrl);
+ return true;
 }
 async function loadCitySubscription(){
  if(!db||!restaurant)return;
@@ -328,7 +380,7 @@ async function loadCitySubscription(){
   if(!item.stripe_paid_at){
    const btn=arButton('Plătește în Stripe',async()=>{
     btn.disabled=true;
-    try{await cityStartStripeCheckout(item.service_type,item.id)}catch(error){status.textContent='Eroare: '+error.message;btn.disabled=false}
+    try{await cityStartStripeCheckout(item.service_type,item.id,item.amount)}catch(error){status.textContent='Eroare: '+error.message}finally{btn.disabled=false}
    });card.append(btn);
   }
   list.append(card);
@@ -336,7 +388,7 @@ async function loadCitySubscription(){
 }
 $('requestCitySubscription').onclick=async()=>{
  const btn=$('requestCitySubscription');btn.disabled=true;
- try{await cityStartStripeCheckout('subscription')}catch(err){$('citySubscriptionRequestStatus').textContent='Plata nu a fost inițiată: '+err.message;btn.disabled=false}
+ try{await cityStartStripeCheckout('subscription',null,50)}catch(err){$('citySubscriptionRequestStatus').textContent='Plata nu a fost inițiată: '+err.message}finally{btn.disabled=false}
 };
 function cityInfo(message){const el=$('formStatus');el.textContent=message;el.scrollIntoView({block:'nearest',behavior:'smooth'})}
 async function requestEventAction(event,type,reason,proposed={}){
