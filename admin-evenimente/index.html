@@ -55,10 +55,10 @@ $('eventForm').onsubmit=async e=>{
  if(v.poster_url&&!/^https:\/\//i.test(v.poster_url)){msg.textContent='Afișul trebuie să aibă un link HTTPS.';return}
  button.disabled=true;msg.textContent='Se verifică anunțul…';
  try{
-  const {data:similar,error:similarError}=await db.from('pont_city_events').select('id,title').eq('restaurant_id',restaurant.id).eq('event_date',v.event_date).limit(100);
+  const {data:similar,error:similarError}=await db.from('pont_city_events').select('id,title,start_time').eq('restaurant_id',restaurant.id).eq('event_date',v.event_date).limit(100);
   if(similarError)throw similarError;
   const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
-  if((similar||[]).some(x=>norm(x.title)===norm(v.title)))throw Error('Există deja un eveniment cu același titlu și aceeași dată.');
+  if((similar||[]).some(x=>norm(x.title)===norm(v.title)&&String(x.start_time).slice(0,5)===v.start_time))throw Error('Există deja un eveniment cu același titlu și aceeași dată.');
   const payload={restaurant_id:restaurant.id,title:v.title.trim(),event_date:v.event_date,start_time:v.start_time,locality:v.locality.trim(),venue:v.venue.trim(),contact_phone:v.contact_phone.trim(),description:v.description.trim(),poster_url:v.poster_url.trim()||null};
   const {error}=await db.from('pont_city_events').insert(payload);if(error)throw error;
   form.reset();msg.textContent='Eveniment trimis spre aprobare.';await refresh();
