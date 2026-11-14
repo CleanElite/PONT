@@ -251,6 +251,34 @@
 .pont-dashboard-modules .pont-events-dashboard-link{display:inline-flex;align-items:center;justify-content:center;padding:9px 12px;min-height:41px;border:1px solid #d5b979;border-radius:11px;background:#153941;color:#f4dfaa;font:700 clamp(11px,2.7vw,13px)/1.2 system-ui;text-decoration:none}
 .pont-dashboard-modules .pont-events-dashboard-link:hover{background:#215159}
 @media(max-width:430px){.pont-dashboard-modules{gap:4px}.pont-dashboard-modules .pont-events-dashboard-link{padding:7px 8px;font-size:11px;min-height:38px}}
+</style><style id="pont-city-superadmin-design">
+/* Identical SuperAdmin design language, two distinct workspaces. */
+#pontCitySuperNav[hidden],#pontMenuSuperNav[hidden],#cityDashboard[hidden],#cityModeration[hidden],#cityPromotion[hidden]{display:none!important}
+#pontCitySuperNav{margin-top:0!important}
+.pont-dashboard-modules{display:flex!important;align-items:center!important;justify-content:flex-end!important;flex:0 1 auto!important;gap:6px!important;flex-wrap:nowrap!important;min-width:0}
+.pont-dashboard-modules>button{font:700 clamp(10px,2.5vw,13px)/1.2 system-ui!important;min-height:39px!important;padding:8px clamp(7px,1.7vw,13px)!important;white-space:nowrap!important;max-width:none!important;margin:0!important}
+.pont-dashboard-modules>button[aria-pressed="true"]{border-color:#d9eddf!important;background:linear-gradient(145deg,#1d6559,#0b3b35)!important;color:#effff9!important;box-shadow:inset 0 1px 4px #ffffff20!important}
+.pont-dashboard-modules>button[aria-pressed="false"]{background:#102d35!important;color:#c4d7d2!important;border:1px solid #658c857d!important;box-shadow:none!important}
+#pontCitySuperNav .pont-nav-cluster{min-width:0}
+#pontCitySuperNav button,#pontCitySuperNav a{min-width:0}
+#pontCitySuperNav [data-city-tab][aria-pressed="true"]{border-color:#a1e5d5}
+.pont-city-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0 24px}
+.pont-city-metrics .stat{min-width:0;background:linear-gradient(145deg,#123c45,#092c35);border:1px solid #528d827c;border-radius:13px;padding:clamp(11px,2vw,18px)}
+.pont-city-metrics .stat small{font-size:11px;color:#b7d3ce;display:block}
+.pont-city-metrics .stat strong{display:block;margin:6px 0 3px;font-size:clamp(21px,4vw,32px);color:#efdcaa;font-variant-numeric:tabular-nums}
+.pont-city-section-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:19px 0 10px}
+.pont-city-section-heading h3{font-size:18px;margin:0}
+.pont-city-list{display:grid;gap:10px}
+.pont-city-event{background:linear-gradient(125deg,#10313a,#09252e);border:1px solid #42766d87;border-radius:13px;padding:14px;min-width:0}
+.pont-city-event strong{display:block;color:#f6f8f4;font-size:clamp(15px,2.8vw,19px);line-height:1.25}
+.pont-city-event p{font-size:12px;margin:5px 0;color:#bfd9d3;overflow-wrap:anywhere}
+.pont-city-event .pont-city-meta{color:#f0d397;font-weight:650}
+.pont-city-event .pont-city-audit{margin:9px 0 0;padding:9px 11px;background:#071f26;border-radius:9px;border:1px solid #55877a75;font-size:11px;line-height:1.5;color:#c4dcd6;display:grid;gap:3px}
+.pont-city-event .pont-city-alert{color:#ffce9e}
+.pont-city-event .pont-city-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px}
+.pont-city-event .pont-city-reject{background:#59333b;border-color:#bc8789}
+.pont-city-warning{border:1px solid #d7b5798a;border-radius:11px;background:#4a3c184f;padding:13px;color:#ffe0a0!important}
+@media(max-width:540px){.pont-city-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.pont-dashboard-modules>button{padding:8px 7px!important;font-size:10px!important}.pont-city-event{padding:11px}.pont-city-metrics .stat{padding:11px}#app .admin-hero.dashboard-intro{gap:5px!important}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-auction-period-save-c15">
@@ -978,9 +1006,9 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
 <section id="setup" class="card" hidden><h1>Activare securizată</h1><p>Interfața este instalată. Pentru utilizare reală trebuie configurat Supabase și executat fișierul schema.sql în baza de date. Fără această configurare nu există acces la datele restaurantelor.</p></section><section id="login" class="card" hidden><h1>Conectare Super Admin</h1><form id="auth" autocomplete="on"><label for="email">Email</label><input id="email" name="username" type="email" required autocomplete="username" autocapitalize="none" spellcheck="false"><label for="password">Parolă</label><input id="password" name="password" type="password" required autocomplete="current-password"><p><button class="primary">Conectare</button></p></form><p id="error" class="error"></p></section><section id="app" hidden><button type="button" id="logout" class="admin-logout" aria-label="Deconectare"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#sign-out"></use></svg><span class="admin-control-text">Deconectare</span></button>
 <div class="admin-hero dashboard-intro">
   <div class="admin-hero-copy"><h1>Super Admin</h1><p>Administrarea platformei PONT</p></div>
-  <div class="pont-dashboard-modules"><button type="button" class="pont-hero-dashboard" data-tab="analytics" aria-controls="analytics" aria-pressed="true">Meniul zilei</button><a class="pont-events-dashboard-link" href="./iesire-in-oras/">Ieșire în oraș</a></div>
+  <div class="pont-dashboard-modules"><button type="button" class="pont-hero-dashboard" data-tab="analytics" aria-controls="analytics" aria-pressed="true">Meniul zilei</button><button type="button" class="pont-events-dashboard-link" id="pontCityModuleToggle" aria-pressed="false">Ieșire în oraș</button></div>
 </div>
-<div class="pont-live-datetime" role="group" aria-label="Data și ora României"><span class="pont-live-datetime__date" data-pont-clock-date>—</span><span class="pont-live-datetime__separator" aria-hidden="true"></span><time class="pont-live-datetime__time" data-pont-clock-time>--:--</time></div> <nav class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Super Admin">
+<div class="pont-live-datetime" role="group" aria-label="Data și ora României"><span class="pont-live-datetime__date" data-pont-clock-date>—</span><span class="pont-live-datetime__separator" aria-hidden="true"></span><time class="pont-live-datetime__time" data-pont-clock-time>--:--</time></div> <nav id="pontMenuSuperNav" class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Meniul zilei">
   <div class="pont-nav-cluster pont-nav-cluster--content" role="group" aria-label="Meniuri și preparate">
     <button type="button" data-tab="menus" aria-controls="menus" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Meniuri</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <button type="button" data-tab="dishLibrary" aria-controls="dishLibrary" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#fork-knife"></use></svg><span>Preparate</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
@@ -992,6 +1020,20 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
     <button type="button" data-tab="auctions" aria-controls="auctions" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg><span>Licitații</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <a id="pontPromotionNavLink" href="../promovare/?v=bid-keyboard-fit-20261113d"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
+  </div>
+</nav>
+<nav id="pontCitySuperNav" class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Ieșire în oraș" hidden>
+  <div class="pont-nav-cluster pont-nav-cluster--content" role="group" aria-label="Evenimente">
+    <button type="button" data-city-tab="cityDashboard" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Dashboard</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+    <button type="button" data-city-tab="cityModeration" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#check"></use></svg><span>Evenimente</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+  </div>
+  <div class="pont-nav-cluster pont-nav-cluster--management" role="group" aria-label="Restaurante și conturi">
+    <button type="button" data-city-tab="restaurants" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#storefront"></use></svg><span>Restaurante</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+    <button type="button" data-city-tab="members" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#users-three"></use></svg><span>Conturi</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+  </div>
+  <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Promovare și vizibilitate">
+    <button type="button" data-city-tab="cityPromotion" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+    <a href="../iesire-in-oras/" aria-label="Vezi pagina publică Ieșire în oraș"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Pagina publică</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
   </div>
 </nav>
 <section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section>
@@ -1185,6 +1227,40 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   </dialog>
 </section>
 
+<section id="cityDashboard" class="card dashboard-panel pont-insights" hidden aria-labelledby="cityDashboardTitle">
+  <div class="dashboard-heading pont-insights-heading"><div class="pont-analytics-title-card"><h2 id="cityDashboardTitle">Dashboard · Ieșire în oraș</h2><p>Evenimente, aprobări și restaurante cu acces.</p></div><div class="pont-analytics-header-actions"><button type="button" class="pont-refresh" id="cityRefresh">↻ Actualizează</button></div></div>
+  <div class="pont-city-metrics" aria-label="Statistici evenimente">
+    <div class="stat"><small>În așteptare</small><strong id="cityPending">—</strong></div>
+    <div class="stat"><small>Aprobate</small><strong id="cityApproved">—</strong></div>
+    <div class="stat"><small>Respinse</small><strong id="cityRejected">—</strong></div>
+    <div class="stat"><small>Viitoare aprobate</small><strong id="cityUpcoming">—</strong></div>
+    <div class="stat"><small>Restaurante cu acces</small><strong id="cityRestaurantsCount">—</strong></div>
+    <div class="stat"><small>Total evenimente</small><strong id="cityTotal">—</strong></div>
+  </div>
+  <div class="pont-city-section-heading"><h3>Ultimele evenimente</h3><button type="button" data-city-goto="cityModeration">Deschide moderarea</button></div>
+  <div id="cityRecent" class="pont-city-list" aria-live="polite"></div>
+  <p id="cityStatus" class="dashboard-message" role="status"></p>
+</section>
+<section id="cityModeration" class="card dashboard-panel" hidden aria-labelledby="cityModerationTitle">
+  <div class="dashboard-heading"><div><h2 id="cityModerationTitle">Moderare evenimente</h2><p>Verifică fiecare anunț înainte să apară public.</p></div><button type="button" id="cityModerationRefresh" class="primary">Actualizează</button></div>
+  <p id="cityModerationStatus" class="dashboard-message" role="status"></p>
+  <div class="pont-city-section-heading"><h3>În așteptare <span id="cityPendingLabel"></span></h3></div>
+  <div id="cityPendingRows" class="pont-city-list"></div>
+  <div class="pont-city-section-heading"><h3>Aprobate</h3></div>
+  <div id="cityApprovedRows" class="pont-city-list"></div>
+  <div class="pont-city-section-heading"><h3>Respinse</h3></div>
+  <div id="cityRejectedRows" class="pont-city-list"></div>
+</section>
+<section id="cityPromotion" class="card dashboard-panel" hidden aria-labelledby="cityPromotionTitle">
+  <div class="dashboard-heading"><div><h2 id="cityPromotionTitle">Promovarea evenimentelor</h2><p>Regulile comerciale stabilite pentru modulul „Ieșire în oraș”.</p></div></div>
+  <div class="pont-city-metrics">
+    <div class="stat"><small>Publicare nelimitată</small><strong>50 lei</strong><small>30 zile de la activarea accesului</small></div>
+    <div class="stat"><small>Fixarea unui eveniment</small><strong>50 lei</strong><small>Maxim 30 zile / până la ora începerii</small></div>
+    <div class="stat"><small>Bandă exclusivă</small><strong>100 lei</strong><small>Maxim 30 zile, doar dacă este liberă</small></div>
+  </div>
+  <p class="pont-city-warning">Administrarea plăților, perioadelor și rezervărilor de promovare nu este încă activată. Prețurile sunt prezentate informativ; nu se încasează automat sume din acest panou.</p>
+  <p>Maximum trei poziții fixe, doar pentru evenimente aprobate. Banda are un singur sponsor, iar perioada neutilizată nu se transferă automat altui eveniment.</p>
+</section>
 <section id="analytics" class="card dashboard-panel pont-insights" aria-labelledby="analyticsTitle" hidden>
  <section id="pontLoginSecurityAlerts" class="pont-login-security-alerts" role="alert" aria-live="polite" hidden></section>
  <div class="dashboard-heading pont-insights-heading">
