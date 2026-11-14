@@ -27,6 +27,14 @@
   return -1;
  }
  function previous(){
+  // An explicit same-origin return path from an admin page wins over older session history.
+  const returnPath=new URLSearchParams(location.search).get('pont_return');
+  if(returnPath){
+   const url=sameOrigin(returnPath);
+   if(url&&url.pathname!==location.pathname&&/^\/(?:super-admin|admin-v2|admin-evenimente)\/?$/.test(url.pathname)){
+    return {url,index:-1,entries:[]};
+   }
+  }
   const entries=stack(),i=matchedIndex(entries);
   if(i>=0){
    const url=sameOrigin(entries[i].from);
@@ -69,6 +77,12 @@
   if(link.hasAttribute('download')||(link.target&&link.target.toLowerCase()!=='_self'))return;
   const dest=sameOrigin(link.href);
   if(!dest||dest.href===location.href||dest.pathname===location.pathname)return;
+  // Carry the exact source workspace with public-page links from either admin role.
+  if(/^\/(?:super-admin|admin-v2|admin-evenimente)\/?$/.test(location.pathname)
+     &&/^\/(?:iesire-in-oras|meniul-zilei)\/?$/.test(dest.pathname)){
+   dest.searchParams.set('pont_return',location.pathname+location.search+location.hash);
+   link.href=dest.href;
+  }
   const entries=stack();
   const index=matchedIndex(entries);
   // Leaving a previously visited page creates a new branch of navigation.
