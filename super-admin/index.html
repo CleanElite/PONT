@@ -1181,7 +1181,6 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Promovare și vizibilitate">
     
-    <button type="button" data-city-tab="cityPromotion" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <a href="../iesire-in-oras/" aria-label="Vezi pagina publică Ieșire în oraș"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Pagina publică</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
   </div>
 </nav>
@@ -1359,9 +1358,10 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
       <button type="button" id="auctionLifecycleConfirm" class="primary">Confirmă</button>
     </div>
   </dialog>
-  <div class="auction-save-bar pont-auction-period-save" hidden aria-hidden="true">
-    <label for="auctionMonth">Luna autorizării<input type="month" id="auctionMonth"></label>
-    <button type="button" class="primary" id="saveAuctionPayments" aria-label="Salvează modificările" disabled>Salvează</button>
+  <!-- Compatibilitate internă: luna este sincronizată exclusiv cu selectorul Luna licitației. -->
+  <div class="auction-save-bar" hidden aria-hidden="true">
+    <input type="hidden" id="auctionMonth">
+    <button type="button" id="saveAuctionPayments" disabled hidden>Salvează</button>
   </div>
   <span id="auctionCount" hidden></span><span id="auctionSaveHint" role="status" hidden></span>
   <p id="auctionFeedback" class="dashboard-message" role="status"></p><button type="button" id="pontOpenPaymentsFromAuction" hidden aria-hidden="true">Restaurante și conturi</button>
@@ -1451,16 +1451,6 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   <div id="cityApprovedRows" class="pont-city-list"></div>
   <div class="pont-city-section-heading"><h3>Respinse</h3></div>
   <div id="cityRejectedRows" class="pont-city-list"></div>
-</section>
-<section id="cityPromotion" class="card dashboard-panel" hidden aria-labelledby="cityPromotionTitle">
-  <div class="dashboard-heading"><div><h2 id="cityPromotionTitle">Promovarea evenimentelor</h2><p>Regulile comerciale stabilite pentru modulul „Ieșire în oraș”.</p></div></div>
-  <div class="pont-city-metrics">
-    <div class="stat"><small>Publicare nelimitată</small><strong>50 lei</strong><small>30 zile de la activarea accesului</small></div>
-    <div class="stat"><small>Fixarea unui eveniment</small><strong>50 lei</strong><small>Maxim 30 zile / până la ora începerii</small></div>
-    <div class="stat"><small>Bandă exclusivă</small><strong>100 lei</strong><small>Maxim 30 zile, doar dacă este liberă</small></div>
-  </div>
-  <p class="pont-city-warning">Administrarea plăților, perioadelor și rezervărilor de promovare nu este încă activată. Prețurile sunt prezentate informativ; nu se încasează automat sume din acest panou.</p>
-  <p>Maximum trei poziții fixe, doar pentru evenimente aprobate. Banda are un singur sponsor, iar perioada neutilizată nu se transferă automat altui eveniment.</p>
 </section>
 <section id="analytics" class="card dashboard-panel pont-insights" aria-labelledby="analyticsTitle" hidden>
  <section id="pontLoginSecurityAlerts" class="pont-login-security-alerts" role="alert" aria-live="polite" hidden></section>
@@ -2880,7 +2870,7 @@ $('pontOpenPaymentsFromAuction').onclick=()=>pontSelectManageTab('restaurants');
 
 const platformTabs = [...document.querySelectorAll('#pontMenuSuperNav button[data-tab], .pont-hero-dashboard[data-tab]')];
 const cityTabs=[...document.querySelectorAll('#pontCitySuperNav button[data-city-tab]')];
-const cityExclusivePanels=['cityDashboard','cityModeration','cityPromotion'];
+const cityExclusivePanels=['cityDashboard','cityModeration'];
 let cityMode=false,cityEventsLoaded=[],cityHistoryComplete=true;
 const panelLoaders = {
  menus:() => {renderTodayMenu(true);window.pontMenuModels?.refresh()},
@@ -2919,7 +2909,7 @@ function selectCityPanel(id='cityDashboard', remember=true){
  if(managed){pontManageActiveTab=id==='commercialPayments'?'restaurants':id;id='adminRestaurants';}
  pontSetWorkspace(true);
  platformTabs.forEach(tab=>{ $(tab.dataset.tab).hidden=true;tab.setAttribute('aria-pressed','false') });
- const panel=['cityDashboard','cityModeration','adminRestaurants','members','cityPromotion'].includes(id)?id:'cityDashboard';
+ const panel=['cityDashboard','cityModeration','adminRestaurants','members'].includes(id)?id:'cityDashboard';
  cityExclusivePanels.forEach(name=>$(name).hidden=name!==panel);
  if(panel==='adminRestaurants'||panel==='members')$(panel).hidden=false;
  if(panel==='adminRestaurants')pontSelectManageTab(pontManageActiveTab,remember);
@@ -3011,7 +3001,7 @@ document.querySelectorAll('[data-city-goto]').forEach(button=>button.onclick=()=
 window.addEventListener('hashchange',()=>{
  if($('app').hidden)return;
  const panel=location.hash.slice(1);
- if(['cityDashboard','cityModeration','cityPromotion'].includes(panel))selectCityPanel(panel,false);
+ if(['cityDashboard','cityModeration'].includes(panel))selectCityPanel(panel,false);
  else if(panel==='commercialPayments'&&cityMode)selectCityPanel(panel,false);
  else if(cityMode&&['restaurants','members'].includes(panel))selectCityPanel(panel,false);
  else selectPlatformPanel(panel,false);
@@ -3101,7 +3091,7 @@ async function enter() {
   $('app').hidden = false;
   // Keep the requested workspace on direct links; otherwise open Meniul zilei by default.
   const requestedPanel=location.hash.slice(1);
-  if(['cityDashboard','cityModeration','cityPromotion'].includes(requestedPanel)){
+  if(['cityDashboard','cityModeration'].includes(requestedPanel)){
    selectCityPanel(requestedPanel,false);
   }else if(requestedPanel==='adminRestaurants'||requestedPanel.startsWith('adminRestaurants-')){
    const tab=requestedPanel.split('-')[1];
