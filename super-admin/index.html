@@ -2477,10 +2477,11 @@ function displayAuctionControl(month,isOpen,paused,finalized){
  auctionResumeButton.disabled=auctionControlBusy||!isOpen||!paused;
  auctionCloseButton.disabled=auctionControlBusy||!isOpen;
  auctionControlButton.textContent=finalized&&!isOpen?'Redeschide':'Pornește';
- const available=state==='open'?['pause','close']:state==='paused'?['resume','close']:['start'];
- for(const [button,action] of [[auctionControlButton,'start'],[auctionPauseButton,'pause'],[auctionResumeButton,'resume'],[auctionCloseButton,'close']]){
-  button.hidden=!available.includes(action);
- }
+ // Pauză și Reia rămân vizibile permanent; se activează doar în starea potrivită.
+ auctionPauseButton.hidden=false;
+ auctionResumeButton.hidden=false;
+ auctionControlButton.hidden=isOpen;
+ auctionCloseButton.hidden=!isOpen;
 
 }
 async function loadAuctionBidHistory(month){
