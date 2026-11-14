@@ -1587,6 +1587,169 @@ function restaurantAuctionPaymentBadge(restaurantId){
 }
 let restaurantOnlineIds = new Set();
 let dailyMenuStatuses=[],dailyMenuExhaustedIds=new Set();
+
+let pontCommerceMonth='',pontCommerceLoading=false,pontCommerceDialogRestaurant=null,pontCityChargeRestaurant=null,pontCommerceOfferRows=[];
+function pontCommerceMonthValue(){return $('pontRestaurantCommercialMonth').value||todayRO().slice(0,7)}
+function pontCommerceMonthApproval(rid,month){return pontManualApprovals.find(x=>x.restaurant_id===rid&&x.campaign_month===month+'-01')}
+function pontCommerceMonthOffer(rid,month){return pontMenuPaymentRows.find(x=>x.restaurant_id===rid&&x.campaign_month===month+'-01')}
+function pontCommerceCurrentMode(rid,month){
+ const offer=pontCommerceMonthOffer(rid,month);
+ if(offer?.payment_status==='paid')return 'paid';
+ const approval=pontCommerceMonthApproval(rid,month);
+ if(approval)return approval.approval_type==='paid'?'paid':'authorization';
+ return 'none';
+}
+function pontCommerceRank(rid,month){
+ const offers=pontCommerceOfferRows.filter(x=>x.campaign_month===month+'-01').sort((a,b)=>Number(b.amount)-Number(a.amount)||(new Date(a.bid_rank_at||a.created_at)-new Date(b.bid_rank_at||b.created_at)));
+ const index=offers.findIndex(x=>x.restaurant_id===rid);
+ return index<0?null:index+1;
+}
+function pontCommerceDetailsHtml(r){
+ const month=pontCommerceMonthValue(),offer=pontCommerceMonthOffer(r.id,month),mode=pontCommerceCurrentMode(r.id,month);
+ const rank=pontCommerceRank(r.id,month),labels={paid:'Plătit',authorization:'Doar acces',none:'Neconfirmat'};
+ let output='<div class="pont-commerce-line"><header><strong>Meniul zilei · '+esc(month)+'</strong><span class="dashboard-badge">'+esc(labels[mode])+'</span></header>'+
+ '<div class="pont-commerce-facts"><span>'+(offer?'Licitație: '+esc(auctionMoney(offer.amount)):'Fără ofertă')+'</span>'+
+ '<span>'+(rank?'Locul '+rank:'Fără poziție licitată')+'</span><span>'+(offer?'Runda '+esc(offer.round):'—')+'</span></div>'+
+ '<button type="button" data-commerce-access="'+esc(r.id)+'">Confirmă accesul</button></div>';
+ const items=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+ output+='<div class="pont-commerce-line"><header><strong>Ieșire în oraș</strong></header>'+
+ '<div class="pont-commerce-facts"><span>Administrare: '+(r.access_iesire_in_oras?'permisă':'dezactivată')+'</span><span>Plăți înregistrate: '+items.length+'</span></div>';
+ if(r.access_iesire_in_oras)output+='<button type="button" data-commerce-city-new="'+esc(r.id)+'">Înregistrează serviciu</button>';
+ if(items.length){
+  output+='<div class="pont-commerce-payment">';
+  for(const item of items){
+   const labels={subscription:'Abonament',pinned_event:'Eveniment fix',exclusive_banner:'Bandă publicitară'};
+   const canRevoke=item.status==='confirmed'&&new Date(item.expires_at)>new Date();
+   const statusLabel=item.status==='pending'?'Neconfirmat':item.status==='revoked'?'Anulat':new Date(item.expires_at)<=new Date()?'Expirat':'Plătit';
+   output+='<div class="pont-commerce-payment-item"><span>'+esc(labels[item.service_type]||item.service_type)+' · '+esc(auctionMoney(item.amount))+' · '+statusLabel+'</span>'+
+   '<button type="button" data-commerce-city-payment="'+esc(item.id)+'" data-commerce-city-action="'+(canRevoke?'revoke':'confirm')+'" '+(item.status==='confirmed'&&!canRevoke?'disabled':'')+'>'+(canRevoke?'Anulează confirmarea':item.status==='revoked'?'Reconfirmă':'Confirmă plata')+'</button></div>';
+  }
+  output+='</div>';
+ }else output+='<p class="pont-commerce-note">Nu sunt plăți sau abonamente înregistrate.</p>';
+ output+='</div>';
+ const logs=pontPaymentHistory.filter(x=>x.restaurant_id===r.id).slice(0,7);
+ output+='<details class="pont-commerce-history"><summary>Istoric autorizări'+(logs.length?' ('+logs.length+')':'')+'</summary>';
+ output+=logs.map(l=>'<p class="pont-commerce-note">'+esc(pontPaymentDate(l.occurred_at))+' · '+(l.module==='menu'?'Meniu':'Evenimente')+' · '+esc(l.action)+(l.reason?' · '+esc(l.reason):'')+'</p>').join('')||'<p class="pont-commerce-note">Nu există operațiuni înregistrate în jurnalul nou.</p>';
+ return output+'</details>';
+}
+async function loadRestaurantCommercialData(){
+ if(pontCommerceLoading||pontPaymentBusy)return;
+ pontCommerceLoading=true;
+ $('pontRestaurantCommerceNotice').textContent='Se actualizează datele comerciale…';
+ try{
+  await loadCommercialPayments();
+  const month=pontCommerceMonthValue();
+  const {data,error}=await db.from('auction_offers').select('restaurant_id,campaign_month,amount,round,bid_rank_at,created_at').eq('campaign_month',month+'-01').order('amount',{ascending:false}).limit(1000);
+  if(error)throw error;
+  pontCommerceOfferRows=data||[];
+  pontCommerceMonth=month;
+  renderRestaurants();
+  $('pontRestaurantCommerceNotice').textContent='Luna '+month+' · Sumele și autorizațiile sunt actualizate.';
+ }catch(e){$('pontRestaurantCommerceNotice').textContent='Datele comerciale nu au putut fi încărcate: '+e.message}
+ finally{pontCommerceLoading=false}
+}
+function pontOpenRestaurantAccess(rid){
+ const row=restaurants.find(x=>x.id===rid);if(!row)return;
+ pontCommerceDialogRestaurant=rid;
+ const month=pontCommerceMonthValue(),mode=pontCommerceCurrentMode(rid,month);
+ const offer=pontCommerceMonthOffer(rid,month);
+ $('pontRestaurantAccessName').textContent=row.name+' · '+month+(offer?' · Ofertă '+auctionMoney(offer.amount):' · Fără ofertă');
+ $('pontRestaurantAccessDialog').querySelectorAll('input[name="pontRestaurantAccessChoice"]').forEach(x=>x.checked=x.value===mode);
+ $('pontRestaurantAccessRemove').hidden=mode==='none';
+ $('pontRestaurantAccessAlert').textContent='';
+ $('pontRestaurantAccessDialog').showModal();
+}
+function pontCloseRestaurantAccess(){ $('pontRestaurantAccessDialog').close();pontCommerceDialogRestaurant=null }
+async function pontApplyRestaurantAccess(mode){
+ if(pontPaymentBusy)return;
+ const rid=pontCommerceDialogRestaurant,month=pontCommerceMonthValue();
+ if(!rid||!['paid','authorization','none'].includes(mode))return;
+ const prev=pontCommerceCurrentMode(rid,month);
+ if(prev===mode){pontCloseRestaurantAccess();return}
+ if(mode==='paid'&&!confirm('Confirmi plata pentru '+pontPaymentRestaurantName(rid)+' în luna '+month+'?'))return;
+ let reason=null;
+ if(mode==='none'&&prev==='paid'){
+  if(!confirm('Retragi confirmarea plății? Accesul comercial poate fi oprit, dar datele rămân salvate.'))return;
+  reason=prompt('Motivul retragerii (opțional):');
+  if(reason===null)return;
+ }
+ pontPaymentBusy=true;
+ $('pontRestaurantAccessApply').disabled=true;$('pontRestaurantAccessRemove').disabled=true;
+ const offer=pontCommerceMonthOffer(rid,month),date=month+'-01';
+ try{
+  if(offer){
+   if(prev==='paid'&&mode!=='paid'){
+    const {error}=await db.rpc('pont_manage_auction_payment',{p_offer_id:offer.id,p_action:'revoke',p_reason:reason||null});if(error)throw error;
+   }
+   if(mode==='paid'){
+    const {error}=await db.rpc('pont_manage_auction_payment',{p_offer_id:offer.id,p_action:'confirm'});if(error)throw error;
+   }
+  }
+  if(mode==='none'||mode==='paid'&&offer){
+   const {error}=await db.from('pont_manual_payment_approvals').delete().eq('restaurant_id',rid).eq('campaign_month',date);
+   if(error)throw error;
+  }else if(mode==='authorization'||mode==='paid'&&!offer){
+   const {error}=await db.from('pont_manual_payment_approvals').upsert({restaurant_id:rid,campaign_month:date,approval_type:mode},{onConflict:'restaurant_id,campaign_month'});
+   if(error)throw error;
+  }
+  pontCloseRestaurantAccess();
+  pontPaymentBusy=false;
+  await loadRestaurantCommercialData();
+  $('pontRestaurantCommerceNotice').textContent='Modificare salvată pentru '+pontPaymentRestaurantName(rid)+' · '+month+'.';
+  void loadAuctions();void loadAnalyticsRevenue();void refreshRestaurantAuctionPayments();
+ }catch(e){$('pontRestaurantAccessAlert').textContent='Nu s-a salvat complet: '+e.message+'. Actualizează datele înainte de o nouă încercare.';pontPaymentBusy=false;}
+ finally{$('pontRestaurantAccessApply').disabled=false;$('pontRestaurantAccessRemove').disabled=false;}
+}
+$('pontRestaurantAccessClose').onclick=pontCloseRestaurantAccess;
+$('pontRestaurantAccessCancel').onclick=pontCloseRestaurantAccess;
+$('pontRestaurantAccessDialog').addEventListener('close',()=>{pontCommerceDialogRestaurant=null});
+$('pontRestaurantAccessApply').onclick=()=>{
+ const checked=$('pontRestaurantAccessDialog').querySelector('input[name="pontRestaurantAccessChoice"]:checked');
+ if(!checked){$('pontRestaurantAccessAlert').textContent='Selectează Doar acces sau Plătit.';return}
+ void pontApplyRestaurantAccess(checked.value);
+};
+$('pontRestaurantAccessRemove').onclick=()=>void pontApplyRestaurantAccess('none');
+$('pontRestaurantCommercialMonth').value=todayRO().slice(0,7);
+$('pontRestaurantCommercialMonth').onchange=()=>void loadRestaurantCommercialData();
+$('pontRestaurantCommercialRefresh').onclick=()=>void loadRestaurantCommercialData();
+function pontOpenCityCharge(rid){
+ pontCityChargeRestaurant=rid;
+ $('pontCityChargeName').textContent=pontPaymentRestaurantName(rid);
+ $('pontCityChargeType').value='subscription';
+ pontUpdateCityChargeEvents();
+ $('pontCityChargeAlert').textContent='';
+ $('pontCityChargeDialog').showModal();
+}
+function pontUpdateCityChargeEvents(){
+ const enabled=$('pontCityChargeType').value==='pinned_event';
+ $('pontCityChargeEventWrap').hidden=!enabled;
+ const select=$('pontCityChargeEvent');select.replaceChildren();
+ const first=document.createElement('option');first.value='';first.textContent='Selectează evenimentul';select.append(first);
+ for(const e of pontCityApprovedEvents.filter(e=>e.restaurant_id===pontCityChargeRestaurant)){
+  const opt=document.createElement('option');opt.value=e.id;opt.textContent=e.title+' · '+e.event_date;select.append(opt);
+ }
+}
+$('pontCityChargeType').onchange=pontUpdateCityChargeEvents;
+function pontCloseCityCharge(){$('pontCityChargeDialog').close();pontCityChargeRestaurant=null}
+$('pontCityChargeClose').onclick=pontCloseCityCharge;
+$('pontCityChargeCancel').onclick=pontCloseCityCharge;
+$('pontCityChargeCreate').onclick=async()=>{
+ if(pontPaymentBusy)return;
+ const rid=pontCityChargeRestaurant,kind=$('pontCityChargeType').value;
+ const eventId=$('pontCityChargeEvent').value;
+ if(kind==='pinned_event'&&!eventId){$('pontCityChargeAlert').textContent='Alege un eveniment aprobat.';return}
+ if(!confirm('Înregistrezi serviciul ca NEPLĂTIT? Confirmarea se face ulterior, din restaurant.'))return;
+ pontPaymentBusy=true;$('pontCityChargeCreate').disabled=true;
+ try{
+  const {error}=await db.rpc('pont_manage_city_payment',{p_action:'create',p_restaurant_id:rid,p_service_type:kind,p_event_id:kind==='pinned_event'?eventId:null});
+  if(error)throw error;
+  pontCloseCityCharge();pontPaymentBusy=false;
+  await loadRestaurantCommercialData();
+ }catch(e){pontPaymentBusy=false;$('pontCityChargeAlert').textContent=e.message}
+ finally{$('pontCityChargeCreate').disabled=false}
+};
+$('pontCityChargeDialog').addEventListener('close',()=>{pontCityChargeRestaurant=null});
+
 function renderRestaurants(){
  const result=restaurants;
  $('restaurantRows').innerHTML=result.length?result.map((r,index)=>{
@@ -1607,7 +1770,7 @@ function renderRestaurants(){
   '<h4>Cont și autentificare</h4>'+(accountRows||'<p>Nu există încă un cont de administrator.</p>')+
   (!hasAccount?'<button type="button" class="restaurant-create-access" data-create-access="'+id+'">Creează cont</button>':'')+
   '<div class="pont-account-divider"></div><h4>Servicii și date</h4><p>Accesul la module se modifică din „Editează”. Revocarea sau suspendarea nu șterge datele.</p>'+
-  '<div class="pont-account-divider"></div><h4>Meniul zilei</h4>'+
+  '<div class="pont-account-divider"></div><h4>Plăți, autorizări și licitații</h4>'+pontCommerceDetailsHtml(r)+ '<div class="pont-account-divider"></div><h4>Meniul zilei</h4>'+
   (r.access_meniul_zilei?'<button type="button" class="restaurant-day-toggle" data-exhausted-restaurant="'+id+'" aria-pressed="'+dailyMenuExhaustedIds.has(r.id)+'">'+(dailyMenuExhaustedIds.has(r.id)?'Reactivează meniul zilei':'Meniul zilei epuizat')+'</button>':'<p>Modulul este dezactivat.</p>')+
   '</div></details></article>';
  }).join(''):emptyMessage('Nu există restaurante înregistrate.');
@@ -2994,7 +3157,10 @@ $('restaurantForm').onsubmit = async event => {
 $('restaurantRows').onclick = async event => {
  const button = event.target.closest('button');
  if (!button) return;
- const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant,accountToggle,accountRestaurant} = button.dataset;
+ const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant,accountToggle,accountRestaurant,commerceAccess,commerceCityNew,commerceCityPayment,commerceCityAction} = button.dataset;
+ if(commerceAccess){pontOpenRestaurantAccess(commerceAccess);return;}
+ if(commerceCityNew){pontOpenCityCharge(commerceCityNew);return;}
+ if(commerceCityPayment){const item=pontCityPaymentRows.find(x=>x.id===commerceCityPayment);if(item)void operateCommercialPayment('city',item,commerceCityAction,button).then(()=>loadRestaurantCommercialData());return;}
  if(accountToggle){void toggleRestaurantAccountAccess(accountToggle,accountRestaurant,button);return;}
  const restaurant = restaurants.find(item => item.id === (toggle || editRestaurant || deleteRestaurant || createAccess || exhaustedRestaurant));
  if (!restaurant) return;
