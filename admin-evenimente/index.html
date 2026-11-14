@@ -187,7 +187,7 @@ body.pont-admin--city #cityStripeConfirmDialog form .primary{background:linear-g
  <p>Pentru a adăuga evenimente, restaurantul trebuie să aibă un abonament activ de 50 lei / 30 zile, confirmat de PONT.</p>
  <button type="button" id="requestCitySubscription" class="primary">Plătește abonamentul · 50 lei</button>
  <p id="citySubscriptionRequestStatus" class="status" role="status"></p>
- <small>Plata se efectuează în pagina securizată Stripe. AS va fi notificat automat când Stripe confirmă tranzacția, iar accesul este activat numai după validarea manuală.</small>
+ <small>Înainte de Stripe vei vedea confirmarea plății. PONT anunță AS când o deschizi, chiar dacă nu continui. Poți discuta și despre plata cash. AS decide manual când activează accesul.</small>
 </section>
 <section id="cityPromotionPayments" class="panel" hidden><h2>Plăți promovări</h2><div id="cityPromotionPaymentList"></div></section>
 <section id="cityNotifications" class="panel pont-city-notifications" hidden aria-label="Notificări de la administrator">
@@ -404,7 +404,7 @@ async function loadCitySubscription(){
  $('citySubscriptionRequest').hidden=citySubscriptionActive||cityPage!=='adauga';
  $('requestCitySubscription').disabled=Boolean(stripeReceived);
  $('requestCitySubscription').textContent=stripeReceived?'Plată încasată · așteaptă AS':'Plătește abonamentul · 50 lei';
- $('citySubscriptionRequestStatus').textContent=stripeReceived?'Stripe a confirmat plata. Activarea se face manual de AS.':'Achită online 50 lei prin Stripe pentru 30 de zile.';
+ $('citySubscriptionRequestStatus').textContent=stripeReceived?'Stripe a confirmat plata. Activarea se face manual de AS.':'Achită online 50 lei prin Stripe pentru 30 de zile sau contactează PONT pentru plata cash.';
  $('submitEvent').disabled=!citySubscriptionActive;
  $('eventForm').hidden=!citySubscriptionActive;
  $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'Publicarea este blocată până la plata și confirmarea abonamentului.';
@@ -416,7 +416,7 @@ async function loadCitySubscription(){
   const title=document.createElement('strong');
   title.textContent=(item.service_type==='pinned_event'?'Poziție fixă':'Bandă publicitară')+' · '+Number(item.amount).toFixed(2)+' lei';
   const status=document.createElement('small');
-  status.textContent=item.stripe_paid_at?'Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei încasați · Așteaptă validarea AS':'Stripe: 0 lei încasați';
+  status.textContent=item.stripe_paid_at?'Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei încasați · Trimite cererea de promovare, apoi așteaptă validarea AS':item.status==='confirmed'?'Acces autorizat manual (cash/test) · Stripe: 0 lei · Trimite cererea de promovare':'Stripe: 0 lei încasați · Poți continua plata online sau poți discuta cu AS pentru cash';
   card.append(title,status);
   const isPaid=Boolean(item.stripe_paid_at)||item.status==='confirmed';
   const linkedEvent=cityEventRows.find(e=>e.id===(item.promoted_event_id||item.event_id));
