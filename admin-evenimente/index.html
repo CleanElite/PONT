@@ -462,6 +462,15 @@ $('cityPosterFile').addEventListener('change',async evt=>{
 });
 $('logout').onclick=async()=>{if(db)await db.auth.signOut();location.replace('../login/')};
 start().catch(e=>{$('status').textContent=e.message;$('status').className='error'});
+// Deciziile AS sunt recitite inclusiv când AR revine în aplicație.
+async function syncCityStatus(){
+ if(!db||!restaurant||document.hidden)return;
+ try{await Promise.all([refresh(),loadCitySubscription()])}
+ catch(err){console.warn('PONT: sincronizarea notificărilor',err)}
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)syncCityStatus()});
+window.addEventListener('focus',syncCityStatus);
+setInterval(syncCityStatus,45000);
 </script><style id="pont-ar-approval-message-20261115">
 body.pont-admin--city .pont-ar-approval-note{display:flex;flex-direction:column;gap:7px;margin:0 0 15px;padding:12px 14px;border:1px solid #d6b77b91;border-radius:11px;background:linear-gradient(120deg,#3e3528bb,#17383b);color:#f2e4c3}
 body.pont-admin--city .pont-ar-approval-note strong{font:750 12px/1.5 system-ui;color:#ffedc1}
