@@ -1,5 +1,5 @@
 // PONT: library of reusable restaurant dishes and daily menu selector.
-import {renderDishChecklist} from './menu-templates.js?v=7';
+import {renderDishChecklist} from './menu-templates.js?v=no-auto-focus-20261114';
 export function initPontDishEditor({db, getRestaurants, refreshMenus, isRestaurantAdmin = false}) {
 const $ = id => document.getElementById(id);
 const esc = x => String(x ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -834,7 +834,7 @@ $('pontDishRemovePhoto').onclick = () => {
   dishPhotoRemoved = true;
   if (dishFormMessage.textContent === photoValidationMessage) dishFormMessage.textContent = '';
   renderDishPhoto();
-  input.focus();
+  
 };
 $('pontDishCategory').onchange = syncDishPrice;
 $('pontDishCancel').onclick = () => {
@@ -848,7 +848,7 @@ $('pontDishNew').onclick = () => {
   resetDish();
   dishListMessage.textContent = '';
   dishEditor.hidden = false;
-  $('pontDishName').focus();
+ 
 };
 $('pontDishForm').onsubmit = async event => {
   event.preventDefault();
@@ -941,7 +941,7 @@ $('pontDishList').onclick = async event => {
     renderDishPhoto();
     dishListMessage.textContent = '';
     dishEditor.hidden = false;
-    $('pontDishName').focus();
+ 
   }
   if (del && confirm('Ștergi preparatul ' + dish.name + '? Meniurile deja publicate nu vor fi afectate.')) {
     const {error} = await db.from('pont_dishes').delete().eq('id', dish.id);
