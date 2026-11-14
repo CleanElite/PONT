@@ -32,11 +32,11 @@ body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
 @media(max-width:520px){.pont-sponsor{min-height:75px;padding:9px 12px}.pont-sponsor__inner{gap:3px}.pont-sponsor__brand{font-size:21px}.pont-sponsor__eyebrow{letter-spacing:.15em;font-size:8px}.pont-sponsor__caption{font-size:10px}}
 @media(prefers-reduced-motion:reduce){.pont-sponsor::after{animation:none}}
 #events{margin:0 0 25px}
-#eventList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,2.25vw,23px)}
+#eventList{display:grid;grid-template-columns:minmax(0,1fr);gap:clamp(10px,2.25vw,23px)}
 .event-tile{min-width:0;display:flex}
-.event-tile:nth-child(-n+2),.event-empty{grid-column:1/-1}
+.event-empty{grid-column:1/-1}
 .event-card{min-height:clamp(126px,23vw,233px);cursor:pointer;font:inherit;border:2px solid #6dc1bf;transition:border-color .2s,box-shadow .2s}
-.event-tile:nth-child(-n+2) .event-card{min-height:clamp(154px,28.8vw,294px);border-color:#a1e1dd}
+.event-card{min-height:clamp(154px,28.8vw,294px);border-color:#a1e1dd}
 .event-card .menu-card-copy{position:relative;z-index:1}
 .event-card .menu-card-name{display:block}
 .event-card .menu-card-location{color:#cce3df}
@@ -74,14 +74,51 @@ body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
 .pont-footer-simple{color:#c5d8d6}
 @media(max-width:520px){
 
-.event-tile:nth-child(-n+2) .event-card .menu-card-copy{width:58%}
-.event-tile:nth-child(n+3) .event-card{padding:12px}
-.event-tile:nth-child(n+3) .menu-card-name{font-size:clamp(15px,3.6vw,18px)}
+.event-card .menu-card-copy{width:51%}
 .event-submit-form{grid-template-columns:1fr}
 .event-submit-form label{grid-column:1/-1}
 }
-.event-demo-label{position:absolute;z-index:3;top:clamp(43px,6vw,65px);right:clamp(8px,1.9vw,20px);padding:4px 7px;border:1px solid #eacf8677;border-radius:6px;background:#031b20de;color:#fce6b2;font:750 clamp(8px,1.55vw,11px)/1.15 system-ui;letter-spacing:.04em}
-@media(max-width:520px){.event-demo-label{top:42px}}
+
+/* All event promotions share the same full-width landscape layout. */
+#eventList .event-tile{grid-column:1/-1}
+#eventList .event-card{justify-content:center;min-height:clamp(150px,27vw,255px);padding:clamp(14px,3vw,30px) clamp(14px,5vw,48px)}
+#eventList .event-card .menu-card-photo{inset-inline-start:auto;width:70%;object-fit:cover;object-position:center 50%}
+#eventList .event-card::after{background:linear-gradient(90deg,#041c20 0%,#041c20 25%,#041c20f2 37%,#041c20a8 49%,#041c2029 64%,transparent 80%)}
+#eventList .event-card .menu-card-copy{width:47%;gap:clamp(4px,.85vw,9px);align-content:center}
+#eventList .event-card .menu-card-name{font-size:clamp(21px,4.2vw,39px);line-height:1.06;max-width:16ch}
+#eventList .event-card .menu-card-location{font-size:clamp(11px,1.9vw,17px);line-height:1.28}
+#eventList .event-card .event-category{font-size:clamp(11px,1.8vw,15px)}
+#eventList .event-card .event-date{font-size:clamp(10px,2vw,17px)}
+/* Continuous, single-line sponsor marquee including the full text. */
+.pont-sponsor{display:flex;align-items:center;justify-content:flex-start;padding:0;min-height:80px}
+.pont-sponsor__track{display:flex;align-items:center;flex:none;width:max-content;animation:pont-sponsor-marquee 28s linear infinite}
+.pont-sponsor__run{display:flex;align-items:center;flex:none;gap:clamp(28px,5vw,70px);padding-inline:clamp(16px,3vw,36px);white-space:nowrap}
+.pont-sponsor__eyebrow,.pont-sponsor__caption,.pont-sponsor__brand{display:inline-block;flex:none;white-space:nowrap}
+.pont-sponsor__eyebrow::before,.pont-sponsor__eyebrow::after,.pont-sponsor__brand::before,.pont-sponsor__brand::after{display:none}
+.pont-sponsor__eyebrow{font-size:clamp(10px,1.55vw,14px);letter-spacing:.14em}
+.pont-sponsor__caption{font-size:clamp(11px,1.65vw,15px)}
+.pont-sponsor__brand{font-size:clamp(22px,3vw,32px)}
+.pont-sponsor__separator{color:#d9bf89;font-size:18px;opacity:.8}
+@keyframes pont-sponsor-marquee{to{transform:translateX(-50%)}}
+.holiday-discovery{margin:0 0 clamp(20px,4vw,34px);padding:clamp(18px,4vw,32px);border:1px solid #d9b77b80;border-radius:clamp(16px,3vw,26px);background:radial-gradient(ellipse at 90% 0%,#c3a36b1c,transparent 45%),linear-gradient(135deg,#082b30,#061e24);box-shadow:inset 0 1px #ffe5af1c}
+.holiday-discovery__eyebrow{color:#e5c98e;text-transform:uppercase;letter-spacing:.18em;font-size:11px;font-weight:700}
+.holiday-discovery h2{font:500 clamp(24px,5vw,42px)/1.14 Georgia,serif;letter-spacing:-.025em;margin:9px 0}
+.holiday-discovery p{margin:0 0 16px;color:#c3dcda;font-size:clamp(12px,2.1vw,15px);line-height:1.45}
+.holiday-discovery__filters{display:flex;flex-wrap:wrap;gap:8px}
+.holiday-filter{border:1px solid #b7c6c35c;border-radius:999px;background:#092e34;color:#e0e9e7;padding:9px 14px;font:650 clamp(11px,1.8vw,14px) system-ui;cursor:pointer;transition:background .2s,border-color .2s}
+.holiday-filter[aria-pressed="true"]{background:#e6c98b;color:#102729;border-color:#f8dfaa}
+@media(max-width:520px){
+ #eventList .event-card{min-height:163px;padding:12px 14px}
+ #eventList .event-card .menu-card-copy{width:55%;gap:5px}
+ #eventList .event-card .menu-card-name{font-size:clamp(19px,5vw,25px);max-width:15ch}
+ #eventList .event-card .menu-card-location{font-size:11px}
+ #eventList .event-card .event-date{font-size:10px;right:8px;top:8px}
+ #eventList .event-card .menu-card-photo{width:71%}
+ .pont-sponsor{min-height:76px}
+ .pont-sponsor__run{gap:26px}
+}
+@media(prefers-reduced-motion:reduce){.pont-sponsor__track{animation:none}.pont-sponsor{overflow-x:auto}}
+
 </style>
 </head>
 <body class="lunch menu-showcase">
@@ -95,7 +132,19 @@ body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
   <h1 id="eventTitle">Ieșire în oraș</h1>
   <p>Descoperă petreceri, muzică live și evenimente speciale din Slobozia și împrejurimi.</p>
  </section>
- <div class="pont-sponsor" aria-label="Această pagină este sponsorizată de Biblos Grivița"><div class="pont-sponsor__inner"><span class="pont-sponsor__eyebrow">Seri de neuitat</span><span class="pont-sponsor__caption">Această pagină este sponsorizată de</span><strong class="pont-sponsor__brand">Biblos Grivița</strong></div></div>
+ <div class="pont-sponsor" aria-label="Această pagină este sponsorizată de Biblos Grivița"><div class="pont-sponsor__track" aria-hidden="true"><div class="pont-sponsor__run"><span class="pont-sponsor__eyebrow">Seri de neuitat</span><span class="pont-sponsor__separator">✦</span><span class="pont-sponsor__caption">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator">✦</span><strong class="pont-sponsor__brand">Biblos Grivița</strong><span class="pont-sponsor__separator">✦</span></div><div class="pont-sponsor__run"><span class="pont-sponsor__eyebrow">Seri de neuitat</span><span class="pont-sponsor__separator">✦</span><span class="pont-sponsor__caption">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator">✦</span><strong class="pont-sponsor__brand">Biblos Grivița</strong><span class="pont-sponsor__separator">✦</span></div></div></div>
+ <section class="holiday-discovery" aria-labelledby="holidayTitle">
+  <span class="holiday-discovery__eyebrow">Ocazii speciale</span>
+  <h2 id="holidayTitle">N-ai planuri de Revelion? Sau pregătești o aniversare?</h2>
+  <p>Descoperă unde poți petrece sărbătorile sau organiza o seară specială. Alege ocazia care te interesează.</p>
+  <div class="holiday-discovery__filters" role="group" aria-label="Filtrează evenimentele după ocazie">
+   <button class="holiday-filter" type="button" data-event-filter="revelion" aria-pressed="false">Revelion</button>
+   <button class="holiday-filter" type="button" data-event-filter="craciun" aria-pressed="false">Crăciun</button>
+   <button class="holiday-filter" type="button" data-event-filter="paste" aria-pressed="false">Paște</button>
+   <button class="holiday-filter" type="button" data-event-filter="aniversari" aria-pressed="false">Aniversări</button>
+   <button class="holiday-filter" type="button" data-event-filter="toate" aria-pressed="true">Toate evenimentele</button>
+  </div>
+ </section>
  <section id="events" aria-label="Evenimente în Slobozia și împrejurimi">
   <div id="eventList" aria-live="polite"><div class="event-empty"><h2>Se pregătesc noi evenimente</h2><p>Revino pentru petreceri, seri cu lăutari, muzică live și alte experiențe din zonă.</p></div></div>
  </section>
@@ -129,26 +178,39 @@ const $=id=>document.getElementById(id);
 const todayLocal=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 const escDate=value=>{const [y,m,d]=(value||'').split('-').map(Number);return y&&m&&d?new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,d,12))):''};
 const fallbackPhoto="./ambient.webp";
-let db=null,restaurantId=null,canPost=false,allEvents=[];
+let db=null,restaurantId=null,canPost=false,allEvents=[],activeFilter='toate';
 const config=window.PONT_CONFIG||{};
 // Preview content is kept in the page only; never inserted in Supabase.
 const demoEvents=[
- {id:"demo-01",title:"Seară cu lăutari",event_date:"2026-11-20",start_time:"20:00",locality:"Slobozia",venue:"Local demonstrativ A",poster_url:"https://images.unsplash.com/photo-1739381563065-54cfb2b70079?auto=format&fit=crop&w=1200&q=76",description:"Muzică live și atmosferă tradițională. Exemplu de anunț, fără organizator real.",contact_phone:'',isDemo:true},
- {id:"demo-02",title:"Retro Party — anii ’90",event_date:"2026-11-21",start_time:"21:00",locality:"Amara",venue:"Local demonstrativ B",poster_url:"https://images.unsplash.com/photo-1770413688598-03f95df8ecaf?auto=format&fit=crop&w=1200&q=76",description:"DJ și hituri retro pentru o seară tematică. Exemplu vizual fictiv.",contact_phone:'',isDemo:true},
- {id:"demo-03",title:"Cină cu muzică live",event_date:"2026-11-27",start_time:"19:30",locality:"Grivița",venue:"Local demonstrativ C",poster_url:"https://images.unsplash.com/photo-1696628692316-c667760cec35?auto=format&fit=crop&w=1200&q=76",description:"Cină festivă cu muzică live. Exemplu de eveniment, fără rezervări.",contact_phone:'',isDemo:true},
- {id:"demo-04",title:"Karaoke & Friends",event_date:"2026-11-28",start_time:"20:30",locality:"Bucu",venue:"Local demonstrativ D",poster_url:"https://images.unsplash.com/photo-1741594347991-4ad8bb863eb5?auto=format&fit=crop&w=900&q=76",description:"Seară de karaoke și distracție între prieteni. Anunț demonstrativ.",contact_phone:'',isDemo:true},
- {id:"demo-05",title:"Petrecere de iarnă",event_date:"2026-12-05",start_time:"20:00",locality:"Slobozia",venue:"Local demonstrativ E",poster_url:"https://images.unsplash.com/photo-1671070850071-574b1032b184?auto=format&fit=crop&w=900&q=76",description:"Petrecere tematică de sezon. Exemplu fictiv pentru prezentarea cardurilor.",contact_phone:'',isDemo:true},
- {id:"demo-06",title:"Revelion — Noaptea dintre ani",event_date:"2026-12-31",start_time:"21:00",locality:"Amara",venue:"Local demonstrativ F",poster_url:"https://images.unsplash.com/photo-1768054186550-4bdbb8f2640e?auto=format&fit=crop&w=900&q=76",description:"Exemplu de petrecere de Revelion, fără organizator sau rezervări reale.",contact_phone:'',isDemo:true}
+ {id:"demo-01",title:"Seară cu lăutari",event_date:"2026-11-20",start_time:"20:00",locality:"Slobozia",venue:"Restaurant Aurora",poster_url:"https://images.unsplash.com/photo-1739381563065-54cfb2b70079?auto=format&fit=crop&w=1200&q=76",description:"Muzică live și atmosferă tradițională. Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true},
+ {id:"demo-02",title:"Retro Party — anii ’90",event_date:"2026-11-21",start_time:"21:00",locality:"Amara",venue:"Bistro Velvet",poster_url:"https://images.unsplash.com/photo-1770413688598-03f95df8ecaf?auto=format&fit=crop&w=1200&q=76",description:"DJ și hituri retro pentru o seară tematică. Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true},
+ {id:"demo-03",title:"Cină cu muzică live",event_date:"2026-11-27",start_time:"19:30",locality:"Grivița",venue:"Casa Armonia",poster_url:"https://images.unsplash.com/photo-1696628692316-c667760cec35?auto=format&fit=crop&w=1200&q=76",description:"Cină festivă cu muzică live. Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true},
+ {id:"demo-04",title:"Karaoke & Friends",event_date:"2026-11-28",start_time:"20:30",locality:"Bucu",venue:"Studio Nocturn",poster_url:"https://images.unsplash.com/photo-1741594347991-4ad8bb863eb5?auto=format&fit=crop&w=900&q=76",description:"Seară de karaoke și distracție între prieteni. Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true},
+ {id:"demo-05",title:"Petrecere de iarnă",event_date:"2026-12-05",start_time:"20:00",locality:"Slobozia",venue:"Salon Winter",poster_url:"https://images.unsplash.com/photo-1671070850071-574b1032b184?auto=format&fit=crop&w=900&q=76",description:"Petrecere tematică de sezon. Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true},
+ {id:"demo-06",title:"Revelion — Noaptea dintre ani",event_date:"2026-12-31",start_time:"21:00",locality:"Amara",venue:"Grand Amara",poster_url:"https://images.unsplash.com/photo-1768054186550-4bdbb8f2640e?auto=format&fit=crop&w=900&q=76",description:"Detalii și disponibilitate în curs de actualizare.",contact_phone:'',isDemo:true}
 ];
 const eventDialog=$('eventDetails');
 eventDialog.querySelector('.event-dialog-close').onclick=()=>eventDialog.close();
 eventDialog.addEventListener('click',e=>{if(e.target===eventDialog)eventDialog.close()});
+function matchEventFilter(event,filter){
+ if(filter==='toate')return true;
+ const source=[event.title,event.description,event.venue].join(' ').toLocaleLowerCase('ro-RO').normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ const words={revelion:/revelion|anul nou|new year/,craciun:/craciun|christmas|mos craciun|ajun|petrecere de iarna/,paste:/paste|pascal|inviere/,aniversari:/aniversar|zi de nastere|birthday|majorat/};
+ return words[filter]?.test(source)||false;
+}
+function refreshEvents(){renderEvents([...demoEvents,...allEvents].filter(e=>matchEventFilter(e,activeFilter)))}
+document.querySelectorAll('[data-event-filter]').forEach(btn=>btn.addEventListener('click',()=>{
+ activeFilter=btn.dataset.eventFilter;
+ document.querySelectorAll('[data-event-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b===btn)));
+ refreshEvents();
+ $('events').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'});
+}));
 function renderEvents(events){
  const list=$('eventList');list.replaceChildren();
  if(!events.length){
   const empty=document.createElement('div');empty.className='event-empty';
   const h=document.createElement('h2');h.textContent='Se pregătesc noi evenimente';
-  const p=document.createElement('p');p.textContent='Momentan nu sunt evenimente anunțate. Aici vei descoperi petreceri, seri cu lăutari, concerte și alte experiențe din Slobozia și împrejurimi.';
+  const p=document.createElement('p');p.textContent=activeFilter==='toate'?'Momentan nu sunt evenimente anunțate. Revino pentru noi experiențe din Slobozia și împrejurimi.':'Nu există încă evenimente anunțate pentru această ocazie. Poți consulta toate evenimentele disponibile.';
   empty.append(h,p);list.append(empty);return;
  }
  for(const [i,event] of events.entries()){
@@ -156,20 +218,18 @@ function renderEvents(events){
   const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
   const img=document.createElement('img');img.className='menu-card-photo';img.src=event.poster_url&&/^https:\/\//i.test(event.poster_url)?event.poster_url:fallbackPhoto;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';img.onerror=()=>{if(img.src!==new URL(fallbackPhoto,location.href).href)img.src=fallbackPhoto};
   const badge=document.createElement('span');badge.className='event-date';badge.textContent=escDate(event.event_date);
-  const demoLabel=document.createElement('span');demoLabel.className='event-demo-label';demoLabel.textContent='DEMO · EVENIMENT FICTIV';
   const copy=document.createElement('span');copy.className='menu-card-copy';
   const name=document.createElement('strong');name.className='menu-card-name';name.textContent=event.title;
   const place=document.createElement('span');place.className='menu-card-location';place.textContent=event.venue+' · '+event.locality;
   const hour=document.createElement('span');hour.className='event-category';hour.textContent='Ora '+String(event.start_time||'').slice(0,5);
-  const action=document.createElement('span');action.className='menu-card-action';action.textContent='Vezi evenimentul';
-  copy.append(name,place,hour,action);button.append(img,badge);if(event.isDemo)button.append(demoLabel);button.append(copy);
+  copy.append(name,place,hour);button.append(img,badge,copy);
   button.addEventListener('click',()=>showDetails(event));outer.append(button);list.append(outer);
  }
 }
 function showDetails(event){
  $('eventDetailsTitle').textContent=event.title;
  $('eventDetailsMeta').textContent=escDate(event.event_date)+' · '+String(event.start_time).slice(0,5)+' · '+event.venue+', '+event.locality;
- $('eventDetailsDescription').textContent=(event.isDemo?'EXEMPLU FICTIV — rezervările sunt dezactivate.\n\n':'')+(event.description||'Pentru detalii și rezervări, contactează direct organizatorul.');
+ $('eventDetailsDescription').textContent=(event.description||'Pentru detalii și rezervări, contactează direct organizatorul.');
  const phone=String(event.contact_phone||'').trim();const link=$('eventDetailsPhone');
  const dial=phone.replace(/[^+\d]/g,'');
  link.hidden=event.isDemo||!/^\+?\d{7,15}$/.test(dial);if(!link.hidden)link.href='tel:'+dial;
@@ -178,7 +238,7 @@ function showDetails(event){
 async function loadEvents(){
  if(!db)return;
  const {data,error}=await db.from('pont_city_events').select('id,title,description,event_date,start_time,locality,venue,contact_phone,poster_url').eq('status','approved').gte('event_date',todayLocal()).order('event_date',{ascending:true}).order('start_time',{ascending:true}).limit(80);
- if(error)throw error;allEvents=data||[];renderEvents([...demoEvents,...allEvents]);
+ if(error)throw error;allEvents=data||[];refreshEvents();
 }
 async function setupPublisher(){
  const {data:{user},error}=await db.auth.getUser();if(error||!user)return;
@@ -206,7 +266,7 @@ async function start(){
  const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
  db=createClient(config.url,config.anonKey);
  $('eventSubmitForm').elements.event_date.min=todayLocal();
- renderEvents(demoEvents);
+ refreshEvents();
  await Promise.allSettled([loadEvents(),setupPublisher()]);
 }
 start().catch(e=>{const list=$('eventList');list.textContent='Evenimentele nu pot fi încărcate momentan.';console.error('PONT evenimente:',e)});
