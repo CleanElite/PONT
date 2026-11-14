@@ -1448,7 +1448,25 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   <div id="cityApprovedRows" class="pont-city-list"></div>
   <div class="pont-city-section-heading"><h3>Respinse</h3></div>
   <div id="cityRejectedRows" class="pont-city-list"></div>
+  <div class="pont-city-section-heading"><h3>Retrase (istoric)</h3></div>
+  <div id="cityRemovedRows" class="pont-city-list"></div>
 </section>
+<dialog id="pontCityAsEditDialog" class="pont-city-as-edit-dialog" aria-labelledby="pontCityAsEditTitle">
+  <h2 id="pontCityAsEditTitle">Editează evenimentul</h2>
+  <p>Modificarea este imediată și se înregistrează în istoricul de audit.</p>
+  <form id="pontCityAsEditForm">
+    <label>Titlu<input name="title" required minlength="5" maxlength="100"></label>
+    <label>Data<input name="event_date" type="date" required></label>
+    <label>Ora<input name="start_time" type="time" required></label>
+    <label>Localitate<input name="locality" maxlength="80" required></label>
+    <label>Restaurant / locație<input name="venue" maxlength="120" required></label>
+    <label>Telefon rezervări<input name="contact_phone" maxlength="32" required></label>
+    <label class="wide">Link afiș<input name="poster_url" type="url" maxlength="700"></label>
+    <label class="wide">Descriere<textarea name="description" maxlength="1200"></textarea></label>
+    <div class="wide pont-city-as-edit-buttons"><button id="pontCityAsEditCancel" type="button">Anulează</button><button id="pontCityAsEditSave" class="primary" type="submit">Salvează modificările</button></div>
+  </form>
+  <p id="pontCityAsEditStatus" role="status"></p>
+</dialog>
 <section id="analytics" class="card dashboard-panel pont-insights" aria-labelledby="analyticsTitle" hidden>
  <section id="pontLoginSecurityAlerts" class="pont-login-security-alerts" role="alert" aria-live="polite" hidden></section>
  <div class="dashboard-heading pont-insights-heading">
@@ -2909,6 +2927,47 @@ function cityDate(date){
  return new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(parts[0],parts[1]-1,parts[2],12)));
 }
 function cityNormalize(x){return String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('ro-RO').replace(/[^a-z0-9]+/g,' ').trim()}
+let pontCityAsEditingEvent=null;
+function pontCityAsEdit(e){
+ pontCityAsEditingEvent=e;
+ const form=$('pontCityAsEditForm');
+ for(const k of ['title','event_date','start_time','locality','venue','contact_phone','poster_url','description']){
+  form.elements[k].value=k==='start_time'?String(e[k]||'').slice(0,5):String(e[k]||'');
+ }
+ $('pontCityAsEditStatus').textContent='';
+ $('pontCityAsEditDialog').showModal();
+}
+$('pontCityAsEditCancel').onclick=()=>$('pontCityAsEditDialog').close();
+$('pontCityAsEditForm').onsubmit=async ev=>{
+ ev.preventDefault();
+ if(!pontCityAsEditingEvent)return;
+ const e=pontCityAsEditingEvent, form=ev.currentTarget;
+ const fields=['title','event_date','start_time','locality','venue','contact_phone','poster_url','description'];
+ const update={};
+ for(const key of fields){
+  const value=form.elements[key].value.trim();
+  const before=key==='start_time'?String(e[key]||'').slice(0,5):String(e[key]||'');
+  if(value!==before)update[key]=key==='poster_url'?(value||null):value;
+ }
+ if(!Object.keys(update).length){$('pontCityAsEditStatus').textContent='Nu există modificări.';return}
+ const btn=$('pontCityAsEditSave');btn.disabled=true;$('pontCityAsEditStatus').textContent='Se salvează…';
+ try{
+  const {data,error}=await db.from('pont_city_events').update(update).eq('id',e.id).eq('status',e.status).select('id');
+  if(error)throw error;if(!data?.length)throw Error('Evenimentul a fost modificat între timp.');
+  $('pontCityAsEditDialog').close();await loadCityEvents();
+  $('cityModerationStatus').textContent='Eveniment actualizat. Versiunea anterioară este păstrată în audit.';
+ }catch(err){$('pontCityAsEditStatus').textContent='Nu s-a salvat: '+err.message}
+ finally{btn.disabled=false}
+};
+async function pontCityAsWithdraw(e){
+ if(e.status==='removed')return;
+ if(!confirm('Retragi evenimentul „'+e.title+'”? Va dispărea din pagina publică, dar va rămâne în istoric și audit.'))return;
+ const {data,error}=await db.from('pont_city_events')
+  .update({status:'removed',reviewed_at:new Date().toISOString(),reviewed_by:(await db.auth.getUser()).data.user?.id})
+  .eq('id',e.id).eq('status',e.status).select('id');
+ if(error)throw error;if(!data?.length)throw Error('Evenimentul a fost modificat între timp.');
+ await loadCityEvents();$('cityModerationStatus').textContent='Eveniment retras din pagina publică; istoricul a fost păstrat.';
+}
 function cityRow(e,pending=false){
  const article=document.createElement('article');article.className='pont-city-event';
  const name=document.createElement('strong');name.textContent=e.title||'Eveniment fără titlu';article.append(name);
@@ -2947,6 +3006,15 @@ function cityRow(e,pending=false){
     }catch(err){$('cityModerationStatus').textContent='Eroare: '+err.message;[...actions.querySelectorAll('button')].forEach(b=>b.disabled=false)}
    });actions.append(button);
   }article.append(actions);
+ }
+ if(e.status!=='removed'){
+  const manage=document.createElement('div');manage.className='pont-city-actions pont-city-as-actions';
+  const edit=document.createElement('button');edit.type='button';edit.textContent='Editează';edit.onclick=()=>pontCityAsEdit(e);
+  const remove=document.createElement('button');remove.type='button';remove.textContent='Retrage evenimentul';remove.className='pont-city-reject';
+  remove.onclick=async()=>{edit.disabled=true;remove.disabled=true;try{await pontCityAsWithdraw(e)}catch(error){$('cityModerationStatus').textContent='Eroare: '+error.message;edit.disabled=false;remove.disabled=false}};
+  manage.append(edit,remove);article.append(manage);
+ }else{
+  const info=document.createElement('small');info.className='pont-city-meta';info.textContent='Retras — păstrat în istoric';article.append(info);
  }
  return article;
 }
@@ -3025,7 +3093,7 @@ async function loadCityEvents(){
   const recent=$('cityRecent');recent.replaceChildren();
   for(const event of events.slice(0,8))recent.append(cityRow(event));
   if(!events.length){const p=document.createElement('p');p.textContent='Nu există încă evenimente înregistrate.';recent.append(p)}
-  const groups=[['cityPendingRows','pending'],['cityApprovedRows','approved'],['cityRejectedRows','rejected']];
+  const groups=[['cityPendingRows','pending'],['cityApprovedRows','approved'],['cityRejectedRows','rejected'],['cityRemovedRows','removed']];
   for(const [id,state] of groups){
    const node=$(id);node.replaceChildren();const items=events.filter(x=>x.status===state);
    items.forEach(x=>node.append(cityRow(x,state==='pending')));
@@ -4014,4 +4082,18 @@ body.pont-admin--platform #app .admin-nav.pont-admin-grouped-nav>.pont-nav-clust
 #cityModeration .pont-city-request-changes p{margin:4px 0;color:#d7f0e9;font:600 11px/1.5 system-ui;overflow-wrap:anywhere}
 #cityModeration .pont-city-request-card .pont-city-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
 #cityModeration .pont-city-request-card .pont-city-actions button{min-height:37px;flex:1 1 100px}
+</style><style id="pont-as-city-edit-withdraw-20261115">
+#cityModeration .pont-city-as-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px}
+#cityModeration .pont-city-as-actions button{flex:1 1 130px;min-height:38px}
+.pont-city-as-edit-dialog{width:min(95vw,650px);max-height:88dvh;overflow:auto;border:1px solid #80b6a3;border-radius:15px;padding:clamp(14px,3vw,22px);background:linear-gradient(145deg,#11383a,#09242d);color:#f2faf5}
+.pont-city-as-edit-dialog::backdrop{background:#00151dbb}
+.pont-city-as-edit-dialog h2{font:750 20px/1.25 system-ui;color:#f7dfad;margin:0 0 10px}
+.pont-city-as-edit-dialog p{font:500 12px/1.5 system-ui;color:#c4dcd4}
+.pont-city-as-edit-dialog form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.pont-city-as-edit-dialog label{display:flex;flex-direction:column;gap:5px;margin:0;font:650 12px/1.3 system-ui;color:#d8ede5}
+.pont-city-as-edit-dialog label.wide,.pont-city-as-edit-buttons{grid-column:1/-1}
+.pont-city-as-edit-dialog input,.pont-city-as-edit-dialog textarea{width:100%;min-width:0;border:1px solid #628f83;border-radius:9px;padding:10px;background:#082630;color:#f7fcfa;font:16px system-ui}
+.pont-city-as-edit-dialog textarea{min-height:84px}
+.pont-city-as-edit-buttons{display:flex;justify-content:flex-end;gap:8px}
+@media(max-width:580px){.pont-city-as-edit-dialog form{grid-template-columns:1fr}}
 </style><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script></body></html>
