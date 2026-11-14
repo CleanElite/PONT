@@ -2462,9 +2462,14 @@ async function enter() {
    await window.pontOperations?.refresh();
   }catch(secondaryError){console.warn('PONT: modul auxiliar indisponibil',secondaryError)}
   $('app').hidden = false;
-  // Dashboard is the default landing screen for every Super Admin login.
-  history.replaceState(null, '', '#analytics');
-  selectPlatformPanel('analytics', false);
+  // Keep the requested workspace on direct links; otherwise open Meniul zilei by default.
+  const requestedPanel=location.hash.slice(1);
+  if(['cityDashboard','cityModeration','cityPromotion'].includes(requestedPanel)){
+   selectCityPanel(requestedPanel,false);
+  }else{
+   history.replaceState(null, '', location.pathname+location.search+'#analytics');
+   selectPlatformPanel('analytics', false);
+  }
   window.pontDishUI?.refresh().catch(error => {
    $('pontDailyError').textContent = error.message;
   });
