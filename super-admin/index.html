@@ -403,6 +403,9 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-fields{min-width:0}
 #restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
 #restaurantRows .restaurant-admin-item>#restaurantForm[hidden],#restaurantRows .restaurant-admin-item>#restaurantAccess[hidden]{display:none!important}
+</style><style id="pont-city-single-month-subscription">
+#pontCityChargeCreate:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.6)}
+#pontCityChargeAlert:not(:empty){font-size:12px;line-height:1.5;color:#f4dbad;padding:8px 0}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-auction-period-save-c15">
@@ -1753,12 +1756,29 @@ $('pontRestaurantAccessRemove').onclick=()=>void pontApplyRestaurantAccess('none
 $('pontRestaurantCommercialMonth').value=todayRO().slice(0,7);
 $('pontRestaurantCommercialMonth').onchange=()=>void loadRestaurantCommercialData();
 $('pontRestaurantCommercialRefresh').onclick=()=>void loadRestaurantCommercialData();
+function pontSubscriptionMonth(d){
+ return new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit'}).format(new Date(d)).slice(0,7);
+}
+function pontExistingMonthSubscription(rid){
+ const month=todayRO().slice(0,7);
+ return pontCityPaymentRows.find(p=>p.restaurant_id===rid&&p.service_type==='subscription'&&pontSubscriptionMonth(p.created_at)===month);
+}
+function pontUpdateCitySubscriptionAvailability(){
+ const rid=pontCityChargeRestaurant,kind=$('pontCityChargeType').value;
+ const existing=rid&&kind==='subscription'?pontExistingMonthSubscription(rid):null;
+ const btn=$('pontCityChargeCreate');
+ btn.disabled=!!existing;
+ if(existing){
+  const status=existing.status==='confirmed'?'confirmat':existing.status==='pending'?'în așteptare':'anulat';
+  $('pontCityChargeAlert').textContent='Există deja un abonament pentru luna '+todayRO().slice(0,7)+' ('+status+'). Nu poți înregistra altul. Folosește înregistrarea existentă.';
+ }else $('pontCityChargeAlert').textContent='';
+}
 function pontOpenCityCharge(rid){
  pontCityChargeRestaurant=rid;
  $('pontCityChargeName').textContent=pontPaymentRestaurantName(rid);
  $('pontCityChargeType').value='subscription';
  pontUpdateCityChargeEvents();
- $('pontCityChargeAlert').textContent='';
+ pontUpdateCitySubscriptionAvailability();
  $('pontCityChargeDialog').showModal();
 }
 function pontUpdateCityChargeEvents(){
@@ -1770,13 +1790,14 @@ function pontUpdateCityChargeEvents(){
   const opt=document.createElement('option');opt.value=e.id;opt.textContent=e.title+' · '+e.event_date;select.append(opt);
  }
 }
-$('pontCityChargeType').onchange=pontUpdateCityChargeEvents;
+$('pontCityChargeType').onchange=()=>{pontUpdateCityChargeEvents();pontUpdateCitySubscriptionAvailability()};
 function pontCloseCityCharge(){$('pontCityChargeDialog').close();pontCityChargeRestaurant=null}
 $('pontCityChargeClose').onclick=pontCloseCityCharge;
 $('pontCityChargeCancel').onclick=pontCloseCityCharge;
 $('pontCityChargeCreate').onclick=async()=>{
  if(pontPaymentBusy)return;
  const rid=pontCityChargeRestaurant,kind=$('pontCityChargeType').value;
+ if(kind==='subscription'&&pontExistingMonthSubscription(rid)){pontUpdateCitySubscriptionAvailability();return}
  const eventId=$('pontCityChargeEvent').value;
  if(kind==='pinned_event'&&!eventId){$('pontCityChargeAlert').textContent='Alege un eveniment aprobat.';return}
  if(!confirm('Înregistrezi serviciul ca NEPLĂTIT? Confirmarea se face ulterior, din restaurant.'))return;
@@ -2793,6 +2814,7 @@ $('pontPaymentCreateForm').onsubmit=async event=>{
  event.preventDefault();if(pontPaymentBusy)return;
  const rid=$('pontPaymentRestaurant').value,kind=$('pontPaymentService').value,ev=$('pontPaymentEvent').value;
  if(!rid||(kind==='pinned_event'&&!ev)){$('pontPaymentCreateStatus').textContent='Selectează restaurantul și evenimentul, când este cazul.';return}
+ if(kind==='subscription'&&pontExistingMonthSubscription(rid)){$('pontPaymentCreateStatus').textContent='Acest restaurant are deja un abonament în luna curentă. Folosește abonamentul existent.';return}
  if(!confirm('Înregistrezi solicitarea de plată? Nu se marchează încasată până nu apeși „Confirmă plata”.'))return;
  pontPaymentBusy=true;$('pontPaymentCreateButton').disabled=true;
  try{
