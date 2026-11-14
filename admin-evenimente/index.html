@@ -291,10 +291,10 @@ $('pontPromotionForm').onsubmit=async e=>{
   const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests')
    .select('id,service_type,requested_start_date,status,stripe_paid_at')
    .eq('restaurant_id',restaurant.id).eq('service_type',cityPromotionType)
-   .eq('promoted_event_id',cityPromotionEvent.id).eq('requested_start_date',date)
-   .order('created_at',{ascending:false}).limit(10);
+   .eq('promoted_event_id',cityPromotionEvent.id)
+   .order('created_at',{ascending:false}).limit(20);
   if(paymentError)throw paymentError;
-  const ready=(payments||[]).find(p=>p.stripe_paid_at||p.status==='confirmed');
+  const ready=(payments||[]).find(p=>(p.requested_start_date===date||(p.requested_start_date===null&&p.status==='confirmed'))&&(p.stripe_paid_at||p.status==='confirmed'));
   if(ready){
    const duplicate=cityRequestRows.some(r=>r.event_id===cityPromotionEvent.id&&r.request_type===cityPromotionType&&r.status==='pending'&&r.proposed_changes?.requested_start_date===date);
    if(duplicate)throw Error('Solicitarea este deja trimisă și așteaptă decizia AS.');
@@ -422,6 +422,9 @@ async function loadCitySubscription(){
   const linkedEvent=cityEventRows.find(e=>e.id===(item.promoted_event_id||item.event_id));
   const alreadyRequested=cityRequestRows.some(req=>req.event_id===linkedEvent?.id&&req.request_type===item.service_type
    &&['pending','approved'].includes(req.status)&&req.proposed_changes?.requested_start_date===item.requested_start_date);
+  if(isPaid&&linkedEvent&&!item.requested_start_date){
+   card.append(arButton('Alege data și solicită promovarea',()=>openCityPromotion(linkedEvent,item.service_type,item.amount)));
+  }
   if(isPaid&&linkedEvent&&item.requested_start_date&&!alreadyRequested){
    const send=arButton('Trimite cererea de promovare',async()=>{
     send.disabled=true;
