@@ -49,7 +49,8 @@ begin
  select * into existing from public.auction_offers where restaurant_id=rid and campaign_month=p_month for update;
  if found then
   if existing.payment_status='paid' then raise exception 'Oferta a fost deja achitată';end if;
-  if p_amount<existing.amount+10 then raise exception 'Majorarea minimă este de 10 lei';end if;
+  if p_amount=existing.amount then raise exception 'Noua ofertă trebuie să fie diferită de cea actuală';end if;
+   if p_amount>existing.amount and p_amount<existing.amount+10 then raise exception 'Majorarea minimă este de 10 lei';end if;
   update public.auction_offers set amount=p_amount,round=greatest(existing.round,bid_round),payment_status='pending',paid_at=null,updated_at=now() where id=existing.id returning * into result;
  else
   insert into public.auction_offers(restaurant_id,campaign_month,amount,round) values(rid,p_month,p_amount,bid_round) returning * into result;

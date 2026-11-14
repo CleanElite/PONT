@@ -381,6 +381,12 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  <div id="pontOpDays" class="pont-op-days"></div>
  <p id="pontOpWeekStatus" role="status"></p></details>`;
  parent.append(section);
+  // Closing the weekly planner returns to the top of the current menu page.
+  const weeklyPanel = section.querySelector('#pontWeekPanel');
+  weeklyPanel?.addEventListener('toggle', () => {
+    if (!weeklyPanel.open) requestAnimationFrame(() => requestAnimationFrame(() =>
+      window.scrollTo({top:0,left:0,behavior:'instant'})));
+  });
  if(settingsHost){
    const settings=document.createElement('div');
    settings.id='pontRestaurantSettings';

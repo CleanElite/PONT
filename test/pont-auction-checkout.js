@@ -36,13 +36,31 @@ dialog.pont-checkout::backdrop{background:#031417!important;backdrop-filter:none
  position:fixed!important;top:max(16px,env(safe-area-inset-top))!important;right:max(18px,env(safe-area-inset-right))!important;
  z-index:50!important;display:grid!important;place-items:center!important;width:46px!important;height:46px!important;
  border:1px solid #80e4d1a3!important;border-radius:50%!important;background:#0a4447!important;color:#fff!important;
- font:400 27px/1 system-ui!important;cursor:pointer;touch-action:manipulation;
+ padding:0!important;line-height:0!important;cursor:pointer;touch-action:manipulation;appearance:none!important;-webkit-appearance:none!important;
 }
+.pont-checkout .pont-checkout-close svg{display:block!important;width:18px!important;height:18px!important;stroke:currentColor!important;fill:none!important;stroke-width:2!important;stroke-linecap:round!important;stroke-linejoin:round!important;flex:none!important;pointer-events:none!important}
+.pont-checkout .pont-checkout-close:focus-visible{outline:2px solid #b2fff1!important;outline-offset:3px!important}
 .pont-checkout .pont-checkout-kicker{color:#e7c98b;letter-spacing:.19em;text-transform:uppercase;font:750 11px/1.5 system-ui;margin:0 auto 8px}
 .pont-checkout h2{color:#f7fffb!important;font:650 clamp(24px,6vw,32px)/1.2 Georgia,serif!important;margin:0 auto 14px!important;max-width:490px}
 .pont-checkout .pont-checkout-summary{color:#e8faf6;font:650 14px/1.5 system-ui;margin:0 auto 22px;max-width:490px}
 .pont-checkout form{max-width:490px;margin:0 auto;text-align:left}
 .pont-checkout .pont-checkout-element{min-height:45px}
+.pont-checkout .pont-checkout-payment-stage{position:relative;max-width:490px;margin:0 auto}
+.pont-checkout .pont-checkout-payment-stage.is-loading .pont-checkout-payment-fields{
+ position:absolute!important;top:0!important;left:0!important;width:100%!important;
+ visibility:hidden!important;opacity:0!important;pointer-events:none!important;
+}
+.pont-checkout .pont-checkout-payment-stage:not(.is-loading) .pont-checkout-payment-fields{
+ position:relative!important;visibility:visible!important;opacity:1!important;pointer-events:auto!important;
+}
+.pont-checkout .pont-checkout-submit[hidden]{display:none!important}
+.pont-checkout .pont-checkout-loader:not([hidden]){display:flex!important}
+.pont-checkout .pont-checkout-payment-stage:not(.is-loading) .pont-checkout-loader{display:none!important}
+.pont-checkout .pont-checkout-loader[hidden]{display:none!important}
+.pont-checkout .pont-checkout-loader{display:flex;min-height:150px;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:#c3e9e2;font:550 13px/1.4 system-ui;text-align:center}
+.pont-checkout .pont-checkout-spinner{display:block;width:36px;height:36px;border:3px solid #4e8985;border-top-color:#80f5df;border-radius:50%;animation:pont-checkout-spin .8s linear infinite}
+@keyframes pont-checkout-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.pont-checkout .pont-checkout-spinner{animation-duration:1.8s}}
 .pont-checkout .pont-checkout-message{min-height:19px;color:#ffd0c4;font:550 12px/1.45 system-ui;text-align:center;margin:11px auto}
 .pont-checkout .pont-checkout-submit{
  display:block;width:100%;min-height:50px;margin-top:14px;border:1px solid #85e6d6;border-radius:12px;
@@ -57,14 +75,22 @@ export function initPontAuctionCheckout({db,config,onFinished}){
  const css=document.createElement('style');css.textContent=sheet;document.head.append(css);
  const dialog=document.createElement('dialog');dialog.className='pont-checkout';dialog.setAttribute('aria-labelledby','pontCheckoutTitle');
  dialog.innerHTML=`<div class="pont-checkout-content">
-  <button type="button" class="pont-checkout-close" aria-label="Închide plata">×</button>
+  <button type="button" class="pont-checkout-close" aria-label="Închide plata"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
   <p class="pont-checkout-kicker">PLATĂ SECURIZATĂ</p>
   <h2 id="pontCheckoutTitle">Finalizează plata licitației</h2>
   <p class="pont-checkout-summary"></p>
   <form class="pont-checkout-form">
-   <div class="pont-checkout-element"></div>
+   <div class="pont-checkout-payment-stage is-loading">
+    <div class="pont-checkout-loader" role="status" aria-live="polite">
+     <span class="pont-checkout-spinner" aria-hidden="true"></span>
+     <span>Se încarcă formularul de plată…</span>
+    </div>
+    <div class="pont-checkout-payment-fields">
+     <div class="pont-checkout-element"></div>
+     <button type="submit" class="pont-checkout-submit" hidden disabled>Autorizează plata</button>
+    </div>
+   </div>
    <p class="pont-checkout-message" role="status" aria-live="polite"></p>
-   <button type="submit" class="pont-checkout-submit" disabled>Autorizează plata</button>
   </form>
   <p class="pont-checkout-note">Datele cardului sunt procesate securizat de Stripe. PONT nu le stochează.</p>
  </div>`;
@@ -72,7 +98,39 @@ export function initPontAuctionCheckout({db,config,onFinished}){
  const $=selector=>dialog.querySelector(selector);
  const scrollArea=$('.pont-checkout-content'),elementHost=$('.pont-checkout-element');
  const submit=$('.pont-checkout-submit'),message=$('.pont-checkout-message');
- let busy=false,submitting=false,requestId=0,stripe=null,elements=null,locked=false,scrollY=0,savedStyles=null,touchY=0;
+ const paymentStage=$('.pont-checkout-payment-stage'),loader=$('.pont-checkout-loader'),paymentFields=$('.pont-checkout-payment-fields');
+ let busy=false,submitting=false,requestId=0,stripe=null,elements=null,paymentElement=null,locked=false,scrollY=0,savedStyles=null,touchY=0;
+ function resetPaymentStage(){
+  // Explicit DOM and inline guards prevent slow WebKit/CSS from revealing the button early.
+  paymentStage.classList.add('is-loading');
+  paymentFields.style.setProperty('visibility','hidden','important');
+  paymentFields.style.setProperty('opacity','0','important');
+  paymentFields.style.setProperty('pointer-events','none','important');
+  loader.hidden=false;
+  submit.hidden=true;
+  submit.disabled=true;
+ }
+ function paymentReady(id){
+  if(id!==requestId||!dialog.open)return;
+  // Stripe's Payment Element ready event is the only path that reveals payment controls.
+  paymentFields.style.removeProperty('visibility');
+  paymentFields.style.removeProperty('opacity');
+  paymentFields.style.removeProperty('pointer-events');
+  paymentStage.classList.remove('is-loading');
+  submit.hidden=false;
+  submit.disabled=false;
+  loader.hidden=true;
+  busy=false;
+  message.textContent='';
+ }
+ function paymentLoadError(id,error){
+  if(id!==requestId||!dialog.open)return;
+  loader.hidden=true;
+  submit.hidden=true;
+  submit.disabled=true;
+  busy=false;
+  message.textContent=error?.message||'Formularul Stripe nu a putut fi încărcat. Închide și reîncearcă.';
+ }
  function touchStart(event){touchY=event.touches[0]?.clientY??0}
  function blockScroll(event){
   if(!locked||!event.cancelable)return;
@@ -108,6 +166,7 @@ export function initPontAuctionCheckout({db,config,onFinished}){
  function close(){
   if(submitting){message.textContent='Plata este în curs de autorizare. Așteaptă răspunsul Stripe.';return}
   ++requestId;busy=false;
+  if(paymentElement){try{paymentElement.destroy()}catch(_){}paymentElement=null}
   if(dialog.open)dialog.close();
   unlock();
  }
@@ -120,7 +179,9 @@ export function initPontAuctionCheckout({db,config,onFinished}){
   if(busy||submitting||dialog.open)return;
   if(!item?.restaurant_id||!/^[0-9]{4}-(0[1-9]|1[0-2])-01$/.test(item.campaign_month||''))throw Error('Datele licitației sunt invalide');
   busy=true;const id=++requestId;stripe=null;elements=null;
-  submit.disabled=true;message.textContent='Se pregătește formularul de plată…';
+  if(paymentElement){try{paymentElement.destroy()}catch(_){}paymentElement=null}
+  resetPaymentStage();
+  message.textContent='';
   $('.pont-checkout-summary').textContent='Campania '+formatMonth(item.campaign_month)+' · '+money(item.amount);
   elementHost.replaceChildren();scrollArea.scrollTop=0;
   lock();dialog.showModal();
@@ -139,10 +200,12 @@ export function initPontAuctionCheckout({db,config,onFinished}){
    if(id!==requestId||!dialog.open)return;
    stripe=window.Stripe(result.publishableKey);
    elements=stripe.elements({clientSecret:result.clientSecret,appearance:{theme:'night',variables:{colorPrimary:'#42e5c9',colorBackground:'#072b31',colorText:'#edf9f7',borderRadius:'10px'}}});
-   elements.create('payment',{layout:'tabs'}).mount(elementHost);
-   submit.disabled=false;message.textContent='';
-  }catch(error){if(id===requestId&&dialog.open)message.textContent=error.message||'Eroare Stripe'}
-  finally{if(id===requestId)busy=false}
+   paymentElement=elements.create('payment',{layout:'tabs'});
+   paymentElement.on('ready',()=>paymentReady(id));
+   paymentElement.on('loaderror',event=>paymentLoadError(id,event?.error));
+   paymentElement.mount(elementHost);
+  }catch(error){if(id===requestId&&dialog.open)paymentLoadError(id,error)}
+  finally{if(id===requestId&&!paymentStage.classList.contains('is-loading'))busy=false}
  }
  $('.pont-checkout-form').addEventListener('submit',async event=>{
   event.preventDefault();

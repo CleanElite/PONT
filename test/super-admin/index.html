@@ -222,6 +222,21 @@
 .pont-login-security-alerts .pont-login-security-detail{min-width:0;flex:1;overflow-wrap:anywhere}
 .pont-login-security-alerts .pont-login-security-age{flex:0 0 auto;text-align:right;color:#ffddb7;font-weight:650;white-space:nowrap;font-size:12px;font-variant-numeric:tabular-nums}
 @media(max-width:430px){.pont-login-security-alerts .pont-login-security-row{gap:7px}.pont-login-security-alerts .pont-login-security-age{font-size:11px}}
+/* Centered and minimal close buttons, independent of browser font metrics. */
+#auctions .pont-auction-ranking-close,#auctions #auctionChoiceClose{
+ display:grid!important;place-items:center!important;flex:none!important;
+ box-sizing:border-box!important;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;
+ padding:0!important;border-radius:50%!important;line-height:0!important;
+ appearance:none!important;-webkit-appearance:none!important;cursor:pointer!important;touch-action:manipulation!important
+}
+#auctions .pont-auction-ranking-close svg,#auctions #auctionChoiceClose svg{
+ display:block!important;width:16px!important;height:16px!important;
+ stroke:currentColor!important;stroke-width:2!important;fill:none!important;
+ stroke-linecap:round!important;stroke-linejoin:round!important;pointer-events:none!important
+}
+#auctions .pont-auction-ranking-close:focus-visible,#auctions #auctionChoiceClose:focus-visible{
+ outline:2px solid #8fffe9!important;outline-offset:3px!important
+}
 
 #restaurantRows .restaurant-admin-actions .restaurant-day-toggle{grid-column:1/-1;min-height:36px;padding:7px 12px;border:1px solid #c9a76a;background:rgba(20,58,59,.85);color:#f6ddb2;font-size:12px;font-weight:750}
 #restaurantRows .restaurant-admin-actions .restaurant-day-toggle[aria-pressed="true"]{background:#e4c17d;color:#103132;border-color:#f8e0ae}
@@ -965,7 +980,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
     <button type="button" data-tab="auctions" aria-controls="auctions" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg><span>Licitații</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
-    <a id="pontPromotionNavLink" href="../promovare/?v=grila"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
+    <a id="pontPromotionNavLink" href="../promovare/?v=bid-keyboard-fit-20261113d"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
   </div>
 </nav>
 <section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section>
@@ -1076,7 +1091,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
 
 <section id="auctions" class="card dashboard-panel" aria-labelledby="auctionsTitle" hidden>
   <h2 id="auctionsTitle" class="pont-auction-page-title">Licitații și încasări</h2>
-  <p style="margin:8px 0 17px"><a href="../../super-admin/evenimente/" style="display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border:1px solid #73d9c5;border-radius:12px;background:linear-gradient(120deg,#064b4a,#07343d);color:#edfffb;font:700 12px system-ui;text-decoration:none">Moderează evenimentele din zonă</a></p>
+  <p style="margin:8px 0 17px"><a href="./evenimente/" style="display:inline-flex;align-items:center;justify-content:center;padding:9px 14px;border:1px solid #73d9c5;border-radius:12px;background:linear-gradient(120deg,#064b4a,#07343d);color:#edfffb;font:700 12px system-ui;text-decoration:none">Moderează evenimentele din zonă</a></p>
   <section class="pont-auction-lifecycle-panel" aria-labelledby="auctionLifecyclePanelTitle">
     <div class="pont-auction-lifecycle-top">
       <div><h3 id="auctionLifecyclePanelTitle">Controlul licitației</h3><p>Licitația are loc pe 23 (vineri pe 22 dacă pică sâmbătă, luni pe 24 dacă pică duminică), între 10:00–18:00, ora României. Plata: maximum 48 de ore de la închidere. Ofertele se păstrează la redeschidere.</p></div>
@@ -1126,7 +1141,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   <dialog id="auctionRankingDialog" class="pont-auction-ranking-dialog" aria-labelledby="auctionRankingTitle">
     <div class="pont-auction-ranking-head">
       <div><span class="pont-auction-ranking-kicker">CLASAMENT</span><h3 id="auctionRankingTitle">Rezumat licitații</h3><label class="pont-auction-ranking-month-label" for="auctionRankingMonth">Luna licitației<input type="month" id="auctionRankingMonth"></label></div>
-      <button type="button" id="closeAuctionRanking" class="pont-auction-ranking-close" aria-label="Închide rezumatul" autofocus>×</button>
+      <button type="button" id="closeAuctionRanking" class="pont-auction-ranking-close" aria-label="Închide rezumatul" autofocus><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
     <p id="auctionRankingInfo" class="pont-auction-ranking-info" role="status" aria-live="polite"></p>
     <div id="auctionRankingRows" class="pont-auction-ranking-rows"></div>
@@ -1135,10 +1150,10 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
       <select id="auctionRankingRestaurant"></select>
       <button type="button" id="addAuctionRank">Adaugă în clasament</button>
     </div>
-    <div class="pont-auction-ranking-footer"><span id="auctionRankingNote">Ofertele mai mari au prioritate. La egalitate contează oferta mai veche.</span><button type="button" id="refreshAuctionRanking">Actualizează</button><button type="button" class="primary" id="saveAuctionRanking" hidden disabled>Salvează pozițiile</button></div>
+    <div class="pont-auction-ranking-footer"><span id="auctionRankingNote">Ofertele mai mari au prioritate. La egalitate la 50 lei contează prima ofertă minimă; peste 50 lei, primul care a ajuns la suma respectivă.</span><button type="button" id="refreshAuctionRanking">Actualizează</button><button type="button" class="primary" id="saveAuctionRanking" hidden disabled>Salvează pozițiile</button></div>
   </dialog>
   <dialog id="auctionChoiceDialog" class="auction-choice-dialog" aria-labelledby="auctionChoiceTitle">
-    <div class="auction-choice-header"><h3 id="auctionChoiceTitle">Confirmare restaurant</h3><button type="button" id="auctionChoiceClose" aria-label="Închide">×</button></div>
+    <div class="auction-choice-header"><h3 id="auctionChoiceTitle">Confirmare restaurant</h3><button type="button" id="auctionChoiceClose" aria-label="Închide"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <p id="auctionChoiceRestaurant"></p>
     <div class="auction-choice-options">
       <label><input type="radio" name="auctionChoice" value="paid"><span><strong>Plătit</strong><small>Înregistrează încasarea confirmată manual.</small></span></label>
@@ -1231,7 +1246,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
 </section>
 <p id="status" class="dashboard-message" role="status"></p>
 <footer class="pont-admin-legal-footer" style="text-align:center;padding:18px 12px 28px;font:500 12px/1.5 system-ui"><a href="../termeni.html?from=super-admin#transparenta-licitatii" style="color:#9acfc6;text-decoration:underline;text-underline-offset:4px">Transparența licitațiilor</a></footer></section></main><script src="./config.js"></script><script type="module">
-import {pontAuctionDateLabel} from '../../pont-auction-calendar.js?v=20261114';
+import {pontAuctionDateLabel} from '../pont-auction-calendar.js?v=20261114';
 const $=id=>document.getElementById(id),c=window.PONT_CONFIG||{};if(!c.url||!c.anonKey){$('setup').hidden=false}else start().catch(e=>{$('setup').hidden=false;$('setup').querySelector('p').textContent=e.message});
 async function start(){
 $('menuSuccessOK').onclick=()=>$('menuSuccessDialog').close();
@@ -1650,11 +1665,12 @@ function rankedAuctionOffers(offers){
   const key=offer.restaurant_id;
   const prior=best.get(key);
   const amount=Number(offer.amount);
-  const earlier=offer.created_at||'';
-  if(!prior||amount>Number(prior.amount)||(amount===Number(prior.amount)&&earlier<(prior.created_at||'')))best.set(key,offer);
+  const earlier=offer.bid_rank_at||offer.created_at||'';
+  if(!prior||amount>Number(prior.amount)||(amount===Number(prior.amount)&&earlier<(prior.bid_rank_at||prior.created_at||'')))best.set(key,offer);
  }
  return [...best.values()].sort((a,b)=>Number(b.amount)-Number(a.amount)||
-  (a.created_at||'').localeCompare(b.created_at||'')||
+  (a.bid_rank_at||a.created_at||'').localeCompare(b.bid_rank_at||b.created_at||'')||
+   (a.created_at||'').localeCompare(b.created_at||'')||
   (restaurantName(a.restaurant_id)||'').localeCompare(restaurantName(b.restaurant_id)||'','ro'));
 }
 async function renderAuctionRanking(){
@@ -1671,7 +1687,7 @@ async function renderAuctionRanking(){
  try{
   if(!/^\d{4}-\d{2}$/.test(month))throw Error('Selectează o lună validă.');
   const [offers,control,approvals]=await Promise.all([
-   req(db.from('auction_offers').select('restaurant_id,amount,created_at,round,payment_status').eq('campaign_month',month+'-01')),
+   req(db.from('auction_offers').select('restaurant_id,amount,created_at,bid_rank_at,round,payment_status').eq('campaign_month',month+'-01')),
    db.from('pont_auction_control').select('is_open,final_ranking').eq('campaign_month',month+'-01').maybeSingle(),
    rankingEditor?req(db.from('pont_manual_payment_approvals').select('restaurant_id').eq('campaign_month',month+'-01')):[]
   ]);
@@ -1685,7 +1701,7 @@ async function renderAuctionRanking(){
    $('auctionRankingInfo').textContent=ranked.length
     ?'Au licitat '+ranked.length+' '+(ranked.length===1?'restaurant':'restaurante')+' · Total oferte: '+auctionMoney(ranked.reduce((sum,offer)=>sum+Number(offer.amount||0),0))
     :'Nu există oferte depuse pentru luna selectată.';
-   $('auctionRankingNote').textContent='Locurile sunt calculate exclusiv din sumele licitate: oferta cea mai mare ocupă locul 1. La egalitate, are prioritate oferta depusă mai devreme. Adăugările și repoziționările manuale nu sunt incluse.';
+   $('auctionRankingNote').textContent='Locurile sunt calculate exclusiv din sumele licitate: oferta cea mai mare ocupă locul 1. La egalitate la 50 lei contează prima ofertă de 50 lei; peste 50 lei, prima ofertă depusă la suma actuală. Adăugările și repoziționările manuale nu sunt incluse.';
    showRankingRows(ranked.map(offer=>offer.restaurant_id),false);
    return;
   }
@@ -1816,7 +1832,7 @@ async function loadAuctions() {
  try {
   if (!/^\d{4}-\d{2}$/.test(month)) throw Error('Alege o lună validă.');
   const [offers, approvals] = await Promise.all([
-   req(db.from('auction_offers').select('*').eq('campaign_month', month + '-01').order('amount', {ascending:false}).order('created_at', {ascending:true})),
+   req(db.from('auction_offers').select('*').eq('campaign_month', month + '-01').order('amount', {ascending:false}).order('bid_rank_at', {ascending:true})),
    req(db.from('pont_manual_payment_approvals').select('restaurant_id,campaign_month,approval_type').eq('campaign_month', month + '-01'))
   ]);
   if (request !== auctionRequest || month !== $('auctionMonth').value || auctionEdits.size || auctionSaving || activeAuctionRestaurant) return;
@@ -1953,7 +1969,7 @@ const selectedCampaignParam=new URLSearchParams(location.search).get('month');
 auctionControlMonth.value=/^\d{4}-(0[1-9]|1[0-2])$/.test(selectedCampaignParam||'')?selectedCampaignParam:nextAuctionMonth().slice(0,7);
 function syncPromotionCampaignLink(){
  const link=$('pontPromotionNavLink');
- if(link&&selectedAuctionMonth())link.href='../promovare/?v=grila&month='+encodeURIComponent(auctionControlMonth.value);
+ if(link&&selectedAuctionMonth())link.href='../promovare/?v=bid-keyboard-fit-20261113d&month='+encodeURIComponent(auctionControlMonth.value);
 }
 syncPromotionCampaignLink();
 function displayAuctionControl(month,isOpen,paused,finalized){
@@ -2649,7 +2665,7 @@ await pontOperations.refresh();
 }
 </script>
 <script src="../compact-date-picker.js?v=c28b" defer></script>
-<script src="../pont-week-navigation.js?v=planner-nav-thin-20261112" defer></script><script defer src="../../pont-navigation-history.js?v=stack-v2-20261113"></script><style id="pont-live-clock-style">
+<script src="../pont-week-navigation.js?v=planner-nav-thin-20261112" defer></script><script defer src="../pont-navigation-history.js?v=stack-v2-20261113"></script><style id="pont-live-clock-style">
 #app .pont-live-datetime{display:flex;align-items:center;justify-content:flex-end;gap:9px;min-height:28px;margin:-3px 1px 9px;white-space:nowrap;font-variant-numeric:tabular-nums}
 #app .pont-live-datetime__date{color:#b0d0d0;font:550 clamp(10px,2.4vw,12px)/1.2 system-ui,sans-serif;letter-spacing:.015em}
 #app .pont-live-datetime__separator{width:1px;height:13px;background:#c5b08375}
@@ -2680,4 +2696,4 @@ window.addEventListener('pageshow',syncPontClock);
 #restaurantRows .pont-restaurant-payment-pending{border-color:#ecb477;background:#49301e;color:#ffe0b1}
 #restaurantRows .pont-restaurant-payment-none{border-color:#66868c;background:#142d36;color:#bfd2d5}
 #restaurantRows .pont-restaurant-payment-unknown{border-color:#b8a0a0;background:#322a32;color:#e5cbd0}
-</style><script defer src="../../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script></body></html>
+</style><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script></body></html>

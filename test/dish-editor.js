@@ -428,7 +428,7 @@ function choices() {
   if (pickerCategory) renderPicker();
   syncSaveModelButton();
 }
-async function toggleEditorStock(button) {
+function toggleEditorStock(button) {
   // Keep stock edits as an isolated draft. Only the final Save action writes to menus.
   if (!editingMenuRecord) return;
   const index = Number(button.dataset.editorStock);
@@ -659,6 +659,7 @@ host.onclick = () => {
   const open = wrap.hidden;
   setEditorOpen(open);
   if (open) refresh().catch(error => { $('pontDailyError').textContent = error.message; });
+  else scrollMenuPageTop();
 };
 $('pontDailyCancel').onclick = () => {
   resetDaily();
@@ -802,6 +803,7 @@ $('pontDishPublish').onclick = async () => {
     resetDaily();
     choices();
     setEditorOpen(false);
+    scrollMenuPageTop();
     const message = id
       ? 'Meniul zilei a fost salvat pentru '
       : date > todayRO() ? 'Meniul zilei a fost programat pentru ' : 'Meniul zilei a fost publicat pentru ';

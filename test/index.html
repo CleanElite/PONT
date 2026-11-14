@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="ro">
-<head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow" data-pont-environment="test"><script>if(navigator.standalone===true)document.documentElement.classList.add("pont-ios-standalone");</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="PONT"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/png" sizes="192x192" href="./pont-192.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"><link rel="manifest" href="./manifest.webmanifest?v=iosfix-20261109-2"><script src="./install.js?v=ios-android-20261113" defer></script>
+<head><meta charset="utf-8"><script>if(navigator.standalone===true)document.documentElement.classList.add("pont-ios-standalone");</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="PONT"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/png" sizes="192x192" href="./pont-192.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"><link rel="manifest" href="./manifest.webmanifest?v=iosfix-20261109-2"><script src="./install.js?v=ios-android-20261113" defer></script>
 <link rel="preload" as="image" href="./assets/pont-intro-c3.jpg">
+<link rel="preload" as="image" href="./assets/pont-intro-clean.jpg?v=clean-opaque-944f208">
 <link rel="preload" as="image" href="./assets/pont-intro-logo-c4.png">
 <style>
 :root {
@@ -111,7 +112,7 @@ button{font:inherit}
 
 .pont-intro__panel{
   display:none;position:absolute;inset:0;
-  background:var(--night) var(--intro-art) center / contain no-repeat;
+  background:var(--night) url("./assets/pont-intro-clean.jpg?v=clean-opaque-944f208") center / contain no-repeat;
 }
 .pont-intro__panel.left{clip-path:inset(0 50% 0 0);--curtain-motion:pont-curtain-left}
 .pont-intro__panel.right{clip-path:inset(0 0 0 50%);--curtain-motion:pont-curtain-right}
@@ -119,11 +120,7 @@ button{font:inherit}
 .pont-intro.is-splitting .pont-intro__panel{
   display:block;animation:var(--curtain-motion) 1.32s linear both;
 }
-.pont-intro.is-matching :is(.pont-intro__art,.pont-intro__panel)::before{
-  content:"";position:absolute;left:var(--well-left);top:var(--well-top);
-  width:var(--well-width);height:var(--well-height);
-  background:#03090f;border-radius:25%;box-shadow:0 0 12px 6px #03090f;
-}
+
 .pont-intro__led{
   position:absolute;inset:0;width:100%;height:100%;pointer-events:none;opacity:0;
 }
@@ -134,6 +131,9 @@ button{font:inherit}
   filter:drop-shadow(0 0 4px #c8e9fa9c);
 }
 .entry.intro-playing .entry-mark{position:relative;z-index:21;transform-origin:0 0}
+/* During the curtain split, screen-blend the luminous wordmark so its dark
+   rectangular PNG background doesn't travel into the header on Android. */
+.entry.intro-reveal .entry-mark{mix-blend-mode:screen!important}
 html.pont-intro-active{overflow:hidden}
 .entry.intro-reveal{overflow-x:clip}
 .entry.intro-reveal .choice-card{
@@ -433,17 +433,12 @@ html.pont-intro-active{overflow:hidden}
     const sourceHeight = 108 * scale;
     if (!sourceWidth) return;
 
-    intro.style.setProperty('--well-left', (left - 9 * scale) + 'px');
-    intro.style.setProperty('--well-top', (top - 9 * scale) + 'px');
-    intro.style.setProperty('--well-width', (sourceWidth + 18 * scale) + 'px');
-    intro.style.setProperty('--well-height', (sourceHeight + 18 * scale) + 'px');
     // During the lift the logo is already moving relative to its live header position.
     if (leaving) return;
     logo.style.removeProperty('transform');
     const target = logo.getBoundingClientRect();
     if (!target.width || target.bottom <= 0) return;
     logo.style.transform = `translate(${left - target.left}px,${top - target.top}px) scale(${sourceWidth / target.width})`;
-    intro.classList.add('is-matching');
     page.classList.add('intro-playing');
   }
 
@@ -509,5 +504,5 @@ html.pont-intro-active{overflow:hidden}
   Promise.all([image.decode(), logo.decode().catch(() => {})]).then(ready, finish);
 })();
 </script>
-<script type="module" src="./pont-privacy-consent.js?v=consent-audit-20261113-v4"></script><script defer src="../pont-navigation-history.js?v=stack-v2-20261113"></script></body>
+<script type="module" src="./pont-privacy-consent.js?v=consent-audit-20261113-v4"></script><script defer src="./pont-navigation-history.js?v=stack-v2-20261113"></script></body>
 </html>

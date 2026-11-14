@@ -1,0 +1,39 @@
+<!doctype html><html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#02191c"><title>Moderare evenimente · PONT Super Admin</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at 90% 10%,#084746,#02181d 65%);color:#f3f9f8;font:14px/1.45 system-ui,sans-serif}main{width:min(92%,980px);margin:auto;padding:24px 0 70px}a{color:#ffe1a0}header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:24px}header a{border:1px solid #68aaa3;border-radius:999px;padding:8px 14px;text-decoration:none;color:#e4f7f1}h1{font:600 clamp(27px,5vw,43px)/1.1 Georgia,serif;margin:0 0 9px}p{color:#c4d9d7}h2{font:600 23px Georgia,serif}.info{margin:0 0 25px}button{font:650 13px system-ui;cursor:pointer;padding:9px 14px;border-radius:11px;border:1px solid #89d7c6;background:#0d5755;color:#f6fdfb}button:disabled{opacity:.5;cursor:wait}.row{background:linear-gradient(130deg,#0b3539,#08282f);border:1px solid #518e86;border-radius:17px;padding:16px;margin:12px 0;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;min-width:0}.row h3{margin:0 0 5px;font-size:18px;overflow-wrap:anywhere}.row p{margin:5px 0;overflow-wrap:anywhere}.row .meta{color:#f4d595;font-weight:650}.row .buttons{display:flex;flex-wrap:wrap;gap:8px}.row .buttons .reject{background:#53333a;border-color:#cb9a99}.row img{width:110px;max-height:110px;object-fit:cover;border-radius:9px;float:right;margin:0 0 10px 10px}.panel{margin:30px 0}.status{color:#f6d69b;min-height:20px}small{color:#abc7c4}@media(max-width:550px){.row{grid-template-columns:1fr}.row .buttons{justify-content:flex-start}}
+</style></head><body><main><header><a href="../#auctions">‹ Super Admin</a><a href="../../iesire-in-oras/">Vezi pagina publică</a></header><h1>Moderare evenimente</h1><p class="info">Anunțurile restaurantelor apar în „Ieșire în oraș” numai după aprobarea ta. Anunțurile respinse nu sunt afișate public.</p><p id="status" class="status" role="status">Se verifică accesul…</p><section class="panel"><h2>În așteptarea aprobării <span id="count"></span></h2><div id="pending"></div></section><section class="panel"><h2>Aprobate</h2><div id="approved"></div></section></main>
+<script src="../config.js"></script><script type="module">
+const $=id=>document.getElementById(id),cfg=window.PONT_CONFIG||{};let db,uid;
+const dateText=(v)=>{const [y,m,d]=String(v||'').split('-').map(Number);return new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,d,12)))};
+function eventRow(event,pending){
+const item=document.createElement('article');item.className='row';
+const content=document.createElement('div');const h=document.createElement('h3');h.textContent=event.title;
+const meta=document.createElement('p');meta.className='meta';meta.textContent=dateText(event.event_date)+' · '+String(event.start_time).slice(0,5)+' · '+event.venue+', '+event.locality;
+const details=document.createElement('p');details.textContent=event.description||'Fără descriere.';
+const contact=document.createElement('p');contact.textContent='Telefon: '+event.contact_phone;
+content.append(h,meta,details,contact);
+if(event.poster_url&&/^https:\/\//i.test(event.poster_url)){const link=document.createElement('a');link.href=event.poster_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Vezi afișul';content.append(link)}
+item.append(content);
+if(pending){const buttons=document.createElement('div');buttons.className='buttons';const approve=document.createElement('button');approve.textContent='Aprobă';const reject=document.createElement('button');reject.textContent='Respinge';reject.className='reject';approve.onclick=()=>review(event.id,'approved',buttons);reject.onclick=()=>review(event.id,'rejected',buttons);buttons.append(approve,reject);item.append(buttons)}
+return item;
+}
+async function load(){
+ const {data,error}=await db.from('pont_city_events').select('id,title,description,event_date,start_time,venue,locality,contact_phone,poster_url,status').in('status',['pending','approved']).order('created_at',{ascending:false}).limit(150);
+ if(error)throw error;const pending=(data||[]).filter(x=>x.status==='pending'),approved=(data||[]).filter(x=>x.status==='approved');
+ $('count').textContent='('+pending.length+')';
+ for(const [id,items,flag] of [['pending',pending,true],['approved',approved,false]]){const holder=$(id);holder.replaceChildren();if(items.length)items.forEach(x=>holder.append(eventRow(x,flag)));else{const p=document.createElement('p');p.textContent=flag?'Nu există anunțuri de aprobat.':'Nu există evenimente aprobate.';holder.append(p)}}
+ $('status').textContent='Actualizat.';
+}
+async function review(id,status,buttons){
+ Array.from(buttons.children).forEach(b=>b.disabled=true);$('status').textContent='Se salvează decizia…';
+ try{const {error}=await db.from('pont_city_events').update({status,reviewed_at:new Date().toISOString(),reviewed_by:uid}).eq('id',id).eq('status','pending');if(error)throw error;await load()}catch(error){$('status').textContent='Modificarea a eșuat: '+error.message;Array.from(buttons.children).forEach(b=>b.disabled=false)}
+}
+async function start(){
+ if(!cfg.url||!cfg.anonKey)throw Error('Conexiune PONT neconfigurată');
+ const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');db=createClient(cfg.url,cfg.anonKey);
+ const {data:{user},error}=await db.auth.getUser();if(error||!user)throw Error('Autentifică-te în Super Admin înainte de a deschide această pagină.');
+ uid=user.id;const {data:isAdmin,error:roleError}=await db.rpc('is_super_admin');if(roleError||!isAdmin)throw Error('Acces permis doar administratorului suprem.');
+ await load();
+}
+start().catch(error=>{$('status').textContent=error.message;console.error(error)});
+</script></body></html>
