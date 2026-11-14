@@ -89,6 +89,9 @@ body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
 #eventList .event-card .menu-card-location{font-size:clamp(11px,1.9vw,17px);line-height:1.28}
 #eventList .event-card .event-category{font-size:clamp(11px,1.8vw,15px)}
 #eventList .event-card .event-date{font-size:clamp(10px,2vw,17px)}
+/* Date stays in the left text column, directly above the event title. */
+#eventList .event-card .event-date{position:static;inset:auto;display:inline-flex;justify-self:start;align-self:start;padding:.38em .7em;margin-bottom:2px;font-size:clamp(10px,1.7vw,14px);max-width:100%;white-space:normal}
+@media(max-width:520px){#eventList .event-card .event-date{font-size:10px;margin-bottom:1px;padding:.3em .55em}}
 /* Continuous, single-line sponsor marquee including the full text. */
 .pont-sponsor{display:flex;align-items:center;justify-content:flex-start;padding:0;min-height:80px}
 .pont-sponsor__track{display:flex;align-items:center;flex:none;width:max-content;animation:pont-sponsor-marquee 28s linear infinite}
@@ -213,7 +216,7 @@ function renderEvents(events){
   const name=document.createElement('strong');name.className='menu-card-name';name.textContent=event.title;
   const place=document.createElement('span');place.className='menu-card-location';place.textContent=event.venue+' · '+event.locality;
   const hour=document.createElement('span');hour.className='event-category';hour.textContent='Ora '+String(event.start_time||'').slice(0,5);
-  copy.append(name,place,hour);button.append(img,badge,copy);
+  copy.append(badge,name,place,hour);button.append(img,copy);
   button.addEventListener('click',()=>showDetails(event));outer.append(button);list.append(outer);
  }
 }
