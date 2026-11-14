@@ -279,6 +279,28 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 .pont-city-event .pont-city-reject{background:#59333b;border-color:#bc8789}
 .pont-city-warning{border:1px solid #d7b5798a;border-radius:11px;background:#4a3c184f;padding:13px;color:#ffe0a0!important}
 @media(max-width:540px){.pont-city-metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.pont-dashboard-modules>button{padding:8px 7px!important;font-size:10px!important}.pont-city-event{padding:11px}.pont-city-metrics .stat{padding:11px}#app .admin-hero.dashboard-intro{gap:5px!important}}
+</style><style id="pont-compact-account-centre">
+#restaurantRows .pont-restaurant-compact-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:410px!important}
+#restaurantRows .pont-account-details{width:100%;min-width:0;text-align:left;border:1px solid #b8dcc755;border-radius:11px;background:#06252b9e;overflow:hidden}
+#restaurantRows .pont-account-details>summary{cursor:pointer;list-style:none;padding:11px 14px;color:#f6e4b5;font-size:13px;font-weight:700;text-align:center}
+#restaurantRows .pont-account-details>summary::-webkit-details-marker{display:none}
+#restaurantRows .pont-account-details>summary:after{content:" ⌄";color:#b5dacb}
+#restaurantRows .pont-account-details[open]>summary:after{content:" ⌃"}
+#restaurantRows .pont-account-body{padding:4px 13px 14px;text-align:left}
+#restaurantRows .pont-account-body h4{font-size:12px;color:#e3eacf;margin:10px 0 5px}
+#restaurantRows .pont-account-body p{font-size:11px;line-height:1.5;color:#c0d4c9;margin:4px 0 9px}
+#restaurantRows .pont-account-entry{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:9px 0}
+#restaurantRows .pont-account-entry>div{min-width:0}
+#restaurantRows .pont-account-entry strong{font-size:13px;color:#f8f7ec}
+#restaurantRows .pont-account-entry small{display:block;font-size:11px;color:#b3d5cb}
+#restaurantRows .pont-account-entry button{font-size:11px;flex:none;min-height:34px;padding:7px 10px}
+#restaurantRows .pont-account-revoke{background:#4a3036;color:#ffd6c7;border-color:#a16e6b}
+#restaurantRows .pont-account-restore{background:#155b50;color:#c9fff1;border-color:#69c2a1}
+#restaurantRows .pont-account-divider{height:1px;background:#9cbfb444;margin:11px 0}
+#restaurantRows .pont-account-body .restaurant-day-toggle{width:100%;font-size:12px}
+#pontInlineAccountCreator{margin:18px 0;padding:16px;border:1px solid #608b8177;border-radius:15px;background:#0b2e37}
+#pontInlineAccountCreator[hidden]{display:none!important}
+#pontInlineAccountCreator #memberForm{margin:12px 0 0}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-auction-period-save-c15">
@@ -1015,7 +1037,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--management" role="group" aria-label="Restaurante și conturi">
     <button type="button" data-tab="restaurants" aria-controls="restaurants" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#storefront"></use></svg><span>Restaurante</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
-    <button type="button" data-tab="members" aria-controls="members" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#users-three"></use></svg><span>Conturi</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+    
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
     <button type="button" data-tab="auctions" aria-controls="auctions" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg><span>Licitații</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
@@ -1029,7 +1051,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--management" role="group" aria-label="Restaurante și conturi">
     <button type="button" data-city-tab="restaurants" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#storefront"></use></svg><span>Restaurante</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
-    <button type="button" data-city-tab="members" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#users-three"></use></svg><span>Conturi</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
+    
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Promovare și vizibilitate">
     <button type="button" data-city-tab="cityPromotion" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
@@ -1114,7 +1136,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
         <p class="dashboard-message" id="restaurantPasswordStatus" role="status"></p>
       </section>
     </details>
-  <div id="restaurantRows" class="pont-restaurant-list" aria-label="Lista restaurantelor"></div>
+  <div id="restaurantRows" class="pont-restaurant-list" aria-label="Lista restaurantelor"></div><section id="pontInlineAccountCreator" class="pont-inline-account-creator" hidden aria-label="Creare cont administrator"><div class="dashboard-heading"><h3>Cont nou pentru restaurant</h3><button type="button" id="pontCloseAccountCreator">Închide</button></div></section>
 </section>
 
 <section id="members" class="card dashboard-panel" aria-labelledby="membersTitle" hidden>
@@ -1382,6 +1404,7 @@ const emptyRow = message => '<tr role="row"><td role="cell" colspan="6">' + esc(
 const dataCell = (label, html) => '<td role="cell"><span class="dashboard-cell-label" aria-hidden="true">' + label + '</span>' + html + '</td>';
 const restaurantName = id => restaurants.find(restaurant => restaurant.id === id)?.name || 'Restaurant';
 const hasMember = id => members.some(member => member.restaurant_id === id);
+let accountPanelOpenId=null;
 
 function renderMenuRows() {
  const target = $('menuRows');
@@ -1443,41 +1466,44 @@ function restaurantAuctionPaymentBadge(restaurantId){
 }
 let restaurantOnlineIds = new Set();
 let dailyMenuStatuses=[],dailyMenuExhaustedIds=new Set();
-function renderRestaurants() {
- const result = restaurants;
- $('restaurantRows').innerHTML = result.length ? result.map((restaurant, index) => {
-  const id = esc(restaurant.id), enabled = restaurant.enabled;
-  const access = hasMember(restaurant.id);
-  const state = !enabled ? 'suspended' : access ? 'active' : 'no-access';
-  const number = String(index + 1).padStart(2, '0');
-  return '<article class="restaurant-admin-item restaurant-status-' + state + '">' +
-   '<div class="restaurant-admin-heading">' +
-   '<span class="restaurant-list-number" aria-label="Restaurantul numărul ' + (index + 1) + '">' + number + '</span>' +
-   '<strong class="restaurant-list-name">' + '<span class="pont-live-dot ' + (restaurantOnlineIds.has(String(restaurant.id)) ? 'is-online' : 'is-offline') + '" role="img" aria-label="' + (restaurantOnlineIds.has(String(restaurant.id)) ? 'Administrator activ' : 'Administrator inactiv') + '" title="' + (restaurantOnlineIds.has(String(restaurant.id)) ? 'Administrator activ acum' : 'Administrator inactiv sau offline') + '"></span>' + esc(restaurant.name) + '</strong>' +
-   '<div class="restaurant-list-meta"><span>Cod ' + esc(restaurant.short_code || '—') + '</span><span>' + esc(restaurant.phone || 'Telefon neconfigurat') + '</span></div>' +
-   '<div class="dashboard-badges"><span class="dashboard-badge" data-state="' + (enabled ? 'enabled' : 'disabled') + '">' +
-   (enabled ? 'Activ' : 'Suspendat') + '</span>' +
-   (restaurant.accepts_card ? '<span class="dashboard-badge">Acceptă card</span>' : '') +
-   (access ? '' : '<span class="dashboard-badge">Fără cont</span>') +
-   '<span class="dashboard-badge">Meniu: '+(restaurant.access_meniul_zilei?'ON':'OFF')+'</span>' +
-   '<span class="dashboard-badge">Evenimente: '+(restaurant.access_iesire_in_oras?'ON':'OFF')+'</span>' +
-   restaurantAuctionPaymentBadge(restaurant.id) +
-   '</div></div><div class="restaurant-admin-actions">' +
-   '<button type="button" data-edit-restaurant="' + id + '">Editează</button>' +
-   (access ? '' : '<button type="button" class="restaurant-create-access" data-create-access="' + id + '">Creează acces</button>') +
-   '<button type="button" data-toggle="' + id + '">' + (enabled ? 'Suspendă' : 'Activează') + '</button>' +
-   '<button type="button" class="admin-danger" data-delete-restaurant="' + id + '">Șterge</button>' +
-   '<button type="button" class="restaurant-day-toggle" data-exhausted-restaurant="' + id + '" aria-pressed="' + dailyMenuExhaustedIds.has(restaurant.id) + '">' +
-   (dailyMenuExhaustedIds.has(restaurant.id) ? 'Reactivează meniul zilei' : 'Meniul zilei epuizat') + '</button></div></article>';
- }).join('') : emptyMessage('Nu există restaurante înregistrate.');
+function renderRestaurants(){
+ const result=restaurants;
+ $('restaurantRows').innerHTML=result.length?result.map((r,index)=>{
+  const id=esc(r.id),accounts=members.filter(m=>m.restaurant_id===r.id);
+  const hasAccount=accounts.length>0,revoked=hasAccount&&accounts.every(m=>m.access_revoked===true);
+  const state=!r.enabled?'suspended':!hasAccount?'no-access':revoked?'suspended':'active';
+  const accountRows=accounts.map(m=>'<div class="pont-account-entry"><div><strong>Administrator '+esc(m.short_code||'—')+'</strong><small>'+(m.access_revoked?'Acces revocat · parola și datele păstrate':'Acces permis')+'</small></div><button type="button" class="'+(m.access_revoked?'pont-account-restore':'pont-account-revoke')+'" data-account-toggle="'+esc(m.user_id)+'" data-account-restaurant="'+id+'">'+(m.access_revoked?'Redă accesul':'Revocă accesul')+'</button></div>').join('');
+  return '<article class="restaurant-admin-item restaurant-status-'+state+'">'+
+  '<div class="restaurant-admin-heading"><span class="restaurant-list-number">'+String(index+1).padStart(2,'0')+'</span>'+
+  '<strong class="restaurant-list-name"><span class="pont-live-dot '+(restaurantOnlineIds.has(String(r.id))?'is-online':'is-offline')+'" aria-hidden="true"></span>'+esc(r.name)+'</strong>'+
+  '<div class="restaurant-list-meta"><span>Cod '+esc(r.short_code||'—')+'</span><span>'+esc(r.phone||'Telefon neconfigurat')+'</span></div>'+
+  '<div class="dashboard-badges"><span class="dashboard-badge" data-state="'+(r.enabled?'enabled':'disabled')+'">'+(r.enabled?'Activ':'Suspendat')+'</span>'+
+  '<span class="dashboard-badge">Meniul zilei: '+(r.access_meniul_zilei?'Activ':'Inactiv')+'</span>'+
+  '<span class="dashboard-badge">Ieșire în oraș: '+(r.access_iesire_in_oras?'Activ':'Inactiv')+'</span>'+
+  (!hasAccount?'<span class="dashboard-badge">Fără cont</span>':revoked?'<span class="dashboard-badge">Acces revocat</span>':'')+'</div></div>'+
+  '<div class="restaurant-admin-actions pont-restaurant-compact-actions"><button type="button" data-edit-restaurant="'+id+'">Editează</button><button type="button" data-toggle="'+id+'">'+(r.enabled?'Suspendă':'Reactivează')+'</button></div>'+
+  '<details class="pont-account-details" data-account-panel="'+id+'" '+(accountPanelOpenId===r.id?'open':'')+'><summary>Administrare cont și date</summary><div class="pont-account-body">'+
+  '<h4>Cont și autentificare</h4>'+(accountRows||'<p>Nu există încă un cont de administrator.</p>')+
+  (!hasAccount?'<button type="button" class="restaurant-create-access" data-create-access="'+id+'">Creează cont</button>':'')+
+  '<div class="pont-account-divider"></div><h4>Servicii și date</h4><p>Accesul la module se modifică din „Editează”. Revocarea sau suspendarea nu șterge datele.</p>'+
+  '<div class="pont-account-divider"></div><h4>Meniul zilei</h4>'+
+  (r.access_meniul_zilei?'<button type="button" class="restaurant-day-toggle" data-exhausted-restaurant="'+id+'" aria-pressed="'+dailyMenuExhaustedIds.has(r.id)+'">'+(dailyMenuExhaustedIds.has(r.id)?'Reactivează meniul zilei':'Meniul zilei epuizat')+'</button>':'<p>Modulul este dezactivat.</p>')+
+  '</div></details></article>';
+ }).join(''):emptyMessage('Nu există restaurante înregistrate.');
 }
+$('restaurantRows').addEventListener('toggle',event=>{
+ const d=event.target.closest?.('details[data-account-panel]');
+ if(!d)return;
+ if(d.open)accountPanelOpenId=d.dataset.accountPanel;
+ else if(accountPanelOpenId===d.dataset.accountPanel)accountPanelOpenId=null;
+},true);
 
 function renderMembers() {
  const result = members.filter(member => matching(restaurantName(member.restaurant_id) + ' ' + member.user_id + ' ' + (member.short_code || '') + ' ' + (restaurants.find(r => r.id === member.restaurant_id)?.short_code || ''), 'memberSearch'));
  $('memberRows').innerHTML = result.length ? result.map(member =>
   '<div class="dashboard-member"><div><strong>' + esc(restaurantName(member.restaurant_id)) + '</strong><small>Cod administrator · ' +
   esc(member.short_code || '—') + ' · Restaurant ' + esc(restaurants.find(r => r.id === member.restaurant_id)?.short_code || '—') + '</small></div><button type="button" class="admin-danger" data-revoke="' + esc(member.user_id) +
-  '" data-restaurant="' + esc(member.restaurant_id) + '">Revocă accesul</button></div>').join('') :
+  '" data-restaurant="' + esc(member.restaurant_id) + '">' + (member.access_revoked ? 'Redă accesul':'Revocă accesul') + '</button></div>').join('') :
   emptyMessage('Niciun cont pentru selecția curentă.');
 }
 
@@ -2612,7 +2638,8 @@ $('restaurantForm').onsubmit = async event => {
 $('restaurantRows').onclick = async event => {
  const button = event.target.closest('button');
  if (!button) return;
- const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant} = button.dataset;
+ const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant,accountToggle,accountRestaurant} = button.dataset;
+ if(accountToggle){void toggleRestaurantAccountAccess(accountToggle,accountRestaurant,button);return;}
  const restaurant = restaurants.find(item => item.id === (toggle || editRestaurant || deleteRestaurant || createAccess || exhaustedRestaurant));
  if (!restaurant) return;
  if (exhaustedRestaurant) {
@@ -2634,7 +2661,7 @@ $('restaurantRows').onclick = async event => {
   openMemberEditor(restaurant);
   return;
  }
- if (deleteRestaurant && !confirm('Ștergi definitiv restaurantul ' + restaurant.name + ' și toate meniurile sale?')) return;
+ if (deleteRestaurant) {status('Ștergerea definitivă nu este disponibilă în panoul obișnuit.',true);return;}
  button.disabled = true;
  try {
   await req(deleteRestaurant ? db.from('restaurants').delete().eq('id', restaurant.id) :
@@ -2667,6 +2694,7 @@ function setMemberTarget(restaurant = null) {
  suggestUsername();
 }
 function closeMemberEditor() {
+ $('pontInlineAccountCreator').hidden=true;
  $('memberForm').reset();
  $('memberForm').hidden = true;
  delete $('uid').dataset.userEdited;
@@ -2680,7 +2708,9 @@ function closeMemberEditor() {
  showMessage('memberFormStatus', '');
 }
 function openMemberEditor(restaurant = null) {
- selectPlatformPanel('members');
+ if(cityMode)selectCityPanel('restaurants');else selectPlatformPanel('restaurants');
+ $('pontInlineAccountCreator').hidden=false;
+ $('pontInlineAccountCreator').append($('memberForm'));
  if ($('saveMember').disabled) return;
  if ($('memberForm').hidden || accountRestaurantId !== (restaurant?.id ?? '')) {
   closeMemberEditor();
@@ -2688,9 +2718,11 @@ function openMemberEditor(restaurant = null) {
   $('memberForm').hidden = false;
   $('newMember').setAttribute('aria-expanded','true');
  }
+ $('pontInlineAccountCreator').scrollIntoView({block:'start',behavior:'smooth'});
  $(restaurant ? 'uid' : 'memberRestaurantName').focus();
 }
 $('addRestaurantAccount').onclick = () => openMemberEditor();
+$('pontCloseAccountCreator').onclick=closeMemberEditor;
 $('newMember').onclick = () => openMemberEditor();
 $('cancelMember').onclick = () => {
  closeMemberEditor();
@@ -2830,7 +2862,21 @@ $('restaurantChangePassword').onclick=async()=>{
   notice.textContent='Parola contului '+username+' a fost schimbată. Comunică noua parolă printr-un canal sigur.';
  }catch(e){notice.textContent=e.message}finally{btn.disabled=false}
 };
-$('memberRows').onclick=async e=>{let b=e.target.closest('[data-revoke]');if(!b||!confirm('Revoci accesul?'))return;try{await req(db.from('restaurant_members').delete().eq('user_id',b.dataset.revoke).eq('restaurant_id',b.dataset.restaurant));await load()}catch(e){status(e.message,true)}};
+async function toggleRestaurantAccountAccess(userId,restaurantId,button){
+ const member=members.find(m=>m.user_id===userId&&m.restaurant_id===restaurantId);
+ if(!member){status('Contul nu a fost găsit.',true);return}
+ const restore=member.access_revoked===true;
+ if(!confirm(restore?'Redai accesul administratorului? Va folosi aceeași parolă.':'Revoci accesul? Contul, parola și toate datele vor fi păstrate.'))return;
+ if(button)button.disabled=true;
+ try{
+  const {data,error}=await db.from('restaurant_members').update({access_revoked:!restore}).eq('user_id',userId).eq('restaurant_id',restaurantId).select('user_id,access_revoked');
+  if(error)throw error;
+  if(!data?.length)throw Error('Actualizarea accesului nu a fost confirmată.');
+  await load();status(restore?'Acces redat cu aceeași parolă.':'Acces revocat. Datele și parola sunt păstrate.');
+ }catch(e){if(button)button.disabled=false;status(e.message,true)}
+}
+$('memberRows').onclick=e=>{const b=e.target.closest('[data-revoke]');if(b)void toggleRestaurantAccountAccess(b.dataset.revoke,b.dataset.restaurant,b)};
+
 const {initPontDishEditor}=await import('../dish-editor.js?v=return-menu-top-20261113');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
