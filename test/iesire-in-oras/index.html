@@ -17,18 +17,20 @@
 body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
 .event-heading h1{font-size:clamp(32px,7.8vw,76px)}
 .event-heading p{font-size:clamp(13px,2.8vw,24px);max-width:780px;margin-inline:auto}
-.pont-sponsor{display:block;position:relative;isolation:isolate;overflow:hidden;width:100vw;width:100dvw;margin:clamp(12px,2vw,18px) 0 clamp(19px,3vw,27px) calc(50% - 50vw);margin-left:calc(50% - 50dvw);border-block:1px solid rgba(255,233,141,.31);background:#071f24;box-shadow:0 7px 21px rgba(3,19,23,.12)}
-.pont-sponsor__marquee{height:38px;overflow:hidden;position:relative;background:linear-gradient(180deg,#102f34,#082128)}
-.pont-sponsor__marquee::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(7,28,32,.7),transparent 5%,transparent 94%,rgba(7,28,32,.7))}
-.pont-sponsor__track{display:flex;align-items:center;height:100%;width:max-content;animation:pont-sponsor-marquee 38s linear infinite;will-change:transform}
-.pont-sponsor__group{display:flex;flex:none;align-items:center;justify-content:space-around;min-width:100dvw;height:100%}
-.pont-sponsor__item{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;padding-inline:24px}
-.pont-sponsor__message{color:#e4eeeb;font:550 12px system-ui}
-.pont-sponsor__wordmark{color:#ffe36b;text-shadow:0 0 15px #ffe36b43;font:800 italic 19px/1 system-ui}
-.pont-sponsor__separator{flex:none;width:4px;height:4px;transform:rotate(45deg);background:#e3c87e}
-.pont-sponsor__endcap{font-size:10px;color:#c8ad64}
-@keyframes pont-sponsor-marquee{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
-@media(prefers-reduced-motion:reduce){.pont-sponsor__track{animation:none;transform:translateX(-50%)}}
+.pont-sponsor{display:grid;place-items:center;position:relative;isolation:isolate;overflow:hidden;width:100vw;width:100dvw;margin:clamp(12px,2vw,18px) 0 clamp(19px,3vw,27px) calc(50% - 50vw);margin-left:calc(50% - 50dvw);min-height:clamp(74px,8.8vw,96px);padding:12px clamp(12px,4vw,30px);border:0;border-top:1px solid #d7b6788c;border-bottom:1px solid #d7b67875;background:radial-gradient(ellipse at 50% 135%,#b89a4e48 0,transparent 49%),radial-gradient(ellipse at 14% 10%,#4059787d 0,transparent 32%),radial-gradient(ellipse at 86% 15%,#54396587 0,transparent 35%),linear-gradient(105deg,#071921,#102733 46%,#12192d 100%);box-shadow:inset 0 0 24px #0006,0 12px 26px #0003}
+.pont-sponsor::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.72;background-image:radial-gradient(circle at 6% 26%,#e9d0a4 0 1px,transparent 1.8px),radial-gradient(circle at 21% 72%,#d2c08a 0 1px,transparent 1.8px),radial-gradient(circle at 41% 18%,#e1d0a9 0 .9px,transparent 1.7px),radial-gradient(circle at 64% 82%,#e9d0a4 0 1px,transparent 1.8px),radial-gradient(circle at 79% 26%,#d2c08a 0 1px,transparent 1.8px),radial-gradient(circle at 95% 68%,#e1d0a9 0 .9px,transparent 1.7px)}
+.pont-sponsor::after{content:"";position:absolute;z-index:-1;top:-120%;bottom:-120%;left:-30%;width:24%;transform:rotate(19deg);background:linear-gradient(90deg,transparent,#e6d7b212,transparent);animation:pont-evening-light 14s ease-in-out infinite;pointer-events:none}
+.pont-sponsor__inner{display:grid;justify-items:center;align-content:center;gap:4px;text-align:center;max-width:100%}
+.pont-sponsor__eyebrow{display:flex;align-items:center;gap:12px;color:#e7cc9e;text-transform:uppercase;letter-spacing:.27em;font:700 clamp(8px,1.25vw,10px)/1.25 system-ui;opacity:.86}
+.pont-sponsor__eyebrow::before,.pont-sponsor__eyebrow::after{content:"";display:block;width:clamp(20px,6vw,65px);height:1px;background:linear-gradient(90deg,transparent,#d7bd86)}
+.pont-sponsor__eyebrow::after{transform:scaleX(-1)}
+.pont-sponsor__caption{color:#dee6e7;font:500 clamp(10px,1.65vw,13px)/1.25 system-ui;letter-spacing:.015em}
+.pont-sponsor__brand{color:#f5dca4;font:650 clamp(17px,3.05vw,29px)/1.12 Georgia,serif;letter-spacing:.025em;text-shadow:0 0 19px #e8b95c48}
+.pont-sponsor__brand::before{content:"✧";padding-right:10px;color:#e4bc72;font:400 .8em Georgia}
+.pont-sponsor__brand::after{content:"✧";padding-left:10px;color:#e4bc72;font:400 .8em Georgia}
+@keyframes pont-evening-light{0%,10%{left:-30%}48%,100%{left:120%}}
+@media(max-width:520px){.pont-sponsor{min-height:75px;padding:9px 12px}.pont-sponsor__inner{gap:3px}.pont-sponsor__brand{font-size:21px}.pont-sponsor__eyebrow{letter-spacing:.15em;font-size:8px}.pont-sponsor__caption{font-size:10px}}
+@media(prefers-reduced-motion:reduce){.pont-sponsor::after{animation:none}}
 #events{margin:0 0 25px}
 #eventList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,2.25vw,23px)}
 .event-tile{min-width:0;display:flex}
@@ -93,12 +95,7 @@ body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
   <h1 id="eventTitle">Ieșire în oraș</h1>
   <p>Descoperă petreceri, muzică live și evenimente speciale din Slobozia și împrejurimi.</p>
  </section>
- <div class="pont-sponsor" aria-label="Această pagină este sponsorizată de Biblos Grivița">
-  <div class="pont-sponsor__marquee"><div class="pont-sponsor__track" aria-hidden="true">
-   <div class="pont-sponsor__group"><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span></div>
-   <div class="pont-sponsor__group"><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span></div>
-  </div></div>
- </div>
+ <div class="pont-sponsor" aria-label="Această pagină este sponsorizată de Biblos Grivița"><div class="pont-sponsor__inner"><span class="pont-sponsor__eyebrow">Seri de neuitat</span><span class="pont-sponsor__caption">Această pagină este sponsorizată de</span><strong class="pont-sponsor__brand">Biblos Grivița</strong></div></div>
  <section id="events" aria-label="Evenimente în Slobozia și împrejurimi">
   <div id="eventList" aria-live="polite"><div class="event-empty"><h2>Se pregătesc noi evenimente</h2><p>Revino pentru petreceri, seri cu lăutari, muzică live și alte experiențe din zonă.</p></div></div>
  </section>
@@ -136,12 +133,12 @@ let db=null,restaurantId=null,canPost=false,allEvents=[];
 const config=window.PONT_CONFIG||{};
 // Preview content is kept in the page only; never inserted in Supabase.
 const demoEvents=[
- {id:"demo-01",title:"Seară cu lăutari",event_date:"2026-11-20",start_time:"20:00",locality:"Slobozia",venue:"Local demonstrativ A",poster_url:"./hambar.webp",description:"Muzică live și atmosferă tradițională. Exemplu de anunț, fără organizator real.",contact_phone:'',isDemo:true},
- {id:"demo-02",title:"Retro Party — anii ’90",event_date:"2026-11-21",start_time:"21:00",locality:"Amara",venue:"Local demonstrativ B",poster_url:"../assets/choice-evening.webp",description:"DJ și hituri retro pentru o seară tematică. Exemplu vizual fictiv.",contact_phone:'',isDemo:true},
- {id:"demo-03",title:"Cină cu muzică live",event_date:"2026-11-27",start_time:"19:30",locality:"Grivița",venue:"Local demonstrativ C",poster_url:"./noa.webp",description:"Cină festivă cu muzică live. Exemplu de eveniment, fără rezervări.",contact_phone:'',isDemo:true},
- {id:"demo-04",title:"Karaoke & Friends",event_date:"2026-11-28",start_time:"20:30",locality:"Bucu",venue:"Local demonstrativ D",poster_url:"./vista.webp",description:"Seară de karaoke și distracție între prieteni. Anunț demonstrativ.",contact_phone:'',isDemo:true},
- {id:"demo-05",title:"Petrecere de iarnă",event_date:"2026-12-05",start_time:"20:00",locality:"Slobozia",venue:"Local demonstrativ E",poster_url:"../assets/pont-evening.webp",description:"Petrecere tematică de sezon. Exemplu fictiv pentru prezentarea cardurilor.",contact_phone:'',isDemo:true},
- {id:"demo-06",title:"Revelion — Noaptea dintre ani",event_date:"2026-12-31",start_time:"21:00",locality:"Amara",venue:"Local demonstrativ F",poster_url:"./ambient.webp",description:"Exemplu de petrecere de Revelion, fără organizator sau rezervări reale.",contact_phone:'',isDemo:true}
+ {id:"demo-01",title:"Seară cu lăutari",event_date:"2026-11-20",start_time:"20:00",locality:"Slobozia",venue:"Local demonstrativ A",poster_url:"https://images.unsplash.com/photo-1739381563065-54cfb2b70079?auto=format&fit=crop&w=1200&q=76",description:"Muzică live și atmosferă tradițională. Exemplu de anunț, fără organizator real.",contact_phone:'',isDemo:true},
+ {id:"demo-02",title:"Retro Party — anii ’90",event_date:"2026-11-21",start_time:"21:00",locality:"Amara",venue:"Local demonstrativ B",poster_url:"https://images.unsplash.com/photo-1770413688598-03f95df8ecaf?auto=format&fit=crop&w=1200&q=76",description:"DJ și hituri retro pentru o seară tematică. Exemplu vizual fictiv.",contact_phone:'',isDemo:true},
+ {id:"demo-03",title:"Cină cu muzică live",event_date:"2026-11-27",start_time:"19:30",locality:"Grivița",venue:"Local demonstrativ C",poster_url:"https://images.unsplash.com/photo-1696628692316-c667760cec35?auto=format&fit=crop&w=1200&q=76",description:"Cină festivă cu muzică live. Exemplu de eveniment, fără rezervări.",contact_phone:'',isDemo:true},
+ {id:"demo-04",title:"Karaoke & Friends",event_date:"2026-11-28",start_time:"20:30",locality:"Bucu",venue:"Local demonstrativ D",poster_url:"https://images.unsplash.com/photo-1741594347991-4ad8bb863eb5?auto=format&fit=crop&w=900&q=76",description:"Seară de karaoke și distracție între prieteni. Anunț demonstrativ.",contact_phone:'',isDemo:true},
+ {id:"demo-05",title:"Petrecere de iarnă",event_date:"2026-12-05",start_time:"20:00",locality:"Slobozia",venue:"Local demonstrativ E",poster_url:"https://images.unsplash.com/photo-1671070850071-574b1032b184?auto=format&fit=crop&w=900&q=76",description:"Petrecere tematică de sezon. Exemplu fictiv pentru prezentarea cardurilor.",contact_phone:'',isDemo:true},
+ {id:"demo-06",title:"Revelion — Noaptea dintre ani",event_date:"2026-12-31",start_time:"21:00",locality:"Amara",venue:"Local demonstrativ F",poster_url:"https://images.unsplash.com/photo-1768054186550-4bdbb8f2640e?auto=format&fit=crop&w=900&q=76",description:"Exemplu de petrecere de Revelion, fără organizator sau rezervări reale.",contact_phone:'',isDemo:true}
 ];
 const eventDialog=$('eventDetails');
 eventDialog.querySelector('.event-dialog-close').onclick=()=>eventDialog.close();
@@ -157,7 +154,7 @@ function renderEvents(events){
  for(const [i,event] of events.entries()){
   const outer=document.createElement('div');outer.className='event-tile menu-tile';
   const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
-  const img=document.createElement('img');img.className='menu-card-photo';img.src=event.isDemo?event.poster_url:(event.poster_url&&/^https:\/\//i.test(event.poster_url)?event.poster_url:fallbackPhoto);img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';img.onerror=()=>{if(img.src!==new URL(fallbackPhoto,location.href).href)img.src=fallbackPhoto};
+  const img=document.createElement('img');img.className='menu-card-photo';img.src=event.poster_url&&/^https:\/\//i.test(event.poster_url)?event.poster_url:fallbackPhoto;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';img.onerror=()=>{if(img.src!==new URL(fallbackPhoto,location.href).href)img.src=fallbackPhoto};
   const badge=document.createElement('span');badge.className='event-date';badge.textContent=escDate(event.event_date);
   const demoLabel=document.createElement('span');demoLabel.className='event-demo-label';demoLabel.textContent='DEMO · EVENIMENT FICTIV';
   const copy=document.createElement('span');copy.className='menu-card-copy';
