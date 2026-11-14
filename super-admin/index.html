@@ -397,6 +397,12 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #restaurantRows .pont-commerce-payment{margin-top:9px!important;padding-top:8px!important}
 #restaurantRows .pont-commerce-payment-item{font-size:11px!important}
 @media(max-width:390px){#restaurantRows .pont-service-controls button{font-size:10px!important}}
+</style><style id="pont-inline-restaurant-editor-fix">
+#restaurantRows .restaurant-admin-item>#restaurantForm{margin:12px 0!important;padding:13px!important;min-width:0;border:1px solid #72b5a6a1;border-radius:13px;background:linear-gradient(145deg,#103b43,#0b2a32);text-align:left}
+#restaurantRows .restaurant-admin-item>#restaurantAccess{margin:0 0 10px!important}
+#restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-fields{min-width:0}
+#restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
+#restaurantRows .restaurant-admin-item>#restaurantForm[hidden],#restaurantRows .restaurant-admin-item>#restaurantAccess[hidden]{display:none!important}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-auction-period-save-c15">
@@ -1786,13 +1792,15 @@ $('pontCityChargeCreate').onclick=async()=>{
 $('pontCityChargeDialog').addEventListener('close',()=>{pontCityChargeRestaurant=null});
 
 function renderRestaurants(){
+ const editorCurrentlyOpen=!$('restaurantForm').hidden&&Boolean($('editingRestaurant').value);
+ if(editorCurrentlyOpen)pontRestoreRestaurantEditorHome();
  const result=restaurants;
  $('restaurantRows').innerHTML=result.length?result.map((r,index)=>{
   const id=esc(r.id),accounts=members.filter(m=>m.restaurant_id===r.id);
   const hasAccount=accounts.length>0,revoked=hasAccount&&accounts.every(m=>m.access_revoked===true);
   const state=!r.enabled?'suspended':!hasAccount?'no-access':revoked?'revoked':'active';
   const accountRows=accounts.map(m=>'<div class="pont-account-entry"><div class="pont-identity"><strong>Administrator '+esc(m.short_code||'—')+'</strong><small>'+(m.access_revoked?'Blocat':'Acces permis')+'</small></div><button type="button" class="'+(m.access_revoked?'pont-account-restore':'pont-account-revoke')+'" data-account-toggle="'+esc(m.user_id)+'" data-account-restaurant="'+id+'">'+(m.access_revoked?'Deblochează contul':'Blochează contul')+'</button></div>').join('');
-  return '<article class="restaurant-admin-item restaurant-status-'+state+'">'+
+  return '<article data-restaurant-card="'+id+'" class="restaurant-admin-item restaurant-status-'+state+'">'+
   '<div class="restaurant-admin-heading"><span class="restaurant-list-number">'+String(index+1).padStart(2,'0')+'</span>'+
   '<strong class="restaurant-list-name"><span class="pont-live-dot '+(restaurantOnlineIds.has(String(r.id))?'is-online':'is-offline')+'" aria-hidden="true"></span>'+esc(r.name)+'</strong>'+
   '<div class="restaurant-list-meta"><span>Cod '+esc(r.short_code||'—')+'</span><span>'+esc(r.phone||'Telefon neconfigurat')+'</span></div>'+
@@ -1809,6 +1817,7 @@ function renderRestaurants(){
   pontCommerceDetailsHtml(r)+
   '</div></details></article>';
  }).join(''):emptyMessage('Nu există restaurante înregistrate.');
+ if(editorCurrentlyOpen)pontPlaceRestaurantEditor($('editingRestaurant').value);
 }
 $('restaurantRows').addEventListener('toggle',event=>{
  const d=event.target.closest?.('details[data-account-panel]');
@@ -3108,7 +3117,30 @@ $('menuRows').onclick = async event => {
  }
 };
 
+const pontRestaurantEditorHome=$('restaurantForm').parentElement;
+let pontLastEditedRestaurant=null;
+function pontRestoreRestaurantEditorHome(){
+ const form=$('restaurantForm'),access=$('restaurantAccess');
+ pontRestaurantEditorHome.insertBefore(form,pontRestaurantEditorHome.querySelector('.pont-restaurant-commercial-period'));
+ form.after(access);
+}
+function pontPlaceRestaurantEditor(restaurantId){
+ const card=[...$('restaurantRows').querySelectorAll('[data-restaurant-card]')].find(el=>el.dataset.restaurantCard===restaurantId);
+ if(!card)return false;
+ const disclosure=card.querySelector('.pont-account-details');
+ if(!disclosure)return false;
+ card.insertBefore($('restaurantForm'),disclosure);
+ $('restaurantForm').after($('restaurantAccess'));
+ return true;
+}
+function pontFocusEditedRestaurant(restaurantId){
+ const card=[...$('restaurantRows').querySelectorAll('[data-restaurant-card]')].find(el=>el.dataset.restaurantCard===restaurantId);
+ const button=card?.querySelector('[data-edit-restaurant]');
+ if(!button)return;
+ try{button.focus({preventScroll:true})}catch(_){button.focus()}
+}
 function closeRestaurantEditor() {
+ pontRestoreRestaurantEditorHome();
  $('restaurantForm').reset();
  $('restaurantForm').hidden = true;
  $('editingRestaurant').value = '';
@@ -3130,6 +3162,8 @@ function syncRestaurantModuleFields(){
 $('restaurantMenuAccess').addEventListener('change',syncRestaurantModuleFields);
 function openRestaurantEditor(restaurant = null) {
  closeRestaurantEditor();
+ if(!restaurant||!pontPlaceRestaurantEditor(restaurant.id))return;
+ pontLastEditedRestaurant=restaurant.id;
  $('restaurantForm').hidden = false;
  $('editingRestaurant').value = restaurant?.id ?? '';
  $('name').value = restaurant?.name ?? '';
@@ -3143,11 +3177,12 @@ function openRestaurantEditor(restaurant = null) {
  $('saveRestaurantButton').textContent = 'Salvează modificările';
  $('restaurantAccess').hidden = !restaurant || !hasMember(restaurant.id);
  window.pontOperations?.editRestaurant(restaurant?.id || null);
- $('name').focus();
+ try{$('name').focus({preventScroll:true})}catch(_){$('name').focus()}
 }
 $('cancelRestaurant').onclick = () => {
+ const id=$('editingRestaurant').value;
  closeRestaurantEditor();
- $('addRestaurantAccount').focus();
+ if(id)pontFocusEditedRestaurant(id);
 };
 $('restaurantAccess').addEventListener('toggle', () => {
  const id = $('editingRestaurant').value;
@@ -3179,8 +3214,10 @@ $('restaurantForm').onsubmit = async event => {
   if(id)await window.pontOperations?.validateRestaurantSettings(id);
   await req(db.from('restaurants').update(values).eq('id', id));
   if(id)await window.pontOperations?.saveRestaurantSettings(id);
+  const editedId=id;
   closeRestaurantEditor();
   await load();
+  pontFocusEditedRestaurant(editedId);
   status('Restaurantul a fost salvat.');
  } catch (error) {
   if ($('restaurantForm').hidden) status('Restaurantul a fost salvat. Reîncarcă pagina pentru a actualiza lista.', true);
