@@ -2361,7 +2361,8 @@ function renderCommercialPayments(){
  const target=$('pontPaymentsRows');target.replaceChildren();
  const city= pontPaymentFilter==='menu'?[]:pontCityPaymentRows;
  const menu= pontPaymentFilter==='city'?[]:pontMenuPaymentRows;
- const combined=[...city.map(item=>({module:'city',item,date:item.created_at})),...menu.map(item=>({module:'menu',item,date:item.campaign_month+'T12:00:00Z'}))].sort((a,b)=>new Date(b.date)-new Date(a.date));
+ const manualOnly=pontPaymentFilter==='city'?[]:pontManualApprovals.filter(a=>!menu.some(m=>m.restaurant_id===a.restaurant_id&&m.campaign_month===a.campaign_month));
+ const combined=[...city.map(item=>({module:'city',item,date:item.created_at})),...menu.map(item=>({module:'menu',item,date:item.campaign_month+'T12:00:00Z'})),...manualOnly.map(item=>({module:'authorization',item,date:item.campaign_month+'T12:00:00Z'}))].sort((a,b)=>new Date(b.date)-new Date(a.date));
  const activeCity=city.filter(x=>x.status==='confirmed'&&new Date(x.expires_at)>new Date()).length;
  $('pontPaymentsPending').textContent=String(city.filter(x=>x.status==='pending').length+menu.filter(x=>x.payment_status!=='paid'&&!pontManualApprovals.some(m=>m.restaurant_id===x.restaurant_id&&m.campaign_month===x.campaign_month&&m.approval_type==='authorization')).length);
  $('pontPaymentsConfirmed').textContent=String(activeCity+menu.filter(x=>x.payment_status==='paid').length);
@@ -2380,10 +2381,10 @@ function renderCommercialPayments(){
  for(const {module,item} of combined){
   const card=pontPayElement('article',undefined,'pont-payment-row');
   const head=pontPayElement('header'),title=pontPayElement('strong',pontPaymentRestaurantName(item.restaurant_id));
-  const price=pontPayElement('span',Number(item.amount).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei','pont-payment-price');head.append(title,price);card.append(head);
-  const service=module==='menu'?'Meniul zilei · Licitație '+item.campaign_month.slice(0,7):'Ieșire în oraș · '+pontPaymentServiceNames[item.service_type];
+  const price=pontPayElement('span',module==='authorization'?'Fără sumă înregistrată':Number(item.amount).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei','pont-payment-price');head.append(title,price);card.append(head);
+  const service=module==='authorization'?'Meniul zilei · Autorizare manuală '+item.campaign_month.slice(0,7):module==='menu'?'Meniul zilei · Licitație '+item.campaign_month.slice(0,7):'Ieșire în oraș · '+pontPaymentServiceNames[item.service_type];
   card.append(pontPayElement('p',service));
-  card.append(pontPayElement('p','Status: '+pontPaymentStatusText(item,module),'pont-payment-status'));
+  card.append(pontPayElement('p','Status: '+(module==='authorization'?(item.approval_type==='authorization'?'Doar autorizat (fără plată)':'Confirmare manuală (fără ofertă)'):pontPaymentStatusText(item,module)),'pont-payment-status'));
   if(module==='city'){
    if(item.service_type==='pinned_event'){
     const event=pontCityApprovedEvents.find(x=>x.id===item.event_id);
@@ -2396,7 +2397,9 @@ function renderCommercialPayments(){
   }
   const actions=pontPayElement('div',undefined,'pont-payment-actions');
   let action=null,label='',klass='';
-  if(module==='city'){
+  if(module==='authorization'){
+   action='manage';label='Gestionează în Licitații';klass='primary';
+  }else if(module==='city'){
    if(item.status==='confirmed'){action='revoke';label='Anulează confirmarea';klass='pont-payment-revoke'}
    else{action='confirm';label=item.status==='revoked'?'Reconﬁrmă plata':'Confirmă plata';klass='primary'}
   }else{
@@ -2404,7 +2407,7 @@ function renderCommercialPayments(){
    else{action='confirm';label='Confirmă plata';klass='primary'}
   }
   const btn=pontPayElement('button',label,klass);btn.type='button';
-  btn.addEventListener('click',()=>void operateCommercialPayment(module,item,action,btn));actions.append(btn);
+  btn.addEventListener('click',()=>{if(action==='manage'){$('auctionMonth').value=item.campaign_month.slice(0,7);selectPlatformPanel('auctions')}else void operateCommercialPayment(module,item,action,btn)});actions.append(btn);
   if(module==='menu'){
    const jump=pontPayElement('button','Deschide licitațiile');
    jump.type='button';jump.onclick=()=>{
