@@ -163,7 +163,7 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
         </div>
         <p id="pontModelError" role="alert"></p>
         <div class="pont-model-actions">
-          <button type="button" id="pontModelCancel">Anulează</button>
+          <button type="button" id="pontModelCancel" autofocus>Anulează</button>
           <button type="submit" class="primary" id="pontModelSubmit">Salvează modelul</button>
         </div>
       </form>
@@ -354,7 +354,7 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
       const compact = dateInput.nextElementSibling?.querySelector('.pont-date-part');
       (compact || $('pontModelTitle')).focus({preventScroll:true});
     } else {
-      nameInput.focus({preventScroll:true});
+      /* Focus is intentionally left to the user. */
     }
   }
 
