@@ -3009,6 +3009,8 @@ function setCityRequestBranch(branch){
 $('cityRequestsEventTab').onclick=()=>setCityRequestBranch('events');
 $('cityRequestsPaymentTab').onclick=()=>setCityRequestBranch('payments');
 $('cityRequestsRefresh').onclick=()=>{void loadCityEvents();void loadCityCheckoutAttempts()};
+// Încercările de plată se actualizează automat cât timp panoul AS este deschis.
+setInterval(()=>{if(!document.hidden&&cityMode)void loadCityCheckoutAttempts()},45000);
 async function loadCityCheckoutAttempts(){
  const box=$('cityCheckoutAttemptRows'),msg=$('cityCheckoutAttemptStatus');
  msg.textContent='Se verifică accesările formularului Stripe…';
@@ -3226,7 +3228,8 @@ async function pontLoadCityRequests(){
  if(error)throw error;
  const rows=data||[];const pending=rows.filter(r=>r.status==='pending');
  $('cityRequestsPendingLabel').textContent='('+pending.length+')';
- $('pontCityRequestsNavCount').textContent=pending.length?'('+pending.length+')':'';
+ const allPending=pending.length+cityEventsLoaded.filter(e=>e.status==='pending').length;
+ $('pontCityRequestsNavCount').textContent=allPending?'('+allPending+')':'';
  for(const item of [...pending,...rows.filter(r=>r.status!=='pending')])box.append(pontCityRequestCard(item));
  if(!rows.length){const p=document.createElement('p');p.textContent='Nu există solicitări de la AR.';box.append(p)}
 }
