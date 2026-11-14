@@ -1090,8 +1090,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   <div class="dashboard-heading">
     <div><h2 id="restaurantsTitle">Restaurante</h2><p>Gestionează vizibilitatea, plata cu cardul și accesul.</p></div>
     <div class="dashboard-actions">
-      <button class="primary" id="addRestaurantAccount" type="button">Adaugă cu acces</button>
-      <button id="addRestaurantOnly" type="button" aria-expanded="false" aria-controls="restaurantForm">Doar restaurant</button>
+      <button class="primary" id="addRestaurantAccount" type="button">Adaugă restaurant</button>
     </div>
   </div>
   <form id="restaurantForm" class="dashboard-form" hidden>
@@ -2559,7 +2558,6 @@ function closeRestaurantEditor() {
  $('restaurantPasswordBox').hidden = true;
  $('restaurantNewPassword').value = '';
  $('restaurantConfirmPassword').value = '';
- $('addRestaurantOnly').setAttribute('aria-expanded', 'false');
  showMessage('restaurantFormStatus', '');
 }
 function syncRestaurantModuleFields(){
@@ -2573,7 +2571,6 @@ $('restaurantMenuAccess').addEventListener('change',syncRestaurantModuleFields);
 function openRestaurantEditor(restaurant = null) {
  closeRestaurantEditor();
  $('restaurantForm').hidden = false;
- $('addRestaurantOnly').setAttribute('aria-expanded', 'true');
  $('editingRestaurant').value = restaurant?.id ?? '';
  $('name').value = restaurant?.name ?? '';
  $('restaurantContactPhone').value=restaurant?.phone??'';
@@ -2582,19 +2579,15 @@ function openRestaurantEditor(restaurant = null) {
  $('restaurantEventsAccess').checked = Boolean(restaurant?.access_iesire_in_oras);
  syncRestaurantModuleFields();
  $('restaurantMenuPrice').value = restaurant?.menu_price ?? 30;
- $('restaurantFormTitle').textContent = restaurant ? 'Editează restaurantul' : 'Adaugă restaurant fără cont';
- $('saveRestaurantButton').textContent = restaurant ? 'Salvează modificările' : 'Adaugă restaurant';
+ $('restaurantFormTitle').textContent = 'Editează restaurantul';
+ $('saveRestaurantButton').textContent = 'Salvează modificările';
  $('restaurantAccess').hidden = !restaurant || !hasMember(restaurant.id);
  window.pontOperations?.editRestaurant(restaurant?.id || null);
  $('name').focus();
 }
-$('addRestaurantOnly').onclick = () => {
- if ($('restaurantForm').hidden || $('editingRestaurant').value) openRestaurantEditor();
- else $('name').focus();
-};
 $('cancelRestaurant').onclick = () => {
  closeRestaurantEditor();
- $('addRestaurantOnly').focus();
+ $('addRestaurantAccount').focus();
 };
 $('restaurantAccess').addEventListener('toggle', () => {
  const id = $('editingRestaurant').value;
@@ -2605,6 +2598,7 @@ $('restaurantForm').onsubmit = async event => {
  const button = $('saveRestaurantButton');
  if (button.disabled) return;
  const id = $('editingRestaurant').value, name = $('name').value.trim();
+ if (!id) { showMessage('restaurantFormStatus', 'Creează restaurante noi folosind «Adaugă restaurant», împreună cu un cont de administrator.', true); return; }
  if (!name) {
   showMessage('restaurantFormStatus', 'Introdu numele restaurantului.', true);
   $('name').focus();
@@ -2623,8 +2617,7 @@ $('restaurantForm').onsubmit = async event => {
  button.disabled = true;
  try {
   if(id)await window.pontOperations?.validateRestaurantSettings(id);
-  await req(id ? db.from('restaurants').update(values).eq('id', id) :
-   db.from('restaurants').insert({...values, slug:uniqueSlug(name,restaurants)}));
+  await req(db.from('restaurants').update(values).eq('id', id));
   if(id)await window.pontOperations?.saveRestaurantSettings(id);
   closeRestaurantEditor();
   await load();
