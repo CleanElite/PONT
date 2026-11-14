@@ -354,7 +354,7 @@ export function initMenuTemplates({db, getRestaurants, refreshHistory}) {
       const compact = dateInput.nextElementSibling?.querySelector('.pont-date-part');
       (compact || $('pontModelTitle')).focus({preventScroll:true});
     } else {
-      nameInput.focus({preventScroll:true});
+      /* Focus is intentionally left to the user. */
     }
   }
 
