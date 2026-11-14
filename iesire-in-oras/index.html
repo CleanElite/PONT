@@ -3,230 +3,206 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#001b1a">
-<meta name="description" content="Descoperă restaurante și locuri pentru ieșit în oraș în Slobozia, pe PONT.">
-<title>Ieșire în oraș · PONT Slobozia</title>
+<meta name="theme-color" content="#02191c">
+<meta name="description" content="Descoperă petreceri, muzică live și evenimente din Slobozia și împrejurimi, pe PONT.">
+<title>Ieșire în oraș · Evenimente · PONT</title>
 <link rel="icon" type="image/svg+xml" href="../pont-app-icon-2026.svg?v=20261109">
 <link rel="apple-touch-icon" sizes="180x180" href="../pont-180.png?v=20261109">
+<link rel="stylesheet" href="../meniul-zilei/lunch.css?v=fildes">
+<link rel="stylesheet" href="../meniul-zilei/menu-showcase.css?v=all-card-actions-20261114">
+<link rel="stylesheet" href="../pont-navigation.css?v=2">
 <style>
-:root{color-scheme:dark;--night:#001b1a;--mint:#9cfbe1;--gold:#e8c47c;--cream:#f4f0e8}
-*{box-sizing:border-box}html{background:#001815;scroll-behavior:smooth}
-body{margin:0;overflow-x:hidden;background:radial-gradient(ellipse at 5% 50%,#074a42 0,transparent 46%),linear-gradient(165deg,#001f1b,#001210 78%);color:var(--cream);font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-a{color:inherit;text-decoration:none}button{font:inherit;cursor:pointer}
-:focus-visible{outline:2px solid #b7ffe2;outline-offset:3px}
-.evening-shell{min-height:100svh;position:relative;isolation:isolate;overflow:hidden;padding-bottom:50px}
-.evening-shell::before{content:"";position:absolute;z-index:-2;inset:0 0 auto;height:clamp(320px,43vw,490px);pointer-events:none;background:linear-gradient(180deg,#00161323 0%,#00161338 45%,#001b18 100%),url("./ambient.webp") center top/cover no-repeat}
-.evening-shell::after{content:"";pointer-events:none;position:absolute;z-index:-1;bottom:-112px;left:-15%;width:130%;height:250px;border-top:2px solid rgba(117,255,229,.69);border-radius:50% 50% 0 0;transform:rotate(-3deg);background:radial-gradient(ellipse at 50% 0,rgba(5,204,178,.26),transparent 60%);box-shadow:0 -18px 60px rgba(13,227,200,.27)}
-.evening-wrap{width:min(92%,1040px);margin-inline:auto}
-.evening-header{height:clamp(114px,14vw,156px);display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:start;padding-top:10px;position:relative;z-index:2}
-.evening-logo{grid-column:2;display:flex;align-items:center;justify-content:center;flex-direction:column;width:clamp(185px,32vw,295px);min-height:103px}
-.evening-logo img{display:block;width:100%;height:auto;max-height:132px;object-fit:contain;filter:drop-shadow(0 0 12px rgba(66,235,220,.19))}
-.evening-logo-city{display:flex;align-items:center;gap:.85em;margin-top:-.15em;color:#f3faf6;font-size:clamp(8px,1.5vw,16px);letter-spacing:.4em;padding-left:.4em}
-.evening-logo-city::before,.evening-logo-city::after{content:"";width:clamp(20px,8vw,90px);height:1px;background:linear-gradient(90deg,transparent,#dfefeb)}
-.evening-logo-city::after{transform:scaleX(-1)}
-.evening-back{justify-self:end;grid-column:3;margin-top:20px;display:inline-flex;align-items:center;gap:10px;min-height:45px;border-radius:999px;padding:0 17px;border:1px solid rgba(154,244,219,.73);background:linear-gradient(135deg,rgba(7,75,66,.83),rgba(0,42,40,.56));box-shadow:inset 0 1px rgba(255,255,255,.16),0 0 18px rgba(23,202,185,.12);font-size:13px;font-weight:650;white-space:nowrap;transition:background .2s,transform .2s}
-.evening-back:hover{background:#105a4c;transform:translateY(-1px)}
-.evening-back svg{width:19px;height:19px;flex:none}
-.evening-intro{position:relative;z-index:1;padding:2px 0 clamp(27px,4.3vw,46px);padding-inline:clamp(0px,8%,84px)}
-.evening-intro h1{margin:5px 0 14px;font:italic 600 clamp(39px,6vw,65px)/1.05 Georgia,"Times New Roman",serif;letter-spacing:-.035em;color:#fffdf8;text-align:center;text-shadow:0 5px 23px #00110fe8}
-.evening-title-glow{display:block;width:min(350px,59vw);height:2px;margin:10px auto 21px;background:linear-gradient(90deg,transparent,var(--gold),transparent);box-shadow:0 0 17px #f9ce77b0}
-.evening-intro p{max-width:550px;margin:0 auto;color:#f2faf7;text-align:center;font-size:clamp(15px,2.55vw,26px);line-height:1.5;text-wrap:balance;text-shadow:0 2px 12px #001812}
-
-
-.venues{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.venue{position:relative;isolation:isolate;overflow:hidden;display:grid;grid-template-columns:36% minmax(0,1fr);align-items:center;min-height:150px;border:1px solid #a8d6cb42;border-radius:22px;background:linear-gradient(130deg,#15302c,#071917 66%);box-shadow:0 12px 24px #0003;transition:border-color .2s ease}
-.venue:hover,.venue:focus-within{border-color:#c9a870a0}
-.venue-image{position:absolute;inset:0 auto 0 0;width:57%;height:100%;object-fit:cover;object-position:var(--photo-position,center);-webkit-mask-image:linear-gradient(90deg,#000 35%,transparent 78%);mask-image:linear-gradient(90deg,#000 35%,transparent 78%);z-index:-1}
-.venue-copy{grid-column:2;text-align:center;min-width:0;padding:14px 14px 8px 0}
-.venue-title{margin:0;color:#fffdf8;font:600 clamp(19px,2.25vw,27px)/1.08 Georgia,serif;text-wrap:balance}
-.venue-vibe{display:block;margin-top:7px;color:#f5d998;font-size:10px;font-weight:650;letter-spacing:.12em;line-height:1.4;text-transform:uppercase}
-.venue-description{max-width:31ch;margin:7px auto 0;color:#d7e6e1;font-size:13px;line-height:1.45;text-wrap:pretty}
-.venue-map{display:inline-flex;align-items:center;min-height:44px;padding-inline:8px;color:#a8ede0;font-size:12px;font-weight:650}
-.venue-map:hover,.venue-map:focus-visible{text-decoration:underline;text-underline-offset:4px}
-.venue-photo-note{margin:0 0 14px;text-align:center;color:#c0d4ce;font-size:12px}
-@media(max-width:740px){.venues{grid-template-columns:minmax(0,1fr);max-width:540px;margin-inline:auto}}
-@media(max-width:420px){.venue{grid-template-columns:33% minmax(0,1fr);min-height:140px;border-radius:17px}.venue-copy{padding-right:10px}.venue-description{font-size:12px}.venue-image{width:52%}}
-.evening-bottom{height:55px}
-.evening-footer{position:relative;background:#001714;padding:14px 18px 45px;border-top:1px solid rgba(151,223,199,.2);color:#a8c6bc;font-size:12px}
-.evening-footer .footer-brand{max-width:1040px;margin:0 auto;font-size:13px;letter-spacing:.24em;color:#e9ede2}
-.evening-footer .pont-legal-footer{max-width:1040px!important;margin:24px auto 0!important;padding:16px 0!important;border-top:1px solid rgba(151,223,199,.18)!important;font-size:12px!important;line-height:1.7!important}
-.evening-footer .pont-legal-footer p{color:#a8c6bc}
-.evening-footer .pont-legal-footer a{color:#c4fbe6;text-decoration:underline;text-underline-offset:2px}
-.evening-footer .pont-legal-footer nav a{padding:0}
-@media(max-width:600px){
- .evening-wrap{width:calc(100% - 26px)}
- .evening-header{height:106px;padding-top:5px;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
- .evening-logo{width:clamp(147px,43vw,205px);min-height:90px}
- .evening-logo img{max-height:88px}
- .evening-back{margin-top:15px;min-height:38px;padding:0 10px;font-size:11px;gap:5px}
- .evening-back svg{width:16px;height:16px}
- .evening-intro{padding:0 10px 25px}
- .evening-intro h1{font-size:clamp(34px,9vw,47px);margin-top:0}
-  .evening-title-glow{margin:8px auto 17px}
- .evening-intro p{font-size:14px;max-width:320px}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
+.event-heading h1{font-size:clamp(32px,7.8vw,76px)}
+.event-heading p{font-size:clamp(13px,2.8vw,24px);max-width:780px;margin-inline:auto}
+.pont-sponsor{display:block;position:relative;isolation:isolate;overflow:hidden;width:100vw;width:100dvw;margin:clamp(12px,2vw,18px) 0 clamp(19px,3vw,27px) calc(50% - 50vw);margin-left:calc(50% - 50dvw);border-block:1px solid rgba(255,233,141,.31);background:#071f24;box-shadow:0 7px 21px rgba(3,19,23,.12)}
+.pont-sponsor__marquee{height:38px;overflow:hidden;position:relative;background:linear-gradient(180deg,#102f34,#082128)}
+.pont-sponsor__marquee::before{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(90deg,rgba(7,28,32,.7),transparent 5%,transparent 94%,rgba(7,28,32,.7))}
+.pont-sponsor__track{display:flex;align-items:center;height:100%;width:max-content;animation:pont-sponsor-marquee 38s linear infinite;will-change:transform}
+.pont-sponsor__group{display:flex;flex:none;align-items:center;justify-content:space-around;min-width:100dvw;height:100%}
+.pont-sponsor__item{display:inline-flex;align-items:center;gap:10px;white-space:nowrap;padding-inline:24px}
+.pont-sponsor__message{color:#e4eeeb;font:550 12px system-ui}
+.pont-sponsor__wordmark{color:#ffe36b;text-shadow:0 0 15px #ffe36b43;font:800 italic 19px/1 system-ui}
+.pont-sponsor__separator{flex:none;width:4px;height:4px;transform:rotate(45deg);background:#e3c87e}
+.pont-sponsor__endcap{font-size:10px;color:#c8ad64}
+@keyframes pont-sponsor-marquee{from{transform:translate3d(-50%,0,0)}to{transform:translate3d(0,0,0)}}
+@media(prefers-reduced-motion:reduce){.pont-sponsor__track{animation:none;transform:translateX(-50%)}}
+#events{margin:0 0 25px}
+#eventList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,2.25vw,23px)}
+.event-tile{min-width:0;display:flex}
+.event-tile:nth-child(-n+2),.event-empty{grid-column:1/-1}
+.event-card{min-height:clamp(126px,23vw,233px);cursor:pointer;font:inherit;border:2px solid #6dc1bf;transition:border-color .2s,box-shadow .2s}
+.event-tile:nth-child(-n+2) .event-card{min-height:clamp(154px,28.8vw,294px);border-color:#a1e1dd}
+.event-card .menu-card-copy{position:relative;z-index:1}
+.event-card .menu-card-name{display:block}
+.event-card .menu-card-location{color:#cce3df}
+.event-card .menu-card-photo{background:#092a2d;object-position:center}
+.event-card:hover{border-color:#e4fffb;box-shadow:0 0 21px #42eedb55}
+.event-date{position:absolute;top:clamp(9px,1.9vw,20px);right:clamp(8px,1.9vw,20px);z-index:2;padding:.48em .78em;border:1px solid #fff4c6;border-radius:999px;background:linear-gradient(150deg,#fff1c1,#f2ce81 63%,#eab756);color:#101614;font:800 clamp(10px,2.2vw,18px)/1.15 system-ui;white-space:nowrap}
+.event-category{color:#f9dd99;font:700 clamp(10px,2vw,15px)/1.25 system-ui}
+.event-empty{margin:0;display:grid;justify-items:center;gap:12px;min-height:clamp(200px,35vw,310px);place-content:center;padding:32px clamp(18px,5vw,45px);text-align:center;border:1px solid #69bdba65;border-radius:clamp(16px,4vw,36px);background:linear-gradient(130deg,#062d33,#082326 76%);color:#e1f1eb}
+.event-empty h2{margin:0;font:600 clamp(24px,5.5vw,42px)/1.1 Georgia,serif}
+.event-empty p{max-width:570px;line-height:1.5;margin:0;color:#b9d9d6}
+.event-empty small{color:#e4c989}
+.event-publisher{margin:26px 0 38px;padding:clamp(18px,4vw,34px);border:1px solid #58c8c082;border-radius:clamp(16px,3.5vw,28px);background:linear-gradient(125deg,#073a3d,#04252c 70%);box-shadow:inset 0 1px #c0fff416}
+.event-publisher h2{margin:0 0 6px;font:600 clamp(22px,4.4vw,33px) Georgia,serif;color:#f4f8f7}
+.event-publisher p{margin:0 0 16px;color:#bedbd9;line-height:1.5;font-size:14px}
+.event-publisher summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:14px;font-weight:650;color:#ffe5aa}
+.event-publisher summary::-webkit-details-marker{display:none}
+.event-publisher summary::after{content:"＋";font-size:22px;font-weight:400}
+.event-publisher details[open] summary::after{content:"−"}
+.event-submit-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:18px}
+.event-submit-form label{display:grid;gap:6px;color:#d0e6e4;font:600 12px system-ui}
+.event-submit-form .full{grid-column:1/-1}
+.event-submit-form input,.event-submit-form textarea{width:100%;min-width:0;border:1px solid #77aead85;border-radius:10px;background:#082930;color:#f9ffff;padding:12px;font:16px system-ui;outline-offset:2px}
+.event-submit-form textarea{min-height:90px;resize:vertical}
+.event-submit-form button,.event-primary-action{display:inline-flex;justify-content:center;align-items:center;gap:8px;width:fit-content;max-width:100%;border:1px solid #eacf86;border-radius:999px;padding:10px 19px;background:linear-gradient(140deg,#eadba8,#dbb96c);color:#132627;font:750 13px system-ui;text-decoration:none;cursor:pointer}
+.event-submit-form button:disabled{opacity:.6;cursor:wait}
+.event-form-status{min-height:20px;color:#e6d39d;font-size:13px}
+.event-account-link{color:#f5d99b;font-weight:650;text-underline-offset:3px}
+.event-moderation-link{display:inline-flex;margin-top:13px;color:#f5d99b;font-weight:700}
+.event-dialog{width:min(94vw,550px);max-height:85dvh;overflow:auto;padding:clamp(18px,5vw,30px);border:1px solid #6ce5d1;border-radius:23px;background:linear-gradient(145deg,#082f35,#031d26);color:#f5f9f8;box-shadow:0 24px 75px #0009}
+.event-dialog::backdrop{background:#031015d4;backdrop-filter:blur(5px)}
+.event-dialog h2{font:600 clamp(26px,5vw,37px) Georgia,serif;margin:9px 35px 10px 0}
+.event-dialog p{color:#c3dcda;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}
+.event-dialog .event-dialog-meta{color:#f4d997;font-weight:650}
+.event-dialog-close{float:right;border:1px solid #4b8c88;border-radius:50%;background:#0a3d41;color:#eff;font-size:22px;width:36px;height:36px;cursor:pointer}
+.pont-footer-simple{color:#c5d8d6}
+@media(max-width:520px){
+.pont-sponsor__marquee{height:34px}.pont-sponsor__message{font-size:10px}.pont-sponsor__wordmark{font-size:17px}.pont-sponsor__item{gap:8px;padding-inline:18px}
+.event-tile:nth-child(-n+2) .event-card .menu-card-copy{width:58%}
+.event-tile:nth-child(n+3) .event-card{padding:12px}
+.event-tile:nth-child(n+3) .menu-card-name{font-size:clamp(15px,3.6vw,18px)}
+.event-submit-form{grid-template-columns:1fr}
+.event-submit-form label{grid-column:1/-1}
 }
-@media(max-width:540px){.evening-back .back-text{display:none}.evening-back{width:42px;min-height:42px;justify-content:center;padding:0}}
-@media(max-width:380px){.evening-header{height:110px}.evening-logo{width:143px}.evening-back .back-text{display:none}.evening-back{width:38px;justify-content:center;padding:0}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.evening-back,.venue{transition:none}}
-
-/* Shared public footer design, matching Meniul zilei. */
-body.evening-page .pont-footer-simple{position:relative;background:#001714;box-sizing:border-box}
-body.evening-page .pont-footer-simple{max-width:1120px!important;margin:38px auto 0!important;padding:28px 22px 34px!important;border-top:1px solid #a7e1d52e!important;text-align:center!important;color:#c8e4df!important}
-body.evening-page .pont-footer-brand{display:flex;align-items:center;justify-content:center;gap:12px}
-body.evening-page .pont-footer-mark{color:#f5fff9;font:750 18px/1 system-ui;letter-spacing:.19em}
-body.evening-page .pont-footer-city{color:#a4c8c1;font:650 10px/1 system-ui;letter-spacing:.19em;border-left:1px solid #a4c8c166;padding-left:12px}
-body.evening-page .pont-footer-simple>p{margin:13px 0 20px;color:#b9d6d0;font-size:13px}
-body.evening-page .pont-footer-links{display:flex!important;align-items:center;justify-content:center;flex-wrap:wrap;gap:8px 17px!important;margin:0 auto 18px!important;padding:0!important;border:0!important;background:none!important}
-body.evening-page .pont-footer-links a{display:inline-flex!important;width:auto!important;min-height:0!important;padding:5px 0!important;background:transparent!important;border:0!important;color:#d1e7e2!important;text-decoration:none!important;font:500 12px/1.35 system-ui!important}
-body.evening-page .pont-footer-links a:hover{text-decoration:underline!important;color:white!important}
-body.evening-page .pont-footer-simple>small{font-size:11px!important;color:#84aaa2!important}
-@media(max-width:500px){body.evening-page .pont-footer-simple{margin-top:29px!important;padding:24px 16px 30px!important}body.evening-page .pont-footer-links{gap:6px 15px!important}body.evening-page .pont-footer-links a{font-size:11px!important}}
-body.evening-page .pont-sal-pictogram{display:flex!important;width:68px!important;height:17px!important;margin:8px auto 20px!important;padding:0!important;border:0!important;background:white!important;border-radius:4px!important;align-items:center;justify-content:center;overflow:hidden}body.evening-page .pont-sal-pictogram img{display:block!important;width:68px!important;height:17px!important;max-width:none!important;object-fit:contain!important}body.evening-page .pont-sal-pictogram:hover{outline:2px solid #92e8d9;outline-offset:3px}
 </style>
 </head>
-<body class="evening-page">
-<div class="evening-shell">
-  <header class="evening-header evening-wrap">
-    <a class="evening-logo" href="../" aria-label="PONT Slobozia — Acasă"><img src="../meniul-zilei/showcase/pont-wordmark.webp" alt="PONT Slobozia" width="576" height="240"><span class="evening-logo-city" aria-hidden="true">SLOBOZIA</span></a>
-    <a class="evening-back" href="../" data-pont-back aria-label="Înapoi la intrare"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H4m0 0 7-7m-7 7 7 7"/></svg><span class="back-text">Înapoi la intrare</span></a>
-  </header>
-  <main class="evening-wrap">
-    <section class="evening-intro" aria-labelledby="evening-title">
-      <h1 id="evening-title">Ieșire în oraș</h1>
-      <span class="evening-title-glow" aria-hidden="true"></span>
-      <p>Unde ieșim în Slobozia? Alege locul după atmosfera pe care o cauți.</p>
-    </section>
-    <p class="venue-photo-note">14 localuri în Slobozia · Imagini ilustrative</p>
-    <section class="venues" aria-label="Restaurante și localuri din Slobozia">
-      <article class="venue">
-        <img class="venue-image" src="./hambar.webp" style="--photo-position:88% center" width="120" height="120" alt="" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">Hambar Bistro</h2>
-          <span class="venue-vibe">Rafinament relaxat</span>
-          <p class="venue-description">Pentru o cină în doi, cu mâncare bună și timp de stat la masă.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Hambar%20Bistro%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Hambar Bistro pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="./vista.webp" style="--photo-position:88% center" width="120" height="120" alt="" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">Vista Cafe</h2>
-          <span class="venue-vibe">Cafea și conversație</span>
-          <p class="venue-description">O cafea care se poate prelungi într-un prânz cu prietenii.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Vista%20Cafe%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Vista Cafe pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="./noa.webp" style="--photo-position:88% center" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">NOA Restaurant &amp; Lounge</h2>
-          <span class="venue-vibe">Lounge</span>
-          <p class="venue-description">Pentru serile în care vrei să mai rămâi la povești după cină.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=NOA%20Restaurant%20%26%20Lounge%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi NOA Restaurant &amp; Lounge pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="../meniul-zilei/showcase/pizza.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">Donna Carmela</h2>
-          <span class="venue-vibe">Gusturi italienești</span>
-          <p class="venue-description">Când ai poftă de gusturi italienești la o masă cu familia sau prietenii.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Donna%20Carmela%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Donna Carmela pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="../meniul-zilei/showcase/somon.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">Restaurant LaCosta</h2>
-          <span class="venue-vibe">Eleganță clasică</span>
-          <p class="venue-description">Un cadru aparte pentru o aniversare sau o masă de sărbătoare.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Restaurant%20LaCosta%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Restaurant LaCosta pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="../meniul-zilei/showcase/supa.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">Restaurant Central</h2>
-          <span class="venue-vibe">Tradiție</span>
-          <p class="venue-description">Pentru un prânz în familie, într-un cadru clasic și familiar.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Restaurant%20Central%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Restaurant Central pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="../meniul-zilei/showcase/burger.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">Spring No. 3</h2>
-          <span class="venue-vibe">Relaxat</span>
-          <p class="venue-description">Pentru o ieșire spontană cu prietenii și o masă consistentă.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Spring%20No.%203%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Spring No. 3 pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="../meniul-zilei/showcase/paste.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">By Jules</h2>
-          <span class="venue-vibe">Varietate</span>
-          <p class="venue-description">Pentru un grup cu gusturi diferite sau când ai chef să încerci ceva nou.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=By%20Jules%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi By Jules pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="../assets/choice-lunch.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">VIVO Bistro</h2>
-          <span class="venue-vibe">Casual și modern</span>
-          <p class="venue-description">O pauză de prânz sau o întâlnire spontană, fără formalități.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=VIVO%20Bistro%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi VIVO Bistro pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="../meniul-zilei/showcase/friptura.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">Bistro 21</h2>
-          <span class="venue-vibe">Simplu și sățios</span>
-          <p class="venue-description">Când vrei o masă consistentă și mâncarea e motivul ieșirii.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Bistro%2021%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Bistro 21 pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="../assets/pont-evening.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">Restaurant Atlantic</h2>
-          <span class="venue-vibe">Confort și varietate</span>
-          <p class="venue-description">Pentru un prânz liniștit sau o cină obișnuită, într-un loc familiar.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Restaurant%20Atlantic%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Restaurant Atlantic pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="../assets/pont-lunch.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">Yoo Hoo</h2>
-          <span class="venue-vibe">Familiar și relaxat</span>
-          <p class="venue-description">O oprire la masă în mijlocul unei zile pline, singur sau cu familia.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Yoo%20Hoo%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Yoo Hoo pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="./vista.webp" style="--photo-position:88% center" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">Good Food WOK</h2>
-          <span class="venue-vibe">Rapid și gustos</span>
-          <p class="venue-description">Când ai chef de ceva diferit și ai puțin timp pentru masă.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Good%20Food%20WOK%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Good Food WOK pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-      <article class="venue">
-        <img class="venue-image" src="../assets/choice-evening.webp" width="120" height="120" alt="" loading="lazy" decoding="async">
-        <div class="venue-copy">
-          <h2 class="venue-title">Berăria HM Garden</h2>
-          <span class="venue-vibe">Cu gașca</span>
-          <p class="venue-description">Pentru o seară în gașcă, cu discuții lungi și atmosferă degajată.</p>
-          <a class="venue-map" href="https://www.google.com/maps/search/?api=1&amp;query=Ber%C4%83ria%20HM%20Garden%20Slobozia" target="_blank" rel="noopener noreferrer" aria-label="Vezi Berăria HM Garden pe hartă">Vezi pe hartă →</a>
-        </div>
-      </article>
-    </section>
-    <div class="evening-bottom" aria-hidden="true"></div>
-  </main>
-</div>
-<footer class="pont-footer-simple"><div class="pont-footer-brand"><span class="pont-footer-mark">PONT</span><span class="pont-footer-city">SLOBOZIA</span></div><p>Pentru comenzile pe WhatsApp, așteaptă confirmarea restaurantului.</p><nav class="pont-footer-links" aria-label="Informații și documente legale"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate</a><a href="../cookies.html">Cookies</a><a href="https://anpc.ro/" target="_blank" rel="noopener noreferrer">ANPC</a></nav><a class="pont-sal-pictogram" href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" aria-label="ANPC – Soluționarea Alternativă a Litigiilor"><img src="../sal-pont.svg" width="68" height="17" loading="lazy" alt="ANPC – Soluționarea Alternativă a Litigiilor"></a><small>© PONT · Platformă de prezentare a restaurantelor</small></footer>
-<script type="module" src="../pont-privacy-consent.js?v=consent-audit-20261113-v4"></script><script defer src="../pont-navigation-history.js?v=stack-v2-20261113"></script></body></html>
+<body class="lunch menu-showcase">
+<div class="menu-art" aria-hidden="true"></div>
+<header class="menu-header">
+ <a class="menu-back pont-nav-action" href="../" aria-label="Acasă"><span class="pont-nav-action__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></span><span class="pont-nav-action__label">Acasă</span></a>
+ <a class="menu-lockup" href="../" aria-label="PONT, pagina principală"><span class="menu-wordmark" aria-hidden="true"></span><span class="menu-city" aria-hidden="true">SLOBOZIA</span></a>
+</header>
+<main class="menu-main">
+ <section class="menu-heading event-heading" aria-labelledby="eventTitle">
+  <h1 id="eventTitle">Ieșire în oraș</h1>
+  <p>Descoperă petreceri, muzică live și evenimente speciale din Slobozia și împrejurimi.</p>
+ </section>
+ <div class="pont-sponsor" aria-label="Această pagină este sponsorizată de Biblos Grivița">
+  <div class="pont-sponsor__marquee"><div class="pont-sponsor__track" aria-hidden="true">
+   <div class="pont-sponsor__group"><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span></div>
+   <div class="pont-sponsor__group"><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span><span class="pont-sponsor__item"><span class="pont-sponsor__message">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator" aria-hidden="true"></span><strong class="pont-sponsor__wordmark">Biblos Grivița</strong><span class="pont-sponsor__endcap" aria-hidden="true">✦</span></span></div>
+  </div></div>
+ </div>
+ <section id="events" aria-label="Evenimente în Slobozia și împrejurimi">
+  <div id="eventList" aria-live="polite"><div class="event-empty"><h2>Se pregătesc noi evenimente</h2><p>Revino pentru petreceri, seri cu lăutari, muzică live și alte experiențe din zonă.</p></div></div>
+ </section>
+ <section class="event-publisher" aria-labelledby="publishEventTitle">
+  <h2 id="publishEventTitle">Organizezi un eveniment?</h2>
+  <p>Restaurantele și localurile partenere pot propune gratuit anunțuri pentru aprobare, cu dată, loc și detalii de contact.</p>
+  <div id="eventGuest">Ai deja cont de restaurant PONT? <a class="event-account-link" href="../login/">Autentifică-te</a> pentru a publica un anunț.</div>
+  <details id="eventSubmitWrap" hidden>
+   <summary>Propune un eveniment</summary>
+   <form id="eventSubmitForm" class="event-submit-form">
+    <label class="full">Titlul evenimentului<input name="title" required minlength="5" maxlength="100" placeholder="Ex.: Seară cu muzică live"></label>
+    <label>Data evenimentului<input type="date" name="event_date" required></label>
+    <label>Ora de începere<input type="time" name="start_time" required></label>
+    <label>Localitate<input name="locality" required maxlength="80" placeholder="Slobozia, Amara, Grivița…"></label>
+    <label>Locație<input name="venue" required maxlength="120" placeholder="Numele localului"></label>
+    <label>Telefon pentru rezervări<input name="contact_phone" required maxlength="32" inputmode="tel" autocomplete="tel"></label>
+    <label>Link afiș (opțional)<input type="url" name="poster_url" maxlength="700" placeholder="https://..."></label>
+    <label class="full">Descrierea evenimentului<textarea name="description" maxlength="1200" placeholder="Program, artiști, informații despre rezervare…"></textarea></label>
+    <button type="submit" class="full">Trimite spre aprobare</button>
+    <span id="eventFormStatus" class="event-form-status full" role="status"></span>
+   </form>
+  </details>
+  <a id="eventModerationLink" class="event-moderation-link" href="../super-admin/evenimente/" hidden>Moderează evenimentele</a>
+ </section>
+</main>
+<footer class="pont-footer-simple"><div class="pont-footer-brand"><span class="pont-footer-mark">PONT</span><span class="pont-footer-city">SLOBOZIA</span></div><p>Evenimente în Slobozia și localitățile din apropiere. Rezervările se confirmă direct cu organizatorul.</p><nav class="pont-footer-links" aria-label="Informații și documente legale"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate</a><a href="../cookies.html">Cookies</a><a href="https://anpc.ro/" target="_blank" rel="noopener noreferrer">ANPC</a></nav><a class="pont-sal-pictogram" href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" aria-label="ANPC – Soluționarea Alternativă a Litigiilor"><img src="../sal-pont.svg" width="68" height="17" loading="lazy" alt="ANPC – Soluționarea Alternativă a Litigiilor"></a><small>© PONT · Evenimente și promovare locală</small></footer>
+<dialog class="event-dialog" id="eventDetails" aria-labelledby="eventDetailsTitle"><button type="button" class="event-dialog-close" aria-label="Închide">×</button><h2 id="eventDetailsTitle"></h2><p class="event-dialog-meta" id="eventDetailsMeta"></p><p id="eventDetailsDescription"></p><a id="eventDetailsPhone" class="event-primary-action" hidden>Sună pentru rezervări</a></dialog>
+<script src="../super-admin/config.js"></script>
+<script type="module">
+const $=id=>document.getElementById(id);
+const todayLocal=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+const escDate=value=>{const [y,m,d]=(value||'').split('-').map(Number);return y&&m&&d?new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,d,12))):''};
+const fallbackPhoto="./ambient.webp";
+let db=null,restaurantId=null,canPost=false,allEvents=[];
+const config=window.PONT_CONFIG||{};
+const eventDialog=$('eventDetails');
+eventDialog.querySelector('.event-dialog-close').onclick=()=>eventDialog.close();
+eventDialog.addEventListener('click',e=>{if(e.target===eventDialog)eventDialog.close()});
+function renderEvents(events){
+ const list=$('eventList');list.replaceChildren();
+ if(!events.length){
+  const empty=document.createElement('div');empty.className='event-empty';
+  const h=document.createElement('h2');h.textContent='Se pregătesc noi evenimente';
+  const p=document.createElement('p');p.textContent='Momentan nu sunt evenimente anunțate. Aici vei descoperi petreceri, seri cu lăutari, concerte și alte experiențe din Slobozia și împrejurimi.';
+  empty.append(h,p);list.append(empty);return;
+ }
+ for(const [i,event] of events.entries()){
+  const outer=document.createElement('div');outer.className='event-tile menu-tile';
+  const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
+  const img=document.createElement('img');img.className='menu-card-photo';img.src=event.poster_url&&/^https:\/\//i.test(event.poster_url)?event.poster_url:fallbackPhoto;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';img.onerror=()=>{if(img.src!==new URL(fallbackPhoto,location.href).href)img.src=fallbackPhoto};
+  const badge=document.createElement('span');badge.className='event-date';badge.textContent=escDate(event.event_date);
+  const copy=document.createElement('span');copy.className='menu-card-copy';
+  const name=document.createElement('strong');name.className='menu-card-name';name.textContent=event.title;
+  const place=document.createElement('span');place.className='menu-card-location';place.textContent=event.venue+' · '+event.locality;
+  const hour=document.createElement('span');hour.className='event-category';hour.textContent='Ora '+String(event.start_time||'').slice(0,5);
+  const action=document.createElement('span');action.className='menu-card-action';action.textContent='Vezi evenimentul';
+  copy.append(name,place,hour,action);button.append(img,badge,copy);
+  button.addEventListener('click',()=>showDetails(event));outer.append(button);list.append(outer);
+ }
+}
+function showDetails(event){
+ $('eventDetailsTitle').textContent=event.title;
+ $('eventDetailsMeta').textContent=escDate(event.event_date)+' · '+String(event.start_time).slice(0,5)+' · '+event.venue+', '+event.locality;
+ $('eventDetailsDescription').textContent=event.description||'Pentru detalii și rezervări, contactează direct organizatorul.';
+ const phone=String(event.contact_phone||'').trim();const link=$('eventDetailsPhone');
+ const dial=phone.replace(/[^+\d]/g,'');
+ link.hidden=!/^\+?\d{7,15}$/.test(dial);if(!link.hidden)link.href='tel:'+dial;
+ eventDialog.showModal();
+}
+async function loadEvents(){
+ if(!db)return;
+ const {data,error}=await db.from('pont_city_events').select('id,title,description,event_date,start_time,locality,venue,contact_phone,poster_url').eq('status','approved').gte('event_date',todayLocal()).order('event_date',{ascending:true}).order('start_time',{ascending:true}).limit(80);
+ if(error)throw error;allEvents=data||[];renderEvents(allEvents);
+}
+async function setupPublisher(){
+ const {data:{user},error}=await db.auth.getUser();if(error||!user)return;
+ const {data:membership,error:memberError}=await db.from('restaurant_members').select('restaurant_id').eq('user_id',user.id).limit(1).maybeSingle();
+ if(!memberError&&membership?.restaurant_id){restaurantId=membership.restaurant_id;canPost=true;$('eventGuest').hidden=true;$('eventSubmitWrap').hidden=false}
+ const {data:isAdmin}=await db.rpc('is_super_admin');if(isAdmin)$('eventModerationLink').hidden=false;
+}
+$('eventSubmitForm').onsubmit=async e=>{
+ e.preventDefault();
+ if(!db||!canPost||!restaurantId)return;
+ const form=e.currentTarget,button=form.querySelector('[type=submit]'),status=$('eventFormStatus');
+ const v=Object.fromEntries(new FormData(form).entries());
+ if(v.event_date<todayLocal()){status.textContent='Selectează o dată de astăzi sau din viitor.';return}
+ if(v.poster_url&&!/^https:\/\//i.test(v.poster_url)){status.textContent='Linkul afișului trebuie să înceapă cu https://';return}
+ button.disabled=true;status.textContent='Se trimite anunțul…';
+ try{
+  const {error}=await db.from('pont_city_events').insert({restaurant_id:restaurantId,title:v.title.trim(),description:v.description.trim(),event_date:v.event_date,start_time:v.start_time,locality:v.locality.trim(),venue:v.venue.trim(),contact_phone:v.contact_phone.trim(),poster_url:v.poster_url.trim()||null});
+  if(error)throw error;
+  form.reset();status.textContent='Anunțul a fost trimis spre aprobare. Nu va apărea public până la confirmarea PONT.';
+ }catch(error){status.textContent='Anunțul nu a fost salvat: '+error.message}
+ finally{button.disabled=false}
+};
+async function start(){
+ if(!config.url||!config.anonKey)throw Error('Conexiunea PONT nu este configurată.');
+ const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+ db=createClient(config.url,config.anonKey);
+ $('eventSubmitForm').elements.event_date.min=todayLocal();
+ await Promise.allSettled([loadEvents(),setupPublisher()]);
+}
+start().catch(e=>{const list=$('eventList');list.textContent='Evenimentele nu pot fi încărcate momentan.';console.error('PONT evenimente:',e)});
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadEvents().catch(console.warn)});
+</script>
+<script type="module" src="../pont-privacy-consent.js?v=consent-audit-20261113-v4"></script>
+<script defer src="../pont-navigation-history.js?v=stack-v2-20261113"></script>
+<script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script>
+</body></html>
