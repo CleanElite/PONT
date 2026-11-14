@@ -37,15 +37,14 @@ jobs:
               target = original.resize((size,size), Image.Resampling.LANCZOS)
               target.save(root / filename, format='PNG', optimize=True)
               print(f'Generated {filename}: {target.size}')
-          (Path('apple-touch-icon.png')).write_bytes((root / 'pont-180.png').read_bytes())
-          print('Generated root apple-touch-icon.png for iOS Safari')
+          print('Generated icons only inside the /test staging area')
           PY
       - name: Commit PNG files to website
         shell: bash
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add apple-touch-icon.png test/pont-180.png test/pont-192.png test/pont-512.png test/pont-maskable-512.png
+          git add test/pont-180.png test/pont-192.png test/pont-512.png test/pont-maskable-512.png
           if ! git diff --cached --quiet; then
             git commit -m "Build PONT iOS and Android icon PNGs"
             git pull --rebase origin main
