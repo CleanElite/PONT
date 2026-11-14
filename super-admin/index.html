@@ -302,6 +302,31 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #pontInlineAccountCreator[hidden]{display:none!important}
 #pontInlineAccountCreator #memberForm{margin:12px 0 0}
 #restaurantRows .restaurant-status-revoked{--restaurant-bg:linear-gradient(125deg,#344242,#25373c 48%,#213037 100%);--restaurant-edge:#9aafb0;--restaurant-glow:rgba(124,161,164,.17)}
+</style><style id="pont-payments-premium">
+#commercialPayments[hidden]{display:none!important}
+#commercialPayments .pont-payment-filters{display:flex;gap:7px;flex-wrap:wrap;margin-top:17px}
+#commercialPayments .pont-payment-filters button{padding:9px 12px;font-size:12px;border:1px solid #67968d;border-radius:10px;background:#103b42;color:#d2e7df}
+#commercialPayments .pont-payment-filters button[aria-pressed=true]{background:#235e50;color:#fff0c9;border-color:#dbcf99}
+#commercialPayments .pont-payment-create{margin:18px 0;padding:15px;border:1px solid #74ad9b80;background:#0b3037;border-radius:14px}
+#commercialPayments .pont-payment-create summary{cursor:pointer;font-size:13px;color:#e6d69d;font-weight:750}
+#commercialPayments #pontPaymentCreateForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px;margin-top:16px}
+#commercialPayments #pontPaymentCreateForm label{font-size:12px;display:grid;gap:6px;color:#c1e2d9}
+#commercialPayments #pontPaymentCreateForm select{width:100%;min-width:0;background:#092631;border:1px solid #6a9a8d;border-radius:10px;padding:10px;color:#f4fffb;font-size:15px}
+#commercialPayments #pontPaymentCreateButton{align-self:end}
+#commercialPayments .pont-payment-row{border:1px solid #578d8180;background:linear-gradient(125deg,#103540,#092930);padding:13px 15px;border-radius:13px}
+#commercialPayments .pont-payment-row header{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+#commercialPayments .pont-payment-row strong{color:#f9f5e5;font-size:15px}
+#commercialPayments .pont-payment-row p{font-size:12px;margin:6px 0;line-height:1.5;color:#c2d9d1}
+#commercialPayments .pont-payment-row .pont-payment-price{font-size:16px;font-weight:750;color:#f2dc99}
+#commercialPayments .pont-payment-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+#commercialPayments .pont-payment-actions button{min-height:36px;padding:8px 12px;font-size:12px}
+#commercialPayments .pont-payment-actions .pont-payment-revoke{color:#ffe1d6;background:#6a333b;border:1px solid #bf817f}
+#commercialPayments .pont-payment-status{color:#d9e5bf;font-size:11px}
+#commercialPayments .pont-payment-small{font-size:11px;color:#b8d2c8}
+#commercialPayments .pont-payment-audit-row{padding:10px 13px;border:1px solid #51796f66;border-radius:10px;background:#082b32;font-size:12px}
+#commercialPayments .pont-payment-audit-row strong{display:block;font-size:13px}
+#commercialPayments .pont-payment-audit-row small{display:block;color:#b1cfc6;overflow-wrap:anywhere}
+@media(max-width:560px){#commercialPayments #pontPaymentCreateForm{grid-template-columns:1fr}#commercialPayments .pont-payment-row{padding:12px}}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
 <link rel="stylesheet" href="./dashboard.css?v=3">
 <link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-auction-period-save-c15">
@@ -1041,6 +1066,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
     
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
+    <button type="button" data-tab="commercialPayments" aria-controls="commercialPayments" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg><span>Plăți și autorizări</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <button type="button" data-tab="auctions" aria-controls="auctions" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg><span>Licitații</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <a id="pontPromotionNavLink" href="../promovare/?v=bid-keyboard-fit-20261113d"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
   </div>
@@ -1055,6 +1081,7 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
     
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Promovare și vizibilitate">
+    <button type="button" data-city-tab="commercialPayments" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg><span>Plăți și autorizări</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <button type="button" data-city-tab="cityPromotion" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></button>
     <a href="../iesire-in-oras/" aria-label="Vezi pagina publică Ieșire în oraș"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Pagina publică</span><span class="pont-nav-item-arrow" aria-hidden="true">›</span></a>
   </div>
@@ -1249,6 +1276,26 @@ body.pont-admin--platform #auctionLifecycleConfirm[data-action="close"]{
   </dialog>
 </section>
 
+<section id="commercialPayments" class="card dashboard-panel pont-insights" hidden aria-labelledby="pontPaymentsTitle">
+ <div class="dashboard-heading pont-insights-heading"><div class="pont-analytics-title-card"><h2 id="pontPaymentsTitle">Plăți și autorizări</h2><p>Confirmări manuale, retrageri reversibile și istoric separat pentru fiecare serviciu PONT.</p></div><button type="button" id="pontPaymentsRefresh" class="pont-refresh">↻ Actualizează</button></div>
+ <div class="pont-payment-filters" role="group" aria-label="Filtrare plăți"><button type="button" data-payment-filter="all" aria-pressed="true">Toate</button><button type="button" data-payment-filter="menu" aria-pressed="false">Meniul zilei</button><button type="button" data-payment-filter="city" aria-pressed="false">Ieșire în oraș</button></div>
+ <div class="pont-city-metrics pont-payments-metrics"><div class="stat"><small>Neconfirmate</small><strong id="pontPaymentsPending">—</strong></div><div class="stat"><small>Confirmate</small><strong id="pontPaymentsConfirmed">—</strong></div><div class="stat"><small>Confirmări retrase</small><strong id="pontPaymentsRevoked">—</strong></div></div>
+ <details class="pont-payment-create" id="pontCityPaymentCreate"><summary>Înregistrează o plată de confirmat · Ieșire în oraș</summary>
+  <form id="pontPaymentCreateForm">
+   <label>Restaurant<select id="pontPaymentRestaurant" required><option value="">Selectează restaurantul</option></select></label>
+   <label>Serviciu<select id="pontPaymentService" required><option value="subscription">Abonament evenimente · 50 lei / 30 zile</option><option value="pinned_event">Eveniment fix · 50 lei / max. 30 zile</option><option value="exclusive_banner">Bandă publicitară · 100 lei / max. 30 zile</option></select></label>
+   <label id="pontPaymentEventWrap" hidden>Eveniment aprobat<select id="pontPaymentEvent"><option value="">Selectează evenimentul</option></select></label>
+   <button class="primary" type="submit" id="pontPaymentCreateButton">Înregistrează solicitarea</button>
+  </form>
+  <p class="dashboard-message" id="pontPaymentCreateStatus" role="status"></p>
+ </details>
+ <div class="pont-city-section-heading"><h3>Operațiuni și confirmări</h3><span id="pontPaymentsCount" class="pont-payment-small"></span></div>
+ <div id="pontPaymentsRows" class="pont-city-list" aria-live="polite"></div>
+ <div class="pont-city-section-heading"><h3>Istoric modificări</h3></div>
+ <p class="pont-payment-small">Fiecare confirmare și retragere este înregistrată cu dată, cont și motiv (unde există).</p>
+ <div id="pontPaymentAudit" class="pont-city-list"></div>
+ <p id="pontPaymentsStatus" class="dashboard-message" role="status"></p>
+</section>
 <section id="cityDashboard" class="card dashboard-panel pont-insights" hidden aria-labelledby="cityDashboardTitle">
   <div class="dashboard-heading pont-insights-heading"><div class="pont-analytics-title-card"><h2 id="cityDashboardTitle">Dashboard · Ieșire în oraș</h2><p>Evenimente, aprobări și restaurante cu acces.</p></div><div class="pont-analytics-header-actions"><button type="button" class="pont-refresh" id="cityRefresh">↻ Actualizează</button></div></div>
   <div class="pont-city-metrics" aria-label="Statistici evenimente">
@@ -2283,6 +2330,7 @@ const panelLoaders = {
  auctions:() => { loadAuctions(); loadAuctionControl(); loadAuctionBidHistory(selectedAuctionMonth()); },
  dishLibrary:() => window.pontDishUI?.refresh().catch(error => status(error.message, true)),
  analytics:() => {loadAnalytics();loadAnalyticsRevenue()},
+ commercialPayments:()=>void loadCommercialPayments(),
  customers:loadCustomers
 };
 function pontSetWorkspace(isCity){
@@ -2309,9 +2357,10 @@ function selectPlatformPanel(id, remember = true) {
 function selectCityPanel(id='cityDashboard', remember=true){
  pontSetWorkspace(true);
  platformTabs.forEach(tab=>{ $(tab.dataset.tab).hidden=true;tab.setAttribute('aria-pressed','false') });
- const panel=['cityDashboard','cityModeration','restaurants','members','cityPromotion'].includes(id)?id:'cityDashboard';
+ const panel=['cityDashboard','cityModeration','restaurants','members','cityPromotion','commercialPayments'].includes(id)?id:'cityDashboard';
  cityExclusivePanels.forEach(name=>$(name).hidden=name!==panel);
- if(panel==='restaurants'||panel==='members')$(panel).hidden=false;
+ if(panel==='restaurants'||panel==='members'||panel==='commercialPayments')$(panel).hidden=false;
+ if(panel==='commercialPayments')void loadCommercialPayments();
  cityTabs.forEach(tab=>tab.setAttribute('aria-pressed',String(tab.dataset.cityTab===panel)));
  status('');
  if(remember)history.replaceState(null,'',location.pathname+location.search+'#'+panel);
@@ -2402,6 +2451,7 @@ window.addEventListener('hashchange',()=>{
  if($('app').hidden)return;
  const panel=location.hash.slice(1);
  if(['cityDashboard','cityModeration','cityPromotion'].includes(panel))selectCityPanel(panel,false);
+ else if(panel==='commercialPayments'&&cityMode)selectCityPanel(panel,false);
  else if(cityMode&&['restaurants','members'].includes(panel))selectCityPanel(panel,false);
  else selectPlatformPanel(panel,false);
 });
