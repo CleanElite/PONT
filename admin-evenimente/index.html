@@ -46,7 +46,12 @@ async function start(){
  restaurant=row;$('restaurantName').textContent=row.name+' · Administrarea evenimentelor';
  $('menuLink').hidden=!row.access_meniul_zilei;
  $('eventForm').elements.event_date.min=today();
- $('workspace').hidden=false;$('status').textContent='Acces activ. Evenimentele sunt verificate înainte de publicare.';
+ $('workspace').hidden=false;
+ const {data:subscriptionActive,error:subscriptionError}=await db.rpc('pont_has_active_city_subscription',{p_restaurant_id:restaurant.id});
+ if(subscriptionError)throw subscriptionError;
+ $('submitEvent').disabled=!subscriptionActive;
+ $('status').textContent=subscriptionActive?'Abonament activ. Evenimentele sunt verificate înainte de publicare.':'Acces administrare activ, dar abonamentul pentru publicare nu este confirmat sau a expirat. Contactează administratorul PONT.';
+ if(!subscriptionActive)$('formStatus').textContent='Publicarea se activează după confirmarea manuală a plății abonamentului de 50 lei / 30 zile.';
  await refresh();
 }
 $('eventForm').onsubmit=async e=>{
