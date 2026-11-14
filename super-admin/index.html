@@ -3044,7 +3044,16 @@ async function loadCityCheckoutAttempts(){
   }
   const help=document.createElement('p');help.className='pont-city-meta';
   help.textContent='Interes de plată, nu confirmare de încasare. Pentru ajutor sau plată cash, contactează restaurantul.';
-  card.append(heading,details,status,help);box.append(card);
+  card.append(heading,details,status,help);
+  const phone=String(restaurant?.phone||'').trim();
+  const dial=phone.replace(/[^+\d]/g,'');
+  if(/^\+?\d{7,15}$/.test(dial)){
+   const call=document.createElement('a');
+   call.href='tel:'+dial;call.className='pont-ar-payment-contact';
+   call.textContent='Sună restaurantul · '+phone;
+   card.append(call);
+  }
+  box.append(card);
  }
  // Keep legacy attempts visible when they predate introduction of the confirmation dialog.
  if(!entries.length&&attempts.length){
@@ -4302,4 +4311,6 @@ body.pont-admin--platform #pontCityAsEditDialog>h2,body.pont-admin--platform #po
 #cityRequests .pont-city-payment-dialog-status[data-state="continued"]{border-color:#7ccfa0;color:#b8f5d1;background:#123a30}
 #cityRequests .pont-city-payment-dialog-status[data-state="opened"]{border-color:#ddc18a;color:#ffe1aa;background:#403223}
 #cityRequests .pont-city-payment-dialog-status[data-state="cancelled"]{border-color:#b28a8a;color:#eed7d7;background:#332b33}
+</style><style id="pont-ar-payment-call-20261115">
+#cityRequests .pont-ar-payment-contact{display:inline-flex;width:max-content;max-width:100%;margin-top:7px;padding:9px 14px;border-radius:10px;border:1px solid #b6c7a5;background:#173b38;color:#f4e1b1;font:750 12px/1.4 system-ui;text-decoration:none}
 </style></body></html>
