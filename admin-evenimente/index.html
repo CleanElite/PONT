@@ -428,14 +428,14 @@ async function cityPaymentDialogEvent(operation,details={}){
  if(!res.ok)throw Error(result.error||'Nu s-a putut înregistra acțiunea de plată.');
  return result;
 }
-async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventId=null){
+async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventId=null,requestedStartDate=null,position=null){
  // AS sees interest when this dialog is opened, even if checkout is never started.
  const track=await cityPaymentDialogEvent('open',{serviceType,paymentId,eventId});
  return await new Promise(resolve=>{
   const dialog=$('cityStripeConfirmDialog'),form=$('cityStripeConfirmForm');
-  const label=serviceType==='subscription'?'Abonament Ieșire în oraș · 30 zile':serviceType==='pinned_event'?'Promovare pe poziție fixă':'Promovare pe bandă publicitară';
+  const label=serviceType==='subscription'?'Abonament Ieșire în oraș · 30 zile':serviceType==='pinned_event'?'Promovare · Locul '+(position||'ales'):'Promovare · Bandă publicitară';
   $('cityStripeConfirmTitle').textContent='Confirmi plata de '+Number(amount).toLocaleString('ro-RO')+' lei?';
-  $('cityStripeConfirmMessage').textContent='Vrei să continui cu plata pentru serviciul selectat?';
+  $('cityStripeConfirmMessage').textContent=serviceType==='subscription'?'Abonamentul începe după confirmarea manuală a accesului de către AS și este valabil 30 de zile.':'Rezervarea începe pe '+(requestedStartDate||'data aleasă')+' și durează până la data evenimentului sau maximum 30 de zile. AS activează promovarea după verificare.';
   $('cityStripeConfirmService').textContent=label;
   $('cityStripeConfirmAmount').textContent=Number(amount).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei';
   $('cityStripeConfirmStatus').textContent='';
@@ -464,7 +464,7 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
  });
 }
 async function cityStartStripeCheckout(serviceType,paymentId=null,amount=50,eventId=null,requestedStartDate=null,position=null){
- const approved=await cityConfirmStripePayment(serviceType,amount,paymentId,eventId);
+ const approved=await cityConfirmStripePayment(serviceType,amount,paymentId,eventId,requestedStartDate,position);
  if(!approved)return false;
  const {data:{session}}=await db.auth.getSession();
  if(!session?.access_token)throw Error('Sesiunea a expirat. Autentifică-te din nou.');
