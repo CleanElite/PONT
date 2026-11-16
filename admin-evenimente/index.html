@@ -478,7 +478,7 @@ $('pontPromotionForm').onsubmit=async e=>{
    if(!response.ok)throw Error(result.error||'Solicitarea cash nu a fost trimisă.');
    $('pontPromotionDialog').close();
    $('status').textContent=result.alreadyRequested?'Ai trimis deja această solicitare cash. Administratorul PONT o poate vedea.':
-     'Solicitarea cash a ajuns la administratorul PONT: '+(type==='pinned_event'?'locul '+position:'bandă')+' din '+actualStart+'. Vei fi contactat pentru plată.';
+     'Solicitarea cash a ajuns la administratorul PONT: '+(type==='pinned_event'?'locul '+position+' · '+actualStart+' – '+requestedEndDate:'bandă din '+actualStart)+'. Vei fi contactat pentru plată.';
    return;
   }
   if($('pontPromotionUseCredit').checked){
