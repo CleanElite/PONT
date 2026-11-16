@@ -34,7 +34,7 @@
   }
   // Visitors must be able to revise a prior decision without waiting for the banner.
   const toggle=document.createElement('button');toggle.type='button';toggle.textContent='Preferințe cookie';toggle.dataset.pontCookieSettings='true';
-  toggle.style.cssText='background:none;color:inherit;border:0;text-decoration:underline;cursor:pointer;padding:6px 10px;font:inherit';
+  toggle.style.cssText='display:inline-flex;align-items:center;justify-content:center;min-height:44px;background:none;color:inherit;border:0;text-decoration:underline;cursor:pointer;padding:9px 12px;font:inherit';
   toggle.addEventListener('click',()=>{banner.hidden=false});
   if(!isMainListing)(footer?.querySelector('nav')||footer||document.body).append(toggle);
  }
