@@ -297,7 +297,7 @@ async function pontRefreshPromotionSlots(){
  const list=$('pontPromotionSlotOptions'),info=$('pontPromotionAvailability');list.replaceChildren();
  info.textContent='Se verifică locurile pentru '+date+'…';pontSlotQuote=null;
  const checks=await Promise.all([1,2,3].map(async n=>{
-  const {data,error}=await db.rpc('pont_city_slot_quote',{p_position:n,p_desired:date});
+  const {data,error}=await db.rpc('pont_city_slot_quote_v2',{p_position:n,p_desired:date,p_event_date:cityPromotionEvent.event_date});
   return {n,quote:data?.[0],error};
  }));
  for(const {n,quote,error} of checks){
