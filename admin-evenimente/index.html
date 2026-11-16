@@ -599,7 +599,7 @@ async function loadCitySubscription(){
  citySubscriptionActive=Boolean(active);
  const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests')
   .select('id,status,service_type,amount,event_id,promoted_event_id,promotion_position,promotion_credit_used,requested_start_date,requested_end_date,created_at,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount')
-  .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(80);
+  .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
  if(paymentError)throw paymentError;
  const rows=payments||[],subs=rows.filter(p=>p.service_type==='subscription');
  cityPaymentRows=rows;
@@ -713,13 +713,13 @@ $('eventEditForm').onsubmit=async evt=>{
 };
 async function refresh(){
  const {data,error}=await db.from('pont_city_events').select('id,title,description,venue,locality,contact_phone,poster_url,event_date,start_time,status,created_at')
-  .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(100);
+  .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
  if(error)throw error;const rows=data||[];cityEventRows=rows;
  for(const st of ['pending','approved','rejected'])$(st+'Count').textContent=rows.filter(e=>e.status===st).length;
  const result=await db.from('pont_city_event_requests').select('id,event_id,request_type,reason,proposed_changes,status,created_at,review_note')
-  .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(100);
+  .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
  if(result.error)throw result.error;cityRequestRows=result.data||[];
- const {data:cash,error:cashError}=await db.from('pont_city_cash_requests').select('id,event_id,service_type,position,requested_start_date,requested_end_date,amount,status,created_at').eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(100);
+ const {data:cash,error:cashError}=await db.from('pont_city_cash_requests').select('id,event_id,service_type,position,requested_start_date,requested_end_date,amount,status,created_at').eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
  if(cashError)throw cashError;cityCashRequestRows=cash||[];
  const container=$('events');container.replaceChildren();
  if(!rows.length){const p=document.createElement('p');p.textContent='Nu ai publicat încă evenimente.';container.append(p)}
