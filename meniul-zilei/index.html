@@ -522,7 +522,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   </a>
   <section id="customer" aria-label="Restaurante cu meniul zilei">
     <p id="menuPreviewLabel" class="menu-preview-label" hidden>Exemple de meniuri · comenzile sunt dezactivate</p>
-    <div id="list" aria-live="polite"><div class="pont-menu-loading" role="status" aria-label="Se încarcă meniurile"><span aria-hidden="true"></span></div></div>
+    <div id="list" class="pont-menu-loading-layout" aria-live="polite"><div class="pont-menu-loading" role="status" aria-label="Se încarcă meniurile"><span aria-hidden="true"></span></div></div>
     <p id="menuPhotoNote" class="menu-photo-note" hidden>Unele fotografii sunt ilustrative.</p>
   </section>
 </main>
@@ -600,6 +600,7 @@ const hasMinimumMenu=()=>selection().filter(item=>item.short==='meniuri complete
 // Cardurile sunt afisate direct, fara filtre.
 let current, draft;
 function render(){
+  $('#list').classList.remove('pont-menu-loading-layout');
   const visible = menus();
   let usesIllustration = false;
   $('#list').innerHTML = visible.length ? visible.map((menu, index) => {
@@ -1006,6 +1007,7 @@ async function refreshLiveMenus(){
   render();
  }catch(error){
   console.error('PONT menus',error);
+  $('#list').classList.remove('pont-menu-loading-layout');
   $('#list').innerHTML='<p class="menu-empty">Restaurantele nu s-au încărcat. Reîncarcă pagina.</p>';
   $('#menuPhotoNote').hidden=true;
  }
@@ -1027,4 +1029,4 @@ if (isMenuPreview) {
   setInterval(()=>{if(!document.hidden)void refreshLiveMenusSafely()},60000);
   setInterval(()=>{if(!document.hidden && $('#order').open)update()},30000);
 }
-</script><script type="module" src="../pont-privacy-consent.js?v=consent-audit-20261113-v4"></script><script defer src="../pont-navigation-history.js?v=admin-back-x23"></script><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script><script src="../pont-date-display.js?v=dmy-20261116" defer></script></html>
+</script><script type="module" src="../pont-privacy-consent.js?v=consent-audit-20261113-v4"></script><script defer src="../pont-navigation-history.js?v=admin-back-x23"></script><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script><script src="../pont-date-display.js?v=dmy-20261116" defer></script><style id="pont-menu-cls-reserve-20261117">#list.pont-menu-loading-layout{min-height:max(680px,90svh)!important;align-content:start}#list.pont-menu-loading-layout .pont-menu-loading{min-height:140px!important}</style></html>
