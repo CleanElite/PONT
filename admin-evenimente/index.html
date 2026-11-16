@@ -211,6 +211,12 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 #pontPromotionForm .pont-promotion-payment-actions button{width:100%;min-height:45px;border-radius:11px;font-weight:700}
 #pontPromotionCash{border:1px solid #e4cc96;background:linear-gradient(115deg,#203e3a,#29443a);color:#f4dda7}
 #pontPromotionCancel{opacity:.8}
+#pontPromotionCashConsentWrap{display:flex;align-items:center;gap:10px;margin:6px 0 0;padding:10px;border:1px solid #8aa99b66;border-radius:10px;background:#173831;cursor:pointer;font:600 12px/1.4 system-ui;color:#e2e8d7}
+#pontPromotionCashConsentWrap input{flex:0 0 19px;width:19px;height:19px;accent-color:#d9c18b}
+@keyframes pont-cash-consent-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+#pontPromotionCashConsentWrap.pont-cash-consent-shake{animation:pont-cash-consent-shake .38s ease;border-color:#e5bf7d}
+@media(prefers-reduced-motion:reduce){#pontPromotionCashConsentWrap.pont-cash-consent-shake{animation:none;outline:2px solid #e5bf7d}}
+
 @keyframes pont-slot-unavailable-shake{0%,100%{transform:translateX(0)}18%,54%{transform:translateX(-6px)}36%,72%{transform:translateX(6px)}}
 #pontPromotionSlotOptions .pont-slot-shake{animation:pont-slot-unavailable-shake .4s ease-in-out}
 @media(prefers-reduced-motion:reduce){#pontPromotionSlotOptions .pont-slot-shake{animation:none}}
@@ -400,6 +406,7 @@ body.pont-admin--city #myRequests .metrics{display:none!important}
   </fieldset>
   <p class="wide" id="pontPromotionPeriodHint">Alege poziția și perioada. Vei plăti doar pentru un interval disponibil sau pentru prima perioadă liberă acceptată explicit. AS activează manual promovarea. Dacă ai plătit deja pentru acest eveniment și interval, nu vei plăti din nou.</p>
   <label class="wide pont-promotion-credit-choice" id="pontPromotionCreditWrap" hidden><input type="checkbox" id="pontPromotionUseCredit"><span id="pontPromotionCreditText"></span></label>
+  <label class="wide pont-promotion-cash-consent" id="pontPromotionCashConsentWrap"><input type="checkbox" id="pontPromotionCashConsent"><span>Am înțeles prețul și perioada promovării.</span></label>
   <p class="wide status" id="pontPromotionStatus" role="status"></p>
   <div class="wide pont-promotion-payment-actions">
   <button type="submit" class="primary" id="pontPromotionSubmit">Finalizează plata cu cardul</button>
@@ -547,6 +554,7 @@ async function openCityPromotion(event,type,price,card=null){
  endDate.value=type==='pinned_event'?pontPromotionAutoEnd(date.value,event.event_date):'';endDate.min=date.value;endDate.max=event.event_date;
  $('pontPromotionPeriodHint').textContent=type==='pinned_event'?'Data de sfârșit se completează automat: data evenimentului sau ziua 30 de promovare, oricare este mai devreme. Poziția devine liberă în ziua următoare expirării. Nu se prelungește automat. Activarea necesită aprobarea AS.':'Alege poziția și data de începere. Pentru locurile ocupate poți solicita prima perioadă liberă.';
  $('pontPromotionStatus').textContent='';
+ $('pontPromotionCashConsent').checked=false;
  $('pontPromotionSubmit').textContent='Finalizează plata cu cardul · '+price+' lei';
  $('pontPromotionDialog').showModal();
  void pontRefreshPromotionSlots();
@@ -564,11 +572,24 @@ $('pontPromotionEndDate').onchange=()=>{
  void pontRefreshPromotionSlots();
 };
 $('pontPromotionSubmit').onclick=()=>{pontPromotionPaymentMethod='card'};
-$('pontPromotionCash').onclick=()=>{pontPromotionPaymentMethod='cash';$('pontPromotionForm').requestSubmit()};
+$('pontPromotionCash').onclick=()=>{
+ if(!$('pontPromotionCashConsent').checked){
+  const notice=$('pontPromotionCashConsentWrap');
+  notice.classList.remove('pont-cash-consent-shake');void notice.offsetWidth;notice.classList.add('pont-cash-consent-shake');
+  $('pontPromotionCashConsent').focus({preventScroll:true});
+  return;
+ }
+ pontPromotionPaymentMethod='cash';$('pontPromotionForm').requestSubmit();
+};
 $('pontPromotionCancel').onclick=()=>$('pontPromotionDialog').close();
 $('pontPromotionForm').onsubmit=async e=>{
  e.preventDefault();
  if(!cityPromotionEvent||!cityPromotionType)return;
+ if(pontPromotionPaymentMethod==='cash'&&!$('pontPromotionCashConsent').checked){
+  const notice=$('pontPromotionCashConsentWrap');
+  notice.classList.remove('pont-cash-consent-shake');void notice.offsetWidth;notice.classList.add('pont-cash-consent-shake');
+  $('pontPromotionCashConsent').focus({preventScroll:true});return;
+ }
  const date=$('pontPromotionStartDate').value;
  if(!date||date<today()||date>cityPromotionEvent.event_date){$('pontPromotionStatus').textContent='Selectează o dată validă înainte de eveniment.';return}
  const isPinned=cityPromotionType==='pinned_event',requestedEndDate=isPinned?$('pontPromotionEndDate').value:null;
@@ -588,7 +609,7 @@ $('pontPromotionForm').onsubmit=async e=>{
     .eq('restaurant_id',restaurant.id).eq('service_type',cityPromotionType)
     .eq('promoted_event_id',cityPromotionEvent.id).order('created_at',{ascending:false}).limit(30);
   if(error)throw error;
-  const duplicate=(payments||[]).find(x=>(x.stripe_paid_at||x.status==='confirmed'||x.promotion_credit_used)&&
+  const duplicate=(payments||[]).find(x=>x.status!=='revoked'&&(x.stripe_paid_at||x.status==='confirmed'||x.promotion_credit_used)&&
    (isPinned?x.promotion_position===pontChosenSlot&&x.requested_start_date===actualStart&&x.requested_end_date===requestedEndDate:x.requested_start_date===actualStart));
   if(duplicate){$('pontPromotionStatus').textContent='Acest serviciu a fost deja achitat sau confirmat de AS. Nu se poate plăti de două ori.';pontPromotionPaymentMethod='card';return}
   const type=cityPromotionType,ev=cityPromotionEvent,price=cityPromotionPrice,position=pontChosenSlot;
