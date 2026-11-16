@@ -3597,8 +3597,14 @@ function pontRenderGroupedCityRequests(){
  const host=$('pontCityGroupedRequests');if(!host)return;
  const open=new Set([...host.querySelectorAll('details[open][data-request-group]')].map(x=>x.dataset.requestGroup));
  host.replaceChildren();
- const visible=restaurants.filter(r=>r.city_module_visible===true).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ro'));
  const cases=pontCityUnifiedPaymentCases();
+ // Solicitările nevăzute urcă restaurantul în capul listei.
+ const unreadByRestaurant=new Map();
+ const addUnread=restaurantId=>{if(restaurantId)unreadByRestaurant.set(restaurantId,(unreadByRestaurant.get(restaurantId)||0)+1)};
+ for(const event of cityEventsLoaded){if(event.status==='pending'&&pontASNoticeUnread('event:'+event.id,event.created_at))addUnread(event.restaurant_id)}
+ for(const request of pontGroupedEventRequests){if(request.status==='pending'&&pontASNoticeUnread('request:'+request.id,request.created_at))addUnread(request.restaurant_id)}
+ for(const item of cases){if(pontASNoticeUnread('payment:'+item.key,item.last))addUnread(item.restaurant_id)}
+ const visible=restaurants.filter(r=>r.city_module_visible===true).sort((a,b)=>(unreadByRestaurant.get(b.id)||0)-(unreadByRestaurant.get(a.id)||0)||String(a.name||'').localeCompare(String(b.name||''),'ro'));
  const countAll=cityEventsLoaded.filter(e=>e.status==='pending'&&pontASNoticeUnread('event:'+e.id,e.created_at)).length+
   pontGroupedEventRequests.filter(r=>r.status==='pending'&&pontASNoticeUnread('request:'+r.id,r.created_at)).length+
   cases.filter(item=>pontASNoticeUnread('payment:'+item.key,item.last)).length;
@@ -3633,7 +3639,14 @@ function pontRenderGroupedCityRequests(){
    requests.filter(x=>x.status==='pending'&&pontASNoticeUnread('request:'+x.id,x.created_at)).length;
   const paymentCount=cases.filter(x=>x.restaurant_id===rid&&pontASNoticeUnread('payment:'+x.key,x.last)).length;
   const card=document.createElement('section');card.className='pont-city-grouped-restaurant';
-  card.append(makeText('h3',restaurant.name,'pont-city-grouped-name'));
+  const unreadCount=unreadByRestaurant.get(rid)||0;
+  card.classList.toggle('pont-city-grouped-has-unread',unreadCount>0);
+  const name=makeText('h3',restaurant.name,'pont-city-grouped-name');
+  if(unreadCount){
+   name.append(makeText('span',' · '+unreadCount,'pont-city-grouped-name-count'));
+   card.setAttribute('aria-label',restaurant.name+' — '+unreadCount+' solicitări nevăzute');
+  }
+  card.append(name);
   const sections=document.createElement('div');sections.className='pont-city-grouped-branches';
   const group=(type,label,count,fill)=>{
    const details=document.createElement('details');details.className='pont-city-grouped-branch';
@@ -5480,4 +5493,11 @@ body.pont-admin--platform #pontCityUnifiedDialog::backdrop{background:#001015cf;
 #pontASCityPreviewDescription{font:500 12px/1.6 system-ui;color:#dbebe5;margin:14px 0}
 .pont-as-preview-hint{font:500 10px/1.4 system-ui;color:#c8c1a2}
 .pont-as-preview-no-photo{background:#092e30}
+</style><style id="pont-city-unread-neon-20261116">
+#pontCityGroupedRequests .pont-city-grouped-restaurant:not(.pont-city-grouped-has-unread)>.pont-city-grouped-name{color:#b9c9c7;text-shadow:none}
+#pontCityGroupedRequests .pont-city-grouped-has-unread{border-color:rgba(251,215,119,.8);background:linear-gradient(125deg,#12343a,#192f30 65%,#273324);box-shadow:0 0 0 1px rgba(248,215,122,.23),0 0 18px rgba(239,186,70,.16),inset 0 0 18px rgba(244,202,98,.045)}
+#pontCityGroupedRequests .pont-city-grouped-has-unread>.pont-city-grouped-name{color:#ffe8a7;font-weight:850;letter-spacing:.015em;text-shadow:0 0 3px rgba(255,249,221,.98),0 0 9px rgba(255,212,95,.9),0 0 22px rgba(241,174,44,.72),0 0 36px rgba(248,180,50,.34)}
+#pontCityGroupedRequests .pont-city-grouped-name-count{color:#fff6d8;white-space:nowrap;text-shadow:0 0 7px #ffc75b,0 0 15px #e8a634}
+@media(prefers-reduced-motion:no-preference){#pontCityGroupedRequests .pont-city-grouped-has-unread>.pont-city-grouped-name{animation:pont-city-name-neon 2.8s ease-in-out infinite alternate}}
+@keyframes pont-city-name-neon{from{text-shadow:0 0 3px #fff3ce,0 0 9px #ffc75bc9,0 0 16px #eeb34688}to{text-shadow:0 0 5px #fff7e2,0 0 14px #ffd46d,0 0 27px #ffba43c9,0 0 42px #eaa93675}}
 </style></body></html>
