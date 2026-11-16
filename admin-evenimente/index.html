@@ -195,7 +195,7 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 @keyframes pont-slot-unavailable-shake{0%,100%{transform:translateX(0)}18%,54%{transform:translateX(-6px)}36%,72%{transform:translateX(6px)}}
 #pontPromotionSlotOptions .pont-slot-shake{animation:pont-slot-unavailable-shake .4s ease-in-out}
 @media(prefers-reduced-motion:reduce){#pontPromotionSlotOptions .pont-slot-shake{animation:none}}
-</style></head>
+</style><style id="pont-promotion-approval-note-20261116">#pontPromotionForm .pont-promotion-approval-note{display:block;text-align:center;font:400 10px/1.45 system-ui;color:#b9c9c4;letter-spacing:.005em;margin:0 6px 2px}</style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
  <a class="pont-ar-back" href="../" aria-label="Acasă">Înapoi</a>
@@ -275,6 +275,7 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
   <div class="wide pont-promotion-payment-actions">
   <button type="submit" class="primary" id="pontPromotionSubmit">Finalizează plata cu cardul</button>
   <button type="button" id="pontPromotionCash">Plată cash la administratorul PONT</button>
+  <small class="pont-promotion-approval-note">Promovarea anunțului va începe după confirmarea administratorului.</small>
   <button type="button" id="pontPromotionCancel">Renunță</button>
  </div>
  </form>
