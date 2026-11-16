@@ -510,8 +510,7 @@ body.pont-admin--city #myRequests .metrics{display:none!important}
 <label class="wide">Telefon pentru rezervări<input name="contact_phone" required maxlength="32" inputmode="tel" autocomplete="tel"></label>
 <label class="wide pont-city-upload-label">Încarcă afișul (JPG, PNG, WebP — max. 2 MB)<input id="cityPosterFile" type="file" accept="image/jpeg,image/png,image/webp"></label>
 <p class="wide pont-city-upload-status" id="cityPosterStatus" role="status"></p>
-<label class="wide">Link afiș (completat automat după încărcare)<input name="poster_url" type="url" maxlength="700" placeholder="https://..." readonly></label>
-<label class="wide">Detalii eveniment<textarea name="description" maxlength="1200" placeholder="Program, artiști, detalii privind rezervările"></textarea></label>
+<details class="wide pont-event-optional-fields"><summary>Detalii opționale și linkul afișului</summary><div><label>Link afiș (completat automat după încărcare)<input name="poster_url" type="url" maxlength="700" placeholder="https://..." readonly></label><label>Detalii eveniment<textarea name="description" maxlength="1200" placeholder="Program, artiști, detalii privind rezervările"></textarea></label></div></details>
 <button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
 <section class="pont-city-event-sent" id="pontCityEventSent" hidden role="status" aria-live="polite"><strong>Evenimentul a fost trimis!</strong><p>Așteaptă aprobarea PONT. Mulțumim!</p><button type="button" id="pontCityEventSentDismiss" class="primary">Am văzut</button></section>
 <section class="panel" id="myEvents"><h2>Evenimentele mele</h2><section class="metrics" aria-label="Statistici evenimente"><div class="metric"><strong id="pendingCount">0</strong><span>În așteptare</span></div><div class="metric"><strong id="approvedCount">0</strong><span>Aprobate</span></div><div class="metric"><strong id="rejectedCount">0</strong><span>Respinse</span></div></section><div class="pont-ar-approval-note" role="note"><span>Modificarea sau retragerea unui eveniment necesită aprobarea AS.</span></div><div id="events"></div></section>
@@ -1285,4 +1284,24 @@ body.pont-admin--city #pontCityEventSent p{margin:0;font:550 13px/1.5 system-ui;
 body.pont-admin--city #pontCityEventSent button{min-width:130px;min-height:40px;border-radius:10px}
 body.pont-admin--city #eventForm[hidden]{display:none!important}
 </style><script defer src="../pont-navigation-history.js?v=admin-back-x23"></script><script src="../pont-date-display.js?v=dmy-20261116" defer></script><link rel="stylesheet" href="../admin-neon.css?v=20261116-neon9">
-</body></html>
+<style id="pont-event-form-mobile-compact-20261117">
+body.pont-admin--city #createEvent{padding:clamp(11px,3vw,19px)}
+body.pont-admin--city #createEvent>h2{margin:0 0 5px;font-size:clamp(18px,4.4vw,23px)}
+body.pont-admin--city #createEvent>p{font-size:11px;line-height:1.35;margin:0 0 11px}
+body.pont-admin--city #eventForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 10px;align-items:start}
+body.pont-admin--city #eventForm>label{min-width:0;gap:4px;font-size:11px;line-height:1.25}
+body.pont-admin--city #eventForm>label.wide,body.pont-admin--city #eventForm>.wide{grid-column:1/-1}
+body.pont-admin--city #eventForm :is(input:not([type=file]),textarea){min-width:0;min-height:39px;padding:8px 10px;border-radius:8px;font-size:16px}
+body.pont-admin--city #eventForm input[type=file]{font-size:11px;padding:7px 8px;max-width:100%}
+body.pont-admin--city #eventForm .pont-city-upload-status{margin:0;font-size:11px;min-height:0}
+body.pont-admin--city #eventForm #submitEvent{min-height:40px;padding:9px 12px;font-size:12px;margin:2px 0 0}
+body.pont-admin--city #eventForm .pont-event-optional-fields{min-width:0;border:1px solid #6c9c8a66;border-radius:9px;overflow:hidden;background:#082b3299}
+body.pont-admin--city #eventForm .pont-event-optional-fields>summary{cursor:pointer;list-style:none;padding:9px 11px;color:#e7d19e;font:700 11px/1.3 system-ui;display:flex;align-items:center;justify-content:space-between;gap:6px}
+body.pont-admin--city #eventForm .pont-event-optional-fields>summary::-webkit-details-marker{display:none}
+body.pont-admin--city #eventForm .pont-event-optional-fields>summary::after{content:'⌄';font-size:15px}
+body.pont-admin--city #eventForm .pont-event-optional-fields[open]>summary::after{transform:rotate(180deg)}
+body.pont-admin--city #eventForm .pont-event-optional-fields>div{padding:9px 10px;border-top:1px solid #6c9c8a55;display:grid;gap:9px}
+body.pont-admin--city #eventForm .pont-event-optional-fields label{display:grid;gap:4px;font:600 11px/1.3 system-ui;color:#d1e9e4}
+body.pont-admin--city #eventForm .pont-event-optional-fields textarea{min-height:69px}
+@media(max-width:370px){body.pont-admin--city #eventForm{gap:8px 7px}body.pont-admin--city #eventForm>label{font-size:10px}}
+</style></body></html>
