@@ -76,7 +76,7 @@ export async function toggleTodayDishAvailability(db, menu, index) {
   return {available,dishName:dish.name};
 }
 
-export function renderPublishedToday(target, menus, restaurants, showRestaurantName, resetExpanded = false) {
+export function renderPublishedToday(target, menus, restaurants, showRestaurantName, resetExpanded = false, exhaustedRestaurantIds = null) {
   const date = today();
   const published = restaurants.flatMap(restaurant => menus
     .filter(menu => menu.published && menu.service_date === date && menu.restaurant_id === restaurant.id)
@@ -96,9 +96,17 @@ export function renderPublishedToday(target, menus, restaurants, showRestaurantN
   const cards = published.map(({menu, restaurant}) => {
     const heading = showRestaurantName ? '<h4>' + esc(restaurant.name) + '</h4>' : '';
     const action = published.length > 1 ? menuActions(menu) : '';
+    const exhausted = exhaustedRestaurantIds instanceof Set && exhaustedRestaurantIds.has(restaurant.id);
+    const exhaustedAction = exhaustedRestaurantIds instanceof Set && showRestaurantName
+      ? '<button type="button" class="pont-today-restaurant-exhausted" data-today-exhausted="' + esc(restaurant.id) +
+        '" data-service-date="' + date + '" aria-pressed="' + exhausted +
+        '" title="Disponibilitatea meniului pentru data de ' + formatDate(date) + '">' +
+        (exhausted ? 'Reactivează meniul' : 'Meniu epuizat') + '</button>'
+      : '';
     const courses = renderMenuCourses(menu, true, true);
     return '<article class="pont-archive-row pont-today-card">' +
-      (heading || action ? '<div class="pont-today-meta">' + heading + action + '</div>' : '') +
+      (heading || action || exhaustedAction ? '<div class="pont-today-meta">' + heading +
+        (action || exhaustedAction ? '<span class="pont-today-card-actions">' + action + exhaustedAction + '</span>' : '') + '</div>' : '') +
       (courses ? '<dl>' + courses + '</dl>' : '<p>Detalii indisponibile.</p>') + '</article>';
   }).join('');
   target.innerHTML = header + '<div id="pontTodayDetails"' + (expanded ? '' : ' hidden') + '>' +
