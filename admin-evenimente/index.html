@@ -300,6 +300,23 @@ body.pont-admin--city #cityStripeConfirmDialog #cityStripeConfirmCash{width:100%
  body.pont-admin--city #cityStripeConfirmDialog #cityStripeConfirmForm{gap:4px}
  body.pont-admin--city #cityStripeConfirmDialog #cityStripeConfirmForm button{padding:6px 2px;font-size:9px}
 }
+</style><style id="pont-city-subscription-notice-line">
+body.pont-admin--city #citySubscriptionNotice[hidden]{display:none!important}
+body.pont-admin--city #citySubscriptionNotice{
+ display:flex;align-items:center;justify-content:center;gap:7px;
+ min-width:0;max-width:100%;margin:6px 0 12px;padding:0;
+ background:none;border:0;box-shadow:none
+}
+body.pont-admin--city #citySubscriptionNotice::before,
+body.pont-admin--city #citySubscriptionNotice::after{
+ content:"";height:1px;flex:1 1 0;min-width:5px;background:linear-gradient(90deg,transparent,#bca77788)
+}
+body.pont-admin--city #citySubscriptionNotice::after{transform:rotate(180deg)}
+body.pont-admin--city #citySubscriptionNotice span{
+ display:block;flex:0 1 auto;min-width:0;white-space:nowrap;
+ font:550 clamp(7.4px,2.45vw,11px)/1.4 system-ui;color:#d8c89e;
+ letter-spacing:-.012em;text-align:center
+}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -323,6 +340,7 @@ body.pont-admin--city #cityStripeConfirmDialog #cityStripeConfirmCash{width:100%
  <div><small>ABONAMENTUL MEU</small><strong id="citySubscriptionState">Se verifică…</strong><span id="citySubscriptionUntil"></span></div>
  <span class="pont-city-price">50 lei / 30 zile</span>
 </section>
+<div id="citySubscriptionNotice" class="pont-city-subscription-notice" hidden role="note"><span>Publicarea este blocată până la plata și confirmarea abonamentului.</span></div>
 <section id="citySubscriptionRequest" class="panel pont-city-payment-gate" hidden>
  <h2>Abonament necesar · 50 lei</h2>
  <p>Pentru a adăuga evenimente, restaurantul trebuie să aibă un abonament activ de 50 lei / 30 zile, confirmat de PONT.</p>
@@ -728,7 +746,8 @@ async function loadCitySubscription(){
  $('citySubscriptionRequestStatus').textContent=stripeReceived?'Stripe a confirmat plata. Activarea se face manual de AS.':'Achită online 50 lei prin Stripe pentru 30 de zile sau contactează PONT pentru plata cash.';
  $('submitEvent').disabled=!citySubscriptionActive;
  $('eventForm').hidden=!citySubscriptionActive;
- $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'Publicarea este blocată până la plata și confirmarea abonamentului.';
+ $('citySubscriptionNotice').hidden=citySubscriptionActive||cityPage!=='adauga';
+ $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'';
  const promotion=rows.filter(p=>p.service_type!=='subscription');
  const paymentPanel=$('cityPromotionPayments');paymentPanel.hidden=true;
  renderCityRequests();
