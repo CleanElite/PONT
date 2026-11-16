@@ -575,7 +575,9 @@ body.pont-admin--city #myRequests .metrics{display:none!important}
   <label>Localitate<input name="locality" maxlength="80" required></label>
   <label>Locație<input name="venue" maxlength="120" required></label>
   <label class="wide">Telefon rezervări<input name="contact_phone" maxlength="32" required></label>
-  <label class="wide">Link afiș<input name="poster_url" type="url" maxlength="700" placeholder="https://..."></label>
+  <label class="wide pont-city-upload-label">Adaugă fotografie afiș (JPG, PNG, WebP — max. 2 MB)<input id="eventEditPosterFile" type="file" accept="image/jpeg,image/png,image/webp"></label>
+  <p class="wide pont-city-upload-status" id="eventEditPosterStatus" role="status"></p>
+  <label class="wide">Link afiș (completat automat după încărcare)<input name="poster_url" type="url" maxlength="700" placeholder="https://..."></label>
   <label class="wide">Detalii<textarea name="description" maxlength="1200"></textarea></label>
   <label class="wide">Mesaj către Administratorul Suprem — ce doriți să modificați și de ce?<textarea name="reason" maxlength="1000" required placeholder="Explicați exact modificarea solicitată. Mesajul se trimite spre aprobare către AS."></textarea></label>
   <div class="wide pont-city-edit-actions"><button id="cancelEventEdit" type="button">Anulează</button><button type="submit" class="primary" id="submitEventEdit">Trimite spre aprobare</button></div>
@@ -1007,23 +1009,50 @@ async function requestEventAction(event,type,reason,proposed={}){
 function arButton(text,onClick,disabled=false){
  const b=document.createElement('button');b.type='button';b.textContent=text;b.disabled=disabled;b.addEventListener('click',onClick);return b;
 }
+let pontEditPosterUploadSequence=0;
+let pontEditPosterUploading=false;
 function beginEventEdit(e){
+ pontEditPosterUploadSequence++;
+ pontEditPosterUploading=false;
  cityEditingEvent=e;
  const f=$('eventEditForm');
  for(const k of ['title','event_date','start_time','locality','venue','contact_phone','poster_url','description']){
   f.elements[k].value=k==='start_time'?String(e[k]||'').slice(0,5):String(e[k]||'');
  }
  f.elements.reason.value='';
+ $('eventEditPosterFile').value='';
+ $('eventEditPosterStatus').textContent='';
+ $('submitEventEdit').disabled=false;
  $('eventEditStatus').textContent='';
  $('eventEditDialog').showModal();
  document.body.classList.add('pont-city-modal-open');
 }
 $('cancelEventEdit').onclick=()=>$('eventEditDialog').close();
-$('eventEditDialog').addEventListener('close',()=>document.body.classList.remove('pont-city-modal-open'));
+$('eventEditDialog').addEventListener('close',()=>{pontEditPosterUploadSequence++;pontEditPosterUploading=false;document.body.classList.remove('pont-city-modal-open')});
+$('eventEditPosterFile').addEventListener('change',async evt=>{
+ const file=evt.target.files?.[0];if(!file)return;
+ const msg=$('eventEditPosterStatus'),button=$('submitEventEdit');
+ if(!restaurant||!cityEditingEvent){msg.textContent='Evenimentul nu este disponibil pentru editare.';return}
+ if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>2097152){msg.textContent='Alege JPG, PNG sau WebP de cel mult 2 MB.';evt.target.value='';return}
+ const request=++pontEditPosterUploadSequence,eventId=cityEditingEvent.id;
+ pontEditPosterUploading=true;button.disabled=true;msg.textContent='Se încarcă fotografia afișului…';
+ try{
+  const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
+  const path=restaurant.id+'/events/'+crypto.randomUUID()+'.'+ext;
+  const {error}=await db.storage.from('pont-dish-images').upload(path,file,{contentType:file.type,upsert:false,cacheControl:'31536000'});
+  if(error)throw error;
+  if(request!==pontEditPosterUploadSequence||cityEditingEvent?.id!==eventId||!$('eventEditDialog').open)return;
+  const url=db.storage.from('pont-dish-images').getPublicUrl(path).data.publicUrl;
+  $('eventEditForm').elements.poster_url.value=url;
+  msg.textContent='Fotografia a fost încărcată. Linkul a fost completat automat; trimite modificarea spre aprobare.';
+ }catch(err){if(request===pontEditPosterUploadSequence)msg.textContent='Încărcarea a eșuat: '+err.message}
+ finally{if(request===pontEditPosterUploadSequence){pontEditPosterUploading=false;button.disabled=false}evt.target.value=''}
+});
 $('eventEditForm').onsubmit=async evt=>{
  evt.preventDefault();
  const event=cityEditingEvent;
  if(!event)return;
+ if(pontEditPosterUploading){$('eventEditStatus').textContent='Așteaptă finalizarea încărcării fotografiei.';return}
  const form=evt.currentTarget;
  const proposed={};
  for(const key of ['title','event_date','start_time','locality','venue','contact_phone','poster_url','description']){
