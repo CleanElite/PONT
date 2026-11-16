@@ -213,7 +213,7 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 <div class="pont-ar-city-heading"><div><p class="pont-ar-kicker">PANOU ADMINISTRATOR RESTAURANT</p><h1 id="restaurantName">Ieșire în oraș</h1></div><span class="pont-ar-city-label">Evenimente</span></div>
 <nav class="pont-ar-module-switch" aria-label="Modulele restaurantului">
  <span class="pont-ar-switch-label">Module PONT</span>
- <a id="menuLink" class="pont-ar-module-link" href="../admin-v2/" hidden>Meniul zilei</a>
+ <a id="menuLink" class="pont-ar-module-link" href="../admin-v2/">Meniul zilei</a>
  <a class="pont-ar-module-link is-active" href="./" aria-current="page">Ieșire în oraș</a>
 </nav>
 <nav class="pont-ar-city-navigation" aria-label="Administrare evenimente">
@@ -739,9 +739,10 @@ async function start(){
  if(!membership?.restaurant_id){if(profile.role==='super_admin'){$('status').textContent='SuperAdmin: deschide un restaurant din secțiunea Restaurante.';return}throw Error('Contul nu are un restaurant atribuit.')}
  const {data:row,error:restaurantError}=await db.from('restaurants').select('id,name,enabled,menu_module_visible,access_meniul_zilei,city_module_visible,access_iesire_in_oras').eq('id',membership.restaurant_id).single();if(restaurantError)throw restaurantError;
  if(!row.enabled)throw Error('Restaurantul este suspendat.');
- if(profile.role!=='super_admin'&&!row.city_module_visible){location.replace(row.menu_module_visible?'../admin-v2/':'../acces-inactiv/');return;}
+ if(profile.role!=='super_admin'&&!row.city_module_visible){location.replace('../module-restaurante/?notapproved=city');return;}
  restaurant=row;$('restaurantName').textContent=row.name+' · Administrarea evenimentelor';
- $('menuLink').hidden=!row.menu_module_visible;
+ $('menuLink').hidden=false;
+ $('menuLink').onclick=(event)=>{if(!row.menu_module_visible){event.preventDefault();location.href='../module-restaurante/?notapproved=menu';}};
  $('eventForm').elements.event_date.min=today();
  $('workspace').hidden=false;
  await loadCitySubscription();
