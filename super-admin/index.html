@@ -1267,7 +1267,7 @@ body.pont-admin .pont-as-confirm-dialog #pontASConfirmError{font:600 12px system
 body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:19px}
 body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button{min-height:45px;border:1px solid #6ba59980;border-radius:11px;background:#17464a;color:#f7fffc;font:750 13px system-ui}
 body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{background:linear-gradient(135deg,#f2dfa8,#c3a665);border-color:#ffebbe;color:#13282c}
-</style><body class="pont-admin pont-admin--platform"><dialog id="pontASConfirmDialog" class="pont-as-confirm-dialog" aria-labelledby="pontASConfirmTitle">
+</style><body class="pont-admin pont-admin--platform pont-admin-neon"><dialog id="pontASConfirmDialog" class="pont-as-confirm-dialog" aria-labelledby="pontASConfirmTitle">
  <div class="pont-as-confirm-overline">PONT · ADMINISTRATOR SUPREM</div>
  <h2 id="pontASConfirmTitle">Confirmă acțiunea</h2>
  <p id="pontASConfirmMessage"></p>
@@ -1295,26 +1295,26 @@ body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{
 </div>
 <div class="pont-live-datetime" role="group" aria-label="Data și ora României"><span class="pont-live-datetime__date" data-pont-clock-date>—</span><span class="pont-live-datetime__separator" aria-hidden="true"></span><time class="pont-live-datetime__time" data-pont-clock-time>--:--</time></div> <nav id="pontMenuSuperNav" class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Meniul zilei">
   <div class="pont-nav-cluster pont-nav-cluster--content" role="group" aria-label="Meniuri și preparate">
-    <button type="button" data-tab="menus" aria-controls="menus" aria-pressed="false"><span>Meniuri</span></button>
-    <button type="button" data-tab="dishLibrary" aria-controls="dishLibrary" aria-pressed="false"><span>Preparate</span></button>
+    <button type="button" data-tab="menus" aria-controls="menus" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Meniuri</span></button>
+    <button type="button" data-tab="dishLibrary" aria-controls="dishLibrary" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#fork-knife"></use></svg><span>Preparate</span></button>
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--management" role="group" aria-label="Restaurante și conturi">
-    <button type="button" data-tab="adminRestaurants" aria-pressed="false" aria-controls="adminRestaurants"><span>Restaurante</span></button>
+    <button type="button" data-tab="adminRestaurants" aria-pressed="false" aria-controls="adminRestaurants"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#storefront"></use></svg><span>Restaurante</span></button>
     
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
-    <button type="button" data-tab="auctions" aria-pressed="false" aria-controls="auctions"><span>Licitații</span></button>
-    <a id="pontPromotionNavLink" href="../promovare/?v=bid-keyboard-fit-20261113d"><span>Promovare</span></a>
+    <button type="button" data-tab="auctions" aria-pressed="false" aria-controls="auctions"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#coins"></use></svg><span>Licitații</span></button>
+    <a id="pontPromotionNavLink" href="../promovare/?v=bid-keyboard-fit-20261113d"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#megaphone"></use></svg><span>Promovare</span></a>
   </div>
 </nav>
 <nav id="pontCitySuperNav" class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Ieșire în oraș" hidden>
   <div class="pont-nav-cluster pont-nav-cluster--content" role="group" aria-label="Evenimente">
-    <button type="button" data-city-tab="cityDashboard" aria-pressed="false"><span>Dashboard</span></button>
-    <button type="button" data-city-tab="cityModeration" aria-pressed="false"><span>Evenimente <small id="pontCityEventsNavCount" aria-live="polite"></small></span></button>
-    <button type="button" data-city-tab="cityRequests" aria-pressed="false"><span>Solicitări AR <small id="pontCityRequestsNavCount"></small></span></button>
+    <button type="button" data-city-tab="cityDashboard" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#chart-bar"></use></svg><span>Dashboard</span></button>
+    <button type="button" data-city-tab="cityModeration" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#calendar-blank"></use></svg><span>Evenimente <small id="pontCityEventsNavCount" aria-live="polite"></small></span></button>
+    <button type="button" data-city-tab="cityRequests" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#list-bullets"></use></svg><span>Solicitări AR <small id="pontCityRequestsNavCount"></small></span></button>
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--management" role="group" aria-label="Restaurante și conturi">
-    <button type="button" data-city-tab="adminRestaurants" aria-pressed="false" aria-controls="adminRestaurants"><span>Restaurante</span></button>
+    <button type="button" data-city-tab="adminRestaurants" aria-pressed="false" aria-controls="adminRestaurants"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#storefront"></use></svg><span>Restaurante</span></button>
     
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Promovare și vizibilitate">
@@ -5529,4 +5529,5 @@ body.pont-admin--platform #pontCityUnifiedDialog::backdrop{background:#001015cf;
 #pontCityGroupedRequests .pont-city-grouped-name-count{color:#fff6d8;white-space:nowrap;text-shadow:0 0 7px #ffc75b,0 0 15px #e8a634}
 @media(prefers-reduced-motion:no-preference){#pontCityGroupedRequests .pont-city-grouped-has-unread>.pont-city-grouped-name{animation:pont-city-name-neon 2.8s ease-in-out infinite alternate}}
 @keyframes pont-city-name-neon{from{text-shadow:0 0 3px #fff3ce,0 0 9px #ffc75bc9,0 0 16px #eeb34688}to{text-shadow:0 0 5px #fff7e2,0 0 14px #ffd46d,0 0 27px #ffba43c9,0 0 42px #eaa93675}}
-</style></body></html>
+</style><link rel="stylesheet" href="../admin-neon.css?v=20261116-neon1">
+</body></html>
