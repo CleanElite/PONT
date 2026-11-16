@@ -1065,7 +1065,7 @@ async function refresh(){
     try{await requestEventAction(e,'remove',reason);cityInfo('Cererea de retragere a fost transmisă. Evenimentul rămâne în istoric.')}catch(err){cityInfo(err.message)}
    },pending.includes('remove')));
    if(e.status==='approved'){
-    for(const [label,type,price] of [['Promovează · poziție fixă','pinned_event',50],['Promovează · bandă','exclusive_banner',100]]){
+    for(const [label,type,price] of [['Promovează · poziție fixă','pinned_event',50]]){
      action.append(arButton(label,()=>void openCityPromotion(e,type,price,card),pending.includes(type)));
     }
    }
