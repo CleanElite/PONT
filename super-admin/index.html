@@ -3449,6 +3449,52 @@ function selectCityPanel(id='cityDashboard', remember=true){
  if(panel==='members')renderMembers();
 }
 let pontGroupedEventRequests=[],pontGroupedCashRequests=[],pontGroupedPaymentRequests=[],pontGroupedPaymentDialogs=[],pontGroupedDialogCashIntents=[],pontGroupedPaymentResponses=new Map();
+let pontCityASNotifications=new Map();
+function pontASNoticeFresh(key,date,field){
+ const state=pontCityASNotifications.get(key);
+ const last=state?.[field];
+ return !last||Date.parse(date||0)>Date.parse(last);
+}
+function pontASNoticeUnread(key,date){
+ return pontASNoticeFresh(key,date,'seen_through')&&pontASNoticeFresh(key,date,'dismissed_through');
+}
+function pontASNoticeVisible(key,date){return pontASNoticeFresh(key,date,'dismissed_through')}
+async function pontLoadASNoticeStates(){
+ const {data,error}=await db.from('pont_city_as_notification_state')
+  .select('notification_key,seen_through,dismissed_through').limit(2000);
+ if(error)throw error;
+ pontCityASNotifications=new Map((data||[]).map(row=>[row.notification_key,row]));
+}
+async function pontASNoticeAction(key,date,mode){
+ const existing=pontCityASNotifications.get(key)||{notification_key:key,seen_through:null,dismissed_through:null};
+ const stamp=new Date(date||Date.now()).toISOString();
+ const updated={...existing,[mode==='seen'?'seen_through':'dismissed_through']:stamp,updated_at:new Date().toISOString()};
+ const {error}=await db.from('pont_city_as_notification_state').upsert(updated,{onConflict:'notification_key'});
+ if(error)throw error;
+ pontCityASNotifications.set(key,updated);
+ pontRenderGroupedCityRequests();
+}
+function pontASNoticeControls(card,key,date){
+ const controls=document.createElement('div');controls.className='pont-as-notice-actions';
+ const seen=document.createElement('button');seen.type='button';
+ seen.textContent=pontASNoticeUnread(key,date)?'✓ Văzut':'✓ Văzut';
+ seen.className='pont-as-notice-seen';
+ seen.title='Marchează ca văzut fără a elimina solicitarea';
+ seen.disabled=!pontASNoticeUnread(key,date);
+ const dismiss=document.createElement('button');dismiss.type='button';dismiss.className='pont-as-notice-dismiss';
+ dismiss.textContent='×';dismiss.title='Elimină notificarea din listă';dismiss.setAttribute('aria-label','Elimină notificarea din listă');
+ for(const [button,mode] of [[seen,'seen'],[dismiss,'dismissed']]){
+  button.addEventListener('click',async()=>{
+   controls.querySelectorAll('button').forEach(btn=>btn.disabled=true);
+   try{await pontASNoticeAction(key,date,mode)}
+   catch(error){$('pontCityActionStatus').textContent='Notificarea nu s-a actualizat: '+error.message;controls.querySelectorAll('button').forEach(btn=>btn.disabled=false)}
+  });
+ }
+ controls.append(seen,dismiss);card.append(controls);
+ card.classList.toggle('pont-as-notice-read',!pontASNoticeUnread(key,date));
+ return card;
+}
+
 
 // One service/event notification with a dated history, not a card for each payment action.
 function pontCityUnifiedPaymentCases(){
@@ -3519,16 +3565,19 @@ function pontRenderCityUnifiedPaymentCard(item){
   if(step.count>1){const counter=document.createElement('span');counter.className='pont-city-unified-step-count';counter.textContent='×'+step.count;counter.setAttribute('aria-label',step.count+' repetări');line.append(counter)}
   line.append(when);list.append(line);
  }
- card.append(list);return card;
+ card.append(list);
+ pontASNoticeControls(card,'payment:'+item.key,item.last);
+ return card;
 }
 function pontRenderGroupedCityRequests(){
  const host=$('pontCityGroupedRequests');if(!host)return;
  const open=new Set([...host.querySelectorAll('details[open][data-request-group]')].map(x=>x.dataset.requestGroup));
  host.replaceChildren();
  const visible=restaurants.filter(r=>r.city_module_visible===true).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ro'));
- const countAll=cityEventsLoaded.filter(e=>e.status==='pending').length+
-  pontGroupedEventRequests.filter(r=>r.status==='pending').length+
-  pontCityUnifiedPaymentCases().length;
+ const cases=pontCityUnifiedPaymentCases();
+ const countAll=cityEventsLoaded.filter(e=>e.status==='pending'&&pontASNoticeUnread('event:'+e.id,e.created_at)).length+
+  pontGroupedEventRequests.filter(r=>r.status==='pending'&&pontASNoticeUnread('request:'+r.id,r.created_at)).length+
+  cases.filter(item=>pontASNoticeUnread('payment:'+item.key,item.last)).length;
  $('pontCityRequestsNavCount').textContent='('+countAll+')';
  if(!visible.length){const p=document.createElement('p');p.className='pont-city-requests-note';p.textContent='Niciun restaurant nu are afișată secțiunea Ieșire în oraș în panoul AR.';host.append(p);return}
  const makeText=(tag,value,className)=>{const el=document.createElement(tag);el.textContent=value;if(className)el.className=className;return el};
@@ -3550,8 +3599,9 @@ function pontRenderGroupedCityRequests(){
   const cashDialogChoices=pontGroupedDialogCashIntents.filter(x=>x.restaurant_id===rid);
   const payments=pontGroupedPaymentRequests.filter(x=>x.restaurant_id===rid);
   const dialogs=pontGroupedPaymentDialogs.filter(x=>x.restaurant_id===rid);
-  const eventCount=pendingEvents.length+requests.filter(x=>x.status==='pending').length;
-  const paymentCount=pontCityUnifiedPaymentCases().filter(x=>x.restaurant_id===rid).length;
+  const eventCount=pendingEvents.filter(e=>pontASNoticeUnread('event:'+e.id,e.created_at)).length+
+   requests.filter(x=>x.status==='pending'&&pontASNoticeUnread('request:'+x.id,x.created_at)).length;
+  const paymentCount=cases.filter(x=>x.restaurant_id===rid&&pontASNoticeUnread('payment:'+x.key,x.last)).length;
   const card=document.createElement('section');card.className='pont-city-grouped-restaurant';
   card.append(makeText('h3',restaurant.name,'pont-city-grouped-name'));
   const sections=document.createElement('div');sections.className='pont-city-grouped-branches';
@@ -3566,14 +3616,23 @@ function pontRenderGroupedCityRequests(){
    details.append(body);sections.append(details);
   };
   group('events','Solicitări evenimente',eventCount,body=>{
-   for(const event of pendingEvents)body.append(cityRow(event,true));
+   for(const event of pendingEvents){
+    const key='event:'+event.id;if(!pontASNoticeVisible(key,event.created_at))continue;
+    const card=cityRow(event,true);pontASNoticeControls(card,key,event.created_at);body.append(card);
+   }
    const sorted=[...requests].sort((a,b)=>(a.status==='pending'?0:1)-(b.status==='pending'?0:1)||String(b.created_at).localeCompare(String(a.created_at)));
-   for(const item of sorted)body.append(pontCityRequestCard(item));
+   for(const item of sorted){
+    const key='request:'+item.id;if(!pontASNoticeVisible(key,item.created_at))continue;
+    const card=pontCityRequestCard(item);pontASNoticeControls(card,key,item.created_at);body.append(card);
+   }
    if(!pendingEvents.length&&!requests.length)blank(body,'Nicio solicitare de eveniment.');
   });
   group('payments','Solicitări plăți',paymentCount,body=>{
-   const grouped=pontCityUnifiedPaymentCases().filter(item=>item.restaurant_id===rid);
-   for(const item of grouped)body.append(pontRenderCityUnifiedPaymentCard(item));
+   const grouped=cases.filter(item=>item.restaurant_id===rid);
+   for(const item of grouped){
+    if(!pontASNoticeVisible('payment:'+item.key,item.last))continue;
+    body.append(pontRenderCityUnifiedPaymentCard(item));
+   }
    if(!grouped.length)blank(body,'Nicio solicitare de plată.');
   });
   card.append(sections);host.append(card);
@@ -4161,7 +4220,7 @@ async function loadCityEvents(){
   }
   if(!historyEvents.length){const p=document.createElement('p');p.textContent='Niciun eveniment în istoric.';historyHost.append(p)}
   $('cityPendingLabel').textContent='('+events.filter(e=>e.status==='pending').length+')';
-  try{await pontLoadCityRequests();pontRenderCityModerationHistory();if(!$('pontCityExternalRequestsBody').hidden)await pontLoadCityExternalRequests()}catch(requestError){
+  try{await pontLoadASNoticeStates();await pontLoadCityRequests();pontRenderCityModerationHistory();if(!$('pontCityExternalRequestsBody').hidden)await pontLoadCityExternalRequests()}catch(requestError){
    $('cityEventRequestRows').textContent='Nu s-au putut încărca solicitările: '+requestError.message;
   }
   cityStatus.textContent=cityHistoryComplete?'Actualizat.':'Actualizat parțial: istoricul depășește limita afișării.';
@@ -5282,4 +5341,11 @@ body.pont-admin--platform #pontCityUnifiedDialog::backdrop{background:#001015cf;
 #pontCityApprovalReject[hidden]{display:none!important}
 #pontCityApprovalReject{background:transparent;color:#edb0a8;border:1px solid #cf8b82;min-height:43px;border-radius:10px}
 #pontCityApprovalDialog .pont-as-approval-actions{flex-wrap:wrap}
-</style><script src="../pont-date-display.js?v=dmy-20261116" defer></script></body></html>
+</style><script src="../pont-date-display.js?v=dmy-20261116" defer></script><style id="pont-as-notifications-mark-seen-20261116">
+#pontCityGroupedRequests .pont-as-notice-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:10px 0 0}
+#pontCityGroupedRequests .pont-as-notice-actions button{display:inline-flex;align-items:center;justify-content:center;flex:none;min-height:31px;border-radius:8px;padding:5px 10px;font:700 11px system-ui}
+#pontCityGroupedRequests .pont-as-notice-actions .pont-as-notice-seen{border:1px solid #a7c9b0;background:#164b43;color:#e7f7df}
+#pontCityGroupedRequests .pont-as-notice-actions .pont-as-notice-seen:disabled{opacity:.55;cursor:default}
+#pontCityGroupedRequests .pont-as-notice-actions .pont-as-notice-dismiss{height:31px;width:31px;min-width:31px;padding:0;border:1px solid #be8e85;background:transparent;color:#f3c2bc;font-size:18px}
+#pontCityGroupedRequests .pont-as-notice-read{border-color:#547a7066;opacity:.84}
+</style></body></html>
