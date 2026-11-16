@@ -3687,6 +3687,9 @@ async function pontCityRejectPaymentFromEvent(pay){
  await loadCityEvents();
  $('cityModerationStatus').textContent=pay.stripe_paid_at?'Promovare respinsă. Atenție: plata Stripe trebuie soluționată separat.':'Promovare respinsă și poziție eliberată.';
 }
+async function pontCityRunModerationAction(task){
+ try{await task()}catch(error){pontCityShowEventDecision('Acțiunea nu s-a finalizat: '+(error?.message||String(error)))}
+}
 function pontCityRenderPromotionRequests(e,article){
  const cash=cityEventCashRequests.filter(x=>x.event_id===e.id);
  for(const req of cash){
@@ -3697,8 +3700,8 @@ function pontCityRenderPromotionRequests(e,article){
   const controls=document.createElement('div');controls.className='pont-city-promo-controls';
   const yes=document.createElement('button');yes.type='button';yes.className='primary';yes.textContent='Aprobă';
   const no=document.createElement('button');no.type='button';no.className='pont-city-reject';no.textContent='Respinge';
-  yes.onclick=()=>void pontCityApproveCashFromEvent(req);
-  no.onclick=()=>void pontCityRejectCashFromEvent(req);
+  yes.onclick=()=>void pontCityRunModerationAction(()=>pontCityApproveCashFromEvent(req));
+  no.onclick=()=>void pontCityRunModerationAction(()=>pontCityRejectCashFromEvent(req));
   if(['pending','contacted'].includes(req.status))controls.append(yes,no);
   section.append(title,meta,status);
   if(controls.childElementCount)section.append(controls);
@@ -3732,8 +3735,8 @@ function pontCityPromotionDetails(e,article){
    const controls=document.createElement('div');controls.className='pont-city-promo-controls';
    const yes=document.createElement('button');yes.type='button';yes.className='primary';yes.textContent='Aprobă';
    const no=document.createElement('button');no.type='button';no.className='pont-city-reject';no.textContent='Respinge';
-   yes.onclick=()=>void pontCityApprovePaymentFromEvent(pay);
-   no.onclick=()=>void pontCityRejectPaymentFromEvent(pay);
+   yes.onclick=()=>void pontCityRunModerationAction(()=>pontCityApprovePaymentFromEvent(pay));
+   no.onclick=()=>void pontCityRunModerationAction(()=>pontCityRejectPaymentFromEvent(pay));
    controls.append(yes,no);detail.append(controls);
   }
   if(active){
