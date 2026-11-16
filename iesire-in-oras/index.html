@@ -251,7 +251,6 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
     <span id="eventFormStatus" class="event-form-status full" role="status"></span>
    </form>
   </details>
-  <a id="eventModerationLink" class="event-moderation-link" href="../super-admin/evenimente/" hidden>Moderează evenimentele</a>
  </section>
 </main>
 <footer class="pont-footer-simple" aria-label="Informații PONT"><div class="pont-footer-brand"><span class="pont-footer-mark">PONT</span><span class="pont-footer-city">SLOBOZIA</span></div><p>Rezervările și informațiile despre evenimente sunt confirmate direct de organizator.</p><nav class="pont-footer-links" aria-label="Documente legale și protecția consumatorilor"><a href="../termeni.html">Termeni și condiții</a><a href="../confidentialitate.html">Confidențialitate · GDPR</a><a href="../cookies.html">Politica de cookies</a><a href="https://anpc.ro/" target="_blank" rel="noopener noreferrer">ANPC</a></nav><a class="pont-sal-pictogram" href="https://reclamatiisal.anpc.ro/" target="_blank" rel="noopener noreferrer" aria-label="ANPC – Soluționarea Alternativă a Litigiilor (SAL)"><img src="../sal-pont.svg" width="68" height="17" loading="lazy" alt="ANPC – SAL"></a><small>© PONT · Platformă locală de prezentare a restaurantelor și evenimentelor</small></footer>
@@ -343,7 +342,7 @@ async function setupPublisher(){
   const {data:allowed,error:accessError}=await db.from('restaurants').select('enabled,access_iesire_in_oras').eq('id',membership.restaurant_id).maybeSingle();
   if(!accessError&&allowed?.enabled&&allowed?.access_iesire_in_oras){restaurantId=membership.restaurant_id;$('eventSubmitWrap').hidden=false;pontExternalFields()}
  }
- const {data:isAdmin}=await db.rpc('is_super_admin');if(isAdmin)$('eventModerationLink').hidden=false;
+
 }
 $('eventSubmitForm').onsubmit=async e=>{
  e.preventDefault();
