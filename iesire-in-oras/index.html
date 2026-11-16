@@ -208,6 +208,13 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
 #eventFormStatus{font-size:11px;min-height:0}
 @media(max-width:600px){.event-publisher{margin:18px auto 28px;padding:13px}#eventSubmitForm{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:11px}#eventSubmitForm label{grid-column:1/-1}#eventSubmitForm .pont-event-form-section{grid-column:1/-1}#eventSubmitForm label:has(input[name="organizer_first_name"]),#eventSubmitForm label:has(input[name="organizer_last_name"]),#eventSubmitForm label:has(input[name="event_date"]),#eventSubmitForm label:has(input[name="start_time"]){grid-column:span 1}}
 @media(max-width:380px){#eventSubmitForm{grid-template-columns:1fr}#eventSubmitForm label:has(input[name="organizer_first_name"]),#eventSubmitForm label:has(input[name="organizer_last_name"]),#eventSubmitForm label:has(input[name="event_date"]),#eventSubmitForm label:has(input[name="start_time"]){grid-column:1}}
+</style><style id="pont-city-public-poster-autofit-20261116">
+#eventList .event-card{position:relative;isolation:isolate;overflow:hidden}
+#eventList .event-card .pont-event-poster-fill{position:absolute;z-index:0;inset:0 0 0 auto;width:70%;height:100%;max-width:none;object-fit:cover;object-position:center;filter:blur(13px) brightness(.66);transform:scale(1.09);pointer-events:none}
+#eventList .event-card .pont-event-poster-fit.menu-card-photo{position:absolute;z-index:0;inset:0 0 0 auto;width:70%;height:100%;max-width:none;object-fit:contain;object-position:center;background:transparent;pointer-events:none}
+#eventList .event-card .menu-card-copy{z-index:2}
+#eventList .event-card::after{z-index:1}
+@media(max-width:520px){#eventList .event-card .pont-event-poster-fill,#eventList .event-card .pont-event-poster-fit.menu-card-photo{width:71%}}
 </style></head>
 <body class="lunch menu-showcase">
 <div class="menu-art" aria-hidden="true"></div>
@@ -260,7 +267,8 @@ const $=id=>document.getElementById(id);
 const todayLocal=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 const escDate=value=>{const [y,m,d]=(value||'').split('-').map(Number);return y&&m&&d?new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,d,12))):''};
 const fallbackPhoto="./ambient.webp";
-let db=null,restaurantId=null,canPost=false,allEvents=[],activePromotions=[];
+let db=null,restaurantId=null,canPost=false,allEvents=[],activePromotions=[],eventRestaurantNames=new Map();
+const eventRestaurantName=event=>event.restaurant_id?(eventRestaurantNames.get(event.restaurant_id)||event.venue||'Restaurant'):event.venue||'Organizator';
 const pontWhatsappOwner='40725693799';
 function pontExternalFields(){for(const el of document.querySelectorAll('.pont-guest-organizer')){el.hidden=false;for(const input of el.querySelectorAll('input'))input.required=true} $('eventSubmitButton').textContent='Trimite spre aprobare pe WhatsApp'}
 const config=window.PONT_CONFIG||{};
@@ -301,21 +309,29 @@ function renderEvents(events){
   const isPromoted=isFixed||activePromotions.some(p=>p.service_type==='exclusive_banner'&&p.event_id===event.id);
   if(isFixed)outer.classList.add('pont-promoted-position');
   const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
-  const hasPoster=!!(event.poster_url&&/^https:\/\//i.test(event.poster_url));if(!hasPoster)button.classList.add('event-card-no-photo');const img=hasPoster?document.createElement('img'):null;if(img){img.className='menu-card-photo';img.src=event.poster_url;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';img.onerror=()=>{img.remove();button.classList.add('event-card-no-photo')};}
+  const hasPoster=!!(event.poster_url&&/^https:\/\//i.test(event.poster_url));
+  if(!hasPoster)button.classList.add('event-card-no-photo');
+  const img=hasPoster?document.createElement('img'):null;
+  const backdrop=hasPoster?document.createElement('img'):null;
+  if(img){
+   img.className='menu-card-photo pont-event-poster-fit';img.src=event.poster_url;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';
+   backdrop.className='pont-event-poster-fill';backdrop.src=event.poster_url;backdrop.alt='';backdrop.setAttribute('aria-hidden','true');backdrop.loading='lazy';
+   img.onerror=()=>{img.remove();backdrop.remove();button.classList.add('event-card-no-photo')};
+  }
   const badge=document.createElement('span');badge.className='event-date';badge.textContent=escDate(event.event_date);
   const copy=document.createElement('span');copy.className='menu-card-copy';
   const name=document.createElement('strong');name.className='menu-card-name';name.textContent=event.title;
-  const place=document.createElement('span');place.className='menu-card-location';place.textContent=event.venue+' · '+event.locality;
+  const place=document.createElement('span');place.className='menu-card-location';place.textContent=eventRestaurantName(event)+' · '+event.locality;
   const hour=document.createElement('span');hour.className='event-category';hour.textContent='Ora '+String(event.start_time||'').slice(0,5);
   const meta=document.createElement('span');meta.className='event-card-meta';meta.append(place,hour);
   if(isPromoted){const premium=document.createElement('span');premium.className='pont-city-sponsored-label';premium.textContent='Promovat';copy.append(premium)}
-  copy.append(badge,name,meta);if(img)button.append(img);button.append(copy);
+  copy.append(badge,name,meta);if(img)button.append(backdrop,img);button.append(copy);
   button.addEventListener('click',()=>showDetails(event));outer.append(button);list.append(outer);
  }
 }
 function showDetails(event){
  $('eventDetailsTitle').textContent=event.title;
- $('eventDetailsMeta').textContent=escDate(event.event_date)+' · '+String(event.start_time).slice(0,5)+' · '+event.venue+', '+event.locality;
+ $('eventDetailsMeta').textContent=escDate(event.event_date)+' · '+String(event.start_time).slice(0,5)+' · '+eventRestaurantName(event)+', '+event.locality;
  $('eventDetailsDescription').textContent=(event.description||'Pentru detalii și rezervări, contactează direct organizatorul.');
  const phone=String(event.contact_phone||'').trim();const link=$('eventDetailsPhone');
  const dial=phone.replace(/[^+\d]/g,'');
@@ -325,11 +341,17 @@ function showDetails(event){
 async function loadEvents(){
  if(!db)return;
  const [events,promos]=await Promise.all([
-  db.from('pont_city_events').select('id,title,description,event_date,start_time,locality,venue,contact_phone,poster_url').eq('status','approved').gte('event_date',todayLocal()).order('event_date',{ascending:true}).order('start_time',{ascending:true}).limit(80),
+  db.from('pont_city_events').select('id,restaurant_id,title,description,event_date,start_time,locality,venue,contact_phone,poster_url').eq('status','approved').gte('event_date',todayLocal()).order('event_date',{ascending:true}).order('start_time',{ascending:true}).limit(80),
   db.rpc('pont_public_city_promotions_v2')
  ]);
  if(events.error)throw events.error;
  allEvents=events.data||[];
+ const restaurantIds=[...new Set(allEvents.map(event=>event.restaurant_id).filter(Boolean))];
+ if(restaurantIds.length){
+  const {data:knownRestaurants,error:restaurantsError}=await db.from('restaurants').select('id,name').in('id',restaurantIds);
+  if(restaurantsError)console.warn('Numele restaurantelor nu au putut fi încărcate:',restaurantsError.message);
+  else eventRestaurantNames=new Map((knownRestaurants||[]).map(row=>[row.id,row.name]));
+ }
  if(promos.error){console.warn('Promovările PONT nu au fost încărcate:',promos.error);activePromotions=[]}
  else activePromotions=promos.data||[];
  refreshEvents();
