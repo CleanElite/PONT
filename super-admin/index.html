@@ -3073,7 +3073,7 @@ $('pontOpenPaymentsFromAuction').onclick=()=>selectPlatformPanel('adminRestauran
 const platformTabs = [...document.querySelectorAll('#pontMenuSuperNav button[data-tab], .pont-hero-dashboard[data-tab]')];
 const cityTabs=[...document.querySelectorAll('#pontCitySuperNav button[data-city-tab]')];
 const cityExclusivePanels=['cityDashboard','cityModeration','cityRequests'];
-let cityMode=false,cityEventsLoaded=[],cityHistoryComplete=true;
+let cityMode=false,cityEventsLoaded=[],cityEventPromotions=[],cityHistoryComplete=true;
 const panelLoaders = {
  menus:() => {renderTodayMenu(true);window.pontMenuModels?.refresh()},
  auctions:() => { loadAuctions(); loadAuctionControl(); loadAuctionBidHistory(selectedAuctionMonth()); },
@@ -3261,6 +3261,66 @@ async function pontCityAsWithdraw(e){
  if(error)throw error;if(!data?.length)throw Error('Evenimentul a fost modificat între timp.');
  await loadCityEvents();$('cityModerationStatus').textContent='Eveniment retras din pagina publică; istoricul a fost păstrat.';
 }
+function pontPromotionDateLabel(date){
+ if(!date)return '—';
+ const d=new Date(date+'T12:00:00Z');
+ return Number.isNaN(d.getTime())?String(date):new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(d);
+}
+function pontPromotionEndLabel(end){
+ if(!end)return '—';
+ const d=new Date(new Date(end+'T12:00:00Z').getTime()-86400000);
+ return Number.isNaN(d.getTime())?'—':new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(d);
+}
+async function pontCityManagePromotion(payment,action,buttons){
+ const pause=action==='pause',resume=action==='resume',withdraw=action==='withdraw';
+ const title=pause?'Pune promovarea pe pauză':resume?'Reia promovarea':'Retrage promovarea';
+ const message=pause?'Evenimentul nu va mai apărea pe poziția promovată. Locul rămâne rezervat, iar perioada contractuală NU se prelungește.':
+ resume?'Evenimentul va reapărea pe locul rezervat, dacă perioada este încă valabilă.':
+ 'Retragi definitiv promovarea din pagina publică și eliberezi poziția. Acțiunea nu realizează o rambursare Stripe și nu acordă automat un credit.';
+ const confirm=await pontASConfirm({title,message,button:pause?'Pune pe pauză':resume?'Reia promovarea':'Retrage promovarea'});
+ if(!confirm)return;
+ buttons.forEach(button=>button.disabled=true);
+ const notice=$('cityModerationStatus');
+ notice.textContent='Se actualizează promovarea…';
+ try{
+  if(withdraw){
+   const {error}=await db.rpc('pont_manage_city_payment',{p_action:'revoke',p_id:payment.id,p_reason:'Retragere promovare din cardul evenimentului (AS)'});
+   if(error)throw error;
+  }else{
+   const {error}=await db.rpc('pont_city_set_promotion_paused',{p_payment_id:payment.id,p_pause:pause});
+   if(error)throw error;
+  }
+  await loadCityEvents();
+  notice.textContent=pause?'Promovarea este pe pauză, cu locul rezervat.':resume?'Promovarea a fost reluată.':'Promovarea a fost retrasă; locul a fost eliberat.';
+ }catch(err){notice.textContent='Eroare: '+err.message;buttons.forEach(button=>button.disabled=false)}
+}
+function pontCityPromotionDetails(e,article){
+ const promotions=cityEventPromotions.filter(x=>(x.promoted_event_id||x.event_id)===e.id&&x.status==='confirmed');
+ for(const pay of promotions){
+  const slot=pay.pontSlot;
+  if(!slot||slot.status!=='reserved')continue;
+  const now=new Date();
+  const active=pay.expires_at&&new Date(pay.expires_at)>now;
+  const paused=Boolean(pay.promotion_paused_at);
+  const label=pay.service_type==='pinned_event'?'Poziție fixă · Locul '+slot.position:'Bandă publicitară exclusivă';
+  const detail=document.createElement('section');detail.className='pont-city-promo-admin';
+  const heading=document.createElement('strong');heading.textContent='PROMOVARE · '+label;
+  const dates=document.createElement('small');dates.textContent='Interval: '+pontPromotionDateLabel(slot.start_date)+' – '+pontPromotionEndLabel(slot.end_date);
+  const status=document.createElement('small');status.className='pont-city-promo-state';
+  status.textContent=!active?'Perioadă expirată':paused?'Pe pauză':slot.start_date>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(now)?'Programată · confirmată AS':'Activă · confirmată AS';
+  status.dataset.state=!active?'expired':paused?'paused':'active';
+  detail.append(heading,dates,status);
+  if(active){
+   const controls=document.createElement('div');controls.className='pont-city-promo-controls';
+   const toggle=document.createElement('button');toggle.type='button';toggle.textContent=paused?'Reia promovarea':'Pune pe pauză';
+   const withdraw=document.createElement('button');withdraw.type='button';withdraw.className='pont-city-reject';withdraw.textContent='Retrage promovarea';
+   toggle.onclick=()=>void pontCityManagePromotion(pay,paused?'resume':'pause',[toggle,withdraw]);
+   withdraw.onclick=()=>void pontCityManagePromotion(pay,'withdraw',[toggle,withdraw]);
+   controls.append(toggle,withdraw);detail.append(controls);
+  }
+  article.append(detail);
+ }
+}
 function cityRow(e,pending=false){
  const article=document.createElement('article');article.className='pont-city-event';
  const name=document.createElement('strong');name.textContent=e.title||'Eveniment fără titlu';article.append(name);
@@ -3269,6 +3329,7 @@ function cityRow(e,pending=false){
  venue.textContent=(restaurant?.name||e.venue||'Restaurant')+' · '+cityDate(e.event_date)+' · '+String(e.start_time||'').slice(0,5);article.append(venue);
  const location=document.createElement('p');location.textContent=(e.venue||'')+' · '+(e.locality||'')+' · '+(e.contact_phone||'');article.append(location);
  if(e.description){const p=document.createElement('p');p.textContent=e.description;article.append(p)}
+ pontCityPromotionDetails(e,article);
  if(e.poster_url&&/^https:\/\//i.test(e.poster_url)){
   const link=document.createElement('a');link.href=e.poster_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Deschide afișul';article.append(link);
  }
@@ -3416,8 +3477,14 @@ async function loadCityEvents(){
  const cityStatus=$('cityStatus'),moderationStatus=$('cityModerationStatus');
  cityStatus.textContent='Se actualizează evenimentele…';
  try{
-  const result=await db.from('pont_city_events').select('id,restaurant_id,title,description,event_date,start_time,venue,locality,contact_phone,poster_url,status,created_at',{count:'exact'}).order('created_at',{ascending:false}).limit(999);
-  if(result.error)throw result.error;
+  const [result,promos,slots]=await Promise.all([
+   db.from('pont_city_events').select('id,restaurant_id,title,description,event_date,start_time,venue,locality,contact_phone,poster_url,status,created_at',{count:'exact'}).order('created_at',{ascending:false}).limit(999),
+   db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,event_id,promoted_event_id,status,confirmed_at,confirmed_by,expires_at,promotion_paused_at,manual_confirmation_mode').in('service_type',['pinned_event','exclusive_banner']).eq('status','confirmed').limit(999),
+   db.from('pont_city_promotion_slots').select('payment_id,position,start_date,end_date,status').eq('status','reserved').limit(999)
+  ]);
+  if(result.error||promos.error||slots.error)throw result.error||promos.error||slots.error;
+  const slotMap=new Map((slots.data||[]).map(row=>[row.payment_id,row]));
+  cityEventPromotions=(promos.data||[]).map(item=>({...item,pontSlot:slotMap.get(item.id)||null}));
   cityEventsLoaded=result.data||[];cityHistoryComplete=(result.count??cityEventsLoaded.length)<1000;
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   const events=cityEventsLoaded;
@@ -4492,4 +4559,13 @@ body.pont-admin--platform #pontCityApprovalDialog::backdrop{background:#001015cb
 #cityRequests .pont-cash-intent{border:1px solid #d9b97988;background:linear-gradient(120deg,#223d35,#1c2d30)}
 #cityRequests .pont-cash-intent strong{color:#f5d99c}
 #cityRequests #cityCheckoutAttemptRows>h3{margin:15px 0 9px;font:700 13px/1.4 system-ui;color:#e9d39f}
+</style><style id="pont-as-promotion-controls-20261116">
+body.pont-admin--platform .pont-city-promo-admin{display:grid;gap:6px;margin:13px 0;padding:13px;border:1px solid #c6ad778c;border-radius:13px;background:linear-gradient(115deg,#193e39,#102d33);max-width:100%;overflow-wrap:anywhere}
+body.pont-admin--platform .pont-city-promo-admin>strong{font:750 12px/1.4 system-ui;color:#f2daa2;letter-spacing:.02em}
+body.pont-admin--platform .pont-city-promo-admin>small{font:600 11px/1.5 system-ui;color:#dae8dd}
+body.pont-admin--platform .pont-city-promo-state[data-state="paused"]{color:#f4c89e}
+body.pont-admin--platform .pont-city-promo-state[data-state="expired"]{color:#b5c3bb}
+body.pont-admin--platform .pont-city-promo-controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+body.pont-admin--platform .pont-city-promo-controls button{flex:1 1 130px;min-height:39px;font:750 11px/1.4 system-ui;border-radius:9px}
+body.pont-admin--platform .pont-city-promo-controls .pont-city-reject{border-color:#bd7777;color:#ffe0d9}
 </style></body></html>
