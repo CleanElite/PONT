@@ -6,6 +6,9 @@ on:
       - 'backend/**'
       - 'test/**'
       - 'pont-navigation-history.js'
+      - 'compact-date-picker.js'
+      - 'install.js'
+      - 'pont-privacy-consent.js'
       - '**/*.html'
       - 'sw.js'
       - 'robots.txt'
@@ -39,5 +42,11 @@ jobs:
             console.log('Valid JS:',file);
           }
           NODE
+      - name: Validate shared public JavaScript files
+        run: |
+          node --check compact-date-picker.js
+          node --check install.js
+          node --check pont-privacy-consent.js
+          node --check pont-navigation-history.js
       - name: Run backend and navigation tests
         run: node --test backend/worker.test.mjs backend/navigation.test.mjs backend/daily-menu-availability.test.mjs qa/site-static.test.mjs
