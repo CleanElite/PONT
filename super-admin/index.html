@@ -1819,6 +1819,65 @@ function pontCommerceDetailsHtml(r){
  output+=logs.map(l=>'<p class="pont-commerce-note">'+esc(pontPaymentDate(l.occurred_at))+' · '+(l.module==='menu'?'Meniu':'Evenimente')+' · '+esc(l.action)+(l.reason?' · '+esc(l.reason):'')+'</p>').join('')||'<p class="pont-commerce-note">Nicio modificare înregistrată</p>';
  return output+'</details>';
 }
+function pontCityUnifiedOpen(type,item){
+ const dialog=$('pontCityUnifiedDialog'),sub=type==='subscription';
+ const restaurant=sub?restaurants.find(r=>r.id===item):restaurants.find(r=>r.id===item.restaurant_id);
+ const event=!sub?pontCityApprovedEvents.find(e=>e.id===item.event_id):null;
+ const active=sub?pontCityPaymentRows.find(p=>p.restaurant_id===item&&p.service_type==='subscription'&&p.status==='confirmed'&&new Date(p.expires_at)>new Date()):null;
+ const pending=sub?pontCityPaymentRows.find(p=>p.restaurant_id===item&&p.service_type==='subscription'&&p.status==='pending'):null;
+ $('pontCityUnifiedTitle').textContent=sub?'Confirmă acces · Abonament':'Confirmă solicitare · Promovare';
+ $('pontCityUnifiedDetails').textContent=(restaurant?.name||'Restaurant')+' · '+
+  (sub?'50 lei / 30 zile':(event?.title||'Eveniment')+' · '+(item.service_type==='pinned_event'?'Locul '+item.position:'Bandă publicitară')+' · '+item.requested_start_date+' · '+auctionMoney(item.amount));
+ $('pontCityUnifiedStripe').textContent='Stripe încasat: '+auctionMoney(sub&&pending?pontVerifiedStripeCityAmount(pending):0)+'. „Plătit” manual nu modifică Stripe.';
+ $('pontCityUnifiedError').textContent='';
+ dialog.querySelectorAll('input[name="pontCityUnifiedMode"]').forEach(el=>el.checked=false);
+ const save=$('pontCityUnifiedSave'),revoke=$('pontCityUnifiedRevoke');
+ save.textContent=sub?'Confirmă accesul':'Confirmă solicitarea';
+ save.hidden=Boolean(active);
+ revoke.hidden=!(sub?Boolean(active):true);
+ revoke.textContent=sub?'Retrage accesul':'Retrage solicitarea';
+ save.disabled=false;
+ dialog.showModal();
+ $('pontCityUnifiedCancel').onclick=()=>dialog.close();
+ save.onclick=async()=>{
+  const mode=dialog.querySelector('input[name="pontCityUnifiedMode"]:checked')?.value;
+  if(!mode){$('pontCityUnifiedError').textContent='Alege Plătit sau Doar acces.';return}
+  save.disabled=true;$('pontCityUnifiedError').textContent='Se înregistrează decizia…';
+  try{
+   const {error}=await db.rpc(sub?'pont_city_manage_subscription_access':'pont_city_decide_cash_request',
+     sub?{p_restaurant_id:item,p_action:mode}:{p_request_id:item.id,p_action:mode});
+   if(error)throw error;
+   dialog.close();await loadRestaurantCommercialData();
+   if(cityMode)await loadCityEvents();
+   $('pontRestaurantCommerceNotice').textContent=sub?'Abonamentul a fost confirmat.':'Promovarea a fost confirmată.';
+  }catch(error){$('pontCityUnifiedError').textContent='Eroare: '+error.message}
+  finally{save.disabled=false}
+ };
+ revoke.onclick=async()=>{
+  dialog.close();
+  const ok=await pontASConfirm({
+   title:sub?'Retrage accesul':'Respinge promovarea',
+   message:sub?'Retragi accesul Ieșire în oraș fără să modifici Meniul zilei.':'Respingi solicitarea cash. Evenimentul rămâne publicat.',
+   button:sub?'Retrage accesul':'Respinge solicitarea'
+  });
+  if(!ok)return;
+  const {error}=await db.rpc(sub?'pont_city_manage_subscription_access':'pont_city_decide_cash_request',
+   sub?{p_restaurant_id:item,p_action:'revoke'}:{p_request_id:item.id,p_action:'cancel'});
+  if(error){$('pontRestaurantCommerceNotice').textContent='Eroare: '+error.message;return}
+  await loadRestaurantCommercialData();if(cityMode)await loadCityEvents();
+  $('pontRestaurantCommerceNotice').textContent=sub?'Accesul a fost retras.':'Solicitarea a fost respinsă.';
+ };
+}
+async function pontCityRevokePromotion(item){
+ const ok=await pontASConfirm({title:'Retrage confirmarea promovării',
+ message:'Retragi promovarea, eliberezi poziția și păstrezi istoricul Stripe. Rambursarea, dacă e cazul, se tratează separat.',
+ button:'Retrage confirmarea'});
+ if(!ok)return;
+ const {error}=await db.rpc('pont_manage_city_payment',{p_action:'revoke',p_id:item.id,p_reason:'Confirmare promovare retrasă de AS'});
+ if(error){$('pontRestaurantCommerceNotice').textContent='Eroare: '+error.message;return}
+ await loadRestaurantCommercialData();if(cityMode)await loadCityEvents();
+ $('pontRestaurantCommerceNotice').textContent='Confirmarea promovării a fost retrasă.';
+}
 async function pontDecideCashRequest(item){
  const event=pontCityApprovedEvents.find(x=>x.id===item.event_id);
  const label=item.service_type==='pinned_event'?'locul '+item.position:'banda publicitară';
@@ -3890,6 +3949,10 @@ $('restaurantRows').onclick = async event => {
  const button = event.target.closest('button');
  if (!button) return;
  const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant,accountToggle,accountRestaurant,commerceAccess,commerceCityNew,commerceCityPayment,commerceCityAction,commerceCityCredit,commerceCityCreditCancel,commerceCashId} = button.dataset;
+ if(button.dataset.cityUnifiedSub){pontCityUnifiedOpen('subscription',button.dataset.cityUnifiedSub);return;}
+ if(button.dataset.cityUnifiedCash){const cash=pontCityCashRows.find(x=>x.id===button.dataset.cityUnifiedCash);if(cash)pontCityUnifiedOpen('cash',cash);return;}
+ if(button.dataset.cityUnifiedPayment){const payment=pontCityPaymentRows.find(x=>x.id===button.dataset.cityUnifiedPayment);if(payment)pontOpenCityServiceApproval(payment);return;}
+ if(button.dataset.cityUnifiedRevokePromo){const payment=pontCityPaymentRows.find(x=>x.id===button.dataset.cityUnifiedRevokePromo);if(payment)void pontCityRevokePromotion(payment);return;}
  if(commerceAccess){pontOpenRestaurantAccess(commerceAccess);return;}
  if(commerceCityNew){pontOpenCityCharge(commerceCityNew);return;}
  if(commerceCashId){const item=pontCityCashRows.find(x=>x.id===commerceCashId);if(item)void pontDecideCashRequest(item);return;}
@@ -4688,4 +4751,23 @@ body.pont-admin--platform .pont-city-promo-request{border-color:#deb977;box-shad
 body.pont-admin--platform .pont-city-promo-request>strong{color:#ffe4b2}
 body.pont-admin--platform .pont-city-promo-controls .primary{background:#dec895;color:#162d31;border:1px solid #e1cfaa}
 body.pont-admin--platform .pont-city-promo-state[data-state="pending"]{color:#ffdaa0;font-weight:750}
-</style><style id="pont-as-event-promotion-verdict-20261116">body.pont-admin--platform .pont-city-promo-historic{display:block;margin:8px 0;padding:8px 10px;border-left:2px solid #aebbb4;color:#b7c6c0;font:600 11px/1.5 system-ui}</style></body></html>
+</style><style id="pont-as-event-promotion-verdict-20261116">body.pont-admin--platform .pont-city-promo-historic{display:block;margin:8px 0;padding:8px 10px;border-left:2px solid #aebbb4;color:#b7c6c0;font:600 11px/1.5 system-ui}</style><style id="pont-city-simplified-as-20261116">
+#restaurants .pont-city-service-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:9px;padding:10px 0;border-bottom:1px solid #adbdab35}
+#restaurants .pont-city-service-row:last-child{border-bottom:0}
+#restaurants .pont-city-service-row .pont-city-service-summary{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 155px}
+#restaurants .pont-city-service-row strong{font:700 12px/1.45 system-ui;color:#f2e6c4}
+#restaurants .pont-city-service-row small{font:550 11px/1.4 system-ui;color:#c1dacf}
+#restaurants .pont-city-service-row button{min-height:38px;border-radius:9px;padding:8px 12px;font:700 11px/1.3 system-ui;background:#d5c290;color:#182c2e}
+body.pont-admin--platform #pontCityUnifiedDialog{box-sizing:border-box;width:min(94vw,490px);max-height:90dvh;overflow:auto;padding:23px;border:1px solid #d0b880;border-radius:19px;background:linear-gradient(145deg,#133a3b,#081e29);color:#f5eddd;box-shadow:0 20px 65px #000b}
+body.pont-admin--platform #pontCityUnifiedDialog::backdrop{background:#001015cf;backdrop-filter:blur(5px)}
+#pontCityUnifiedDialog h2{font:500 22px/1.25 Georgia,serif;margin:0 0 12px}
+#pontCityUnifiedDialog p{font:550 12px/1.5 system-ui}
+#pontCityUnifiedDialog .pont-as-payment-mode{display:grid;gap:8px;border:1px solid #6f9187;border-radius:11px;padding:12px}
+#pontCityUnifiedDialog .pont-as-payment-mode label{display:grid;grid-template-columns:23px 1fr;gap:3px 8px;align-items:center;padding:10px;border:1px solid #97b1a344;border-radius:10px}
+#pontCityUnifiedDialog .pont-as-payment-mode input{width:19px;height:19px;grid-row:span 2;accent-color:#e0c892}
+#pontCityUnifiedDialog .pont-as-payment-mode small{grid-column:2;color:#bfd5c9;font-size:10px}
+#pontCityUnifiedDialog .pont-as-approval-actions{display:flex;gap:9px;margin-top:14px}
+#pontCityUnifiedDialog .pont-as-approval-actions button{flex:1;min-height:43px;border-radius:10px}
+#pontCityUnifiedRevoke{width:100%;margin-top:11px;min-height:42px;border:1px solid #c98780;color:#ffcdc5;background:transparent;border-radius:10px}
+#pontCityUnifiedDialog [hidden]{display:none!important}
+</style></body></html>
