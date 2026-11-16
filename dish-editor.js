@@ -26,7 +26,7 @@ const selected = new Map(), savedChoices = new Map();
 let dishes = [], category = 'first';
 let editorVersion = 0, menuDescription = '', pendingMenu = null, savingModel = false;
 let editingDish = null, editingMenu = null, editingMenuRecord = null, loadedRid = '', loadVersion = 0, saving = false, previewURL = '', dishPhotoRemoved = false;
-const icon = name => '<svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#' + name + '"></use></svg>';
+const icon = name => '<svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=2#' + name + '"></use></svg>';
 
 catalog.innerHTML = `
   <div class="admin-library-grid">

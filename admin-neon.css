@@ -6,18 +6,18 @@ body.pont-admin-neon {
   --neon-muted: #c6dfde;
   --neon-edge: #5fc9c5;
   --neon-gold: #ffde6c;
-  --neon-panel: radial-gradient(ellipse at 22% -18%, #195454 0%, transparent 55%), #021e22;
-  --neon-glass: radial-gradient(ellipse at 27% -30%, #246361 0%, transparent 70%), linear-gradient(155deg, #0d3e40, #02191d 67%, #042d30);
+  --neon-panel: linear-gradient(155deg, #103537, #021e22 68%);
+  --neon-glass: linear-gradient(155deg, #18494a, #031e22 68%, #062c30);
   --neon-active: linear-gradient(155deg, #343027, #202822 75%);
   --neon-fill: linear-gradient(170deg, #4d4030, #383024 70%, #332c21);
   --neon-warm-ink: #f6eee0;
   --neon-warm-edge: #a78c63;
-  --neon-warm-shadow: inset 0 1px 0 #d4b58840, 0 3px 8px #0005;
-  --neon-aura: inset 0 1px 4px #c3fff478, inset 0 -3px 9px #2bbdb44a, 0 4px 10px #0008;
-  --neon-rim: inset 0 1px 7px #9bfff2a3, inset 0 -3px 12px #22b6b43d, 0 0 13px #39dfd648, 0 5px 15px #0007;
-  --neon-gilded: inset 0 0 9px #ffe580ab, inset 0 1px 3px #fff9ca, 0 0 12px #ffc44c75;
+  --neon-warm-shadow: inset 0 1px #d4b58840;
+  --neon-aura: inset 0 1px #c3fff44d;
+  --neon-rim: inset 0 1px #9bfff265, 0 0 9px #39dfd648;
+  --neon-gilded: inset 0 1px #ffe5808c, 0 0 7px #ffc44c4d;
   --neon-red: linear-gradient(150deg, #482529, #200f14 70%);
-  --neon-red-rim: inset 0 0 6px #fa61694d, 0 0 6px #ed424842;
+  --neon-red-rim: inset 0 1px #fa61694d;
   --neon-radius: clamp(12px, 3vw, 21px);
   --neon-gutter: clamp(10px, 2.7vw, 24px);
   --admin-ink: var(--neon-ink);
@@ -31,7 +31,7 @@ body.pont-admin-neon {
   margin: 0;
   color: var(--neon-ink) !important;
   color-scheme: dark;
-  background: radial-gradient(ellipse at 50% -16%, #115152 0%, #03272b 40%, #001417 77%) fixed !important;
+  background: linear-gradient(180deg, #0b3538, #03272b 210px, #001417 450px) !important;
 }
 
 body.pont-admin-neon.pont-admin::before,
@@ -53,7 +53,7 @@ body.pont-admin-neon > main {
 body.pont-admin-neon.pont-admin--restaurant > main {
   padding-bottom: clamp(19px, 5vw, 45px) !important;
   border-color: #9bfff8;
-  box-shadow: inset 0 0 0 3px #36d9e363, inset 0 0 15px #4de9e84d, 0 0 18px #36e4e89c, 0 14px 38px #0009;
+  box-shadow: inset 0 0 0 2px #36d9e363, 0 0 11px #36e4e87a;
 }
 
 body.pont-admin-neon.pont-admin--platform > main {
@@ -70,7 +70,13 @@ body.pont-admin-neon dialog {
 }
 
 body.pont-admin-neon dialog::backdrop {
-  background: #001013c9 !important;
+  background: #001013e6 !important;
+}
+
+body.pont-admin-neon .pont-nav-action,
+body.pont-admin-neon dialog::backdrop {
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
 }
 
 body.pont-admin-neon :is(#app, main, dialog, header) :is(button, .admin-back, .pont-ar-back, .pont-ar-module-link, .admin-nav a, .pont-ar-city-navigation a, .pont-ranking-open, .pont-stats-back, .menu-back):not([role="switch"], .pont-today-toggle, .pont-date-trigger, .pont-date-option) {
@@ -102,10 +108,6 @@ body.pont-admin-neon :is(#app, main, dialog) :is(.admin-danger, .danger, .pont-t
   --neon-control-bg: var(--neon-red);
   --neon-control-shadow: var(--neon-red-rim);
   --neon-control-ink: #ffc2bc;
-}
-
-body.pont-admin-neon :is(#app, main, dialog) :is(button, a):is(:hover, :focus-visible):not(:disabled) {
-  filter: brightness(1.07);
 }
 
 body.pont-admin-neon :is(#app, main, dialog) :is(button, a, input, select, textarea, summary):focus-visible {
@@ -257,7 +259,7 @@ body.pont-admin-neon.pont-admin-login > .pont-login-surface {
   border-radius: clamp(22px, 6vw, 33px);
   border-color: #62b9b7;
   background: var(--neon-panel);
-  box-shadow: inset 0 1px 5px #a4e9e53b, 0 0 13px #41bcb637, 0 14px 36px #0007;
+  box-shadow: var(--neon-rim);
 }
 
 .pont-admin-login .pont-login-header {
@@ -581,7 +583,6 @@ body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #addView .admin-work
   width: 66%;
   height: 2px;
   background: linear-gradient(90deg, transparent, #ffb62e, #ffefbc, #ffb62e, transparent);
-  filter: drop-shadow(0 0 4px #ffc14f);
 }
 
 body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #pontTodayMenu {
@@ -636,7 +637,7 @@ body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #menuFormWrap {
   border-top: 0 !important;
   border-radius: 0 0 var(--neon-radius) var(--neon-radius) !important;
   background: var(--neon-panel) !important;
-  box-shadow: inset 0 -2px 10px #ffe58050, 0 4px 11px #ffc44c30 !important;
+  box-shadow: var(--neon-warm-shadow) !important;
 }
 
 body.pont-admin-neon #app :is(.pont-daily-summary-group, .pont-daily-picker-row) {
@@ -687,7 +688,7 @@ body.pont-admin-neon #pontDailySummaryList .pont-daily-summary-group-head > stro
   border: 1px solid #ab8e4b;
   border-radius: 999px;
   background: var(--neon-active);
-  box-shadow: inset 0 0 5px #ffc45c5c;
+  box-shadow: inset 0 1px #ffc45c5c;
   font-size: clamp(10px, 2.6vw, 14px);
   white-space: nowrap;
 }
@@ -712,7 +713,7 @@ body.pont-admin-neon #pontDailyPickerList .pont-daily-picker-number {
   background: #041e22;
   border: 1px solid #ebc553;
   border-radius: 50%;
-  box-shadow: inset 0 0 4px #ffce5489;
+  box-shadow: inset 0 1px #ffce5489;
   font: 700 11px/1 system-ui, sans-serif;
 }
 
@@ -947,13 +948,13 @@ body.pont-admin.pont-admin--platform.pont-admin-neon #analytics .pont-insights-g
   background: var(--neon-active) !important;
   border: 1px solid #edc25787 !important;
   border-radius: 50% !important;
-  box-shadow: inset 0 0 7px #ffe17b7a, 0 0 6px #f9cb663a !important;
+  box-shadow: inset 0 1px #ffe17b7a !important;
 }
 
 body.pont-admin.pont-admin--platform.pont-admin-neon #analytics .pont-insights-grid > .pont-insight.stat:has(#analyticsEstimatedValue) {
   grid-column: 1 / -1 !important;
   border-color: #ffe088 !important;
-  background: radial-gradient(ellipse at 100% 100%, #b875224f, transparent 36%), var(--neon-active) !important;
+  background: var(--neon-active) !important;
   box-shadow: var(--neon-gilded) !important;
 }
 
