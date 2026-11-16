@@ -4014,9 +4014,14 @@ function cityRow(e,pending=false,compact=false){
      $('cityModerationStatus').textContent=next==='approved'?'Eveniment aprobat.':'Eveniment respins.';
     }catch(err){$('cityModerationStatus').textContent='Eroare: '+err.message;[...actions.querySelectorAll('button')].forEach(b=>b.disabled=false)}
    });actions.append(button);
-  }article.append(actions);
+  }
+  const preview=document.createElement('button');preview.type='button';preview.className='pont-city-preview-button';preview.textContent='Previzualizare';preview.onclick=()=>pontASPreviewEvent(e);
+  actions.append(preview);article.append(actions);
+  // Cererile în așteptare au exclusiv acțiuni de moderare.
+  // Editarea, promovarea și retragerea sunt disponibile după aprobare.
+  return article;
  }
- if(e.status!=='removed'){
+ if(e.status==='approved'){
   const manage=document.createElement('div');manage.className='pont-city-actions pont-city-as-actions';
   const edit=document.createElement('button');edit.type='button';edit.textContent='Editează';edit.onclick=()=>pontCityAsEdit(e);
   const preview=document.createElement('button');preview.type='button';preview.className='pont-city-preview-button';preview.textContent='Previzualizare';preview.onclick=()=>pontASPreviewEvent(e);
