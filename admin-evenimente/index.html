@@ -338,7 +338,7 @@ const requestLabels={remove:'Solicitare retragere',edit:'Solicitare modificare',
 const requestStates={pending:'În analiză',approved:'Aprobată',rejected:'Respinsă'};
 // Trei ecrane distincte; administratorul vede numai cererile restaurantului său.
 const cityPageParam=new URLSearchParams(location.search).get('pagina');
-const cityPage=['adauga','evenimentele-mele','cererile-mele'].includes(cityPageParam)?cityPageParam:'evenimentele-mele';
+const cityPage=['adauga','evenimentele-mele','cererile-mele'].includes(cityPageParam)?cityPageParam:'adauga';
 function applyCityPage(){
  const isCreate=cityPage==='adauga',isEvents=cityPage==='evenimentele-mele',isRequests=cityPage==='cererile-mele';
  $('createEvent').hidden=!isCreate;
