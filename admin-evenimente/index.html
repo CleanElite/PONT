@@ -293,7 +293,7 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 </main><script src="../super-admin/config.js"></script><script type="module">
 const $=id=>document.getElementById(id);const cfg=window.PONT_CONFIG||{};
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-let db,restaurant,user,citySubscriptionActive=false,citySubscriptionRequested=false,cityUploadedPoster='',cityEventRows=[],cityRequestRows=[],cityEditingEvent=null;
+let db,restaurant,user,citySubscriptionActive=false,citySubscriptionRequested=false,cityUploadedPoster='',cityEventRows=[],cityRequestRows=[],cityPaymentRows=[],cityOwnedSlots=[],cityEditingEvent=null;
 const stateNames={pending:'În așteptare',approved:'Aprobat',rejected:'Respins',removed:'Retras'};
 const requestLabels={remove:'Solicitare retragere',edit:'Solicitare modificare',pinned_event:'Fixare eveniment · 50 lei',exclusive_banner:'Bandă exclusivă · 100 lei'};
 const requestStates={pending:'În analiză',approved:'Aprobată',rejected:'Respinsă'};
@@ -320,14 +320,16 @@ async function pontRefreshPromotionSlots(){
  info.textContent='Se verifică locurile pentru '+date+'…';pontSlotQuote=null;
  const checks=await Promise.all((isPin?[1,2,3]:[0]).map(async n=>{
   const {data,error}=await db.rpc('pont_city_slot_quote_v2',{p_position:n,p_desired:date,p_event_date:cityPromotionEvent.event_date});
-  return {n,quote:data?.[0],error};
+  const ownPayment=cityPaymentRows.find(p=>p.service_type===cityPromotionType&&p.promoted_event_id===cityPromotionEvent.id&&p.requested_start_date===date&&p.status==='pending'&&!p.stripe_paid_at);
+  const owned=cityOwnedSlots.find(x=>x.payment_id===ownPayment?.id&&x.position===n&&x.start_date===date&&x.status==='held'&&new Date(x.hold_until)>new Date());
+  return {n,quote:owned?{available:true,first_available:date,owned:true}:data?.[0],error};
  }));
  for(const {n,quote,error} of checks){
   const label=document.createElement('label');label.className='pont-slot-option';
   const radio=document.createElement('input');radio.type='radio';radio.name='pontSlotChoice';radio.value=String(n);radio.checked=n===pontChosenSlot;
   const title=document.createElement('strong');title.textContent=n===0?'Bandă publicitară':'Locul '+n;
   const caption=document.createElement('small');
-  caption.textContent=error?'Nu poate fi verificat':quote?.available?'Disponibil':'Indisponibil până la '+(quote?.first_available||'—');
+  caption.textContent=error?'Nu poate fi verificat':quote?.owned?'Rezervat temporar pentru tine':quote?.available?'Disponibil':'Indisponibil până la '+(quote?.first_available||'—');
   label.classList.toggle('is-unavailable',!quote?.available);
   label.append(radio,title,caption);list.append(label);
   radio.onchange=()=>{pontChosenSlot=n;void pontRefreshPromotionSlots()};
@@ -497,6 +499,9 @@ async function loadCitySubscription(){
   .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(80);
  if(paymentError)throw paymentError;
  const rows=payments||[],subs=rows.filter(p=>p.service_type==='subscription');
+ cityPaymentRows=rows;
+ const {data:ownSlots,error:slotErr}=await db.from('pont_city_promotion_slots').select('payment_id,position,start_date,status,hold_until').limit(150);
+ if(!slotErr)cityOwnedSlots=ownSlots||[];
  const valid=subs.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date());
  const stripeReceived=subs.find(p=>p.status==='pending'&&p.stripe_paid_at);
  citySubscriptionRequested=subs.some(p=>p.status==='pending');
