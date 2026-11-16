@@ -1774,10 +1774,13 @@ function pontCommerceDetailsHtml(r){
   const stripeAmount=pontVerifiedStripeCityAmount(item),confirmed=item.status==='confirmed',active=confirmed&&new Date(item.expires_at)>new Date();
   const names={subscription:'Abonament',pinned_event:'Poziție fixă',exclusive_banner:'Bandă publicitară'};
   const label=names[item.service_type]||item.service_type;
-  const assigned=item.service_type==='pinned_event'&&item.promotion_position?' · Locul '+item.promotion_position:'';
+  const assigned=item.service_type==='pinned_event'&&item.promotion_position?' · Locul '+item.promotion_position+(item.status==='confirmed'?' · ACTIVAT':' · REZERVAT TEMPORAR'):'';
   const dates=item.requested_start_date?' · Start '+item.requested_start_date:'';
   const mode=item.manual_confirmation_mode==='paid'?'Plătit (confirmat AS)':item.manual_confirmation_mode==='access'?'Doar acces (confirmat AS)':confirmed?'Confirmat AS':'Neconfirmat';
-  const status=item.status==='revoked'?'Anulat':active?mode:confirmed?'Expirat':stripeAmount?'Stripe încasat · aşteaptă AS':mode;
+  const status=item.status==='revoked'?'Anulat':active?mode:confirmed?'Expirat':
+   item.service_type==='subscription'?(stripeAmount?'Stripe încasat · așteaptă AS':'Abonament neconfirmat'):
+   (stripeAmount?'Stripe încasat · PROMOVARE NEACTIVATĂ · confirmă tu în AS':
+    'PROMOVARE NEACTIVATĂ · rezervarea nu este publicată până când alegi Plătit sau Doar acces');
   const canRevoke=confirmed&&new Date(item.expires_at)>new Date();
   const canApprove=item.status==='pending';
   const originalSlot=pontCitySlotRows.find(x=>x.payment_id===item.id&&x.status==='reserved');
