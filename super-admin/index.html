@@ -1642,8 +1642,12 @@ body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{
 <section id="cityModeration" class="card dashboard-panel" hidden aria-labelledby="cityModerationTitle">
   <div class="dashboard-heading"><div><h2 id="cityModerationTitle">Moderare evenimente</h2><p>Verifică fiecare anunț înainte să apară public.</p></div><button type="button" id="cityModerationRefresh" class="primary">Actualizează</button></div>
   <p id="cityModerationStatus" class="dashboard-message" role="status"></p>
-  <section id="pontCityModerationPendingSection" aria-label="Solicitări de evenimente în așteptare" hidden><div class="pont-city-section-heading"><h3>Solicitări de aprobat <span id="pontCityModerationPendingCount"></span></h3></div><div id="pontCityModerationPendingList" class="pont-city-list"></div></section>
-  <div class="pont-city-section-heading"><h3>Aprobate</h3></div>
+  <section id="pontCityModerationPendingSection" class="pont-as-priority-zone" aria-label="Solicitări de evenimente în așteptare">
+    <div class="pont-city-section-heading"><h3>Necesită aprobare <span id="pontCityModerationPendingCount">(0)</span></h3><button type="button" id="pontCityModerationGoRequests" class="pont-city-requests-quick-link">Toate solicitările AR</button></div>
+    <p id="pontCityModerationEmpty" class="pont-city-priority-empty" hidden>Nu există solicitări de evenimente în așteptare.</p>
+    <div id="pontCityModerationPendingList" class="pont-city-list"></div>
+  </section>
+  <div class="pont-city-section-heading"><h3>Evenimente aprobate <span id="pontCityApprovedActiveCount">(0)</span></h3></div>
   <div id="cityApprovedRows" class="pont-city-list"></div>
   <details class="pont-city-folded-history" id="cityEventHistoryFold">
     <summary>Istoric evenimente <span id="cityEventHistoryCount">(0)</span></summary>
@@ -4046,12 +4050,20 @@ function cityRow(e,pending=false,compact=false){
  const venue=document.createElement('p');venue.className='pont-city-meta';
  const restaurant=restaurants.find(x=>x.id===e.restaurant_id);
  venue.textContent=(restaurant?.name||e.venue||'Restaurant')+' · '+cityDate(e.event_date)+' · '+String(e.start_time||'').slice(0,5);article.append(venue);
- if(!compact){
- const location=document.createElement('p');location.textContent=(e.venue||'')+' · '+(e.locality||'')+' · '+(e.contact_phone||'');article.append(location);
- if(e.description){const p=document.createElement('p');p.textContent=e.description;article.append(p)}
+ if(!compact&&pending){
+  const details=document.createElement('details');details.className='pont-city-inline-details';
+  const summary=document.createElement('summary');summary.textContent='Detalii eveniment';
+  const content=document.createElement('div');
+  const location=document.createElement('p');location.textContent=(e.venue||'')+' · '+(e.locality||'')+' · '+(e.contact_phone||'');content.append(location);
+  if(e.description){const p=document.createElement('p');p.textContent=e.description;content.append(p)}
+  if(e.poster_url&&/^https:\/\//i.test(e.poster_url)){const link=document.createElement('a');link.href=e.poster_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Deschide afișul';content.append(link)}
+  details.append(summary,content);article.append(details);
+ }else if(!compact&&!pending){
+  const location=document.createElement('p');location.textContent=(e.venue||'')+' · '+(e.locality||'')+' · '+(e.contact_phone||'');article.append(location);
+  if(e.description){const p=document.createElement('p');p.textContent=e.description;article.append(p)}
  }
  pontCityPromotionDetails(e,article);
- if(!compact&&e.poster_url&&/^https:\/\//i.test(e.poster_url)){
+ if(!compact&&!pending&&e.poster_url&&/^https:\/\//i.test(e.poster_url)){
   const link=document.createElement('a');link.href=e.poster_url;link.target='_blank';link.rel='noopener noreferrer';link.textContent='Deschide afișul';article.append(link);
  }
  if(pending){
@@ -4064,7 +4076,9 @@ function cityRow(e,pending=false,compact=false){
    [!cityHistoryComplete?'Duplicate: verificare incompletă.':dup.length?'Posibil duplicat: '+dup.length+' eveniment(e) cu aceeași dată, oră și titlu.':'Duplicate: niciunul identificat la aceeași dată, oră și titlu.',!cityHistoryComplete||dup.length>0],
    [!e.poster_url?'Afiș neatașat — verifică anunțul.':'Afiș furnizat.',!e.poster_url]
   ]){const line=document.createElement('span');line.textContent=msg;if(warn)line.className='pont-city-alert';audit.append(line)}
-  article.append(audit);
+  const auditDetails=document.createElement('details');auditDetails.className='pont-city-inline-details pont-city-audit-details';
+  const auditSummary=document.createElement('summary');auditSummary.textContent='Verificări și audit';
+  auditDetails.append(auditSummary,audit);article.append(auditDetails);
   const actions=document.createElement('div');actions.className='pont-city-actions';
   for(const [label,next,css] of [['Aprobă','approved','primary'],['Respinge','rejected','pont-city-reject']]){
    const button=document.createElement('button');button.type='button';button.className=css;button.textContent=label;
@@ -4225,10 +4239,14 @@ async function pontLoadCityRequests(){
  const rows=data||[];pontGroupedEventRequests=rows;const pending=rows.filter(r=>r.status==='pending');
  const moderationPending=$('pontCityModerationPendingList');moderationPending.replaceChildren();
  const pendingNewEvents=cityEventsLoaded.filter(e=>e.status==='pending');
- for(const item of pendingNewEvents)moderationPending.append(cityRow(item,true));
- for(const item of pending)moderationPending.append(pontCityRequestCard(item));
- $('pontCityModerationPendingSection').hidden=!pending.length&&!pendingNewEvents.length;
- $('pontCityModerationPendingCount').textContent='('+(pending.length+pendingNewEvents.length)+')';
+ const urgent=[
+  ...pendingNewEvents.map(item=>({date:item.created_at,node:()=>cityRow(item,true)})),
+  ...pending.map(item=>({date:item.created_at,node:()=>pontCityRequestCard(item)}))
+ ].sort((a,b)=>String(b.date||'').localeCompare(String(a.date||'')));
+ for(const item of urgent)moderationPending.append(item.node());
+ $('pontCityModerationPendingSection').hidden=false;
+ $('pontCityModerationEmpty').hidden=urgent.length>0;
+ $('pontCityModerationPendingCount').textContent='('+urgent.length+')';
  $('cityRequestsPendingLabel').textContent='('+pending.length+')';
  // Contorul global include și solicitările de plată; se actualizează după încărcarea tuturor surselor.
  for(const item of [...pending,...rows.filter(r=>r.status!=='pending')])box.append(pontCityRequestCard(item));
@@ -4315,6 +4333,7 @@ async function loadCityEvents(){
   if(!events.length){const p=document.createElement('p');p.textContent='Nu există încă evenimente înregistrate.';recent.append(p)}
   const approvedActive=events.filter(e=>e.status==='approved'&&e.event_date>=today);
   const approved=$('cityApprovedRows');approved.replaceChildren();
+  $('pontCityApprovedActiveCount').textContent='('+approvedActive.length+')';
   for(const e of approvedActive)approved.append(cityRow(e,false,true));
   if(!approvedActive.length){const p=document.createElement('p');p.textContent='Nu există evenimente active sau viitoare.';approved.append(p)}
   const historyEvents=events.filter(e=>e.status==='rejected'||e.status==='removed'||(e.status==='approved'&&e.event_date<today));
@@ -4381,6 +4400,7 @@ for(const button of cityTabs)button.onclick=()=>selectCityPanel(button.dataset.c
 $('pontCityModuleToggle').onclick=()=>selectCityPanel('cityDashboard');
 $('cityRefresh').onclick=()=>void loadCityEvents();
 $('cityModerationRefresh').onclick=()=>void loadCityEvents();
+$('pontCityModerationGoRequests').onclick=()=>selectCityPanel('cityRequests');
 document.querySelectorAll('[data-city-goto]').forEach(button=>button.onclick=()=>selectCityPanel(button.dataset.cityGoto));
 window.addEventListener('hashchange',()=>{
  if($('app').hidden)return;
@@ -5529,4 +5549,29 @@ body.pont-admin--platform #pontCityUnifiedDialog::backdrop{background:#001015cf;
 #pontCityGroupedRequests .pont-city-grouped-has-unread>.pont-city-grouped-name{color:#ffe8a7;font-weight:850;letter-spacing:.015em;text-shadow:0 0 3px rgba(255,249,221,.98),0 0 9px rgba(255,212,95,.9),0 0 22px rgba(241,174,44,.72),0 0 36px rgba(248,180,50,.34)}
 #pontCityGroupedRequests .pont-city-grouped-name-count{color:#fff6d8;white-space:nowrap;text-shadow:0 0 7px #ffc75b,0 0 15px #e8a634}
 </style><link rel="stylesheet" href="../admin-neon.css?v=20261116-neon9">
-</body></html>
+<style id="pont-as-moderation-refinement-20261116">
+#cityModeration .pont-as-priority-zone{border:1px solid rgba(235,196,109,.45);border-radius:14px;padding:clamp(9px,2vw,15px);margin:11px 0 17px;background:linear-gradient(145deg,rgba(37,44,36,.45),rgba(7,39,44,.68))}
+#cityModeration .pont-as-priority-zone>.pont-city-section-heading{margin:0 0 9px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+#cityModeration .pont-as-priority-zone h3{font:750 clamp(13px,3vw,16px)/1.25 system-ui;color:#f3dfb5;margin:0}
+#cityModeration .pont-city-requests-quick-link{border:1px solid rgba(204,177,117,.55);border-radius:8px;background:rgba(18,42,45,.8);color:#e8d8b4;font:650 10px/1.2 system-ui;padding:7px 9px;min-height:30px}
+#cityModeration .pont-city-priority-empty{margin:8px 0;color:#b6c7c2;font-size:12px;text-align:center}
+#cityModeration .pont-as-priority-zone .pont-city-event{padding:10px 11px!important;margin:6px 0!important;border-radius:10px;display:grid;gap:5px;min-width:0}
+#cityModeration .pont-as-priority-zone .pont-city-event>strong{font:750 clamp(12px,2.8vw,14px)/1.35 system-ui;color:#f6e0ac;overflow-wrap:anywhere}
+#cityModeration .pont-as-priority-zone .pont-city-meta{font:500 11px/1.35 system-ui;margin:0;color:#c5d9d0}
+#cityModeration .pont-as-priority-zone .pont-city-actions{margin-top:5px;gap:6px;display:flex;flex-wrap:wrap}
+#cityModeration .pont-as-priority-zone .pont-city-actions button{min-height:34px;flex:1 1 90px;font:700 11px/1.2 system-ui;padding:7px 9px}
+#cityModeration .pont-city-inline-details{border:1px solid rgba(164,203,191,.23);border-radius:8px;background:rgba(5,29,33,.45);overflow:hidden}
+#cityModeration .pont-city-inline-details>summary{display:flex;align-items:center;gap:7px;cursor:pointer;list-style:none;padding:8px 10px;font:650 11px/1.3 system-ui;color:#cde1d9}
+#cityModeration .pont-city-inline-details>summary::-webkit-details-marker{display:none}
+#cityModeration .pont-city-inline-details>summary:after{content:'⌄';margin-left:auto;color:#e4c78c}
+#cityModeration .pont-city-inline-details[open]>summary:after{transform:rotate(180deg)}
+#cityModeration .pont-city-inline-details>div{padding:8px 10px;border-top:1px solid rgba(164,203,191,.2)}
+#cityModeration .pont-city-inline-details>div>p{margin:5px 0;font:500 11px/1.45 system-ui;overflow-wrap:anywhere}
+#cityModeration .pont-city-inline-details a{display:inline-block;margin-top:6px;font-size:11px;color:#f4dca9}
+#cityModeration .pont-city-audit-details .pont-city-audit{margin:0;display:grid;gap:4px}
+#cityModeration #cityApprovedRows .pont-city-event-compact{padding:9px 11px;gap:4px}
+#cityModeration #cityApprovedRows .pont-city-event-compact>strong{font-size:13px}
+#cityModeration #cityApprovedRows .pont-city-event-compact .pont-city-as-actions button{min-height:34px;font-size:10px;padding:6px 3px}
+#cityModeration .pont-city-folded-history:not([open]){background:rgba(8,34,39,.72)}
+@media(max-width:390px){#cityModeration .pont-as-priority-zone{padding:8px}#cityModeration .pont-as-priority-zone .pont-city-actions button{font-size:10px}}
+</style></body></html>
