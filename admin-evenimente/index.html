@@ -280,7 +280,7 @@ body.pont-admin--city #myEvents .pont-ar-approval-note span{display:block;font:5
  <p>Pentru a adăuga evenimente, restaurantul trebuie să aibă un abonament activ de 50 lei / 30 zile, confirmat de PONT.</p>
  <button type="button" id="requestCitySubscription" class="primary">Plătește abonamentul · 50 lei</button>
  <p id="citySubscriptionRequestStatus" class="status" role="status"></p>
- <small>Înainte de Stripe vei vedea confirmarea plății. PONT anunță AS când o deschizi, chiar dacă nu continui. Poți discuta și despre plata cash. AS decide manual când activează accesul.</small>
+ <small>Înainte de Stripe vei vedea confirmarea plății. PONT notifică AS numai după ce apeși „Finalizează plata”. Poți discuta și despre plata cash. AS decide manual când activează accesul.</small>
 </section>
 
 <section id="cityNotifications" class="panel pont-city-notifications" hidden aria-label="Notificări de la administrator">
@@ -578,7 +578,7 @@ async function cityPaymentDialogEvent(operation,details={}){
  return result;
 }
 async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventId=null,requestedStartDate=null,position=null){
- // AS sees interest when this dialog is opened, even if checkout is never started.
+ // The open event is kept for technical audit; AS only displays dialogs continued via Finalize Payment.
  const track=await cityPaymentDialogEvent('open',{serviceType,paymentId,eventId});
  return await new Promise(resolve=>{
   const dialog=$('cityStripeConfirmDialog'),form=$('cityStripeConfirmForm');
