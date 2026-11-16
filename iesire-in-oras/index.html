@@ -198,11 +198,15 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
  </section>
  <section class="event-publisher" aria-labelledby="publishEventTitle">
   <h2 id="publishEventTitle">Organizezi un eveniment?</h2>
-  <p>Restaurantele și localurile partenere pot trimite anunțuri spre aprobare, cu dată, loc și detalii de contact.</p>
-  <div id="eventGuest">Ai deja cont de restaurant PONT? <a class="event-account-link" href="../login/">Autentifică-te</a> pentru a publica un anunț.</div>
-  <details id="eventSubmitWrap" hidden>
+  <p>Propune evenimentul tău. Datele vor ajunge la PONT pentru verificare, iar mesajul complet se pregătește pe WhatsApp.</p>
+  <div id="eventGuest">Ai cont de restaurant PONT? <a class="event-account-link" href="../login/">Autentifică-te</a> pentru publicare din panoul AR.</div>
+  <details id="eventSubmitWrap">
    <summary>Propune un eveniment</summary>
    <form id="eventSubmitForm" class="event-submit-form">
+    <label class="pont-guest-organizer">Prenume organizator<input name="organizer_first_name" required minlength="2" maxlength="80" autocomplete="given-name"></label>
+    <label class="pont-guest-organizer">Nume organizator<input name="organizer_last_name" required minlength="2" maxlength="80" autocomplete="family-name"></label>
+    <label class="pont-guest-organizer">Telefon organizator<input name="organizer_phone" required maxlength="32" type="tel" autocomplete="tel" inputmode="tel"></label>
+    <label class="pont-guest-organizer">Email organizator<input name="organizer_email" required maxlength="180" type="email" autocomplete="email"></label>
     <label class="full">Titlul evenimentului<input name="title" required minlength="5" maxlength="100" placeholder="Ex.: Seară cu muzică live"></label>
     <label>Data evenimentului<input type="date" name="event_date" required></label>
     <label>Ora de începere<input type="time" name="start_time" required></label>
@@ -211,7 +215,8 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
     <label>Telefon pentru rezervări<input name="contact_phone" required maxlength="32" inputmode="tel" autocomplete="tel"></label>
     <label>Link afiș (opțional)<input type="url" name="poster_url" maxlength="700" placeholder="https://..."></label>
     <label class="full">Descrierea evenimentului<textarea name="description" maxlength="1200" placeholder="Program, artiști, informații despre rezervare…"></textarea></label>
-    <button type="submit" class="full">Trimite spre aprobare</button>
+    <label class="full pont-guest-organizer" style="font-size:12px"><input type="checkbox" name="consent" required style="width:auto;min-width:16px"> Sunt de acord ca datele introduse să fie transmise către PONT prin WhatsApp și stocate pentru analizarea solicitării. <a href="../confidentialitate.html">Politica de confidențialitate</a>.</label>
+    <button type="submit" class="full" id="eventSubmitButton">Trimite spre aprobare pe WhatsApp</button>
     <span id="eventFormStatus" class="event-form-status full" role="status"></span>
    </form>
   </details>
@@ -227,6 +232,8 @@ const todayLocal=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest
 const escDate=value=>{const [y,m,d]=(value||'').split('-').map(Number);return y&&m&&d?new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(y,m-1,d,12))):''};
 const fallbackPhoto="./ambient.webp";
 let db=null,restaurantId=null,canPost=false,allEvents=[],activePromotions=[];
+const pontWhatsappOwner='40725693799';
+function pontExternalFields(){for(const el of document.querySelectorAll('.pont-guest-organizer')){el.hidden=canPost;for(const input of el.querySelectorAll('input'))input.required=!canPost} $('eventSubmitButton').textContent=canPost?'Trimite spre aprobare':'Trimite spre aprobare pe WhatsApp'}
 const config=window.PONT_CONFIG||{};
 // Preview content is kept in the page only; never inserted in Supabase.
 const eventDialog=$('eventDetails');
@@ -303,22 +310,33 @@ async function setupPublisher(){
  const {data:membership,error:memberError}=await db.from('restaurant_members').select('restaurant_id').eq('user_id',user.id).eq('access_revoked',false).limit(1).maybeSingle();
  if(!memberError&&membership?.restaurant_id){
   const {data:allowed,error:accessError}=await db.from('restaurants').select('enabled,access_iesire_in_oras').eq('id',membership.restaurant_id).maybeSingle();
-  if(!accessError&&allowed?.enabled&&allowed?.access_iesire_in_oras){restaurantId=membership.restaurant_id;canPost=true;$('eventGuest').hidden=true;$('eventSubmitWrap').hidden=false}
+  if(!accessError&&allowed?.enabled&&allowed?.access_iesire_in_oras){restaurantId=membership.restaurant_id;canPost=true;$('eventGuest').hidden=true;$('eventSubmitWrap').hidden=false;pontExternalFields()}
  }
  const {data:isAdmin}=await db.rpc('is_super_admin');if(isAdmin)$('eventModerationLink').hidden=false;
 }
 $('eventSubmitForm').onsubmit=async e=>{
  e.preventDefault();
- if(!db||!canPost||!restaurantId)return;
+ if(!db)return;
  const form=e.currentTarget,button=form.querySelector('[type=submit]'),status=$('eventFormStatus');
  const v=Object.fromEntries(new FormData(form).entries());
+ if(!canPost&&(!v.organizer_first_name?.trim()||!v.organizer_last_name?.trim()||!v.organizer_phone?.trim()||!v.organizer_email?.trim()||v.consent!=='on')){status.textContent='Completează datele organizatorului și acordul privind datele.';return}
  if(v.event_date<todayLocal()){status.textContent='Selectează o dată de astăzi sau din viitor.';return}
  if(v.poster_url&&!/^https:\/\//i.test(v.poster_url)){status.textContent='Linkul afișului trebuie să înceapă cu https://';return}
  button.disabled=true;status.textContent='Se trimite anunțul…';
  try{
-  const {error}=await db.from('pont_city_events').insert({restaurant_id:restaurantId,title:v.title.trim(),description:v.description.trim(),event_date:v.event_date,start_time:v.start_time,locality:v.locality.trim(),venue:v.venue.trim(),contact_phone:v.contact_phone.trim(),poster_url:v.poster_url.trim()||null});
-  if(error)throw error;
-  form.reset();status.textContent='Anunțul a fost trimis spre aprobare. Nu va apărea public până la confirmarea PONT.';
+  if(canPost&&restaurantId){
+   const {error}=await db.from('pont_city_events').insert({restaurant_id:restaurantId,title:v.title.trim(),description:v.description.trim(),event_date:v.event_date,start_time:v.start_time,locality:v.locality.trim(),venue:v.venue.trim(),contact_phone:v.contact_phone.trim(),poster_url:v.poster_url.trim()||null});
+   if(error)throw error;
+   form.reset();status.textContent='Anunțul a fost trimis spre aprobare. Nu va apărea public până la confirmarea PONT.';
+  }else{
+   const payload={organizer_first_name:v.organizer_first_name.trim(),organizer_last_name:v.organizer_last_name.trim(),organizer_phone:v.organizer_phone.trim(),organizer_email:v.organizer_email.trim(),title:v.title.trim(),description:v.description.trim(),event_date:v.event_date,start_time:v.start_time,locality:v.locality.trim(),venue:v.venue.trim(),contact_phone:v.contact_phone.trim(),poster_url:v.poster_url.trim()||null};
+   const {error}=await db.from('pont_city_external_event_requests').insert(payload);
+   if(error)throw error;
+   const message=['PONT · SOLICITARE EXTERNĂ EVENIMENT','', 'ORGANIZATOR','Prenume: '+payload.organizer_first_name,'Nume: '+payload.organizer_last_name,'Telefon: '+payload.organizer_phone,'Email: '+payload.organizer_email,'','EVENIMENT','Titlu: '+payload.title,'Data: '+payload.event_date,'Ora: '+payload.start_time,'Localitate: '+payload.locality,'Locație: '+payload.venue,'Telefon rezervări: '+payload.contact_phone,'Afiș: '+(payload.poster_url||'Nu este atașat'),'Descriere: '+(payload.description||'Nu este completată'),'','Solicitarea este înregistrată în PONT și așteaptă verificarea AS.'].join('\n');
+   form.reset();
+   status.textContent='Solicitarea a fost înregistrată în PONT. Deschidem WhatsApp — apasă Trimite pentru a expedia mesajul.';
+   window.location.href='https://api.whatsapp.com/send?phone='+pontWhatsappOwner+'&text='+encodeURIComponent(message);
+  }
  }catch(error){status.textContent='Anunțul nu a fost salvat: '+error.message}
  finally{button.disabled=false}
 };
@@ -327,6 +345,7 @@ async function start(){
  const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
  db=createClient(config.url,config.anonKey);
  $('eventSubmitForm').elements.event_date.min=todayLocal();
+ pontExternalFields();
  refreshEvents();
  await Promise.allSettled([loadEvents(),setupPublisher()]);
 }
