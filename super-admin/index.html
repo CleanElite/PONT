@@ -1836,17 +1836,11 @@ function pontCommerceDetailsHtml(r){
  const referenceSubscription=activeSubscription||pendingSubscription;
  const cashRows=pontCityCashRows.filter(x=>x.restaurant_id===r.id&&['pending','contacted'].includes(x.status));
  const promotions=allItems.filter(x=>x.service_type!=='subscription'&&['pending','confirmed'].includes(x.status));
- const subscriptionState=activeSubscription?(activeSubscription.manual_confirmation_mode==='paid'?'Plătit · activ':'Doar acces · activ'):
-   pendingSubscription?(pendingSubscription.stripe_paid_at?'Stripe achitat · așteaptă confirmarea':'Solicitare în curs'):'Fără acces';
  const cityAccessMode=activeSubscription?(activeSubscription.manual_confirmation_mode==='paid'?'paid':'authorization'):'none';
  output+='<div class="pont-commerce-line pont-commerce-events"><header><strong>Ieșire în oraș</strong></header>'+
  '<div class="pont-inline-access-status"><span>Abonament<strong>50 lei / 30 zile</strong>'+(activeSubscription?'<small>Expiră '+esc(pontPaymentDate(activeSubscription.expires_at))+'</small>':'')+'</span><span>Acces<strong data-payment-state="'+cityAccessMode+'">'+esc(cityAccessMode==='paid'?'Plătit':cityAccessMode==='authorization'?'Doar acces':'Fără acces')+'</strong></span>'+
  pontStripeStatusTile(referenceSubscription?pontVerifiedStripeCityAmount(referenceSubscription):0,referenceSubscription?.status==='pending'&&Boolean(referenceSubscription?.stripe_paid_at))+'</div>'+
  pontInlineAccessOptions(r.id,'city',cityAccessMode);
- output+='<div class="pont-city-finance-subsection"><h4>Detalii abonament</h4>'+
-  '<div class="pont-city-service-row"><div class="pont-city-service-summary"><strong>'+esc(subscriptionState)+'</strong>'+
-  (activeSubscription?'<small>Expiră '+esc(pontPaymentDate(activeSubscription.expires_at))+'</small>':'')+'</div>'+
-  '</div></div>';
  output+='<div class="pont-city-finance-subsection"><h4>Promovare anunț solicitată'+(cashRows.length+promotions.filter(x=>x.status==='pending').length?' · '+(cashRows.length+promotions.filter(x=>x.status==='pending').length):'')+'</h4>';
  for(const req of cashRows){
   const event=pontCityApprovedEvents.find(x=>x.id===req.event_id);
