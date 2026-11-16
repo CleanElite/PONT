@@ -660,7 +660,7 @@ function pontUpdatePromotionSummary(){
  const days=valid?Math.round((Date.parse(end+'T12:00:00Z')-Date.parse(start+'T12:00:00Z'))/86400000)+1:0;
  $('pontPromotionSummaryService').textContent=cityPromotionType==='pinned_event'?'Promovare · '+(pontChosenSlot===null?'alege locul':'Locul '+pontChosenSlot):'Promovare · Bandă';
  const roShort=date=>new Intl.DateTimeFormat('ro-RO',{day:'2-digit',month:'2-digit'}).format(new Date(date+'T12:00:00Z'));
- $('pontPromotionSummaryDuration').textContent=valid?roShort(start)+' – '+roShort(end)+' · '+days+' zile':'—';
+ $('pontPromotionSummaryDuration').textContent=valid?'~ '+days+' zile':'—';
  $('pontPromotionSummaryTotal').textContent=Number(cityPromotionPrice||0).toLocaleString('ro-RO')+' lei';
 }
 function pontSetPromotionSelectedSlot(){
