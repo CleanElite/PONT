@@ -297,18 +297,17 @@ let cityPromotionEvent=null,cityPromotionType=null,cityPromotionPrice=0;
 let pontChosenSlot=1,pontSlotQuote=null;
 async function pontRefreshPromotionSlots(){
  const isPin=cityPromotionType==='pinned_event',date=$('pontPromotionStartDate').value,wrap=$('pontPromotionSlotWrap');
- wrap.hidden=!isPin;
- if(!isPin)return;
+ wrap.hidden=false;
  const list=$('pontPromotionSlotOptions'),info=$('pontPromotionAvailability');list.replaceChildren();
  info.textContent='Se verifică locurile pentru '+date+'…';pontSlotQuote=null;
- const checks=await Promise.all([1,2,3].map(async n=>{
+ const checks=await Promise.all((isPin?[1,2,3]:[0]).map(async n=>{
   const {data,error}=await db.rpc('pont_city_slot_quote_v2',{p_position:n,p_desired:date,p_event_date:cityPromotionEvent.event_date});
   return {n,quote:data?.[0],error};
  }));
  for(const {n,quote,error} of checks){
   const label=document.createElement('label');label.className='pont-slot-option';
   const radio=document.createElement('input');radio.type='radio';radio.name='pontSlotChoice';radio.value=String(n);radio.checked=n===pontChosenSlot;
-  const title=document.createElement('strong');title.textContent='Locul '+n;
+  const title=document.createElement('strong');title.textContent=n===0?'Bandă publicitară':'Locul '+n;
   const caption=document.createElement('small');
   caption.textContent=error?'Nu poate fi verificat':quote?.available?'Disponibil':'Indisponibil până la '+(quote?.first_available||'—');
   label.classList.toggle('is-unavailable',!quote?.available);
@@ -320,17 +319,17 @@ async function pontRefreshPromotionSlots(){
  const consent=$('pontPromotionQueueConsentWrap'),check=$('pontPromotionQueueConsent');
  check.checked=false;
  if(selected?.error){info.textContent='Nu se poate verifica disponibilitatea. Nu iniția plata.';consent.hidden=true;return}
- if(pontSlotQuote?.available){info.textContent='Locul '+pontChosenSlot+' este disponibil din '+date+'.';consent.hidden=true}
+ if(pontSlotQuote?.available){info.textContent=(isPin?'Locul '+pontChosenSlot:'Banda publicitară')+' este disponibil(ă) din '+date+'.';consent.hidden=true}
  else{
   const next=pontSlotQuote?.first_available;
-  info.textContent='Locul '+pontChosenSlot+' este ocupat până la '+(next||'o dată necunoscută')+'.';
-  $('pontPromotionQueueConsentText').textContent='Sunt de acord să plătesc acum și să rezerv locul '+pontChosenSlot+' începând cu '+(next||'data disponibilă')+'.';
+  info.textContent=(isPin?'Locul '+pontChosenSlot:'Banda publicitară')+' este ocupat(ă) până la '+(next||'o dată necunoscută')+'.';
+  $('pontPromotionQueueConsentText').textContent='Sunt de acord să plătesc acum și să rezerv '+(isPin?'locul '+pontChosenSlot:'banda publicitară')+' începând cu '+(next||'data disponibilă')+'.';
   consent.hidden=!next||next>cityPromotionEvent.event_date;
   if(next&&next>cityPromotionEvent.event_date)info.textContent+=' Evenimentul se termină înainte de eliberarea poziției; alege alt loc.';
  }
 }
 function openCityPromotion(event,type,price){
- cityPromotionEvent=event;cityPromotionType=type;cityPromotionPrice=price;pontChosenSlot=1;
+ cityPromotionEvent=event;cityPromotionType=type;cityPromotionPrice=price;pontChosenSlot=type==='pinned_event'?1:0;
  $('pontPromotionTitle').textContent=type==='pinned_event'?'Promovare pe poziție fixă':'Promovare pe bandă';
  $('pontPromotionDescription').textContent=event.title+' · '+price+' lei. Alege o dată și verifică disponibilitatea.';
  const date=$('pontPromotionStartDate');date.min=today();date.max=event.event_date;date.value=today();
@@ -347,9 +346,9 @@ $('pontPromotionForm').onsubmit=async e=>{
  const date=$('pontPromotionStartDate').value;
  if(!date||date<today()||date>cityPromotionEvent.event_date){$('pontPromotionStatus').textContent='Selectează o dată validă înainte de eveniment.';return}
  const isPinned=cityPromotionType==='pinned_event';
- if(isPinned&&!pontSlotQuote){$('pontPromotionStatus').textContent='Verifică disponibilitatea poziției înainte de plată.';return}
- const actualStart=isPinned&&!pontSlotQuote.available?pontSlotQuote.first_available:date;
- if(isPinned&&!pontSlotQuote.available&&!$('pontPromotionQueueConsent').checked){
+ if(!pontSlotQuote){$('pontPromotionStatus').textContent='Verifică disponibilitatea poziției înainte de plată.';return}
+ const actualStart=!pontSlotQuote.available?pontSlotQuote.first_available:date;
+ if(!pontSlotQuote.available&&!$('pontPromotionQueueConsent').checked){
   $('pontPromotionStatus').textContent='Bifează acordul pentru rezervarea viitoare sau alege un loc disponibil.';return;
  }
  if(actualStart>cityPromotionEvent.event_date){$('pontPromotionStatus').textContent='Locul se eliberează după data evenimentului. Alege o altă poziție.';return}
@@ -363,7 +362,7 @@ $('pontPromotionForm').onsubmit=async e=>{
   const duplicate=(payments||[]).find(x=>(x.stripe_paid_at||x.status==='confirmed')&&
    (isPinned?x.promotion_position===pontChosenSlot&&x.requested_start_date===actualStart:x.requested_start_date===actualStart));
   if(duplicate){$('pontPromotionStatus').textContent='Acest serviciu a fost deja achitat sau confirmat de AS. Nu se poate plăti de două ori.';return}
-  const type=cityPromotionType,ev=cityPromotionEvent,price=cityPromotionPrice,position=isPinned?pontChosenSlot:null;
+  const type=cityPromotionType,ev=cityPromotionEvent,price=cityPromotionPrice,position=pontChosenSlot;
   $('pontPromotionDialog').close();
   const continued=await cityStartStripeCheckout(type,null,price,ev.id,actualStart,position);
   if(!continued)$('status').textContent='Nu ai continuat plata. Dacă preferi cash, contactează PONT.';
@@ -476,30 +475,18 @@ async function loadCitySubscription(){
   const title=document.createElement('strong');
   title.textContent=(item.service_type==='pinned_event'?'Poziție fixă':'Bandă publicitară')+' · '+Number(item.amount).toFixed(2)+' lei';
   const status=document.createElement('small');
-  status.textContent=item.stripe_paid_at?'Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei încasați · Trimite cererea de promovare, apoi așteaptă validarea AS':item.status==='confirmed'?'Acces autorizat manual (cash/test) · Stripe: 0 lei · Trimite cererea de promovare':'Stripe: 0 lei încasați · Poți continua plata online sau poți discuta cu AS pentru cash';
+  status.textContent=item.stripe_paid_at?'Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei încasați · Așteaptă confirmarea AS':item.status==='confirmed'?'Activat manual de AS · Stripe: 0 lei':'Stripe: 0 lei încasați · Poți plăti online sau discuta cu AS pentru cash';
   card.append(title,status);
   const isPaid=Boolean(item.stripe_paid_at)||item.status==='confirmed';
   const linkedEvent=cityEventRows.find(e=>e.id===(item.promoted_event_id||item.event_id));
   const alreadyRequested=cityRequestRows.some(req=>req.event_id===linkedEvent?.id&&req.request_type===item.service_type
    &&['pending','approved'].includes(req.status)&&req.proposed_changes?.requested_start_date===item.requested_start_date);
-  if(isPaid&&linkedEvent&&!item.requested_start_date){
-   card.append(arButton('Alege data și solicită promovarea',()=>openCityPromotion(linkedEvent,item.service_type,item.amount)));
-  }
-  if(isPaid&&linkedEvent&&item.requested_start_date&&!alreadyRequested){
-   const send=arButton('Trimite cererea de promovare',async()=>{
-    send.disabled=true;
-    try{
-     await requestEventAction(linkedEvent,item.service_type,'Solicitare promovare de la '+item.requested_start_date+'.',{requested_start_date:item.requested_start_date});
-     $('status').textContent='Cererea a fost trimisă spre aprobarea AS.';
-    }catch(err){status.textContent='Eroare: '+err.message;send.disabled=false}
-   });card.append(send);
-  }
-  if(alreadyRequested){const info=document.createElement('small');info.textContent='Cererea de promovare este deja în analiză sau aprobată.';card.append(info)}
-  if(!isPaid){
-   const btn=arButton('Plătește în Stripe',async()=>{
-    btn.disabled=true;
-    try{await cityStartStripeCheckout(item.service_type,item.id,item.amount)}catch(error){status.textContent='Eroare: '+error.message}finally{btn.disabled=false}
-   });card.append(btn);
+  if(isPaid){
+   const info=document.createElement('small');
+   info.textContent=item.status==='confirmed'?'Promovarea este confirmată de AS. Va apărea automat în perioada rezervată.':'Plata a fost confirmată de Stripe. AS verifică și activează rezervarea.';
+   card.append(info);
+  }else if(linkedEvent){
+   card.append(arButton('Verifică locurile și continuă plata',()=>openCityPromotion(linkedEvent,item.service_type,item.amount)));
   }
   list.append(card);
  }
