@@ -352,11 +352,120 @@ body.pont-admin-neon.pont-admin-login #form button.pont-password-toggle {
 .pont-admin-login .pont-login-surface #status:empty { display: none; }
 
 /* Restaurant header and menu editor. */
-body.pont-admin.pont-admin--restaurant.pont-admin-neon:has(#pontAuctionBellMount) .admin-topbar {
+body.pont-admin.pont-admin--restaurant.pont-admin-neon .admin-topbar.pont-restaurant-topbar {
+  --pont-topbar-control-height: 44px;
+  --pont-topbar-icon-width: 40px;
+  --pont-topbar-gap: clamp(4px, 1.2vw, 9px);
   display: flex !important;
+  flex-wrap: nowrap;
   justify-content: flex-start !important;
-  gap: 9px !important;
+  align-items: center;
+  gap: var(--pont-topbar-gap) !important;
   margin-bottom: 13px !important;
+}
+
+body.pont-admin.pont-admin--restaurant.pont-admin-neon .pont-restaurant-topbar .admin-back.pont-nav-action {
+  width: var(--pont-topbar-icon-width) !important;
+  min-width: var(--pont-topbar-icon-width) !important;
+  max-width: var(--pont-topbar-icon-width) !important;
+  height: var(--pont-topbar-control-height) !important;
+  min-height: var(--pont-topbar-control-height) !important;
+  padding: 0 !important;
+  border-radius: 999px !important;
+}
+
+.pont-restaurant-topbar .admin-back .pont-nav-action__label { display: none !important; }
+.pont-restaurant-topbar-brand { flex: none; }
+
+.pont-restaurant-topbar-actions,
+.pont-restaurant-topbar .pont-auction-notify {
+  display: flex;
+  align-items: center;
+  gap: var(--pont-topbar-gap);
+  min-width: 0;
+}
+
+.pont-restaurant-topbar-actions { margin-inline-start: auto; }
+.pont-restaurant-topbar #pontAuctionBellMount { min-width: 0; }
+.pont-restaurant-topbar [hidden] { display: none !important; }
+
+body.pont-admin.pont-admin--restaurant.pont-admin-neon .pont-restaurant-topbar #logout {
+  position: static;
+  flex: none;
+  width: auto !important;
+  min-width: 0 !important;
+  height: var(--pont-topbar-control-height) !important;
+  padding: 0 clamp(6px, 1.9vw, 12px) !important;
+  gap: clamp(3px, 1.1vw, 7px) !important;
+  border-radius: 999px !important;
+  border-color: var(--neon-warm-edge) !important;
+  font: 740 clamp(10px, 2.7vw, 13px)/1.2 system-ui, sans-serif !important;
+}
+
+.pont-restaurant-topbar #logout .admin-icon { width: clamp(14px, 3.8vw, 19px); height: auto; }
+
+body.pont-admin.pont-admin-neon .pont-restaurant-topbar #pontAuctionBellMount .pont-auction-notice {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 2px;
+  min-width: 0;
+  min-height: var(--pont-topbar-control-height);
+  max-width: 235px;
+  padding: 4px clamp(4px, 1.3vw, 9px);
+  border: 1px solid var(--neon-warm-edge) !important;
+  border-radius: 999px;
+  background: var(--neon-active) !important;
+  color: var(--neon-warm-ink) !important;
+  box-shadow: var(--neon-warm-shadow) !important;
+  font: 760 clamp(11px, 2.85vw, 14px)/1.13 system-ui, sans-serif;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.pont-restaurant-topbar .pont-pay-action { text-wrap: balance; }
+.pont-restaurant-topbar .pont-pay-month {
+  color: #d9cbb5;
+  font: 550 clamp(9px, 2.55vw, 11px)/1.05 system-ui, sans-serif;
+}
+
+body.pont-admin.pont-admin-neon .pont-restaurant-topbar #pontAuctionBellMount .pont-auction-bell {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--pont-topbar-icon-width);
+  height: var(--pont-topbar-control-height);
+  padding: 0;
+  border: 1px solid var(--neon-warm-edge) !important;
+  border-radius: 50%;
+  color: #e3c68b !important;
+  box-shadow: var(--neon-warm-shadow) !important;
+}
+
+.pont-restaurant-topbar .pont-auction-bell svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.pont-restaurant-topbar .pont-auction-bell.is-due::after {
+  content: "";
+  position: absolute;
+  inset: 6px 6px auto auto;
+  width: 7px;
+  height: 7px;
+  border: 1px solid #493b2b;
+  border-radius: 50%;
+  background: #dfba77;
+}
+
+@media (max-width: 560px) {
+  .pont-restaurant-topbar:has(.pont-restaurant-topbar-actions:not([hidden]) .pont-auction-notice:not([hidden])) > .pont-restaurant-topbar-brand { display: none; }
 }
 
 body.pont-admin.pont-admin--restaurant.pont-admin-neon #app .pont-restaurant-premium-heading {
@@ -432,47 +541,6 @@ body.pont-admin.pont-admin--restaurant.pont-admin-neon #app .pont-restaurant-car
   display: inline-block !important;
   visibility: visible !important;
   font-size: clamp(11px, 2.85vw, 17px) !important;
-}
-
-body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #pontAuctionBellMount {
-  grid-area: auto !important;
-  grid-row: 1 !important;
-  justify-self: end;
-  margin: 0 !important;
-}
-
-body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #pontAuctionBellMount:not(:has(.pont-auction-notice:not([hidden]))) {
-  position: absolute !important;
-  top: var(--neon-gutter) !important;
-  right: calc(var(--neon-gutter) + clamp(113px, 28vw, 148px)) !important;
-}
-
-body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #pontAuctionBellMount :is(.pont-auction-notice, .pont-auction-notify)[hidden] {
-  display: none !important;
-}
-
-body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #pontAuctionBellMount .pont-auction-bell {
-  width: 41px !important;
-  height: 41px !important;
-  min-height: 41px !important;
-  background: var(--neon-glass) !important;
-  color: var(--neon-gold) !important;
-  border-color: var(--neon-warm-edge) !important;
-  box-shadow: var(--neon-warm-shadow) !important;
-}
-
-body.pont-admin-neon #app #pontAuctionBellMount :is(.pont-auction-bell svg, .pont-auction-bell path) {
-  fill: none !important;
-  stroke: var(--neon-gold) !important;
-}
-
-body.pont-admin-neon #app #pontAuctionBellMount .pont-bell-core { display: none !important; }
-
-body.pont-admin.pont-admin-neon #app .pont-auction-notice:not([hidden]) {
-  background: var(--neon-active) !important;
-  color: var(--neon-ink) !important;
-  border-color: var(--neon-warm-edge) !important;
-  box-shadow: var(--neon-warm-shadow) !important;
 }
 
 body.pont-admin.pont-admin--restaurant.pont-admin-neon #app .admin-nav.pont-restaurant-grouped-nav {
@@ -937,14 +1005,6 @@ body.pont-admin-neon--promotion dialog .primary-bid {
   border-color: var(--neon-warm-edge) !important;
   color: var(--neon-warm-ink) !important;
   box-shadow: var(--neon-warm-shadow) !important;
-}
-
-@media (min-width: 620px) {
-  body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #pontAuctionBellMount {
-    position: absolute !important;
-    top: var(--neon-gutter) !important;
-    right: calc(var(--neon-gutter) + clamp(113px, 28vw, 148px)) !important;
-  }
 }
 
 @media (min-width: 390px) {

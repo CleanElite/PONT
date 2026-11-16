@@ -32,13 +32,6 @@
   }
 }
 
-.pont-admin #app .pont-restaurant-premium-heading .pont-bell-header-slot{
- display:flex;flex:0 0 auto;align-items:center;justify-content:flex-end;
- margin-left:auto;min-width:50px;
-}
-.pont-admin #app .pont-restaurant-premium-heading .pont-bell-header-slot .pont-auction-notify{
- display:flex;position:relative;margin:0!important;flex-direction:column;align-items:center;gap:4px;
-}
 /* Restaurant-only compact premium header: name immediately after heading, bell aligned right. */
 .pont-admin #app .pont-restaurant-premium-heading{
  display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
@@ -97,10 +90,6 @@
 .pont-admin #app .pont-admin-heading-name{
  font:750 clamp(21px,3vw,29px)/1.17 Georgia,'Times New Roman',serif!important;
 }
-.pont-admin #app .pont-restaurant-premium-heading .pont-bell-header-slot{
- width:auto;min-width:0!important;max-width:100%;
- flex:none!important;margin:0!important;justify-self:end;
-}
 @media(max-width:650px){
  .pont-admin #app .pont-restaurant-premium-heading{
   column-gap:9px!important;
@@ -122,10 +111,6 @@
 .pont-admin #app .pont-restaurant-premium-heading .admin-hero-copy{
  grid-column:1!important;grid-row:1!important;
  min-width:0!important;align-self:center!important;
-}
-.pont-admin #app .pont-restaurant-premium-heading .pont-bell-header-slot{
- grid-column:2!important;grid-row:1!important;
- align-self:center!important;justify-self:end!important;
 }
 .pont-admin #app .pont-restaurant-premium-heading #adminRestaurantContext{
  grid-column:1 / -1!important;grid-row:2!important;
@@ -204,30 +189,26 @@
  -webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;
  line-clamp:2;
 }
-.pont-admin #app .pont-restaurant-premium-heading #pontAuctionBellMount{
- grid-column:2!important;grid-row:1!important;
- display:flex!important;align-items:center!important;justify-content:flex-end!important;
- justify-self:end!important;align-self:center!important;
- width:max-content!important;max-width:none!important;min-width:0!important;
- margin:0!important;padding:0!important;
-}
 @media(max-width:365px){
  .pont-admin #app .pont-restaurant-premium-heading{column-gap:4px!important}
  .pont-admin #app .pont-restaurant-premium-heading .admin-hero-copy.pont-restaurant-title-card{padding:4px!important}
 }
 </style><body class="pont-admin pont-admin--restaurant pont-admin-neon">
 <main>
-<header class="admin-topbar">
+<header class="admin-topbar pont-restaurant-topbar">
   <a class="admin-back pont-nav-action" href="../" aria-label="Acasă"><span class="pont-nav-action__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></span><span class="pont-nav-action__label">Acasă</span></a>
-  <a href="../" aria-label="PONT – pagina de început" title="Acasă"><img class="admin-brand" src="../meniul-zilei/showcase/pont-wordmark.webp" alt="PONT" width="576" height="240"></a>
+  <a class="pont-restaurant-topbar-brand" href="../" aria-label="PONT – pagina de început" title="Acasă"><img class="admin-brand" src="../meniul-zilei/showcase/pont-wordmark.webp" alt="PONT" width="576" height="240"></a>
+  <div class="pont-restaurant-topbar-actions" id="pontRestaurantTopbarActions" hidden>
+    <div id="pontAuctionBellMount" role="group" aria-label="Notificări licitații"></div>
+    <button type="button" id="logout" class="admin-logout" aria-label="Deconectare"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#sign-out"></use></svg><span class="admin-control-text">Deconectare</span></button>
+  </div>
 </header>
-<section id="setup" class="card" hidden><h1>Configurare necesară</h1><p>Panoul este instalat. Pentru autentificare reală, conectează-l la Supabase și atribuie restaurantul contului.</p></section><section id="login" class="card" hidden><h1>Cont restaurant</h1><p>Fiecare partener își gestionează exclusiv propriile meniuri.</p><form id="auth" autocomplete="on"><label for="email">Email sau nume de utilizator</label><input id="email" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required><label for="password">Parolă</label><input id="password" name="password" type="password" autocomplete="current-password" required><p><button class="primary">Conectare</button></p></form><p id="error" class="error"></p></section><section id="app" hidden><button type="button" id="logout" class="admin-logout" aria-label="Deconectare"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#sign-out"></use></svg><span class="admin-control-text">Deconectare</span></button>
+<section id="setup" class="card" hidden><h1>Configurare necesară</h1><p>Panoul este instalat. Pentru autentificare reală, conectează-l la Supabase și atribuie restaurantul contului.</p></section><section id="login" class="card" hidden><h1>Cont restaurant</h1><p>Fiecare partener își gestionează exclusiv propriile meniuri.</p><form id="auth" autocomplete="on"><label for="email">Email sau nume de utilizator</label><input id="email" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required><label for="password">Parolă</label><input id="password" name="password" type="password" autocomplete="current-password" required><p><button class="primary">Conectare</button></p></form><p id="error" class="error"></p></section><section id="app" hidden>
 <div class="admin-hero pont-restaurant-premium-heading">
   <div class="admin-hero-copy pont-restaurant-title-card">
     <div id="adminRestaurantContext" class="pont-admin-heading-name">Restaurant</div>
     <div class="pont-live-datetime pont-restaurant-card-clock" role="group" aria-label="Data și ora României"><span class="pont-live-datetime__date" data-pont-clock-date>--.--.----</span><time class="pont-live-datetime__time" data-pont-clock-time>--:--</time></div>
   </div>
-  <div id="pontAuctionBellMount" class="pont-bell-header-slot" aria-label="Notificări licitații"></div>
 </div>
  <nav class="admin-nav pont-restaurant-grouped-nav" aria-label="Secțiunile panoului">
   <div class="pont-restaurant-nav-group pont-restaurant-nav-menus" role="group" aria-label="Gestionare meniuri">
@@ -356,7 +337,7 @@
 const $=id=>document.getElementById(id),c=window.PONT_CONFIG||{};if(!c.url||!c.anonKey){$('setup').hidden=false}else start().catch(e=>{$('setup').hidden=false;$('setup').querySelector('p').textContent=e.message});
 async function start(){
 $('menuSuccessOK').onclick=()=>$('menuSuccessDialog').close();
-const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');const db=createClient(c.url,c.anonKey);const {initPontAuctionPaymentBell}=await import('../auction-payment-bell.js?v=slow-iphone-ready-20261113b');const pontAuctionBell=initPontAuctionPaymentBell({db,config:c});const {createPontAdminSession}=await import('../admin-session.js?v=1');const adminSession=createPontAdminSession(db);let user=null,restaurants=[],menus=[];const esc=s=>String(s??'').replace(/[&<>"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));const req=async q=>{let {data,error}=await q;if(error)throw error;return data||[]};const status=(s,bad=false)=>{$('status').textContent=s;$('status').className=bad?'error':''};
+const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');const db=createClient(c.url,c.anonKey);const {initPontAuctionPaymentBell}=await import('../auction-payment-bell.js?v=topbar-20261116');const pontAuctionBell=initPontAuctionPaymentBell({db,config:c});const {createPontAdminSession}=await import('../admin-session.js?v=1');const adminSession=createPontAdminSession(db);let user=null,restaurants=[],menus=[];const esc=s=>String(s??'').replace(/[&<>"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));const req=async q=>{let {data,error}=await q;if(error)throw error;return data||[]};const status=(s,bad=false)=>{$('status').textContent=s;$('status').className=bad?'error':''};
 const restaurantTabs = [...document.querySelectorAll('.admin-nav button[data-view]')];
 function showView(view, updateHash = true) {
  const tab = restaurantTabs.find(button => button.dataset.view === view) || restaurantTabs[0];
@@ -493,7 +474,12 @@ function collapseRestaurantMenuPlanners(){
  if(publish)publish.setAttribute('aria-expanded','false');
  if(weekly)weekly.open=false;
 }
-async function enter(){const {data}=await db.auth.getUser();user=data.user;$('login').hidden=!!user;$('app').hidden=!user;pontAuctionBell.setVisible(!!user);if(user){collapseRestaurantMenuPlanners();try{await load();
+function setRestaurantPanelVisible(visible){
+ $('app').hidden=!visible;
+ $('pontRestaurantTopbarActions').hidden=!visible;
+ pontAuctionBell.setVisible(visible);
+}
+async function enter(){const {data}=await db.auth.getUser();user=data.user;$('login').hidden=!!user;setRestaurantPanelVisible(!!user);if(user){collapseRestaurantMenuPlanners();try{await load();
 if(stopRestaurantPresence)stopRestaurantPresence();
 const {startRestaurantPresence}=await import('../admin-presence.js?v=20261111-secure');
 stopRestaurantPresence=startRestaurantPresence(db,()=>user,()=>restaurants);if(!$('savedView').hidden) await window.pontMenuModels?.refresh();await window.pontDishUI?.refresh();await window.pontOperations?.refresh()}catch(e){status(e.message,true)}}}
@@ -580,7 +566,7 @@ $('pontTodayMenu').addEventListener('click', async event => {
 });
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 showHashView();
-if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
+if(await adminSession.resume())await enter();else{$('login').hidden=false;setRestaurantPanelVisible(false);}
 const {initPontOperations}=await import('../order-operations.js?v=fix-hours-null-x6-20261113');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
 window.pontOperations=pontOperations;
@@ -653,19 +639,6 @@ body.pont-admin.pont-admin--restaurant #app .pont-restaurant-title-card .pont-ad
 body.pont-admin.pont-admin--restaurant #app .pont-restaurant-title-card #adminRestaurantContext{
  color:#f0d19a!important;font:750 clamp(12px,7.5cqw,19px)/1.1 Georgia,serif!important;
  text-shadow:0 1px 8px rgba(249,207,123,.12)!important;
-}
-body.pont-admin.pont-admin--restaurant #app #pontAuctionBellMount .pont-auction-notice{
- border-color:rgba(228,182,99,.75)!important;
- background:linear-gradient(135deg,#143f42,#052b31)!important;
- color:#f9f6e9!important;
- box-shadow:inset 0 1px #ffffff24,0 2px 12px #0003!important;
-}
-body.pont-admin.pont-admin--restaurant #app #pontAuctionBellMount .pont-auction-notice .pont-pay-month{
- color:#dedbd1!important;
-}
-body.pont-admin.pont-admin--restaurant #app #pontAuctionBellMount .pont-auction-bell{
- border:1px solid #f7d889!important;
- border-radius:14px!important;box-shadow:0 0 0 1px #9c752b,0 0 15px #edbb5b80!important;
 }
 /* Five coherent navigation tiles, not the former 3 grouped columns. */
 body.pont-admin.pont-admin--restaurant #app .admin-nav.pont-restaurant-grouped-nav{
@@ -1189,5 +1162,5 @@ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exh
 body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exhausted-inline[data-exhausted="true"]::before{
  background:#ff3045!important;box-shadow:0 0 8px rgba(255,48,69,.55),inset 0 0 2px #fff5!important;
 }
-</style><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script><script src="../../pont-date-display.js?v=dmy-20261116" defer></script><link rel="stylesheet" href="../../admin-neon.css?v=20261116-neon4">
+</style><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script><script src="../../pont-date-display.js?v=dmy-20261116" defer></script><link rel="stylesheet" href="../../admin-neon.css?v=20261116-neon5">
 </body></html>
