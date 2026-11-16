@@ -173,6 +173,9 @@ body.pont-admin--city #cityStripeConfirmDialog form .primary{background:linear-g
 #pontPromotionSlotOptions .is-unavailable small{color:#f3ba9c}
 #pontPromotionQueueConsentWrap{display:flex;gap:9px;align-items:start;padding:12px;margin:9px 0;background:#243b35;border:1px solid #ccaf78;border-radius:11px;font:600 12px/1.5 system-ui}
 #pontPromotionQueueConsentWrap input{width:19px;min-width:19px;height:19px;accent-color:#d9c18b}
+</style><style id="pont-city-service-consent-20261116">
+#cityStripeConfirmDialog .pont-stripe-consent{grid-column:1/-1;display:flex;gap:9px;align-items:flex-start;font:550 11px/1.5 system-ui;color:#d5e2d7;text-align:left;padding:8px 0}
+#cityStripeConfirmDialog .pont-stripe-consent input{width:18px;height:18px;min-width:18px;accent-color:#e2c78c;margin:0}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -228,9 +231,11 @@ body.pont-admin--city #cityStripeConfirmDialog form .primary{background:linear-g
   <span>Serviciu</span><strong id="cityStripeConfirmService"></strong>
   <span>Total de plată</span><strong id="cityStripeConfirmAmount"></strong>
  </div>
- <p class="pont-stripe-confirm-info">După confirmare vei fi direcționat către formularul securizat Stripe. Plata nu acordă automat accesul: serviciul este activat numai după validarea Administratorului Suprem.</p>
+ <p class="pont-stripe-confirm-info">După confirmare vei fi direcționat către formularul securizat Stripe. Plata nu acordă automat accesul: serviciul este activat numai după validarea Administratorului Suprem. Abonamentul începe la confirmarea AS și durează 30 de zile.</p>
+ <p class="pont-stripe-confirm-info">Dacă renunți voluntar la o promovare, poți solicita reprogramarea sau un credit pentru o promovare viitoare de valoare echivalentă. Rambursările obligatorii potrivit legii și cele pentru plăți duplicate nu sunt excluse.</p>
  <p id="cityStripeConfirmStatus" class="status" role="status"></p>
  <form method="dialog" id="cityStripeConfirmForm">
+  <label class="pont-stripe-consent"><input type="checkbox" id="cityStripeTermsConsent" required><span>Am înțeles prețul, perioada, activarea manuală și politica de reprogramare/credit.</span></label>
   <button type="button" id="cityStripeConfirmCancel">Renunță</button>
   <button type="submit" id="cityStripeConfirmProceed" class="primary">Finalizează plata</button>
  </form>
@@ -401,6 +406,7 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
   $('cityStripeConfirmService').textContent=label;
   $('cityStripeConfirmAmount').textContent=Number(amount).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei';
   $('cityStripeConfirmStatus').textContent='';
+  $('cityStripeTermsConsent').checked=false;
   let finished=false;
   const finish=async approved=>{
    if(finished)return;finished=true;
