@@ -1816,15 +1816,16 @@ function pontOpenCityServiceApproval(item){
  select.value=String(item.promotion_position||1);
  date.min=todayRO();
  date.value=item.requested_start_date&&item.requested_start_date>=todayRO()?item.requested_start_date:todayRO();
- const requiresPosition=item.service_type==='pinned_event'&&!item.promotion_position;
+ const requiresPosition=['pinned_event','exclusive_banner'].includes(item.service_type)&&!pontCitySlotRows.some(x=>x.payment_id===item.id&&x.status==='reserved');
  $('pontCityApprovalSlotFields').hidden=!requiresPosition;
+ $('pontCityApprovalPosition').closest('label').hidden=item.service_type==='exclusive_banner';
  $('pontCityApprovalAvailability').textContent=requiresPosition?'Alege poziția și data rezervării.':'';
  $('pontCityApprovalDialog').showModal();
  if(requiresPosition)void pontVerifyCityManualPosition();
 }
 async function pontVerifyCityManualPosition(){
- const item=pontCityApprovalPayment;if(!item||item.service_type!=='pinned_event'||item.promotion_position)return;
- const pos=Number($('pontCityApprovalPosition').value),day=$('pontCityApprovalStart').value;
+ const item=pontCityApprovalPayment;if(!item||!['pinned_event','exclusive_banner'].includes(item.service_type)||pontCitySlotRows.some(x=>x.payment_id===item.id&&x.status==='reserved'))return;
+ const pos=item.service_type==='exclusive_banner'?0:Number($('pontCityApprovalPosition').value),day=$('pontCityApprovalStart').value;
  const event=pontCityApprovedEvents.find(e=>e.id===(item.promoted_event_id||item.event_id));
  const msg=$('pontCityApprovalAvailability');
  if(!event){msg.textContent='Evenimentul aprobat nu a fost găsit. Actualizează datele.';return}
@@ -1833,7 +1834,7 @@ async function pontVerifyCityManualPosition(){
  const {data,error}=await db.rpc('pont_city_slot_quote_v2',{p_position:pos,p_desired:day,p_event_date:event.event_date});
  if(error){msg.textContent='Nu se poate verifica: '+error.message;return}
  const quote=data?.[0];
- msg.textContent=quote?.available?'Disponibil: locul '+pos+' de la '+day:
+ msg.textContent=quote?.available?'Disponibil: '+(pos===0?'banda publicitară':'locul '+pos)+' de la '+day:
  'Indisponibil până la '+(quote?.first_available||'—')+'. Selectează acea dată sau un loc liber.';
 }
 $('pontCityApprovalPosition').onchange=()=>void pontVerifyCityManualPosition();
@@ -1845,8 +1846,8 @@ $('pontCityApprovalSave').onclick=async()=>{
  const mode=document.querySelector('input[name="pontCityApprovalMode"]:checked')?.value;
  const alert=$('pontCityApprovalError'),button=$('pontCityApprovalSave');
  if(!item||!mode){alert.textContent='Alege Plătit sau Doar acces.';return}
- const needsSlot=item.service_type==='pinned_event'&&!item.promotion_position;
- const pos=needsSlot?Number($('pontCityApprovalPosition').value):null;
+ const needsSlot=['pinned_event','exclusive_banner'].includes(item.service_type)&&!pontCitySlotRows.some(x=>x.payment_id===item.id&&x.status==='reserved');
+ const pos=needsSlot?(item.service_type==='exclusive_banner'?0:Number($('pontCityApprovalPosition').value)):null;
  const date=needsSlot?$('pontCityApprovalStart').value:null;
  if(needsSlot&&!date){alert.textContent='Alege data de început.';return}
  button.disabled=true;alert.textContent='Se validează serviciul…';
@@ -2851,7 +2852,7 @@ async function addManualAuthorization(){
  }catch(e){pontPaymentBusy=false;$('pontAuthSubmit').disabled=false;$('pontAuthStatus').textContent=e.message}
 }
 
-let pontPaymentFilter='all',pontPaymentBusy=false,pontCityPaymentRows=[],pontMenuPaymentRows=[],pontPaymentHistory=[],pontCityApprovedEvents=[],pontManualApprovals=[];
+let pontPaymentFilter='all',pontPaymentBusy=false,pontCityPaymentRows=[],pontCitySlotRows=[],pontMenuPaymentRows=[],pontPaymentHistory=[],pontCityApprovedEvents=[],pontManualApprovals=[];
 const pontPaymentServiceNames={subscription:'Abonament evenimente',pinned_event:'Eveniment fix',exclusive_banner:'Bandă exclusivă',auction:'Licitație poziție'};
 const pontPaymentDate=v=>v?new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(v)):'—';
 function pontPayElement(tag,text,cls){
@@ -2873,15 +2874,16 @@ async function loadCommercialPayments(){
  if(pontPaymentBusy)return;
  const st=$('pontPaymentsStatus');st.textContent='Se verifică plățile și istoricul…';
  try{
-  const [city,menu,audit,approved,manual]=await Promise.all([
+  const [city,menu,audit,approved,manual,slots]=await Promise.all([
    db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,event_id,promoted_event_id,promotion_position,amount,status,manual_confirmation_mode,created_at,confirmed_at,confirmed_by,expires_at,revoked_at,revoked_by,revoke_reason,stripe_paid_at,stripe_paid_amount,stripe_currency,stripe_payment_intent_id,requested_start_date').order('created_at',{ascending:false}).limit(500),
    db.from('auction_offers').select('id,restaurant_id,campaign_month,amount,payment_status,payment_method,payment_reference,paid_at,round').order('campaign_month',{ascending:false}).limit(500),
    db.from('pont_payment_audit').select('id,restaurant_id,module,service_type,reference_id,action,previous_state,new_state,amount,reason,actor_id,occurred_at').order('occurred_at',{ascending:false}).limit(300),
    db.from('pont_city_events').select('id,restaurant_id,title,event_date,status').eq('status','approved').order('event_date',{ascending:true}).limit(500),
-   db.from('pont_manual_payment_approvals').select('restaurant_id,campaign_month,approval_type').limit(500)
+   db.from('pont_manual_payment_approvals').select('restaurant_id,campaign_month,approval_type').limit(500),
+   db.from('pont_city_promotion_slots').select('payment_id,position,start_date,end_date,status').limit(500)
   ]);
-  for(const x of [city,menu,audit,approved,manual])if(x.error)throw x.error;
-  pontCityPaymentRows=city.data||[];pontMenuPaymentRows=menu.data||[];pontPaymentHistory=audit.data||[];pontCityApprovedEvents=approved.data||[];pontManualApprovals=manual.data||[];
+  for(const x of [city,menu,audit,approved,manual,slots])if(x.error)throw x.error;
+  pontCityPaymentRows=city.data||[];pontCitySlotRows=slots.data||[];pontMenuPaymentRows=menu.data||[];pontPaymentHistory=audit.data||[];pontCityApprovedEvents=approved.data||[];pontManualApprovals=manual.data||[];
   renderCommercialPayments();
   st.textContent='Actualizat la '+new Intl.DateTimeFormat('ro-RO',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Bucharest'}).format(new Date())+'.';
  }catch(e){st.textContent='Eroare la încărcarea plăților: '+e.message;}
@@ -4429,4 +4431,6 @@ body.pont-admin--platform #pontCityApprovalDialog::backdrop{background:#001015cb
 #pontCityApprovalSlotFields :is(select,input){width:100%;height:42px;min-width:0;border:1px solid #648d84;border-radius:8px;background:#0a2a31;color:white;padding:8px;font:16px system-ui}
 #pontCityApprovalDialog .pont-as-approval-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 #pontCityApprovalDialog .pont-as-approval-actions button{min-height:43px;border-radius:10px}
+</style><style id="pont-as-banner-date-fields-20261116">
+#pontCityApprovalSlotFields label[hidden]{display:none!important}
 </style></body></html>
