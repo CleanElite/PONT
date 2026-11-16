@@ -526,14 +526,41 @@ body.pont-admin-neon #pontDailyPickerList .pont-daily-picker-number {
 }
 
 body.pont-admin-neon #pontDailySummaryList .pont-editor-dish-number { font-size: 11px; }
-body.pont-admin-neon #pontDailyBuilder .pont-daily-picker-row {
-  grid-template-columns: auto minmax(0, 1fr) auto auto !important;
+body.pont-admin.pont-admin-neon #pontDailyPicker #pontDailyPickerList .pont-daily-picker-row:has(> .pont-daily-picker-number) {
+  display: grid !important;
+  grid-template: "number dish price select" auto / 23px minmax(0, 1fr) max-content 23px !important;
+  align-items: center;
+  column-gap: clamp(4px, 1.3vw, 10px);
 }
 
-body.pont-admin-neon #pontDailyPicker .pont-daily-picker-row input[type="checkbox"]:checked {
-  border-color: #a9f954 !important;
-  background: linear-gradient(#5bd920, #289a08) !important;
-  box-shadow: 0 0 7px #72f12b92, inset 0 0 3px #deff9c !important;
+body.pont-admin-neon #pontDailyPickerList .pont-daily-picker-number { grid-area: number; }
+body.pont-admin-neon #pontDailyPickerList .pont-daily-picker-row:has(> .pont-daily-picker-number) > .pont-daily-picker-name {
+  grid-area: dish;
+  min-width: 0;
+  justify-self: stretch;
+  text-align: start;
+}
+
+body.pont-admin-neon #pontDailyPickerList .pont-daily-picker-row:has(> .pont-daily-picker-number) > :is(small, .pont-daily-picker-price) {
+  grid-area: price;
+  margin: 0;
+  justify-self: end;
+  white-space: nowrap;
+}
+
+body.pont-admin-neon #pontDailyPickerList .pont-daily-picker-row:has(> .pont-daily-picker-number) .pont-daily-picker-price input {
+  width: 51px !important;
+  min-width: 0 !important;
+}
+
+body.pont-admin-neon #pontDailyPickerList .pont-daily-picker-row:has(> .pont-daily-picker-number) > input[type="checkbox"] {
+  grid-area: select;
+  justify-self: end;
+  accent-color: #50c71c !important;
+}
+
+body.pont-admin-neon #pontDailyPickerList .pont-daily-picker-row:has(> .pont-daily-picker-number) > input[type="checkbox"]:checked {
+  box-shadow: 0 0 7px #72f12b92 !important;
 }
 
 body.pont-admin.pont-admin-neon #app #pontDailyBuilder .pont-dish-actions {
