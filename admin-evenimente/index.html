@@ -737,11 +737,11 @@ async function start(){
  const {data:profile,error:profileError}=await db.from('profiles').select('role').eq('user_id',user.id).single();if(profileError)throw profileError;
  const {data:membership,error:memberError}=await db.from('restaurant_members').select('restaurant_id').eq('user_id',user.id).eq('access_revoked',false).limit(1).maybeSingle();if(memberError)throw memberError;
  if(!membership?.restaurant_id){if(profile.role==='super_admin'){$('status').textContent='SuperAdmin: deschide un restaurant din secțiunea Restaurante.';return}throw Error('Contul nu are un restaurant atribuit.')}
- const {data:row,error:restaurantError}=await db.from('restaurants').select('id,name,enabled,access_meniul_zilei,city_module_visible,access_iesire_in_oras').eq('id',membership.restaurant_id).single();if(restaurantError)throw restaurantError;
+ const {data:row,error:restaurantError}=await db.from('restaurants').select('id,name,enabled,menu_module_visible,access_meniul_zilei,city_module_visible,access_iesire_in_oras').eq('id',membership.restaurant_id).single();if(restaurantError)throw restaurantError;
  if(!row.enabled)throw Error('Restaurantul este suspendat.');
- if(profile.role!=='super_admin'&&!row.city_module_visible){location.replace(row.access_meniul_zilei?'../admin-v2/':'../login/');return;}
+ if(profile.role!=='super_admin'&&!row.city_module_visible){location.replace(row.menu_module_visible?'../admin-v2/':'../login/');return;}
  restaurant=row;$('restaurantName').textContent=row.name+' · Administrarea evenimentelor';
- $('menuLink').hidden=!row.access_meniul_zilei;
+ $('menuLink').hidden=!row.menu_module_visible;
  $('eventForm').elements.event_date.min=today();
  $('workspace').hidden=false;
  await loadCitySubscription();
