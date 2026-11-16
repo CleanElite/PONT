@@ -403,6 +403,14 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-fields{min-width:0}
 #restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
 #restaurantRows .restaurant-admin-item>#restaurantForm[hidden],#restaurantRows .restaurant-admin-item>#restaurantAccess[hidden]{display:none!important}
+</style><style id="pont-restaurant-card-visibility-20261116">
+#restaurantRows .restaurant-admin-heading{position:relative}
+#restaurantRows .pont-restaurant-visibility{position:absolute;top:0;right:0;z-index:2;display:flex;align-items:center;justify-content:flex-end;gap:6px;height:28px;white-space:nowrap}
+#restaurantRows .pont-restaurant-visibility label{display:inline-flex;align-items:center;gap:3px;cursor:pointer;font:750 10px/1 system-ui;color:#f5e4be;white-space:nowrap}
+#restaurantRows .pont-restaurant-visibility input{appearance:auto!important;-webkit-appearance:checkbox!important;display:inline-block!important;width:14px!important;height:14px!important;min-width:14px!important;min-height:14px!important;margin:0!important;padding:0!important;accent-color:#70e6d9;cursor:pointer;box-shadow:none!important}
+#restaurantRows .pont-restaurant-visibility input:disabled{opacity:.5;cursor:wait}
+#restaurantRows .restaurant-admin-heading>.restaurant-list-name{padding-right:88px!important;padding-left:35px!important}
+@media(max-width:390px){#restaurantRows .pont-restaurant-visibility{gap:4px}#restaurantRows .pont-restaurant-visibility label{font-size:9px}#restaurantRows .pont-restaurant-visibility input{width:13px!important;height:13px!important;min-width:13px!important;min-height:13px!important}#restaurantRows .restaurant-admin-heading>.restaurant-list-name{padding-right:80px!important}}
 </style><style id="pont-restaurant-module-filters-20261116">
 #adminRestaurants .pont-restaurant-module-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(5px,1.5vw,12px);width:100%}
 #adminRestaurants .pont-restaurant-module-filters button{min-width:0;min-height:47px;padding:11px 5px;border:1px solid #638d83;border-radius:11px;background:#0e343b;color:#d1e9e0;font:750 clamp(11px,2.6vw,14px)/1.25 system-ui;white-space:normal;cursor:pointer}
@@ -1769,7 +1777,7 @@ function pontCommerceDetailsHtml(r){
  const month=pontCommerceMonthValue(),offer=pontCommerceMonthOffer(r.id,month),mode=pontCommerceCurrentMode(r.id,month);
  const rank=pontCommerceRank(r.id,month),labels={paid:'Plătit',authorization:'Acces',none:'Neconfirmat'};
  const menuEnabled=r.access_meniul_zilei;
- let output='<div class="pont-commerce-line pont-commerce-menu"><header><strong>Meniul zilei</strong><button type="button" data-menu-visibility="'+esc(r.id)+'" aria-pressed="'+Boolean(r.menu_module_visible)+'">'+(r.menu_module_visible?'Ascunde meniul din panoul AR':'Afișează meniul în panoul AR')+'</button><span class="dashboard-badge" data-payment-state="'+mode+'">'+esc(labels[mode])+'</span></header>'+
+ let output='<div class="pont-commerce-line pont-commerce-menu"><header><strong>Meniul zilei</strong><span class="dashboard-badge" data-payment-state="'+mode+'">'+esc(labels[mode])+'</span></header>'+
  '<div class="pont-commerce-facts">'+
  (offer?'<span>'+esc(auctionMoney(offer.amount))+' licitați</span><span>Stripe: '+esc(auctionMoney(pontVerifiedStripeMenuAmount(offer)))+' încasați</span>':'')+
  (rank?'<span>Locul '+rank+'</span>':'')+
@@ -1787,7 +1795,7 @@ function pontCommerceDetailsHtml(r){
  const promotions=allItems.filter(x=>x.service_type!=='subscription'&&['pending','confirmed'].includes(x.status));
  const subscriptionState=activeSubscription?(activeSubscription.manual_confirmation_mode==='paid'?'Plătit · activ':'Doar acces · activ'):
    pendingSubscription?(pendingSubscription.stripe_paid_at?'Stripe achitat · așteaptă confirmarea':'Solicitare în curs'):'Fără acces';
- output+='<div class="pont-commerce-line pont-commerce-events"><header><strong>Ieșire în oraș</strong><button type="button" data-city-visibility="'+esc(r.id)+'" aria-pressed="'+Boolean(r.city_module_visible)+'">'+(r.city_module_visible?'Ascunde meniul din panoul AR':'Afișează meniul în panoul AR')+'</button></header>';
+ output+='<div class="pont-commerce-line pont-commerce-events"><header><strong>Ieșire în oraș</strong></header>';
  output+='<div class="pont-city-finance-subsection"><h4>Abonament · 50 lei / 30 zile</h4>'+
   '<div class="pont-city-service-row"><div class="pont-city-service-summary"><strong>'+esc(subscriptionState)+'</strong>'+
   '<small>Stripe: '+esc(auctionMoney(referenceSubscription?pontVerifiedStripeCityAmount(referenceSubscription):0))+
@@ -2165,7 +2173,11 @@ function renderRestaurants(){
   const state=!r.enabled?'suspended':!hasAccount?'no-access':revoked?'revoked':'active';
   const accountRows=accounts.map(m=>'<div class="pont-account-entry"><div class="pont-identity"><strong>Administrator '+esc(m.short_code||'—')+'</strong><small>'+(m.access_revoked?'Blocat':'Acces permis')+'</small></div><button type="button" class="'+(m.access_revoked?'pont-account-restore':'pont-account-revoke')+'" data-account-toggle="'+esc(m.user_id)+'" data-account-restaurant="'+id+'">'+(m.access_revoked?'Deblochează contul':'Blochează contul')+'</button></div>').join('');
   return '<article data-restaurant-card="'+id+'" class="restaurant-admin-item restaurant-status-'+state+'">'+
-  '<div class="restaurant-admin-heading"><span class="restaurant-list-number">'+String(index+1).padStart(2,'0')+'</span>'+
+  '<div class="restaurant-admin-heading"><span class="restaurant-list-number">'+String(index+1).padStart(2,'0')+'</span>'+ 
+  '<div class="pont-restaurant-visibility" role="group" aria-label="Secțiuni vizibile pentru '+esc(r.name)+'">'+
+  '<label title="Afișează Meniul zilei în panoul AR"><span>MZ</span><input type="checkbox" data-module-visibility="menu" data-restaurant-id="'+id+'" aria-label="Meniul zilei pentru '+esc(r.name)+'" '+(r.menu_module_visible?'checked':'')+'></label>'+
+  '<label title="Afișează Ieșire în oraș în panoul AR"><span>II</span><input type="checkbox" data-module-visibility="city" data-restaurant-id="'+id+'" aria-label="Ieșire în oraș pentru '+esc(r.name)+'" '+(r.city_module_visible?'checked':'')+'></label>'+
+  '</div>'+
   '<strong class="restaurant-list-name"><span class="pont-live-dot '+(restaurantOnlineIds.has(String(r.id))?'is-online':'is-offline')+'" aria-hidden="true"></span>'+esc(r.name)+'</strong>'+
   '<div class="restaurant-list-meta"><span>Cod '+esc(r.short_code||'—')+'</span><span>'+esc(r.phone||'Telefon neconfigurat')+'</span></div>'+pontRestaurantPaymentOverview(r)+
   '<div class="dashboard-badges"><span class="dashboard-badge" data-state="'+(r.enabled?'enabled':'disabled')+'">'+(r.enabled?'Activ':'Suspendat')+'</span>'+
@@ -2183,6 +2195,25 @@ function renderRestaurants(){
  }).join(''):emptyMessage(pontRestaurantModuleFilter==='all'?'Nu există restaurante înregistrate.':'Nu există restaurante cu această secțiune afișată în panoul AR.');
  if(editorCurrentlyOpen)pontPlaceRestaurantEditor($('editingRestaurant').value);
 }
+$('restaurantRows').addEventListener('change',async event=>{
+ const input=event.target.closest('input[data-module-visibility]');
+ if(!input||input.disabled)return;
+ const restaurant=restaurants.find(item=>item.id===input.dataset.restaurantId);
+ if(!restaurant)return;
+ const city=input.dataset.moduleVisibility==='city',field=city?'city_module_visible':'menu_module_visible';
+ const desired=input.checked;
+ input.disabled=true;
+ try{
+  await req(db.from('restaurants').update({[field]:desired}).eq('id',restaurant.id));
+  restaurant[field]=desired;
+  renderRestaurants();
+  status((city?'Ieșire în oraș':'Meniul zilei')+(desired?' este vizibil în panoul AR.':' a fost ascuns din panoul AR.')+' Dreptul de publicare rămâne separat.');
+ }catch(error){
+  input.checked=!desired;
+  input.disabled=false;
+  status('Nu s-a actualizat vizibilitatea: '+error.message,true);
+ }
+});
 $('restaurantRows').addEventListener('toggle',event=>{
  const d=event.target.closest?.('details[data-account-panel]');
  if(!d)return;
@@ -3962,8 +3993,6 @@ $('restaurantRows').onclick = async event => {
  const button = event.target.closest('button');
  if (!button) return;
  const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant,accountToggle,accountRestaurant,commerceAccess,commerceCityNew,commerceCityPayment,commerceCityAction,commerceCityCredit,commerceCityCreditCancel,commerceCashId} = button.dataset;
- if(button.dataset.menuVisibility){const rid=button.dataset.menuVisibility;const row=restaurants.find(r=>r.id===rid);if(!row)return;button.disabled=true;try{await req(db.from('restaurants').update({menu_module_visible:!row.menu_module_visible}).eq('id',rid));await load();status(row.menu_module_visible?'Meniul zilei a fost ascuns din panoul AR.':'Meniul zilei este vizibil în panoul AR; dreptul de publicare se confirmă separat.')}catch(error){status(error.message,true);button.disabled=false}return;}
- if(button.dataset.cityVisibility){const rid=button.dataset.cityVisibility;const row=restaurants.find(r=>r.id===rid);if(!row)return;button.disabled=true;try{await req(db.from('restaurants').update({city_module_visible:!row.city_module_visible}).eq('id',rid));await load();status(row.city_module_visible?'Meniul Ieșire în oraș a fost ascuns din panoul AR.':'Meniul Ieșire în oraș este vizibil în panoul AR; publicarea necesită confirmarea accesului.')}catch(error){status(error.message,true);button.disabled=false}return;}
  if(button.dataset.cityUnifiedSub){pontCityUnifiedOpen('subscription',button.dataset.cityUnifiedSub);return;}
  if(button.dataset.cityUnifiedCash){const cash=pontCityCashRows.find(x=>x.id===button.dataset.cityUnifiedCash);if(cash)pontCityUnifiedOpen('cash',cash);return;}
  if(button.dataset.cityUnifiedPayment){const payment=pontCityPaymentRows.find(x=>x.id===button.dataset.cityUnifiedPayment);if(payment)pontOpenCityServiceApproval(payment);return;}
