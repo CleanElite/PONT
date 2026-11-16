@@ -252,6 +252,10 @@ body.pont-admin--city .pont-ar-other-request-row{font-size:10px;line-height:1.5;
 /* Thin one-line AR moderation notice */
 body.pont-admin--city #myEvents .pont-ar-approval-note{display:block;margin:0 0 10px;padding:7px 10px;border:1px solid #bda57775;border-radius:7px;background:#123238;box-shadow:none}
 body.pont-admin--city #myEvents .pont-ar-approval-note span{display:block;font:500 10px/1.35 system-ui;color:#e7d9b7;white-space:normal}
+/* Additional cash choice in the final payment confirmation dialog */
+#cityStripeConfirmCash{border:1px solid #d3bb817f;border-radius:9px;background:#173a3c;color:#f1ddb4;padding:9px 12px;font:700 11px/1.3 system-ui;cursor:pointer}
+#cityStripeConfirmCash:disabled{opacity:.5;cursor:wait}
+@media(max-width:520px){#cityStripeConfirmCash{min-height:38px;width:100%}}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -313,6 +317,7 @@ body.pont-admin--city #myEvents .pont-ar-approval-note span{display:block;font:5
  <p id="cityStripeConfirmStatus" class="status" role="status"></p>
  <form method="dialog" id="cityStripeConfirmForm">
   <label class="pont-stripe-consent"><input type="checkbox" id="cityStripeTermsConsent" required><span>Am înțeles prețul, perioada, activarea manuală și politica de reprogramare/credit.</span></label>
+  <button type="button" id="cityStripeConfirmCash" class="pont-city-confirm-cash">Doresc plata cash</button>
   <button type="button" id="cityStripeConfirmCancel">Renunță</button>
   <button type="submit" id="cityStripeConfirmProceed" class="primary">Finalizează plata</button>
  </form>
@@ -590,31 +595,45 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
   $('cityStripeConfirmStatus').textContent='';
   $('cityStripeTermsConsent').checked=false;
   let finished=false;
-  const finish=async approved=>{
+  const finish=async choice=>{
    if(finished)return;finished=true;
-   form.onsubmit=null;dialog.oncancel=null;$('cityStripeConfirmCancel').onclick=null;
-   $('cityStripeConfirmProceed').disabled=true;
+   form.onsubmit=null;dialog.oncancel=null;$('cityStripeConfirmCancel').onclick=null;$('cityStripeConfirmCash').onclick=null;
+   $('cityStripeConfirmProceed').disabled=true;$('cityStripeConfirmCash').disabled=true;
    try{
-    await cityPaymentDialogEvent(approved?'continue':'cancel',{dialogId:track.dialogId});
+    if(choice==='cash'){
+     const {error}=await db.from('pont_city_dialog_cash_intents').insert({
+      dialog_id:track.dialogId,restaurant_id:restaurant.id,service_type:serviceType,event_id:eventId||null,amount:Number(amount),created_by:user.id
+     });
+     if(error)throw error;
+    }
+    await cityPaymentDialogEvent(choice==='stripe'?'continue':'cancel',{dialogId:track.dialogId});
     if(dialog.open)dialog.close();
-    resolve(approved);
+    resolve(choice);
    }catch(err){
     $('cityStripeConfirmStatus').textContent='Nu s-a putut înregistra alegerea: '+err.message;
-    finished=false;$('cityStripeConfirmProceed').disabled=false;
-    form.onsubmit=e=>{e.preventDefault();void finish(true)};
-    $('cityStripeConfirmCancel').onclick=()=>void finish(false);
+    finished=false;$('cityStripeConfirmProceed').disabled=false;$('cityStripeConfirmCash').disabled=false;
+    form.onsubmit=e=>{e.preventDefault();void finish('stripe')};
+    $('cityStripeConfirmCancel').onclick=()=>void finish('cancel');
+    $('cityStripeConfirmCash').onclick=()=>void finish('cash');
    }
   };
-  form.onsubmit=e=>{e.preventDefault();void finish(true)};
-  $('cityStripeConfirmCancel').onclick=()=>void finish(false);
-  dialog.oncancel=e=>{e.preventDefault();void finish(false)};
-  $('cityStripeConfirmProceed').disabled=false;
+  form.onsubmit=e=>{e.preventDefault();void finish('stripe')};
+  $('cityStripeConfirmCancel').onclick=()=>void finish('cancel');
+  $('cityStripeConfirmCash').onclick=()=>void finish('cash');
+  dialog.oncancel=e=>{e.preventDefault();void finish('cancel')};
+  $('cityStripeConfirmProceed').disabled=false;$('cityStripeConfirmCash').disabled=false;
   dialog.showModal();
  });
 }
 async function cityStartStripeCheckout(serviceType,paymentId=null,amount=50,eventId=null,requestedStartDate=null,position=null,requestedEndDate=null){
- const approved=await cityConfirmStripePayment(serviceType,amount,paymentId,eventId,requestedStartDate,position);
- if(!approved)return false;
+ const choice=await cityConfirmStripePayment(serviceType,amount,paymentId,eventId,requestedStartDate,position);
+ if(choice==='cash'){
+  const confirmation='Mulțumim. Ai ales plata cash. PONT a primit solicitarea și te va contacta.';
+  $('status').textContent=confirmation;
+  if(serviceType==='subscription')$('citySubscriptionRequestStatus').textContent=confirmation;
+  return 'cash';
+ }
+ if(choice!=='stripe')return false;
  const {data:{session}}=await db.auth.getSession();
  if(!session?.access_token)throw Error('Sesiunea a expirat. Autentifică-te din nou.');
  const response=await fetch(cfg.url+'/functions/v1/pont-stripe-auctions?action=create-city',{
