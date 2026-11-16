@@ -739,7 +739,7 @@ async function start(){
  if(!membership?.restaurant_id){if(profile.role==='super_admin'){$('status').textContent='SuperAdmin: deschide un restaurant din secțiunea Restaurante.';return}throw Error('Contul nu are un restaurant atribuit.')}
  const {data:row,error:restaurantError}=await db.from('restaurants').select('id,name,enabled,menu_module_visible,access_meniul_zilei,city_module_visible,access_iesire_in_oras').eq('id',membership.restaurant_id).single();if(restaurantError)throw restaurantError;
  if(!row.enabled)throw Error('Restaurantul este suspendat.');
- if(profile.role!=='super_admin'&&!row.city_module_visible){location.replace(row.menu_module_visible?'../admin-v2/':'../login/');return;}
+ if(profile.role!=='super_admin'&&!row.city_module_visible){location.replace(row.menu_module_visible?'../admin-v2/':'../acces-inactiv/');return;}
  restaurant=row;$('restaurantName').textContent=row.name+' · Administrarea evenimentelor';
  $('menuLink').hidden=!row.menu_module_visible;
  $('eventForm').elements.event_date.min=today();
