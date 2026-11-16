@@ -3484,7 +3484,7 @@ function pontRenderGroupedCityRequests(){
    for(const item of [...payments].sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))){
     const service=({subscription:'Abonament',pinned_event:'Poziție fixă',exclusive_banner:'Bandă publicitară'})[item.service_type]||item.service_type;
     const response=pontGroupedPaymentResponses.get(item.id);
-    const state=item.status==='pending'?(item.stripe_paid_at?'Stripe încasat · așteaptă AS':response==='claimed_paid'?'AR declară că a plătit · VERIFICĂ STRIPE':response==='interested'?'AR este interesat · plată neconfirmată':response==='not_interested'?'AR nu este interesat · fără încasare confirmată':'Plată inițiată · neconfirmată'):item.status==='confirmed'?'Acces aprobat': 'Retrasă';
+    const state=item.status==='pending'?(item.stripe_paid_at?'Stripe încasat · așteaptă AS':response==='claimed_paid'?'AR declară că a plătit · VERIFICĂ STRIPE':response==='wants_cash'?'AR dorește să plătească cash · încasare neconfirmată':response==='not_interested'?'AR nu este interesat · fără încasare confirmată':'Plată inițiată · neconfirmată'):item.status==='confirmed'?'Acces aprobat': 'Retrasă';
     body.append(noteCard('Solicitare · '+service+' · '+Number(item.amount||0).toLocaleString('ro-RO')+' lei',
      (item.service_type==='subscription'?'Ieșire în oraș':eventName(item.promoted_event_id||item.event_id))+' · '+humanDate(item.created_at),state));
    }
