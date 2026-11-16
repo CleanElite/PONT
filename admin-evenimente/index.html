@@ -317,6 +317,9 @@ body.pont-admin--city #citySubscriptionNotice span{
  font:550 clamp(7.4px,2.45vw,11px)/1.4 system-ui;color:#d8c89e;
  letter-spacing:-.012em;text-align:center
 }
+/* The event metrics belong exclusively to My Events, never My Requests. */
+body.pont-admin--city #myEvents[hidden],body.pont-admin--city #myRequests[hidden],body.pont-admin--city #createEvent[hidden]{display:none!important}
+body.pont-admin--city #myRequests .metrics{display:none!important}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -363,7 +366,7 @@ body.pont-admin--city #citySubscriptionNotice span{
 <label class="wide">Detalii eveniment<textarea name="description" maxlength="1200" placeholder="Program, artiști, detalii privind rezervările"></textarea></label>
 <button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
 <section class="panel" id="myEvents"><h2>Evenimentele mele</h2><section class="metrics" aria-label="Statistici evenimente"><div class="metric"><strong id="pendingCount">0</strong><span>În așteptare</span></div><div class="metric"><strong id="approvedCount">0</strong><span>Aprobate</span></div><div class="metric"><strong id="rejectedCount">0</strong><span>Respinse</span></div></section><div class="pont-ar-approval-note" role="note"><span>Modificarea sau retragerea unui eveniment necesită aprobarea AS.</span></div><div id="events"></div></section>
-<section class="panel" id="myRequests" hidden><h2>Cererile mele</h2><p>Toate cererile și promovările trimise către PONT, cu statusul lor și răspunsul Administratorului Suprem.</p><div id="cityRequests"></div><section id="cityPromotionPayments" class="pont-city-request-payments" hidden><h3>Promovări prin card sau credit</h3><div id="cityPromotionPaymentList"></div></section></section></div>
+<section class="panel" id="myRequests" hidden><h2>Cererile mele</h2><p>Cererile și statusul promovărilor tale.</p><div id="cityRequests"></div><section id="cityPromotionPayments" class="pont-city-request-payments" hidden><h3>Promovări prin card sau credit</h3><div id="cityPromotionPaymentList"></div></section></section></div>
 <dialog id="cityStripeConfirmDialog" class="pont-city-stripe-confirm" aria-labelledby="cityStripeConfirmTitle">
  <div class="pont-stripe-eyebrow">PONT · FINALIZARE SERVICIU</div>
  <h2 id="cityStripeConfirmTitle">Confirmă plata</h2>
