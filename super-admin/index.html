@@ -1261,13 +1261,7 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
       <label class="restaurant-menu-price" for="restaurantMenuPrice">Preț meniul zilei (lei)
         <input id="restaurantMenuPrice" type="number" min="0.01" max="10000" step="0.01" inputmode="decimal" value="30" required>
       </label>
-      <div class="pont-module-access" role="group" aria-label="Acces la modulele PONT">
-        <strong>Acces la modulele PONT</strong>
-        <label><input id="restaurantMenuAccess" type="checkbox" checked> Afișează meniul Meniul zilei în panoul AR</label>
-        <label><input id="restaurantEventsAccess" type="checkbox"> Afișează meniul Ieșire în oraș în panoul AR</label>
-        <small>Dezactivarea accesului nu șterge preparatele, meniurile sau evenimentele salvate.</small>
-      </div>
-      <label class="restaurant-card-toggle">
+            <label class="restaurant-card-toggle">
         <span>Plata cu cardul</span>
         <input id="restaurantAcceptsCard" type="checkbox" aria-label="Plata cu cardul">
       </label>
@@ -3891,14 +3885,6 @@ function closeRestaurantEditor() {
  $('restaurantConfirmPassword').value = '';
  showMessage('restaurantFormStatus', '');
 }
-function syncRestaurantModuleFields(){
- const menuEnabled=$('restaurantMenuAccess').checked;
- const price=$('restaurantMenuPrice');
- price.closest('label').hidden=!menuEnabled;
- price.required=menuEnabled;
- $('restaurantAcceptsCard').closest('label').hidden=!menuEnabled;
-}
-$('restaurantMenuAccess').addEventListener('change',syncRestaurantModuleFields);
 function openRestaurantEditor(restaurant = null) {
  closeRestaurantEditor();
  if(!restaurant||!pontPlaceRestaurantEditor(restaurant.id))return;
@@ -3908,9 +3894,6 @@ function openRestaurantEditor(restaurant = null) {
  $('name').value = restaurant?.name ?? '';
  $('restaurantContactPhone').value=restaurant?.phone??'';
  $('restaurantAcceptsCard').checked = Boolean(restaurant?.accepts_card);
- $('restaurantMenuAccess').checked = restaurant ? Boolean(restaurant.menu_module_visible) : true;
- $('restaurantEventsAccess').checked = Boolean(restaurant?.city_module_visible);
- syncRestaurantModuleFields();
  $('restaurantMenuPrice').value = restaurant?.menu_price ?? 30;
  $('restaurantFormTitle').textContent = 'Editează restaurantul';
  $('saveRestaurantButton').textContent = 'Salvează modificările';
@@ -3939,12 +3922,11 @@ $('restaurantForm').onsubmit = async event => {
  const phone=$('restaurantContactPhone').value.trim();
  if(phone&&!/^\+?[0-9 ()-]{8,24}$/.test(phone)){showMessage('restaurantFormStatus','Introdu un număr de telefon valid.',true);return}
  const menuPrice=Number($('restaurantMenuPrice').value);
- if($('restaurantMenuAccess').checked&&(!Number.isFinite(menuPrice)||menuPrice<=0||menuPrice>10000)) {
+ if(!Number.isFinite(menuPrice)||menuPrice<=0||menuPrice>10000) {
   showMessage('restaurantFormStatus','Introdu un preț valid pentru meniul zilei.',true);
   return;
  }
- const values = {name,phone:phone||null,accepts_card:$('restaurantAcceptsCard').checked,menu_price:menuPrice,
- menu_module_visible:$('restaurantMenuAccess').checked,city_module_visible:$('restaurantEventsAccess').checked};
+ const values = {name,phone:phone||null,accepts_card:$('restaurantAcceptsCard').checked,menu_price:menuPrice};
  button.disabled = true;
  try {
   if(id)await window.pontOperations?.validateRestaurantSettings(id);
