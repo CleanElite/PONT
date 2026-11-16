@@ -512,6 +512,7 @@ body.pont-admin--city #myRequests .metrics{display:none!important}
 <label class="wide">Link afiș (completat automat după încărcare)<input name="poster_url" type="url" maxlength="700" placeholder="https://..." readonly></label>
 <label class="wide">Detalii eveniment<textarea name="description" maxlength="1200" placeholder="Program, artiști, detalii privind rezervările"></textarea></label>
 <button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
+<section class="pont-city-event-sent" id="pontCityEventSent" hidden role="status" aria-live="polite"><strong>Evenimentul a fost trimis!</strong><p>Așteaptă aprobarea PONT. Mulțumim!</p><button type="button" id="pontCityEventSentDismiss" class="primary">Am văzut</button></section>
 <section class="panel" id="myEvents"><h2>Evenimentele mele</h2><section class="metrics" aria-label="Statistici evenimente"><div class="metric"><strong id="pendingCount">0</strong><span>În așteptare</span></div><div class="metric"><strong id="approvedCount">0</strong><span>Aprobate</span></div><div class="metric"><strong id="rejectedCount">0</strong><span>Respinse</span></div></section><div class="pont-ar-approval-note" role="note"><span>Modificarea sau retragerea unui eveniment necesită aprobarea AS.</span></div><div id="events"></div></section>
 <section class="panel" id="myRequests" hidden><h2>Cererile mele</h2><p>Cererile și statusul promovărilor tale.</p><div id="cityRequests"></div><section id="cityPromotionPayments" class="pont-city-request-payments" hidden><h3>Promovări prin card sau credit</h3><div id="cityPromotionPaymentList"></div></section></section></div>
 <dialog id="cityStripeConfirmDialog" class="pont-city-stripe-confirm" aria-labelledby="cityStripeConfirmTitle">
@@ -810,8 +811,8 @@ $('pontPromotionForm').onsubmit=async e=>{
    if(!response.ok)throw Error(result.error||'Solicitarea cash nu a fost trimisă.');
    $('pontPromotionDialog').close();
    await loadCitySubscription();
-   $('status').textContent=result.alreadyRequested?'Ai trimis deja această solicitare cash. Administratorul PONT o poate vedea.':
-     'Solicitarea cash a ajuns la administratorul PONT: '+(type==='pinned_event'?'locul '+position+' · '+actualStart+' – '+requestedEndDate:'bandă din '+actualStart)+'. Vei fi contactat pentru plată.';
+   pontARPaymentNotice('status',result.alreadyRequested?'Solicitarea cash există deja și este vizibilă pentru PONT.':
+     'Solicitarea de plată cash a fost transmisă către PONT.');
    return;
   }
   if($('pontPromotionUseCredit').checked){
@@ -917,8 +918,8 @@ async function cityStartStripeCheckout(serviceType,paymentId=null,amount=50,even
  const choice=skipConfirmation?'stripe':await cityConfirmStripePayment(serviceType,amount,paymentId,eventId,requestedStartDate,position);
  if(choice==='cash'){
   const confirmation='Mulțumim. Ai ales plata cash. PONT a primit solicitarea și te va contacta.';
-  $('status').textContent=confirmation;
-  if(serviceType==='subscription')$('citySubscriptionRequestStatus').textContent=confirmation;
+  pontARPaymentNotice('status',confirmation);
+  if(serviceType==='subscription')pontARPaymentNotice('citySubscriptionRequestStatus',confirmation);
   return 'cash';
  }
  if(choice!=='stripe')return false;
@@ -985,6 +986,14 @@ $('requestCitySubscription').onclick=async()=>{
  try{await cityStartStripeCheckout('subscription',null,50)}catch(err){$('citySubscriptionRequestStatus').textContent='Plata nu a fost inițiată: '+err.message}finally{btn.disabled=false}
 };
 function cityInfo(message){const el=$('formStatus');el.textContent=message;el.scrollIntoView({block:'nearest',behavior:'smooth'})}
+function pontARPaymentNotice(id,message){
+ const el=$(id);el.textContent=message;el.classList.add('pont-ar-payment-notice');
+}
+$('pontCityEventSentDismiss').onclick=()=>{
+ $('pontCityEventSent').hidden=true;
+ $('eventForm').hidden=!citySubscriptionActive;
+ $('formStatus').textContent='';
+};
 async function requestEventAction(event,type,reason,proposed={}){
  const {error}=await db.from('pont_city_event_requests').insert({
   event_id:event.id,restaurant_id:restaurant.id,request_type:type,
@@ -1195,7 +1204,10 @@ $('eventForm').onsubmit=async e=>{
   const payload={restaurant_id:restaurant.id,title:v.title.trim(),event_date:v.event_date,start_time:v.start_time,locality:v.locality.trim(),venue:v.venue.trim(),contact_phone:v.contact_phone.trim(),description:v.description.trim(),poster_url:v.poster_url.trim()||null};
   const {error}=await db.from('pont_city_events').insert(payload);if(error)throw error;
   form.reset();cityUploadedPoster='';$('cityPosterStatus').textContent='';
-  msg.textContent='Eveniment trimis spre aprobare.';await refresh();
+  msg.textContent='';await refresh();
+  $('eventForm').hidden=true;
+  $('pontCityEventSent').hidden=false;
+  $('pontCityEventSent').scrollIntoView({block:'nearest',behavior:'smooth'});
  }catch(err){msg.textContent='Nu a fost trimis: '+err.message}finally{button.disabled=false}
 };
 $('cityPosterFile').addEventListener('change',async evt=>{
@@ -1230,4 +1242,14 @@ setInterval(syncCityStatus,45000);
 body.pont-admin--city .pont-ar-approval-note{display:flex;flex-direction:column;gap:7px;margin:0 0 15px;padding:12px 14px;border:1px solid #d6b77b91;border-radius:11px;background:linear-gradient(120deg,#3e3528bb,#17383b);color:#f2e4c3}
 body.pont-admin--city .pont-ar-approval-note strong{font:750 12px/1.5 system-ui;color:#ffedc1}
 body.pont-admin--city .pont-ar-approval-note span{font:500 11px/1.55 system-ui;color:#cfe4dd}
+</style><style id="pont-ar-payment-ack-and-event-sent">
+body.pont-admin--city .pont-ar-payment-notice{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;max-width:100%;box-sizing:border-box;margin:9px auto;padding:8px 4px;text-align:center;white-space:nowrap;font:600 clamp(9px,2.45vw,11px)/1.3 system-ui;color:#e9dcad;letter-spacing:-.01em;overflow-x:auto;scrollbar-width:none}
+body.pont-admin--city .pont-ar-payment-notice::before,body.pont-admin--city .pont-ar-payment-notice::after{content:"";height:1px;flex:1 1 12px;min-width:8px;max-width:36px;background:linear-gradient(90deg,transparent,#d8bd89)}
+body.pont-admin--city .pont-ar-payment-notice::after{transform:rotate(180deg)}
+body.pont-admin--city #pontCityEventSent[hidden]{display:none!important}
+body.pont-admin--city #pontCityEventSent{display:grid;gap:11px;place-items:center;text-align:center;margin:12px auto;padding:clamp(18px,5vw,30px);border:1px solid #d9c28b;border-radius:16px;background:linear-gradient(140deg,#21473d,#102c32);color:#f4e8c8}
+body.pont-admin--city #pontCityEventSent strong{font:500 clamp(21px,5vw,27px) Georgia,serif;color:#ffe6a7}
+body.pont-admin--city #pontCityEventSent p{margin:0;font:550 13px/1.5 system-ui;color:#deece3}
+body.pont-admin--city #pontCityEventSent button{min-width:130px;min-height:40px;border-radius:10px}
+body.pont-admin--city #eventForm[hidden]{display:none!important}
 </style><script defer src="../pont-navigation-history.js?v=admin-back-x23"></script><script src="../pont-date-display.js?v=dmy-20261116" defer></script></body></html>
