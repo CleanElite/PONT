@@ -655,10 +655,21 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
   $('cityStripeConfirmService').textContent=label;
   $('cityStripeConfirmAmount').textContent=Number(amount).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei';
   $('cityStripeConfirmStatus').textContent='';
-  $('cityStripeTermsConsent').checked=false;
+  const termsConsent=$('cityStripeTermsConsent');
+  const cashButton=$('cityStripeConfirmCash');
+  termsConsent.checked=false;
+  const syncCashConsent=()=>{cashButton.disabled=!termsConsent.checked};
+  termsConsent.onchange=syncCashConsent;
+  syncCashConsent();
   let finished=false;
   const finish=async choice=>{
-   if(finished)return;finished=true;
+   if(finished)return;
+   if(choice==='cash'&&!termsConsent.checked){
+    $('cityStripeConfirmStatus').textContent='Bifează mai întâi acordul privind prețul și perioada serviciului.';
+    termsConsent.focus();
+    return;
+   }
+   finished=true;
    form.onsubmit=null;dialog.oncancel=null;$('cityStripeConfirmCancel').onclick=null;$('cityStripeConfirmCash').onclick=null;
    $('cityStripeConfirmProceed').disabled=true;$('cityStripeConfirmCash').disabled=true;
    try{
@@ -673,7 +684,7 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
     resolve(choice);
    }catch(err){
     $('cityStripeConfirmStatus').textContent='Nu s-a putut înregistra alegerea: '+err.message;
-    finished=false;$('cityStripeConfirmProceed').disabled=false;$('cityStripeConfirmCash').disabled=false;
+    finished=false;$('cityStripeConfirmProceed').disabled=false;syncCashConsent();
     form.onsubmit=e=>{e.preventDefault();void finish('stripe')};
     $('cityStripeConfirmCancel').onclick=()=>void finish('cancel');
     $('cityStripeConfirmCash').onclick=()=>void finish('cash');
@@ -683,7 +694,7 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
   $('cityStripeConfirmCancel').onclick=()=>void finish('cancel');
   $('cityStripeConfirmCash').onclick=()=>void finish('cash');
   dialog.oncancel=e=>{e.preventDefault();void finish('cancel')};
-  $('cityStripeConfirmProceed').disabled=false;$('cityStripeConfirmCash').disabled=false;
+  $('cityStripeConfirmProceed').disabled=false;syncCashConsent();
   dialog.showModal();
  });
 }
