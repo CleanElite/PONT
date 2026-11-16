@@ -316,7 +316,7 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 </main><script src="../super-admin/config.js"></script><script type="module">
 const $=id=>document.getElementById(id);const cfg=window.PONT_CONFIG||{};
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-let db,restaurant,user,citySubscriptionActive=false,citySubscriptionRequested=false,cityUploadedPoster='',cityEventRows=[],cityRequestRows=[],cityPaymentRows=[],cityOwnedSlots=[],cityEditingEvent=null;
+let db,restaurant,user,citySubscriptionActive=false,citySubscriptionRequested=false,cityUploadedPoster='',cityEventRows=[],cityRequestRows=[],cityCashRequestRows=[],cityPaymentRows=[],cityOwnedSlots=[],cityEditingEvent=null;
 const stateNames={pending:'În așteptare',approved:'Aprobat',rejected:'Respins',removed:'Retras'};
 const requestLabels={remove:'Solicitare retragere',edit:'Solicitare modificare',pinned_event:'Fixare eveniment · 50 lei',exclusive_banner:'Bandă exclusivă · 100 lei'};
 const requestStates={pending:'În analiză',approved:'Aprobată',rejected:'Respinsă'};
@@ -611,18 +611,18 @@ async function loadCitySubscription(){
  $('submitEvent').disabled=!citySubscriptionActive;
  $('eventForm').hidden=!citySubscriptionActive;
  $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'Publicarea este blocată până la plata și confirmarea abonamentului.';
- const promotion=rows.filter(p=>p.service_type!=='subscription'&&['pending','confirmed'].includes(p.status));
+ const promotion=rows.filter(p=>p.service_type!=='subscription');
  const paymentPanel=$('cityPromotionPayments'),list=$('cityPromotionPaymentList');list.replaceChildren();
  paymentPanel.hidden=cityPage!=='cererile-mele'||!promotion.length;
  for(const item of promotion){
   const card=document.createElement('article');card.className='event';
   const title=document.createElement('strong');
-  const isApproved=item.status==='confirmed';
+  const isApproved=item.status==='confirmed',isRevoked=item.status==='revoked';
   const slotName=item.service_type==='pinned_event'?(item.promotion_position?'Locul '+item.promotion_position:'Poziție fixă'):'Bandă publicitară';
-  title.textContent=(isApproved?'Promovare aprobată · ':'Promovare neactivată · ')+slotName+' · '+Number(item.amount).toFixed(2)+' lei';
+  title.textContent=(isApproved?'Promovare aprobată · ':isRevoked?'Promovare retrasă · ':'Promovare în așteptare · ')+slotName+' · '+Number(item.amount).toFixed(2)+' lei';
   const status=document.createElement('small');
   status.classList.add(isApproved?'pont-city-promo-approved':'pont-city-promo-unconfirmed');
-  status.textContent=isApproved?'Confirmată manual de AS · '+(item.promotion_credit_used?'achitat cu credit':'Stripe '+Number(item.stripe_paid_amount||0).toFixed(2)+' lei'):
+  status.textContent=isRevoked?'Confirmarea a fost retrasă de AS.':isApproved?'Confirmată manual de AS · '+(item.promotion_credit_used?'achitat cu credit':'Stripe '+Number(item.stripe_paid_amount||0).toFixed(2)+' lei'):
    item.promotion_credit_used?'ÎN AȘTEPTARE · Credit utilizat. Promovarea NU este publicată până la confirmarea AS.':
    item.stripe_paid_at?'ÎN AȘTEPTARE · Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei. Promovarea NU este activă până la confirmarea AS.':
    'ÎN AȘTEPTARE · Locul este doar rezervat temporar. Promovarea NU este publicată. Stripe: 0 lei.';
@@ -632,13 +632,13 @@ async function loadCitySubscription(){
    interval.textContent='Perioadă selectată: '+item.requested_start_date+' – '+item.requested_end_date+' (inclusiv)';
    card.append(interval);
   }
-  const isPaid=Boolean(item.stripe_paid_at)||Boolean(item.promotion_credit_used)||item.status==='confirmed';
+  const isPaid=Boolean(item.stripe_paid_at)||Boolean(item.promotion_credit_used)||item.status==='confirmed'||isRevoked;
   const linkedEvent=cityEventRows.find(e=>e.id===(item.promoted_event_id||item.event_id));
   const alreadyRequested=cityRequestRows.some(req=>req.event_id===linkedEvent?.id&&req.request_type===item.service_type
    &&['pending','approved'].includes(req.status)&&req.proposed_changes?.requested_start_date===item.requested_start_date);
   if(isPaid){
    const info=document.createElement('small');
-   info.textContent=item.status==='confirmed'?'Promovarea este confirmată de AS. Va apărea automat în perioada rezervată.':item.promotion_credit_used?'Creditul a rezervat poziția. Așteaptă activarea AS.':'Plata a fost confirmată de Stripe. AS verifică și activează rezervarea.';
+   info.textContent=isRevoked?'Promovarea nu mai este activă. Istoricul rămâne disponibil.':item.status==='confirmed'?'Promovarea este confirmată de AS. Va apărea automat în perioada rezervată.':item.promotion_credit_used?'Creditul a rezervat poziția. Așteaptă activarea AS.':'Plata a fost confirmată de Stripe. AS verifică și activează rezervarea.';
    card.append(info);
    if(item.promotion_credit_used&&item.status==='pending'){
     const cancel=arButton('Anulează și recuperează creditul',async()=>{
@@ -655,6 +655,7 @@ async function loadCitySubscription(){
   }
   list.append(card);
  }
+ renderCityRequests();
 }
 $('requestCitySubscription').onclick=async()=>{
  const btn=$('requestCitySubscription');btn.disabled=true;
@@ -711,6 +712,8 @@ async function refresh(){
  const result=await db.from('pont_city_event_requests').select('id,event_id,request_type,reason,proposed_changes,status,created_at,review_note')
   .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(100);
  if(result.error)throw result.error;cityRequestRows=result.data||[];
+ const {data:cash,error:cashError}=await db.from('pont_city_cash_requests').select('id,event_id,service_type,position,requested_start_date,requested_end_date,amount,status,created_at').eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(100);
+ if(cashError)throw cashError;cityCashRequestRows=cash||[];
  const container=$('events');container.replaceChildren();
  if(!rows.length){const p=document.createElement('p');p.textContent='Nu ai publicat încă evenimente.';container.append(p)}
  for(const e of rows){
