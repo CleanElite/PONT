@@ -1310,7 +1310,7 @@ body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{
 <nav id="pontCitySuperNav" class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Ieșire în oraș" hidden>
   <div class="pont-nav-cluster pont-nav-cluster--content" role="group" aria-label="Evenimente">
     <button type="button" data-city-tab="cityDashboard" aria-pressed="false"><span>Dashboard</span></button>
-    <button type="button" data-city-tab="cityModeration" aria-pressed="false"><span>Evenimente</span></button>
+    <button type="button" data-city-tab="cityModeration" aria-pressed="false"><span>Evenimente <small id="pontCityEventsNavCount" aria-live="polite"></small></span></button>
     <button type="button" data-city-tab="cityRequests" aria-pressed="false"><span>Solicitări AR <small id="pontCityRequestsNavCount"></small></span></button>
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--management" role="group" aria-label="Restaurante și conturi">
@@ -3600,6 +3600,12 @@ function pontRenderGroupedCityRequests(){
   pontGroupedEventRequests.filter(r=>r.status==='pending'&&pontASNoticeUnread('request:'+r.id,r.created_at)).length+
   cases.filter(item=>pontASNoticeUnread('payment:'+item.key,item.last)).length;
  $('pontCityRequestsNavCount').textContent='('+countAll+')';
+ const eventsPendingCount=cityEventsLoaded.filter(e=>e.status==='pending'&&pontASNoticeUnread('event:'+e.id,e.created_at)).length+
+  pontGroupedEventRequests.filter(r=>r.status==='pending'&&pontASNoticeUnread('request:'+r.id,r.created_at)).length;
+ const eventsBadge=$('pontCityEventsNavCount');
+ if(eventsBadge){eventsBadge.textContent=eventsPendingCount?'('+eventsPendingCount+')':'';eventsBadge.title=eventsPendingCount?eventsPendingCount+' solicitări de evenimente de verificat':'';}
+ const eventsNav=document.querySelector('[data-city-tab="cityModeration"]');
+ if(eventsNav){eventsNav.setAttribute('aria-label',eventsPendingCount?'Evenimente, '+eventsPendingCount+' solicitări noi':'Evenimente');eventsNav.classList.toggle('pont-city-events-has-requests',eventsPendingCount>0);}
  if(!visible.length){const p=document.createElement('p');p.className='pont-city-requests-note';p.textContent='Niciun restaurant nu are afișată secțiunea Ieșire în oraș în panoul AR.';host.append(p);return}
  const makeText=(tag,value,className)=>{const el=document.createElement(tag);el.textContent=value;if(className)el.className=className;return el};
  const humanDate=value=>{if(!value)return '—';const t=new Date(value);return Number.isNaN(t.getTime())?String(value):new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(t)};
@@ -4316,6 +4322,8 @@ async function pontASRefreshRequestNotifications(){
  finally{pontRequestsRefreshInProgress=false}
 }
 setInterval(()=>{void pontASRefreshRequestNotifications()},60000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)void pontASRefreshRequestNotifications()});
+window.addEventListener('focus',()=>void pontASRefreshRequestNotifications());
 for(const button of platformTabs)button.onclick=()=>selectPlatformPanel(button.dataset.tab);
 for(const button of cityTabs)button.onclick=()=>selectCityPanel(button.dataset.cityTab);
 $('pontCityModuleToggle').onclick=()=>selectCityPanel('cityDashboard');
@@ -5348,7 +5356,8 @@ body.pont-admin--platform #pontCityAsEditDialog>h2,body.pont-admin--platform #po
 #cityRequests #cityRequestsEventBranch[hidden],#cityRequests #cityRequestsPaymentBranch[hidden]{display:none!important}
 #cityRequests .pont-ar-checkout-attempt{border-color:#8dc7b060}
 #cityRequests .pont-ar-checkout-attempt p{font-size:12px;line-height:1.5;color:#d6e6df}
-#pontCityRequestsNavCount{font-size:10px;color:#e5d29b}
+#pontCityRequestsNavCount,#pontCityEventsNavCount{font-size:10px;color:#e5d29b;font-weight:800}
+#pontCitySuperNav .pont-city-events-has-requests{border-color:#caa861;box-shadow:inset 0 0 0 1px #a98a4940}
 @media(max-width:510px){#cityRequests .pont-ar-requests-branches{gap:6px}#cityRequests .pont-ar-requests-branches button{font-size:11px;padding:8px 5px}}
 </style><style id="pont-city-payment-intent-status-20261115">
 #cityRequests .pont-city-payment-dialog-status{border:1px solid #5bafa088;border-radius:9px;padding:9px 11px;display:block;font:750 12px/1.5 system-ui;color:#d5ede6;background:#103b3c}
