@@ -336,13 +336,18 @@ applyCityPage();
 let cityPromotionEvent=null,cityPromotionType=null,cityPromotionPrice=0;
 let pontChosenSlot=null,pontSlotQuote=null,pontAvailablePromotionCredit=null,pontPromotionPaymentMethod='card',pontPromotionQuotes=[];
 async function pontRefreshPromotionSlots(){
- const isPin=cityPromotionType==='pinned_event',date=$('pontPromotionStartDate').value,wrap=$('pontPromotionSlotWrap');
+ const isPin=cityPromotionType==='pinned_event',date=$('pontPromotionStartDate').value,endDate=$('pontPromotionEndDate').value,wrap=$('pontPromotionSlotWrap');
  wrap.hidden=false;
+ if(isPin&&(!endDate||endDate<date||endDate>cityPromotionEvent.event_date||(Date.parse(endDate+'T00:00:00Z')-Date.parse(date+'T00:00:00Z'))/86400000>=30)){
+  $('pontPromotionSlotOptions').replaceChildren();$('pontPromotionAvailability').textContent='Selectează un interval valid (maximum 30 de zile) pentru verificarea pozițiilor.';pontSlotQuote=null;pontPromotionQuotes=[];return;
+ }
  const list=$('pontPromotionSlotOptions'),info=$('pontPromotionAvailability');list.replaceChildren();
  info.textContent='Se verifică locurile pentru '+date+'…';pontSlotQuote=null;
  const checks=await Promise.all((isPin?[1,2,3]:[0]).map(async n=>{
-  const {data,error}=await db.rpc('pont_city_slot_quote_v2',{p_position:n,p_desired:date,p_event_date:cityPromotionEvent.event_date});
-  const ownPayment=cityPaymentRows.find(p=>p.service_type===cityPromotionType&&p.promoted_event_id===cityPromotionEvent.id&&p.requested_start_date===date&&p.status==='pending'&&!p.stripe_paid_at);
+  const {data,error}=await db.rpc(isPin?'pont_city_slot_quote_range':'pont_city_slot_quote_v2',isPin?
+   {p_position:n,p_start:date,p_end:endDate,p_event_date:cityPromotionEvent.event_date}:
+   {p_position:n,p_desired:date,p_event_date:cityPromotionEvent.event_date});
+  const ownPayment=cityPaymentRows.find(p=>p.service_type===cityPromotionType&&p.promoted_event_id===cityPromotionEvent.id&&p.requested_start_date===date&&(!isPin||p.requested_end_date===endDate)&&p.status==='pending'&&!p.stripe_paid_at);
   const owned=cityOwnedSlots.find(x=>x.payment_id===ownPayment?.id&&x.position===n&&x.start_date===date&&x.status==='held'&&new Date(x.hold_until)>new Date());
   return {n,quote:owned?{available:true,first_available:date,owned:true}:data?.[0],error};
  }));
@@ -352,6 +357,7 @@ async function pontRefreshPromotionSlots(){
   const title=document.createElement('strong');title.textContent=n===0?'Bandă publicitară':'Locul '+n;
   const caption=document.createElement('small');
   caption.textContent=error?'Nu poate fi verificat':quote?.owned?'Rezervat temporar pentru tine':quote?.available?'Disponibil':'Indisponibil până la '+(quote?.first_available||'—');
+  if(isPin&&!quote?.available)radio.disabled=true;
   label.classList.toggle('is-unavailable',!quote?.available);
   label.append(radio,title,caption);list.append(label);
   radio.onchange=()=>{
@@ -374,9 +380,10 @@ function pontSetPromotionSelectedSlot(){
  if(pontChosenSlot===null){info.textContent='Selectează unul dintre locurile disponibile pentru promovare.';consent.hidden=true;return}
  if(!selected||selected.error||!pontSlotQuote){info.textContent='Disponibilitatea nu a putut fi verificată. Nu continua cu plata.';consent.hidden=true;return}
  const name=pontChosenSlot===0?'Banda publicitară':'Locul '+pontChosenSlot;
- if(pontSlotQuote.available){info.textContent=name+' este disponibil(ă) din '+$('pontPromotionStartDate').value+'.';consent.hidden=true;return}
+ if(pontSlotQuote.available){info.textContent=name+' este disponibil(ă) '+(cityPromotionType==='pinned_event'?'în intervalul '+$('pontPromotionStartDate').value+' – '+$('pontPromotionEndDate').value:'din '+$('pontPromotionStartDate').value)+'.';consent.hidden=true;return}
  const next=pontSlotQuote.first_available;
  info.textContent='Acest loc este indisponibil până pe data de '+(next||'—')+'.';
+ if(cityPromotionType==='pinned_event'){consent.hidden=true;return}
  $('pontPromotionQueueConsentText').textContent='Sunt de acord să rezerv '+name.toLowerCase()+' de la '+next+' și să plătesc pentru perioada viitoare.';
  consent.hidden=!next||next>cityPromotionEvent.event_date;
  if(next&&next>cityPromotionEvent.event_date)info.textContent+=' Evenimentul se încheie înainte ca locul să devină liber.';
@@ -437,10 +444,12 @@ $('pontPromotionForm').onsubmit=async e=>{
  if(!cityPromotionEvent||!cityPromotionType)return;
  const date=$('pontPromotionStartDate').value;
  if(!date||date<today()||date>cityPromotionEvent.event_date){$('pontPromotionStatus').textContent='Selectează o dată validă înainte de eveniment.';return}
- const isPinned=cityPromotionType==='pinned_event';
+ const isPinned=cityPromotionType==='pinned_event',requestedEndDate=isPinned?$('pontPromotionEndDate').value:null;
+ if(isPinned&&(!requestedEndDate||requestedEndDate<date||requestedEndDate>cityPromotionEvent.event_date||(Date.parse(requestedEndDate+'T00:00:00Z')-Date.parse(date+'T00:00:00Z'))/86400000>=30)){ $('pontPromotionStatus').textContent='Selectează data de sfârșit validă, maximum 30 zile, până la eveniment.';return; }
  if(isPinned&&pontChosenSlot===null){$('pontPromotionStatus').textContent='Alege mai întâi locul 1, 2 sau 3.';pontPromotionPaymentMethod='card';return}
  if(!pontSlotQuote){$('pontPromotionStatus').textContent='Verifică disponibilitatea poziției înainte de plată.';pontPromotionPaymentMethod='card';return}
  const actualStart=!pontSlotQuote.available?pontSlotQuote.first_available:date;
+ if(isPinned&&!pontSlotQuote.available){$('pontPromotionStatus').textContent='Poziția este ocupată în intervalul ales. Modifică datele sau alege alt loc.';return;}
  if(!pontSlotQuote.available&&!$('pontPromotionQueueConsent').checked){
   $('pontPromotionStatus').textContent='Bifează acordul pentru rezervarea viitoare sau alege un loc disponibil.';return;
  }
@@ -448,12 +457,12 @@ $('pontPromotionForm').onsubmit=async e=>{
  const btn=$('pontPromotionSubmit');btn.disabled=true;
  try{
   const {data:payments,error}=await db.from('pont_city_payment_requests')
-    .select('id,status,service_type,promotion_position,promotion_credit_used,requested_start_date,stripe_paid_at,expires_at')
+    .select('id,status,service_type,promotion_position,promotion_credit_used,requested_start_date,requested_end_date,stripe_paid_at,expires_at')
     .eq('restaurant_id',restaurant.id).eq('service_type',cityPromotionType)
     .eq('promoted_event_id',cityPromotionEvent.id).order('created_at',{ascending:false}).limit(30);
   if(error)throw error;
   const duplicate=(payments||[]).find(x=>(x.stripe_paid_at||x.status==='confirmed'||x.promotion_credit_used)&&
-   (isPinned?x.promotion_position===pontChosenSlot&&x.requested_start_date===actualStart:x.requested_start_date===actualStart));
+   (isPinned?x.promotion_position===pontChosenSlot&&x.requested_start_date===actualStart&&x.requested_end_date===requestedEndDate:x.requested_start_date===actualStart));
   if(duplicate){$('pontPromotionStatus').textContent='Acest serviciu a fost deja achitat sau confirmat de AS. Nu se poate plăti de două ori.';pontPromotionPaymentMethod='card';return}
   const type=cityPromotionType,ev=cityPromotionEvent,price=cityPromotionPrice,position=pontChosenSlot;
   if(pontPromotionPaymentMethod==='cash'){
@@ -461,7 +470,7 @@ $('pontPromotionForm').onsubmit=async e=>{
    if(!session?.access_token)throw Error('Autentifică-te din nou.');
    const response=await fetch(cfg.url+'/functions/v1/pont-stripe-auctions?action=request-city-cash',{
     method:'POST',headers:{'content-type':'application/json',apikey:cfg.anonKey,authorization:'Bearer '+session.access_token},
-    body:JSON.stringify({eventId:ev.id,serviceType:type,position,requestedStartDate:actualStart})
+    body:JSON.stringify({eventId:ev.id,serviceType:type,position,requestedStartDate:actualStart,requestedEndDate})
    });
    const result=await response.json().catch(()=>({}));
    if(!response.ok)throw Error(result.error||'Solicitarea cash nu a fost trimisă.');
@@ -472,15 +481,16 @@ $('pontPromotionForm').onsubmit=async e=>{
   }
   if($('pontPromotionUseCredit').checked){
    if(!pontAvailablePromotionCredit)throw Error('Creditul nu este disponibil.');
-   const {error:redeemError}=await db.rpc('pont_city_redeem_credit',{
-    p_credit:pontAvailablePromotionCredit.id,p_event:ev.id,p_start:actualStart,p_position:position});
+   const {error:redeemError}=await db.rpc(isPinned?'pont_city_redeem_credit_range':'pont_city_redeem_credit',isPinned?
+    {p_credit:pontAvailablePromotionCredit.id,p_event:ev.id,p_start:actualStart,p_end:requestedEndDate,p_position:position}:
+    {p_credit:pontAvailablePromotionCredit.id,p_event:ev.id,p_start:actualStart,p_position:position});
    if(redeemError)throw redeemError;
    $('pontPromotionDialog').close();
    $('status').textContent='Creditul a fost utilizat. Rezervarea așteaptă confirmarea manuală AS; nu s-a efectuat nicio plată Stripe nouă.';
    await loadCitySubscription();return;
   }
   $('pontPromotionDialog').close();
-  const continued=await cityStartStripeCheckout(type,null,price,ev.id,actualStart,position);
+  const continued=await cityStartStripeCheckout(type,null,price,ev.id,actualStart,position,requestedEndDate);
   if(!continued)$('status').textContent='Nu ai continuat plata. Dacă preferi cash, contactează PONT.';
  }catch(err){$('pontPromotionStatus').textContent=err.message;if(!$('pontPromotionDialog').open)$('status').textContent='Plata nu a fost inițiată: '+err.message}
  finally{btn.disabled=false;pontPromotionPaymentMethod='card'}
@@ -517,7 +527,7 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
   const dialog=$('cityStripeConfirmDialog'),form=$('cityStripeConfirmForm');
   const label=serviceType==='subscription'?'Abonament Ieșire în oraș · 30 zile':serviceType==='pinned_event'?'Promovare · Locul '+(position||'ales'):'Promovare · Bandă publicitară';
   $('cityStripeConfirmTitle').textContent='Confirmi plata de '+Number(amount).toLocaleString('ro-RO')+' lei?';
-  $('cityStripeConfirmMessage').textContent=serviceType==='subscription'?'Abonamentul începe după confirmarea manuală a accesului de către AS și este valabil 30 de zile.':'Rezervarea începe pe '+(requestedStartDate||'data aleasă')+' și durează până la data evenimentului sau maximum 30 de zile. AS activează promovarea după verificare.';
+  $('cityStripeConfirmMessage').textContent=serviceType==='subscription'?'Abonamentul începe după confirmarea manuală a accesului de către AS și este valabil 30 de zile.':serviceType==='pinned_event'?'Promovarea va fi afișată între '+(requestedStartDate||'data de început')+' și '+($('pontPromotionEndDate').value||'data de sfârșit')+', după aprobarea AS.':'Rezervarea începe pe '+(requestedStartDate||'data aleasă')+' și durează până la data evenimentului sau maximum 30 de zile. AS activează promovarea după verificare.';
   $('cityStripeConfirmService').textContent=label;
   $('cityStripeConfirmAmount').textContent=Number(amount).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei';
   $('cityStripeConfirmStatus').textContent='';
@@ -545,14 +555,14 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
   dialog.showModal();
  });
 }
-async function cityStartStripeCheckout(serviceType,paymentId=null,amount=50,eventId=null,requestedStartDate=null,position=null){
+async function cityStartStripeCheckout(serviceType,paymentId=null,amount=50,eventId=null,requestedStartDate=null,position=null,requestedEndDate=null){
  const approved=await cityConfirmStripePayment(serviceType,amount,paymentId,eventId,requestedStartDate,position);
  if(!approved)return false;
  const {data:{session}}=await db.auth.getSession();
  if(!session?.access_token)throw Error('Sesiunea a expirat. Autentifică-te din nou.');
  const response=await fetch(cfg.url+'/functions/v1/pont-stripe-auctions?action=create-city',{
   method:'POST',headers:{'content-type':'application/json',apikey:cfg.anonKey,authorization:'Bearer '+session.access_token},
-  body:JSON.stringify({serviceType,paymentId,eventId,requestedStartDate,position})
+  body:JSON.stringify({serviceType,paymentId,eventId,requestedStartDate,requestedEndDate,position})
  });
  const data=await response.json().catch(()=>({}));
  if(!response.ok)throw Error(data.error||'Checkout Stripe indisponibil.');
