@@ -1783,16 +1783,22 @@ function pontRestaurantPaymentOverview(r){
  (waiting.length?'<div class="pont-stripe-alert"><strong>De validat în AS</strong><span>'+waiting.length+' serviciu/servicii achitate · Stripe '+fmt(waiting.reduce((n,x)=>n+pontVerifiedStripeCityAmount(x),0))+'</span></div>':newCheckout.length?'<div class="pont-stripe-alert"><strong>Plată inițiată</strong><span>'+newCheckout.length+' serviciu/servicii neplătite</span></div>':'')+
  '</div>';
 }
+function pontInlineAccessOptions(restaurantId,service,current){
+ const options=[['paid','Plătit'],['authorization','Doar acces'],['none','Fără acces']];
+ return '<div class="pont-inline-access-options" role="group" aria-label="Aprobarea accesului '+(service==='menu'?'Meniul zilei':'Ieșire în oraș')+'">'+
+  options.map(([value,label])=>'<label class="pont-inline-access-choice"><input type="radio" name="pont-access-'+service+'-'+esc(restaurantId)+'" data-pont-access-module="'+service+'" data-restaurant-id="'+esc(restaurantId)+'" value="'+value+'" '+(value===current?'checked':'')+'><span>'+label+'</span></label>').join('')+'</div>';
+}
 function pontCommerceDetailsHtml(r){
  const month=pontCommerceMonthValue(),offer=pontCommerceMonthOffer(r.id,month),mode=pontCommerceCurrentMode(r.id,month);
- const rank=pontCommerceRank(r.id,month),labels={paid:'Plătit',authorization:'Acces',none:'Neconfirmat'};
- let output='<div class="pont-commerce-line pont-commerce-menu"><header><strong>Meniul zilei</strong><span class="dashboard-badge" data-payment-state="'+mode+'">'+esc(labels[mode])+'</span></header>'+
+ const rank=pontCommerceRank(r.id,month),labels={paid:'Plătit',authorization:'Doar acces',none:'Fără acces'};
+ let output='<div class="pont-commerce-line pont-commerce-menu"><header><strong>Meniul zilei</strong></header>'+ 
+ '<div class="pont-inline-access-status"><span>Ofertă: <strong>'+(offer?esc(auctionMoney(offer.amount)):'Fără ofertă')+'</strong></span><span>Acces: <strong data-payment-state="'+mode+'">'+esc(labels[mode])+'</strong></span></div>'+
  '<div class="pont-commerce-facts">'+
  (offer?'<span>'+esc(auctionMoney(offer.amount))+' licitați</span><span>Stripe: '+esc(auctionMoney(pontVerifiedStripeMenuAmount(offer)))+' încasați</span>':'')+
  (rank?'<span>Locul '+rank+'</span>':'')+
  (offer?'<span>Runda '+esc(offer.round)+'</span>':'')+
- (!offer?'<span>Fără ofertă</span>':'')+
- '</div><div class="pont-service-controls"><button type="button" data-commerce-access="'+esc(r.id)+'">Confirmă accesul</button></div></div>';
+ (!offer?'<span>Luna '+esc(month)+'</span>':'')+
+ '</div>'+pontInlineAccessOptions(r.id,'menu',mode)+'</div>';
  const allItems=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const subscriptions=allItems.filter(x=>x.service_type==='subscription');
  const activeSubscription=subscriptions.find(x=>x.status==='confirmed'&&new Date(x.expires_at)>new Date());
@@ -1802,12 +1808,15 @@ function pontCommerceDetailsHtml(r){
  const promotions=allItems.filter(x=>x.service_type!=='subscription'&&['pending','confirmed'].includes(x.status));
  const subscriptionState=activeSubscription?(activeSubscription.manual_confirmation_mode==='paid'?'Plătit · activ':'Doar acces · activ'):
    pendingSubscription?(pendingSubscription.stripe_paid_at?'Stripe achitat · așteaptă confirmarea':'Solicitare în curs'):'Fără acces';
- output+='<div class="pont-commerce-line pont-commerce-events"><header><strong>Ieșire în oraș</strong></header>';
- output+='<div class="pont-city-finance-subsection"><h4>Abonament · 50 lei / 30 zile</h4>'+
+ const cityAccessMode=activeSubscription?(activeSubscription.manual_confirmation_mode==='paid'?'paid':'authorization'):'none';
+ output+='<div class="pont-commerce-line pont-commerce-events"><header><strong>Ieșire în oraș</strong></header>'+
+ '<div class="pont-inline-access-status"><span>Abonament: <strong>50 lei / 30 zile</strong></span><span>Acces: <strong data-payment-state="'+cityAccessMode+'">'+esc(cityAccessMode==='paid'?'Plătit':cityAccessMode==='authorization'?'Doar acces':'Fără acces')+'</strong></span></div>'+
+ pontInlineAccessOptions(r.id,'city',cityAccessMode);
+ output+='<div class="pont-city-finance-subsection"><h4>Detalii abonament</h4>'+
   '<div class="pont-city-service-row"><div class="pont-city-service-summary"><strong>'+esc(subscriptionState)+'</strong>'+
   '<small>Stripe: '+esc(auctionMoney(referenceSubscription?pontVerifiedStripeCityAmount(referenceSubscription):0))+
   (activeSubscription?' · Expiră: '+esc(pontPaymentDate(activeSubscription.expires_at)):'')+'</small></div>'+
-  '<button type="button" data-city-unified-sub="'+esc(r.id)+'">Confirmă acces</button></div></div>';
+  '</div></div>';
  output+='<div class="pont-city-finance-subsection"><h4>Promovare anunț solicitată'+(cashRows.length+promotions.filter(x=>x.status==='pending').length?' · '+(cashRows.length+promotions.filter(x=>x.status==='pending').length):'')+'</h4>';
  for(const req of cashRows){
   const event=pontCityApprovedEvents.find(x=>x.id===req.event_id);
