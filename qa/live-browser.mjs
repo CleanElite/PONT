@@ -63,7 +63,7 @@ for(const viewport of sizes){
 }
 const context=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'});
 const page=await context.newPage();
-report.extra={url_checks:[],events:null,menu:null,login:null,whatsapp_sent:false,admin_data_mutated:false};
+report.extra={url_checks:[],redirect_checks:[],link_checks:[],events:null,menu:null,login:null,whatsapp_sent:false,admin_data_mutated:false};
 try{
  await page.goto(ORIGIN+'/iesire-in-oras/',{waitUntil:'domcontentloaded',timeout:30000});
  await page.waitForTimeout(4500);
@@ -71,6 +71,20 @@ try{
  await page.goto(ORIGIN+'/meniul-zilei/',{waitUntil:'domcontentloaded',timeout:30000});
  await page.waitForTimeout(4000);
  report.extra.menu={restaurant_cards:await page.locator('#list .menu-card, #list .restaurant-card, #list button').count(),whatsapp_destination_present:(await page.locator('a[href*="wa.me"],a[href*="api.whatsapp.com"]').count())>0};
+ const publicInternalLinks=new Set();
+ for(const pagePath of ['/','/meniul-zilei/','/iesire-in-oras/']){
+  await page.goto(ORIGIN+pagePath,{waitUntil:'domcontentloaded',timeout:11000});
+  const hrefs=await page.locator('a[href]').evaluateAll(links=>links.map(a=>a.href));
+  for(const href of hrefs){try{const url=new URL(href);if(url.origin===ORIGIN)publicInternalLinks.add(url.pathname)}catch{}}
+ }
+ for(const internal of [...publicInternalLinks].slice(0,30)){
+  try{const resp=await page.request.get(ORIGIN+internal,{timeout:10000,failOnStatusCode:false});report.extra.link_checks.push({path:internal,status:resp.status(),final_url:resp.url()})}
+  catch(error){report.extra.link_checks.push({path:internal,status:null,error:String(error).slice(0,130)})}
+ }
+ for(const url of ['http://pont.city/','https://www.pont.city/','http://www.pont.city/']){
+  try{const resp=await page.request.get(url,{timeout:12000,failOnStatusCode:false,maxRedirects:7});report.extra.redirect_checks.push({url,status:resp.status(),final_url:resp.url()})}
+  catch(error){report.extra.redirect_checks.push({url,status:null,error:String(error).slice(0,170)})}
+ }
  await page.goto(ORIGIN+'/login/',{waitUntil:'domcontentloaded',timeout:30000});
  report.extra.login={login_form:await page.locator('form').count(),password_field:await page.locator('input[type="password"]').count(),forgot_password:await page.getByText('Ai uitat parola?',{exact:false}).count()};
  for(const path of ['/robots.txt','/sitemap.xml','/404.html','/offline.html','/url-inexistent-qa-2026/']){
