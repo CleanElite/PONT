@@ -725,7 +725,7 @@ async function refresh(){
  const result=await db.from('pont_city_event_requests').select('id,event_id,request_type,reason,proposed_changes,status,created_at,review_note')
   .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
  if(result.error)throw result.error;cityRequestRows=result.data||[];
- const {data:cash,error:cashError}=await db.from('pont_city_cash_requests').select('id,event_id,service_type,position,requested_start_date,requested_end_date,amount,status,created_at').eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
+ const {data:cash,error:cashError}=await db.from('pont_city_cash_requests').select('id,event_id,service_type,position,requested_start_date,requested_end_date,amount,status,created_at,withdrawn_by_ar_at').eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
  if(cashError)throw cashError;cityCashRequestRows=cash||[];
  const container=$('events');container.replaceChildren();
  if(!rows.length){const p=document.createElement('p');p.textContent='Nu ai publicat încă evenimente.';container.append(p)}
@@ -789,7 +789,7 @@ function renderCityRequests(){
    'event_request',request.id,request.status==='pending');
  }
  for(const cash of cityCashRequestRows){
-  const status=({pending:'În așteptare',contacted:'Contactat',resolved:'Aprobată',cancelled:'Retrasă / anulată'})[cash.status]||cash.status;
+  const status=cash.status==='cancelled'&&cash.withdrawn_by_ar_at?'Retrasă de tine':({pending:'În așteptare',contacted:'Contactat',resolved:'Aprobată',cancelled:'Anulată'})[cash.status]||cash.status;
   const name=cash.service_type==='pinned_event'?'Poziție fixă · Locul '+cash.position:'Bandă publicitară';
   add(cash.created_at,'Solicitare cash · '+name+' · '+eventName(cash.event_id),status,
    ['Perioadă: '+cash.requested_start_date+(cash.requested_end_date?' – '+cash.requested_end_date:''),
