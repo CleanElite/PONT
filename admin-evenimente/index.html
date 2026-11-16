@@ -271,6 +271,92 @@ body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotion
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact .pont-promotion-payment-actions button{min-height:37px;padding:5px 3px;font-size:clamp(8.5px,2.3vw,10.5px)}
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionStatus{max-height:32px;overflow:hidden;font-size:9px}
 @media(max-height:650px){body.pont-admin--city #pontPromotionDialog.pont-promotion-compact{padding:7px 10px}body.pont-admin--city #pontPromotionDialog.pont-promotion-compact form{gap:3px 7px}body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionSlotOptions label{min-height:40px;padding:2px}body.pont-admin--city #pontPromotionDialog.pont-promotion-compact .pont-promotion-payment-actions button{min-height:31px}body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionPeriodHint{display:none}}
+</style><style id="pont-promotion-visual-centering-20261116">
+/* Center the actual dialog in the visual viewport, not the large page panel. */
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact[open]{
+ position:fixed!important;inset:auto!important;top:50%!important;left:50%!important;
+ transform:translate(-50%,-50%)!important;margin:0!important;
+ box-sizing:border-box!important;width:min(94vw,475px)!important;max-width:475px!important;
+ height:auto!important;max-height:calc(100dvh - 24px)!important;
+ padding:clamp(15px,2.5dvh,23px)!important;
+ overflow-y:auto!important;overflow-x:hidden!important;
+ border:1px solid #c2ae7c!important;border-radius:19px!important;
+ box-shadow:0 25px 90px #000b,inset 0 1px 0 #ecdfb044;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact h2{
+ text-align:center!important;font-size:clamp(21px,4.4vw,25px)!important;
+ line-height:1.2!important;margin:0 0 5px!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionDescription{
+ text-align:center!important;font-size:12px!important;line-height:1.35!important;margin:0 0 14px!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact form{
+ gap:clamp(8px,1.5dvh,13px) 11px!important;align-items:start!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact form>label:has(input[type=date]){
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ gap:6px!important;text-align:center!important;font-size:12px!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact input[type=date]{
+ width:100%!important;min-height:41px!important;padding:7px 5px!important;
+ border-radius:10px!important;text-align:center!important;font-size:13px!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionSlotWrap{
+ padding:11px 9px!important;border-radius:13px!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionSlotWrap legend{
+ font-size:12px!important;text-align:center!important;padding:0 10px!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionSlotOptions{
+ gap:8px!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionSlotOptions label{
+ min-width:0!important;min-height:75px!important;padding:9px 5px!important;
+ display:flex!important;flex-direction:column!important;align-items:center!important;
+ justify-content:center!important;gap:4px!important;border-radius:12px!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionSlotOptions strong{
+ font-size:13px!important;line-height:1.15!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionSlotOptions small{
+ font-size:10px!important;line-height:1.25!important;text-align:center!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionAvailability{
+ text-align:center!important;font-size:10px!important;line-height:1.35!important;
+ margin:7px 0 0!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionPeriodHint{
+ text-align:center!important;font-size:10px!important;line-height:1.35!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact .pont-promotion-order-summary{
+ padding:10px 12px!important;gap:5px!important;border-radius:12px!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact .pont-promotion-order-summary>div{
+ font-size:11px!important;line-height:1.4!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionCashConsentWrap{
+ min-height:39px!important;padding:9px 10px!important;border-radius:11px!important;
+ font-size:11px!important;justify-content:center!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionStatus{
+ text-align:center!important;font-size:10px!important;line-height:1.35!important;
+ max-height:none!important;overflow-wrap:anywhere!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact .pont-promotion-payment-actions{
+ grid-template-columns:minmax(0,.9fr) minmax(0,1fr) minmax(0,1.42fr)!important;gap:7px!important;
+}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact .pont-promotion-payment-actions button{
+ min-height:46px!important;padding:9px 4px!important;font-size:clamp(10px,2.65vw,12px)!important;
+ line-height:1.25!important;border-radius:11px!important;
+}
+@media(max-height:740px){
+ body.pont-admin--city #pontPromotionDialog.pont-promotion-compact[open]{padding:10px 14px!important;max-height:calc(100dvh - 10px)!important}
+ body.pont-admin--city #pontPromotionDialog.pont-promotion-compact form{gap:6px 8px!important}
+ body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionSlotOptions label{min-height:54px!important;padding:5px!important}
+ body.pont-admin--city #pontPromotionDialog.pont-promotion-compact .pont-promotion-order-summary{padding:6px 9px!important;gap:2px!important}
+ body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionDescription{margin-bottom:7px!important}
+ body.pont-admin--city #pontPromotionDialog.pont-promotion-compact .pont-promotion-payment-actions button{min-height:38px!important;padding:6px 3px!important}
+}
 </style><style id="pont-promotion-approval-note-20261116">#pontPromotionForm .pont-promotion-approval-note{display:block;text-align:center;font:400 10px/1.45 system-ui;color:#b9c9c4;letter-spacing:.005em;margin:0 6px 2px}</style><style id="pont-promotion-manual-approval-label-20261116">
 #cityPromotionPaymentList .pont-city-promo-unconfirmed{display:block;color:#f4cf9e;font:750 11px/1.55 system-ui;margin:8px 0}
 #cityPromotionPaymentList .pont-city-promo-approved{display:block;color:#b9ebce;font:750 11px/1.55 system-ui;margin:8px 0}
@@ -569,7 +655,8 @@ function pontUpdatePromotionSummary(){
  const valid=start&&end&&end>=start;
  const days=valid?Math.round((Date.parse(end+'T12:00:00Z')-Date.parse(start+'T12:00:00Z'))/86400000)+1:0;
  $('pontPromotionSummaryService').textContent=cityPromotionType==='pinned_event'?'Promovare · '+(pontChosenSlot===null?'alege locul':'Locul '+pontChosenSlot):'Promovare · Bandă';
- $('pontPromotionSummaryDuration').textContent=valid?start+' – '+end+' · '+days+' zile':'—';
+ const roShort=date=>new Intl.DateTimeFormat('ro-RO',{day:'2-digit',month:'2-digit'}).format(new Date(date+'T12:00:00Z'));
+ $('pontPromotionSummaryDuration').textContent=valid?roShort(start)+' – '+roShort(end)+' · '+days+' zile':'—';
  $('pontPromotionSummaryTotal').textContent=Number(cityPromotionPrice||0).toLocaleString('ro-RO')+' lei';
 }
 function pontSetPromotionSelectedSlot(){
