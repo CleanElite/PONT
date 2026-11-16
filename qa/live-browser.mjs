@@ -93,6 +93,34 @@ try{
  }
 }catch(error){report.extra.error=String(error).slice(0,450)}
 await context.close();
+// Test only browser-local consent state and PWA offline fallback; no orders, messages, or payments.
+report.extra.privacy={status:'NETESTAT'};
+try{
+ const privacyContext=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'});
+ const privacyPage=await privacyContext.newPage();
+ await privacyPage.goto(ORIGIN+'/',{waitUntil:'domcontentloaded',timeout:12000});
+ const refuse=privacyPage.locator('#pontGlobalPrivacyBanner .pont-consent-no');
+ await refuse.waitFor({state:'visible',timeout:8000});
+ await refuse.click();
+ const state=await privacyPage.evaluate(()=>({consent:localStorage.getItem('pont_analytics_consent_v1'),visitor:localStorage.getItem('pont_analytics_visitor_v1')}));
+ report.extra.privacy={status:state.consent==='no'&&!state.visitor?'OK':'PROBLEMĂ',...state};
+ await privacyContext.close();
+}catch(error){report.extra.privacy={status:'NETESTAT',error:String(error).slice(0,250)}}
+report.extra.pwa={status:'NETESTAT'};
+try{
+ const pwaContext=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'allow'});
+ const pwaPage=await pwaContext.newPage();
+ await pwaPage.goto(ORIGIN+'/',{waitUntil:'domcontentloaded',timeout:12000});
+ await pwaPage.evaluate(async()=>{await navigator.serviceWorker.ready});
+ await pwaPage.reload({waitUntil:'domcontentloaded',timeout:12000});
+ const controlled=await pwaPage.evaluate(()=>!!navigator.serviceWorker.controller);
+ await pwaContext.setOffline(true);
+ await pwaPage.goto(ORIGIN+'/iesire-in-oras/',{waitUntil:'domcontentloaded',timeout:12000});
+ const offlineTitle=await pwaPage.title();
+ report.extra.pwa={status:controlled&&offlineTitle.includes('Fără conexiune')?'OK':'PROBLEMĂ',controlled,offline_title:offlineTitle};
+ await pwaContext.setOffline(false);
+ await pwaContext.close();
+}catch(error){report.extra.pwa={status:'NETESTAT',error:String(error).slice(0,250)}}
 await browser.close();
 await writeFile('qa-results/report.json',JSON.stringify(report,null,2));
 const successful=report.checks.filter(x=>x.status==='OK').length;
