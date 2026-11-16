@@ -173,3 +173,7 @@ main.pont-login-surface{position:relative;padding-top:max(60px,clamp(60px,7vw,68
   .pont-nav-action{transition:none!important}
   .pont-nav-action:hover{transform:none!important}
 }
+
+/* Public back controls: usable 44px touch targets without altering admin layouts. */
+.menu-header .menu-back.pont-nav-action{min-height:44px!important;height:44px!important;max-height:44px!important}
+@media(max-width:540px){.menu-header .menu-back.pont-nav-action{width:44px!important;min-width:44px!important;max-width:44px!important;padding:0!important}}
