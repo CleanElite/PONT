@@ -581,7 +581,7 @@ body.pont-admin--city #myRequests .metrics{display:none!important}
  </form>
  <p class="status" id="eventEditStatus" role="status"></p>
 </dialog>
-</main><script src="../super-admin/config.js"></script><script type="module">
+</main><script src="../super-admin/config.js"></script><script src="../compact-date-picker.js?v=global-dmy-20261116" defer></script><script type="module">
 const $=id=>document.getElementById(id);const cfg=window.PONT_CONFIG||{};
 const today=()=>{const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const p=key=>parts.find(x=>x.type===key)?.value||'';return p('year')+'-'+p('month')+'-'+p('day')};
 let db,restaurant,user,citySubscriptionActive=false,citySubscriptionRequested=false,cityUploadedPoster='',cityEventRows=[],cityRequestRows=[],cityCashRequestRows=[],cityPaymentRows=[],cityOwnedSlots=[],cityEditingEvent=null,cityPaymentResponses=new Map();
