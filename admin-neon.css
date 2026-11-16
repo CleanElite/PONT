@@ -8,8 +8,11 @@ body.pont-admin-neon {
   --neon-gold: #ffde6c;
   --neon-panel: radial-gradient(ellipse at 22% -18%, #195454 0%, transparent 55%), #021e22;
   --neon-glass: radial-gradient(ellipse at 27% -30%, #246361 0%, transparent 70%), linear-gradient(155deg, #0d3e40, #02191d 67%, #042d30);
-  --neon-active: radial-gradient(ellipse at 50% 0%, #a76e24a8, transparent 74%), linear-gradient(155deg, #30301c, #071f21 68%, #2a2515);
-  --neon-fill: linear-gradient(180deg, #fff8c7, #ffdb69 38%, #df981e 84%, #ffcb58);
+  --neon-active: linear-gradient(155deg, #343027, #202822 75%);
+  --neon-fill: linear-gradient(170deg, #4d4030, #383024 70%, #332c21);
+  --neon-warm-ink: #f6eee0;
+  --neon-warm-edge: #a78c63;
+  --neon-warm-shadow: inset 0 1px 0 #d4b58840, 0 3px 8px #0005;
   --neon-aura: inset 0 1px 4px #c3fff478, inset 0 -3px 9px #2bbdb44a, 0 4px 10px #0008;
   --neon-rim: inset 0 1px 7px #9bfff2a3, inset 0 -3px 12px #22b6b43d, 0 0 13px #39dfd648, 0 5px 15px #0007;
   --neon-gilded: inset 0 0 9px #ffe580ab, inset 0 1px 3px #fff9ca, 0 0 12px #ffc44c75;
@@ -82,16 +85,16 @@ body.pont-admin-neon :is(#app, main, dialog, header) :is(button, .admin-back, .p
 }
 
 body.pont-admin-neon :is(#app, main, dialog, header) :is(button, a):is([aria-pressed="true"], [aria-current="page"], .active, .is-active, .selected, .pont-ranking-open):not([role="switch"], .pont-today-toggle, .is-soldout) {
-  --neon-control-edge: #ffe28b;
+  --neon-control-edge: var(--neon-warm-edge);
   --neon-control-bg: var(--neon-active);
-  --neon-control-shadow: var(--neon-gilded);
+  --neon-control-shadow: var(--neon-warm-shadow);
 }
 
 body.pont-admin-neon :is(#app, main, dialog) button:is(.primary, .pont-primary):not([role="switch"], .pont-today-toggle, .pont-date-trigger, .pont-date-option) {
-  --neon-control-edge: #fff3ac;
+  --neon-control-edge: var(--neon-warm-edge);
   --neon-control-bg: var(--neon-fill);
-  --neon-control-shadow: var(--neon-gilded);
-  --neon-control-ink: #201306;
+  --neon-control-shadow: var(--neon-warm-shadow);
+  --neon-control-ink: var(--neon-warm-ink);
 }
 
 body.pont-admin-neon :is(#app, main, dialog) :is(.admin-danger, .danger, .pont-today-delete, .pont-today-availability.is-soldout, .pont-editor-stock.is-soldout, [data-today-remove], [data-unselect]) {
@@ -102,7 +105,7 @@ body.pont-admin-neon :is(#app, main, dialog) :is(.admin-danger, .danger, .pont-t
 }
 
 body.pont-admin-neon :is(#app, main, dialog) :is(button, a):is(:hover, :focus-visible):not(:disabled) {
-  filter: brightness(1.12);
+  filter: brightness(1.07);
 }
 
 body.pont-admin-neon :is(#app, main, dialog) :is(button, a, input, select, textarea, summary):focus-visible {
@@ -147,9 +150,9 @@ body.pont-admin.pont-admin-neon #app #logout {
 }
 
 body.pont-admin-neon.pont-admin--restaurant :is(#app, main, dialog, header) :is(.admin-topbar .admin-back, .pont-ar-city-topbar .pont-ar-back) {
-  --neon-control-edge: #ffe08b;
+  --neon-control-edge: var(--neon-warm-edge);
   --neon-control-bg: var(--neon-active);
-  --neon-control-shadow: var(--neon-gilded);
+  --neon-control-shadow: var(--neon-warm-shadow);
 }
 
 body.pont-admin-neon :is(.pont-neon-icon, #logout .admin-icon, .pont-live-datetime__time) {
@@ -230,6 +233,123 @@ body.pont-admin.pont-admin--platform.pont-admin-neon #app .pont-admin-grouped-na
 }
 
 body.pont-admin-neon #app .admin-nav :is(button, a) > .admin-icon { fill: currentColor; }
+
+body.pont-admin.pont-admin--restaurant.pont-admin-neon #app .pont-restaurant-grouped-nav button[aria-pressed="true"] {
+  border-color: var(--neon-warm-edge) !important;
+  background: var(--neon-active) !important;
+  color: var(--neon-warm-ink) !important;
+  box-shadow: var(--neon-warm-shadow) !important;
+}
+
+/* Shared sign-in page for the restaurant and platform panels. */
+body.pont-admin-neon.pont-admin-login {
+  display: grid;
+  place-items: center;
+  padding: clamp(14px, 4.5vw, 30px);
+  font: 15px/1.5 system-ui, -apple-system, sans-serif;
+}
+
+body.pont-admin-neon.pont-admin-login > .pont-login-surface {
+  width: min(100%, 440px);
+  max-width: 440px !important;
+  margin: 0 !important;
+  padding: clamp(18px, 6vw, 32px) !important;
+  border-radius: clamp(22px, 6vw, 33px);
+  border-color: #62b9b7;
+  background: var(--neon-panel);
+  box-shadow: inset 0 1px 5px #a4e9e53b, 0 0 13px #41bcb637, 0 14px 36px #0007;
+}
+
+.pont-admin-login .pont-login-header {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  gap: 6px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #6aa8a641;
+}
+
+.pont-admin-login .pont-login-back {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border: 1px solid #5eb1ac;
+  border-radius: 50%;
+  background: var(--neon-glass);
+  box-shadow: var(--neon-aura);
+  color: var(--neon-ink);
+}
+
+.pont-admin-login .pont-login-back svg { display: block; width: 23px; height: 23px; }
+.pont-admin-login .pont-login-brand { justify-self: center; }
+.pont-admin-login .pont-login-brand img { display: block; width: clamp(96px, 29vw, 128px); max-width: 100%; height: auto; }
+
+.pont-admin-login .pont-login-heading { margin: clamp(16px, 5.4vw, 24px) 0 22px; }
+.pont-admin-login .pont-login-heading h1 {
+  margin: 0 0 7px;
+  font: 780 clamp(22px, 6.2vw, 33px)/1.13 system-ui, -apple-system, sans-serif;
+  letter-spacing: -.035em;
+}
+
+.pont-admin-login .pont-login-heading p { margin: 0; color: var(--neon-muted); font-size: 14px; }
+
+.pont-admin-login .pont-login-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 15px 0 7px;
+  color: var(--neon-ink);
+  font-weight: 600;
+}
+
+.pont-admin-login .pont-login-label svg { flex: none; width: 19px; height: 19px; color: #91c9c6; }
+
+.pont-admin-login .pont-login-surface input {
+  display: block;
+  width: 100%;
+  min-height: 51px;
+  padding: 11px 13px;
+  border-radius: 13px;
+  font-size: 16px;
+  box-shadow: inset 0 1px 4px #0004;
+}
+
+.pont-admin-login .pont-password-field { position: relative; }
+.pont-admin-login .pont-password-field input { padding-right: 54px; }
+
+body.pont-admin-neon.pont-admin-login #form button.pont-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  display: grid;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent !important;
+  color: var(--neon-muted) !important;
+  box-shadow: none !important;
+}
+
+.pont-admin-login .pont-password-toggle svg { width: 23px; height: 23px; }
+
+.pont-admin-login .pont-login-surface button.primary {
+  display: block;
+  width: 100%;
+  min-height: 50px;
+  margin-top: 22px;
+  border-radius: 13px;
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.pont-admin-login .pont-login-surface .links { margin-top: 16px; }
+.pont-admin-login .pont-login-surface #reset { min-height: 44px; padding: 9px 14px; border-radius: 12px; }
+.pont-admin-login .pont-login-surface #status { margin: 9px 0 0; color: #ffbdb9; font-size: 13px; }
+.pont-admin-login .pont-login-surface #status:empty { display: none; }
 
 /* Restaurant header and menu editor. */
 body.pont-admin.pont-admin--restaurant.pont-admin-neon:has(#pontAuctionBellMount) .admin-topbar {
@@ -337,8 +457,8 @@ body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #pontAuctionBellMoun
   min-height: 41px !important;
   background: var(--neon-glass) !important;
   color: var(--neon-gold) !important;
-  border-color: #f3d988 !important;
-  box-shadow: var(--neon-gilded) !important;
+  border-color: var(--neon-warm-edge) !important;
+  box-shadow: var(--neon-warm-shadow) !important;
 }
 
 body.pont-admin-neon #app #pontAuctionBellMount :is(.pont-auction-bell svg, .pont-auction-bell path) {
@@ -351,8 +471,8 @@ body.pont-admin-neon #app #pontAuctionBellMount .pont-bell-core { display: none 
 body.pont-admin.pont-admin-neon #app .pont-auction-notice:not([hidden]) {
   background: var(--neon-active) !important;
   color: var(--neon-ink) !important;
-  border-color: #ffe18b !important;
-  box-shadow: var(--neon-gilded) !important;
+  border-color: var(--neon-warm-edge) !important;
+  box-shadow: var(--neon-warm-shadow) !important;
 }
 
 body.pont-admin.pont-admin--restaurant.pont-admin-neon #app .admin-nav.pont-restaurant-grouped-nav {
@@ -424,8 +544,8 @@ body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #addView .admin-work
   height: auto !important;
   margin: 0 !important;
   background: var(--neon-glass) !important;
-  border-color: #ffe08b !important;
-  box-shadow: var(--neon-gilded) !important;
+  border-color: var(--neon-warm-edge) !important;
+  box-shadow: var(--neon-warm-shadow) !important;
 }
 
 body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #toggleMenuForm[aria-expanded="true"] .pont-toggle-chevron {
@@ -435,7 +555,7 @@ body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #toggleMenuForm[aria
 body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #addView .admin-workspace #toggleMenuForm[aria-expanded="true"] {
   border-radius: var(--neon-radius) var(--neon-radius) 0 0 !important;
   border-bottom-color: #8d7842 !important;
-  box-shadow: inset 0 1px 9px #ffe5808c, 0 -3px 10px #ffc44c3f !important;
+  box-shadow: var(--neon-warm-shadow) !important;
 }
 
 body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #menuFormWrap {
@@ -461,7 +581,7 @@ body.pont-admin-neon #pontDailyBuilder .pont-daily-course-open {
   border-color: #b99f57 !important;
   border-radius: 999px !important;
   background: var(--neon-active) !important;
-  box-shadow: inset 0 0 7px #ffc45c5c !important;
+  box-shadow: var(--neon-warm-shadow) !important;
 }
 
 body.pont-admin.pont-admin-neon #app #pontDailyBuilder .pont-daily-fields .pont-date-inline {
@@ -814,9 +934,9 @@ body.pont-admin-neon--promotion :is(#customer, .pont-pending-payments, .promotio
 
 body.pont-admin-neon--promotion dialog .primary-bid {
   background: var(--neon-fill) !important;
-  border-color: #ffe597 !important;
-  color: #201306 !important;
-  box-shadow: var(--neon-gilded) !important;
+  border-color: var(--neon-warm-edge) !important;
+  color: var(--neon-warm-ink) !important;
+  box-shadow: var(--neon-warm-shadow) !important;
 }
 
 @media (min-width: 620px) {
