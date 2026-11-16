@@ -1540,6 +1540,8 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
 </section>
 <section id="cityRequests" class="card dashboard-panel" hidden aria-labelledby="cityRequestsTitle">
   <div class="dashboard-heading"><div><h2 id="cityRequestsTitle">Solicitări AR</h2><p>Evenimentele și intențiile de plată sunt urmărite separat.</p></div><button type="button" id="cityRequestsRefresh" class="primary">Actualizează</button></div>
+  <div id="pontCityGroupedRequests" class="pont-city-grouped-requests" aria-label="Solicitări organizate pe restaurante"></div>
+  <div id="pontCityLegacyRequests" hidden>
   <div class="pont-ar-requests-branches" role="group" aria-label="Tipul solicitărilor AR">
     <button type="button" id="cityRequestsEventTab" aria-pressed="true">Solicitări evenimente <span id="cityRequestsPendingLabel"></span></button>
     <button type="button" id="cityRequestsPaymentTab" aria-pressed="false">Solicitări plăți <span id="cityPaymentAttemptsCount"></span></button>
@@ -1556,6 +1558,7 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
     <div id="cityCheckoutAttemptRows" class="pont-city-list"></div>
     <p id="cityCheckoutAttemptStatus" class="dashboard-message" role="status"></p>
   </section>
+  </div>
 </section>
 <section id="cityModeration" class="card dashboard-panel" hidden aria-labelledby="cityModerationTitle">
   <div class="dashboard-heading"><div><h2 id="cityModerationTitle">Moderare evenimente</h2><p>Verifică fiecare anunț înainte să apară public.</p></div><button type="button" id="cityModerationRefresh" class="primary">Actualizează</button></div>
@@ -3358,6 +3361,7 @@ function selectCityPanel(id='cityDashboard', remember=true){
  if(panel==='cityRequests')void loadCityCheckoutAttempts();
  if(panel==='members')renderMembers();
 }
+let pontGroupedEventRequests=[],pontGroupedCashRequests=[],pontGroupedPaymentRequests=[],pontGroupedPaymentDialogs=[];
 let cityRequestBranch='events';
 function setCityRequestBranch(branch){
  cityRequestBranch=branch==='payments'?'payments':'events';
@@ -3769,7 +3773,7 @@ async function pontLoadCityRequests(){
  const {data,error}=await db.from('pont_city_event_requests').select('id,event_id,restaurant_id,request_type,reason,proposed_changes,event_snapshot,status,created_at,review_note')
   .order('created_at',{ascending:false}).limit(250);
  if(error)throw error;
- const rows=data||[];const pending=rows.filter(r=>r.status==='pending');
+ const rows=data||[];pontGroupedEventRequests=rows;const pending=rows.filter(r=>r.status==='pending');
  $('cityRequestsPendingLabel').textContent='('+pending.length+')';
  const allPending=pending.length+cityEventsLoaded.filter(e=>e.status==='pending').length;
  $('pontCityRequestsNavCount').textContent=allPending?'('+allPending+')':'';
@@ -3790,6 +3794,7 @@ async function pontLoadCityRequests(){
   card.append(name,detail);box.append(card);
  }
  if(!rows.length&&!(cash.data||[]).length&&!(pay.data||[]).length){const p=document.createElement('p');p.textContent='Nu există solicitări de la AR.';box.append(p)}
+ pontRenderGroupedCityRequests();
 }
 async function loadCityEvents(){
  const cityStatus=$('cityStatus'),moderationStatus=$('cityModerationStatus');
