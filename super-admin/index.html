@@ -1960,13 +1960,14 @@ async function pontDecideCashRequest(item){
   cancel.onclick=()=>close(null);dialog.oncancel=e=>{e.preventDefault();close(null)};
   dialog.showModal();
  });
- if(!choice)return;
+ if(!choice)return false;
  const confirmed=await pontASConfirm({title:'Activezi promovarea cash?',message:message+' · '+(choice==='paid'?'Confirmi că ai încasat deja banii cash.':'Acordi doar accesul, fără încasare.'),button:'Confirmă '+(choice==='paid'?'plătit':'doar acces')});
- if(!confirmed)return;
+ if(!confirmed)return false;
  const {error}=await db.rpc('pont_city_decide_cash_request',{p_request_id:item.id,p_action:choice});
- if(error){$('pontRestaurantCommerceNotice').textContent='Solicitarea cash nu a putut fi confirmată: '+error.message;return}
+ if(error){$('pontRestaurantCommerceNotice').textContent='Solicitarea cash nu a putut fi confirmată: '+error.message;throw error}
  await loadRestaurantCommercialData();
  $('pontRestaurantCommerceNotice').textContent='Solicitarea cash a fost confirmată: '+(choice==='paid'?'Plătit':'Doar acces')+'.';
+ return true;
 }
 async function pontCancelCityCreditBooking(item){
  const answer=await pontASConfirm({title:'Anulează rezervarea din credit',message:'Anulezi rezervarea încă neaprobată și restitui automat creditul restaurantului. Nu se va face nicio operațiune în Stripe.',button:'Restituie creditul'});
@@ -3645,9 +3646,10 @@ async function pontCityApproveCashFromEvent(item){
  pontCityShowEventDecision('Se deschide confirmarea solicitării cash…');
  try{
   await loadCommercialPayments();
-  await pontDecideCashRequest(item);
+  const confirmed=await pontDecideCashRequest(item);
+  if(!confirmed){pontCityShowEventDecision('Confirmarea promovării a fost anulată. Solicitarea rămâne în așteptare.');return}
   await loadCityEvents();
-  pontCityShowEventDecision('Solicitarea cash a fost procesată. Verifică statusul și accesul în fișa restaurantului.');
+  pontCityShowEventDecision('Solicitarea cash a fost aprobată. Verifică statusul și accesul în fișa restaurantului.');
  }catch(err){pontCityShowEventDecision('Nu s-a putut confirma solicitarea cash: '+err.message)}
 }
 async function pontCityRejectCashFromEvent(item){
