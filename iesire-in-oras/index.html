@@ -250,8 +250,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
     <label>Localitate<input name="locality" required maxlength="80" placeholder="Slobozia, Amara, Grivița…"></label>
     <label>Locație<input name="venue" required maxlength="120" placeholder="Numele localului"></label>
     <label>Telefon pentru rezervări<input name="contact_phone" required maxlength="32" inputmode="tel" autocomplete="tel"></label>
-    <label>Link afiș (opțional)<input type="url" name="poster_url" maxlength="700" placeholder="https://..."></label>
-    <label class="full">Descrierea evenimentului<textarea name="description" maxlength="1200" placeholder="Program, artiști, informații despre rezervare…"></textarea></label>
+    <details class="full pont-public-event-optional"><summary>Afiș și descriere (opționale)</summary><div><label>Link afiș<input type="url" name="poster_url" maxlength="700" placeholder="https://..."></label><label>Descrierea evenimentului<textarea name="description" maxlength="1200" placeholder="Program, artiști, informații despre rezervare…"></textarea></label></div></details>
     <label class="full pont-guest-organizer pont-event-consent"><input type="checkbox" name="consent" required> <span>Sunt de acord cu transmiterea datelor către PONT prin WhatsApp și cu stocarea lor pentru analizarea solicitării. <a href="../confidentialitate.html">Politica de confidențialitate</a>.</span></label>
     <button type="submit" class="full" id="eventSubmitButton">Trimite spre aprobare pe WhatsApp</button>
     <span id="eventFormStatus" class="event-form-status full" role="status"></span>
@@ -400,4 +399,29 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadEvents
 <script type="module" src="../pont-privacy-consent.js?v=consent-audit-20261113-v4"></script>
 <script defer src="../pont-navigation-history.js?v=admin-back-x23"></script>
 <script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script>
-<script src="../pont-date-display.js?v=dmy-20261116" defer></script></body></html>
+<script src="../pont-date-display.js?v=dmy-20261116" defer></script><style id="pont-guest-event-form-mobile-compact-20261117">
+.event-publisher{padding:clamp(11px,2.7vw,19px)}
+#eventSubmitForm{gap:8px 10px;padding:clamp(9px,2vw,12px)}
+#eventSubmitForm .pont-event-form-section{padding:2px 0 5px;margin:0;font-size:10px}
+#eventSubmitForm label{font-size:11px;gap:4px;min-width:0}
+#eventSubmitForm input:not([type=checkbox]){min-width:0}
+#eventSubmitForm .pont-public-event-optional{grid-column:1/-1;min-width:0;border:1px solid rgba(164,204,188,.35);border-radius:9px;background:#09262d;overflow:hidden}
+#eventSubmitForm .pont-public-event-optional>summary{cursor:pointer;list-style:none;padding:9px 11px;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#efdbaa;font:700 11px/1.3 system-ui}
+#eventSubmitForm .pont-public-event-optional>summary::-webkit-details-marker{display:none}
+#eventSubmitForm .pont-public-event-optional>summary::after{content:'⌄';font-size:16px}
+#eventSubmitForm .pont-public-event-optional[open]>summary::after{transform:rotate(180deg)}
+#eventSubmitForm .pont-public-event-optional>div{padding:9px 10px;display:grid;gap:9px;border-top:1px solid rgba(164,204,188,.24)}
+#eventSubmitForm .pont-public-event-optional textarea{min-height:68px}
+@media(max-width:600px){
+ .event-publisher{margin:14px auto 23px;padding:11px}
+ #eventSubmitForm{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;padding:10px}
+ #eventSubmitForm label:has(input[name="organizer_first_name"]),#eventSubmitForm label:has(input[name="organizer_last_name"]),#eventSubmitForm label:has(input[name="event_date"]),#eventSubmitForm label:has(input[name="start_time"]),#eventSubmitForm label:has(input[name="locality"]),#eventSubmitForm label:has(input[name="venue"]){grid-column:span 1}
+ #eventSubmitForm .pont-public-event-optional label{grid-column:1/-1}
+ #eventSubmitForm input:not([type=checkbox]){padding:8px 9px;min-height:39px;font-size:16px}
+ #eventSubmitButton{min-height:40px}
+}
+@media(max-width:350px){
+ #eventSubmitForm{grid-template-columns:1fr}
+ #eventSubmitForm label:has(input[name="organizer_first_name"]),#eventSubmitForm label:has(input[name="organizer_last_name"]),#eventSubmitForm label:has(input[name="event_date"]),#eventSubmitForm label:has(input[name="start_time"]),#eventSubmitForm label:has(input[name="locality"]),#eventSubmitForm label:has(input[name="venue"]){grid-column:1/-1}
+}
+</style></body></html>
