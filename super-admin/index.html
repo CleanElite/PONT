@@ -3295,21 +3295,37 @@ async function pontCityManagePromotion(payment,action,buttons){
  }catch(err){notice.textContent='Eroare: '+err.message;buttons.forEach(button=>button.disabled=false)}
 }
 function pontCityPromotionDetails(e,article){
- const promotions=cityEventPromotions.filter(x=>(x.promoted_event_id||x.event_id)===e.id&&x.status==='confirmed');
+ const promotions=cityEventPromotions.filter(x=>(x.promoted_event_id||x.event_id)===e.id&&['pending','confirmed'].includes(x.status));
  for(const pay of promotions){
   const slot=pay.pontSlot;
-  if(!slot||slot.status!=='reserved')continue;
+  if(!slot||!['reserved','held'].includes(slot.status))continue;
   const now=new Date();
-  const active=pay.expires_at&&new Date(pay.expires_at)>now;
+  const pending=pay.status==='pending';
+  const active=!pending&&pay.expires_at&&new Date(pay.expires_at)>now;
   const paused=Boolean(pay.promotion_paused_at);
   const label=pay.service_type==='pinned_event'?'Poziție fixă · Locul '+slot.position:'Bandă publicitară exclusivă';
   const detail=document.createElement('section');detail.className='pont-city-promo-admin';
   const heading=document.createElement('strong');heading.textContent='PROMOVARE · '+label;
   const dates=document.createElement('small');dates.textContent='Interval: '+pontPromotionDateLabel(slot.start_date)+' – '+pontPromotionEndLabel(slot.end_date);
   const status=document.createElement('small');status.className='pont-city-promo-state';
-  status.textContent=!active?'Perioadă expirată':paused?'Pe pauză':slot.start_date>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(now)?'Programată · confirmată AS':'Activă · confirmată AS';
-  status.dataset.state=!active?'expired':paused?'paused':'active';
+  status.textContent=pending?(pay.stripe_paid_at?'Plată Stripe înregistrată · așteaptă confirmarea AS':'Rezervare temporară · promovare neactivată'):!active?'Perioadă expirată':paused?'Pe pauză':slot.start_date>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(now)?'Programată · confirmată AS':'Activă · confirmată AS';
+  status.dataset.state=pending?'pending':!active?'expired':paused?'paused':'active';
   detail.append(heading,dates,status);
+  if(pending&&!pay.stripe_paid_at){
+   const controls=document.createElement('div');controls.className='pont-city-promo-controls';
+   const cancel=document.createElement('button');cancel.type='button';cancel.className='pont-city-reject';cancel.textContent='Anulează rezervarea temporară';
+   cancel.onclick=async()=>{
+    const accept=await pontASConfirm({title:'Eliberează poziția rezervată',message:'Anulezi rezervarea temporară neplătită pentru „'+e.title+'” și eliberezi locul. Dacă formularul Stripe vechi este ulterior achitat, plata trebuie rambursată.',button:'Eliberează poziția'});
+    if(!accept)return;
+    cancel.disabled=true;
+    try{
+     const {error}=await db.rpc('pont_city_cancel_pending_promotion',{p_payment_id:pay.id});
+     if(error)throw error;
+     await loadCityEvents();$('cityModerationStatus').textContent='Rezervarea temporară a fost anulată. Poziția este disponibilă.';
+    }catch(error){$('cityModerationStatus').textContent='Nu am putut elibera poziția: '+error.message;cancel.disabled=false}
+   };
+   controls.append(cancel);detail.append(controls);
+  }
   if(active){
    const controls=document.createElement('div');controls.className='pont-city-promo-controls';
    const toggle=document.createElement('button');toggle.type='button';toggle.textContent=paused?'Reia promovarea':'Pune pe pauză';
@@ -3479,11 +3495,11 @@ async function loadCityEvents(){
  try{
   const [result,promos,slots]=await Promise.all([
    db.from('pont_city_events').select('id,restaurant_id,title,description,event_date,start_time,venue,locality,contact_phone,poster_url,status,created_at',{count:'exact'}).order('created_at',{ascending:false}).limit(999),
-   db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,event_id,promoted_event_id,status,confirmed_at,confirmed_by,expires_at,promotion_paused_at,manual_confirmation_mode').in('service_type',['pinned_event','exclusive_banner']).eq('status','confirmed').limit(999),
-   db.from('pont_city_promotion_slots').select('payment_id,position,start_date,end_date,status').eq('status','reserved').limit(999)
+   db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,event_id,promoted_event_id,status,confirmed_at,confirmed_by,expires_at,promotion_paused_at,manual_confirmation_mode,stripe_paid_at').in('service_type',['pinned_event','exclusive_banner']).in('status',['confirmed','pending']).limit(999),
+   db.from('pont_city_promotion_slots').select('payment_id,position,start_date,end_date,status,hold_until').in('status',['reserved','held']).limit(999)
   ]);
   if(result.error||promos.error||slots.error)throw result.error||promos.error||slots.error;
-  const slotMap=new Map((slots.data||[]).map(row=>[row.payment_id,row]));
+  const slotMap=new Map((slots.data||[]).filter(row=>row.status==='reserved'||(row.status==='held'&&new Date(row.hold_until)>new Date())).map(row=>[row.payment_id,row]));
   cityEventPromotions=(promos.data||[]).map(item=>({...item,pontSlot:slotMap.get(item.id)||null}));
   cityEventsLoaded=result.data||[];cityHistoryComplete=(result.count??cityEventsLoaded.length)<1000;
   const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
