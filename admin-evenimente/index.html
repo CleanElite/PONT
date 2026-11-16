@@ -419,7 +419,7 @@ async function openCityPromotion(event,type,price,card=null){
  endWrap.hidden=type!=='pinned_event';endDate.required=type==='pinned_event';endDate.value='';endDate.min=date.value;
  const maxRangeDate=new Date(Date.parse(date.value+'T12:00:00Z')+29*86400000).toISOString().slice(0,10);
  endDate.max=maxRangeDate<event.event_date?maxRangeDate:event.event_date;
- $('pontPromotionPeriodHint').textContent=type==='pinned_event'?'Selectează data de început și data de sfârșit (inclusiv), maximum 30 de zile și fără depășirea datei evenimentului. Locul trebuie să fie liber în întreg intervalul. Activarea necesită aprobarea AS.':'Alege poziția și data de începere. Pentru locurile ocupate poți solicita prima perioadă liberă.';
+ $('pontPromotionPeriodHint').textContent=type==='pinned_event'?'Promovarea expiră obligatoriu la sfârșitul datei evenimentului sau la data de sfârșit selectată, dacă este mai devreme (maximum 30 zile). Locul devine disponibil din ziua următoare expirării. Nu se prelungește automat. Activarea necesită aprobarea AS.':'Alege poziția și data de începere. Pentru locurile ocupate poți solicita prima perioadă liberă.';
  $('pontPromotionStatus').textContent='';
  $('pontPromotionSubmit').textContent='Finalizează plata cu cardul · '+price+' lei';
  $('pontPromotionDialog').showModal();
@@ -529,7 +529,7 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
   const dialog=$('cityStripeConfirmDialog'),form=$('cityStripeConfirmForm');
   const label=serviceType==='subscription'?'Abonament Ieșire în oraș · 30 zile':serviceType==='pinned_event'?'Promovare · Locul '+(position||'ales'):'Promovare · Bandă publicitară';
   $('cityStripeConfirmTitle').textContent='Confirmi plata de '+Number(amount).toLocaleString('ro-RO')+' lei?';
-  $('cityStripeConfirmMessage').textContent=serviceType==='subscription'?'Abonamentul începe după confirmarea manuală a accesului de către AS și este valabil 30 de zile.':serviceType==='pinned_event'?'Promovarea va fi afișată între '+(requestedStartDate||'data de început')+' și '+($('pontPromotionEndDate').value||'data de sfârșit')+', după aprobarea AS.':'Rezervarea începe pe '+(requestedStartDate||'data aleasă')+' și durează până la data evenimentului sau maximum 30 de zile. AS activează promovarea după verificare.';
+  $('cityStripeConfirmMessage').textContent=serviceType==='subscription'?'Abonamentul începe după confirmarea manuală a accesului de către AS și este valabil 30 de zile.':serviceType==='pinned_event'?'După aprobarea AS, promovarea va fi afișată între '+(requestedStartDate||'data de început')+' și '+($('pontPromotionEndDate').value||'data de sfârșit')+' (inclusiv). Poziția devine liberă din ziua următoare, fără prelungire automată.':'Rezervarea începe pe '+(requestedStartDate||'data aleasă')+' și durează până la data evenimentului sau maximum 30 de zile. AS activează promovarea după verificare.';
   $('cityStripeConfirmService').textContent=label;
   $('cityStripeConfirmAmount').textContent=Number(amount).toLocaleString('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2})+' lei';
   $('cityStripeConfirmStatus').textContent='';
