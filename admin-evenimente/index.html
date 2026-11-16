@@ -227,6 +227,9 @@ body.pont-admin--city #pontPromotionDialog.pont-promotion-compact h2{margin:0 0 
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionDescription{margin:0 0 9px;font:550 11px/1.35 system-ui}
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionEndWrap{grid-column:auto}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact form>label:has(#pontPromotionStartDate){grid-column:auto}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact form>label:has(#pontPromotionEndDate){grid-column:auto}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionCreditWrap[hidden],body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionQueueConsentWrap[hidden]{display:none!important}
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact form>label{min-width:0;margin:0;font:650 11px/1.3 system-ui}
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact input[type=date]{box-sizing:border-box;width:100%;min-width:0;min-height:36px;padding:6px;font-size:12px}
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionEndDate{opacity:1;cursor:default;background:#183c3c;color:#f1e2b7}
