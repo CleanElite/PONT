@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
 const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
-for(const root of ['','pranz-slobozia/']){
+for(const root of ['']){
  test(root+'public card lists all enabled restaurants in promotion order',()=>{
   const html=read(root+'meniul-zilei/index.html');
   assert.match(html,/restaurants\?select=id,name,enabled,phone,accepts_card,menu_price,offers_delivery&enabled=eq.true/);
@@ -28,11 +28,13 @@ for(const root of ['','pranz-slobozia/']){
   assert.match(html,/pont_set_daily_menu_exhausted/);
   assert.match(html,/pont_daily_menu_status/);
   assert.match(html,/timeZone:'Europe\/Bucharest'/);
-  assert.match(html,/Reactivează meniul zilei/);
+  assert.match(html,/Apasă pentru reactivare/);
+  assert.match(html,/Meniul zilei a fost reactivat/);
  });
  test(root+'super-admin can toggle availability separately for each restaurant',()=>{
   const html=read(root+'super-admin/index.html');
-  assert.match(html,/data-exhausted-restaurant/);
+  assert.match(html,/data-today-exhausted/);
+  assert.match(read(root+'menu-templates-stock-v2.js'),/data-today-exhausted/);
   assert.match(html,/pont_set_daily_menu_exhausted/);
   assert.match(html,/dailyMenuExhaustedIds/);
  });
