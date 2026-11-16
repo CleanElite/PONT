@@ -354,6 +354,7 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #restaurantRows .pont-commerce-line{border:1px solid #608c7a7d;border-radius:11px;padding:10px;margin:11px 0;background:linear-gradient(135deg,#123b3e,#092a30)}
 #restaurantRows .pont-commerce-line>header{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;margin:0 0 7px;padding:0;border:0}
 #restaurantRows .pont-commerce-line>header strong{font-size:13px;color:#f1deb0}
+#restaurantRows .pont-menu-month-heading{font:650 10px/1.3 system-ui;color:#bedbd4;text-align:right;white-space:normal;font-variant-numeric:tabular-nums}
 #restaurantRows .pont-commerce-line .pont-commerce-facts{display:flex;flex-wrap:wrap;gap:7px;font-size:11px;color:#bfe1d7;line-height:1.5}
 #restaurantRows .pont-commerce-line .pont-commerce-facts span{border:1px solid #8bab985c;padding:4px 7px;border-radius:7px;max-width:100%;overflow-wrap:anywhere}
 #restaurantRows .pont-commerce-line button{min-height:34px;font-size:11px;padding:7px 11px;margin-top:9px}
@@ -1807,13 +1808,13 @@ function pontCommerceDetailsHtml(r){
  const month=pontCommerceMonthValue(),offer=pontCommerceMonthOffer(r.id,month),mode=pontCommerceCurrentMode(r.id,month);
  const rank=pontCommerceRank(r.id,month),labels={paid:'Plătit',authorization:'Doar acces',none:'Fără acces'};
  const menuExpiry=new Intl.DateTimeFormat('ro-RO',{day:'2-digit',month:'2-digit',year:'numeric'}).format(new Date(Number(month.slice(0,4)),Number(month.slice(5,7)),0));
- let output='<div class="pont-commerce-line pont-commerce-menu"><header><strong>Meniul zilei</strong></header>'+ 
- '<div class="pont-inline-access-status"><span>Ofertă<strong>'+(offer?esc(auctionMoney(offer.amount)):'Fără ofertă')+'</strong></span><span>Acces<strong data-payment-state="'+mode+'">'+esc(labels[mode])+'</strong>'+(mode!=='none'?'<small>Expiră '+esc(menuExpiry)+'</small>':'')+'</span>'+pontStripeStatusTile(pontVerifiedStripeMenuAmount(offer))+'</div>'+
+ let output='<div class="pont-commerce-line pont-commerce-menu"><header><strong>Meniul zilei</strong><span class="pont-menu-month-heading">Luna '+esc(month.slice(5,7))+'.'+esc(month.slice(0,4))+' · până la '+esc(menuExpiry)+'</span></header>'+ 
+ '<div class="pont-inline-access-status"><span>Ofertă<strong>'+(offer?esc(auctionMoney(offer.amount)):'Fără ofertă')+'</strong></span><span>Acces<strong data-payment-state="'+mode+'">'+esc(labels[mode])+'</strong></span>'+pontStripeStatusTile(pontVerifiedStripeMenuAmount(offer))+'</div>'+
  '<div class="pont-commerce-facts">'+
  (offer?'<span>'+esc(auctionMoney(offer.amount))+' licitați</span>':'')+
  (rank?'<span>Locul '+rank+'</span>':'')+
  (offer?'<span>Runda '+esc(offer.round)+'</span>':'')+
- (!offer?'<span>Luna '+esc(month)+'</span>':'')+
+ 
  '</div>'+pontInlineAccessOptions(r.id,'menu',mode)+'</div>';
  const allItems=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const subscriptions=allItems.filter(x=>x.service_type==='subscription');
