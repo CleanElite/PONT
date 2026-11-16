@@ -403,6 +403,18 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-fields{min-width:0}
 #restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
 #restaurantRows .restaurant-admin-item>#restaurantForm[hidden],#restaurantRows .restaurant-admin-item>#restaurantAccess[hidden]{display:none!important}
+</style><style id="pont-as-inline-access-radio-20261116">
+#restaurantRows .pont-inline-access-status{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:7px 0 9px}
+#restaurantRows .pont-inline-access-status>span{min-width:0;border:1px solid #6e9d8d75;border-radius:9px;padding:8px 7px;background:#0a2c32;color:#bcdad0;font:600 10px/1.45 system-ui;overflow-wrap:anywhere}
+#restaurantRows .pont-inline-access-status strong{display:block;margin-top:2px;color:#f6e3b5;font-size:12px}
+#restaurantRows .pont-inline-access-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:10px 0 2px}
+#restaurantRows .pont-inline-access-choice{min-width:0;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px 4px;border:1px solid #658f8280;border-radius:9px;background:#0c3035;color:#e0efe6;font:750 clamp(10px,2.6vw,12px)/1.2 system-ui;cursor:pointer;white-space:normal}
+#restaurantRows .pont-inline-access-choice:has(input:checked){border-color:#dec58d;background:linear-gradient(120deg,#23584f,#164239);color:#fff0bd}
+#restaurantRows .pont-inline-access-choice input[type="radio"]{flex:none;appearance:auto!important;-webkit-appearance:radio!important;display:inline-block!important;width:14px!important;height:14px!important;min-width:14px!important;min-height:14px!important;margin:0!important;padding:0!important;accent-color:#bdebd8;cursor:pointer}
+#restaurantRows .pont-inline-access-choice input:disabled{opacity:.6}
+#restaurantRows .pont-commerce-menu .pont-commerce-facts{margin-top:5px}
+#restaurantRows .pont-city-finance-subsection{margin-top:9px}
+@media(max-width:390px){#restaurantRows .pont-inline-access-options{gap:4px}#restaurantRows .pont-inline-access-choice{padding:7px 3px;gap:3px;font-size:10px}}
 </style><style id="pont-today-restaurant-exhaustion-20261116">
 #pontTodayMenu .pont-today-card .pont-today-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px}
 #pontTodayMenu .pont-today-exhaustion-footer{display:grid;gap:8px;margin:14px 0 0;padding:14px 0 1px;border-top:1px solid rgba(103,207,191,.42)}
@@ -2230,6 +2242,57 @@ $('restaurantRows').addEventListener('change',async event=>{
   input.checked=!desired;
   input.disabled=false;
   status('Nu s-a actualizat vizibilitatea: '+error.message,true);
+ }
+});
+$('restaurantRows').addEventListener('change',async event=>{
+ const input=event.target.closest('input[data-pont-access-module]');
+ if(!input||input.disabled)return;
+ const service=input.dataset.pontAccessModule,restaurantId=input.dataset.restaurantId,selected=input.value;
+ const restaurant=restaurants.find(row=>row.id===restaurantId);
+ if(!restaurant||!['menu','city'].includes(service)||!['paid','authorization','none'].includes(selected))return;
+ const active=service==='city'?pontCityPaymentRows.find(row=>row.restaurant_id===restaurantId&&row.service_type==='subscription'&&row.status==='confirmed'&&new Date(row.expires_at)>new Date()):null;
+ const previous=service==='menu'?pontCommerceCurrentMode(restaurantId,pontCommerceMonthValue()):active?(active.manual_confirmation_mode==='paid'?'paid':'authorization'):'none';
+ if(previous===selected)return;
+ const group=[...$('restaurantRows').querySelectorAll('input[data-pont-access-module="'+service+'"][data-restaurant-id="'+restaurantId+'"]')];
+ const restore=()=>group.forEach(el=>{el.checked=el.value===previous;el.disabled=false});
+ const title=service==='menu'?'Meniul zilei':'Ieșire în oraș';
+ const choice=selected==='paid'?'Plătit':selected==='authorization'?'Doar acces':'Fără acces';
+ const period=service==='menu'?'luna '+pontCommerceMonthValue():'abonamentul de 30 de zile';
+ const warning=selected==='paid'?'Confirmarea Plătit este manuală și nu reprezintă o încasare Stripe.':
+  selected==='none'?'Retragi autorizarea de publicare; istoricul plăților rămâne păstrat.':
+  'Acordarea Doar acces nu confirmă o încasare.';
+ const renewal=service==='city'&&previous!=='none'&&selected!=='none'?' Abonamentul activ va fi retras și reactivat pentru încă 30 de zile.':'';
+ const confirmation=await pontASConfirm({title:'Schimbă accesul · '+title,
+  message:'Restaurant: '+restaurant.name+'. Selectezi „'+choice+'” pentru '+period+'. '+warning+renewal,
+  button:'Confirmă modificarea'});
+ if(!confirmation){restore();return}
+ group.forEach(el=>el.disabled=true);
+ if(service==='menu'){
+  const saved=await pontApplyRestaurantAccess(selected,{rid:restaurantId});
+  if(!saved){restore();return}
+  return;
+ }
+ if(pontPaymentBusy){restore();return}
+ pontPaymentBusy=true;
+ $('pontRestaurantCommerceNotice').textContent='Se actualizează abonamentul pentru '+restaurant.name+'…';
+ try{
+  if(previous!=='none'){
+   const {error}=await db.rpc('pont_city_manage_subscription_access',{p_restaurant_id:restaurantId,p_action:'revoke'});
+   if(error)throw error;
+  }
+  if(selected!=='none'){
+   const {error}=await db.rpc('pont_city_manage_subscription_access',{p_restaurant_id:restaurantId,p_action:selected==='paid'?'paid':'access'});
+   if(error)throw error;
+  }
+  pontPaymentBusy=false;
+  await loadRestaurantCommercialData();
+  if(cityMode)await loadCityEvents();
+  $('pontRestaurantCommerceNotice').textContent=title+': '+choice+' · '+restaurant.name+'.'+(selected==='paid'?' Confirmare manuală, fără modificarea încasărilor Stripe.':'');
+ }catch(error){
+  pontPaymentBusy=false;
+  restore();
+  $('pontRestaurantCommerceNotice').textContent='Nu s-a salvat integral schimbarea pentru '+restaurant.name+': '+error.message+'. Reîncarcă situația înainte de a încerca din nou.';
+  void loadRestaurantCommercialData();
  }
 });
 $('restaurantRows').addEventListener('toggle',event=>{
