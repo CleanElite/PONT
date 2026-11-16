@@ -2063,18 +2063,19 @@ function pontOpenRestaurantAccess(rid){
  $('pontRestaurantAccessDialog').showModal();
 }
 function pontCloseRestaurantAccess(){ $('pontRestaurantAccessDialog').close();pontCommerceDialogRestaurant=null }
-async function pontApplyRestaurantAccess(mode){
- if(pontPaymentBusy)return;
- const rid=pontCommerceDialogRestaurant,month=pontCommerceMonthValue();
- if(!rid||!['paid','authorization','none'].includes(mode))return;
+async function pontApplyRestaurantAccess(mode,options={}){
+ if(pontPaymentBusy)return false;
+ const rid=options.rid||pontCommerceDialogRestaurant,month=pontCommerceMonthValue();
+ if(!rid||!['paid','authorization','none'].includes(mode))return false;
+ const inline=Boolean(options.rid);
  const prev=pontCommerceCurrentMode(rid,month);
- if(prev===mode){pontCloseRestaurantAccess();return}
- if(mode==='paid'&&!confirm('Confirmi plata pentru '+pontPaymentRestaurantName(rid)+' în luna '+month+'?'))return;
+ if(prev===mode){if(!inline)pontCloseRestaurantAccess();return true}
+ if(!inline&&mode==='paid'&&!confirm('Confirmi plata pentru '+pontPaymentRestaurantName(rid)+' în luna '+month+'?'))return false;
  let reason=null;
- if(mode==='none'&&prev==='paid'){
+ if(!inline&&mode==='none'&&prev==='paid'){
   if(!confirm('Retragi confirmarea plății? Accesul comercial poate fi oprit, dar datele rămân salvate.'))return;
   reason=prompt('Motivul retragerii (opțional):');
-  if(reason===null)return;
+  if(reason===null)return false;
  }
  pontPaymentBusy=true;
  $('pontRestaurantAccessApply').disabled=true;$('pontRestaurantAccessRemove').disabled=true;
@@ -2095,12 +2096,13 @@ async function pontApplyRestaurantAccess(mode){
    const {error}=await db.from('pont_manual_payment_approvals').upsert({restaurant_id:rid,campaign_month:date,approval_type:mode},{onConflict:'restaurant_id,campaign_month'});
    if(error)throw error;
   }
-  pontCloseRestaurantAccess();
+  if(!inline)pontCloseRestaurantAccess();
   pontPaymentBusy=false;
   await loadRestaurantCommercialData();
   $('pontRestaurantCommerceNotice').textContent='Modificare salvată pentru '+pontPaymentRestaurantName(rid)+' · '+month+'.';
   void loadAuctions();void loadAnalyticsRevenue();void refreshRestaurantAuctionPayments();
- }catch(e){$('pontRestaurantAccessAlert').textContent='Nu s-a salvat complet: '+e.message+'. Actualizează datele înainte de o nouă încercare.';pontPaymentBusy=false;}
+  return true;
+ }catch(e){const message='Nu s-a salvat complet: '+e.message+'. Actualizează datele înainte de o nouă încercare.';if(inline)$('pontRestaurantCommerceNotice').textContent=message;else $('pontRestaurantAccessAlert').textContent=message;pontPaymentBusy=false;return false;}
  finally{$('pontRestaurantAccessApply').disabled=false;$('pontRestaurantAccessRemove').disabled=false;}
 }
 $('pontRestaurantAccessClose').onclick=pontCloseRestaurantAccess;
