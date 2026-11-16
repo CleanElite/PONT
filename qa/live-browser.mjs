@@ -37,6 +37,8 @@ for(const viewport of sizes){
    const started=Date.now();
    const response=await page.goto(ORIGIN+path,{waitUntil:'domcontentloaded',timeout:11000});
    result.http=response?.status()??null;result.final_url=page.url();result.load_ms=Date.now()-started;
+   const headers=response?.headers()||{};
+   result.security_headers={hsts:headers['strict-transport-security']||null,csp:headers['content-security-policy']||null,x_frame_options:headers['x-frame-options']||null,referrer_policy:headers['referrer-policy']||null,x_content_type_options:headers['x-content-type-options']||null,permissions_policy:headers['permissions-policy']||null};
    await page.waitForTimeout(name==='meniul-zilei'||name==='iesire-in-oras'?4500:1200);
    result.title=await page.title();
    const scan=await page.evaluate(()=>{
