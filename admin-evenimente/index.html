@@ -231,6 +231,7 @@ body.pont-admin--city #pontPromotionDialog.pont-promotion-compact form>label:has
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact form>label:has(#pontPromotionEndDate){grid-column:auto}
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionCreditWrap[hidden],body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionQueueConsentWrap[hidden]{display:none!important}
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact form>label{min-width:0;margin:0;font:650 11px/1.3 system-ui}
+body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionEndDate{pointer-events:none;user-select:none}
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact input[type=date]{box-sizing:border-box;width:100%;min-width:0;min-height:36px;padding:6px;font-size:12px}
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionEndDate{opacity:1;cursor:default;background:#183c3c;color:#f1e2b7}
 body.pont-admin--city #pontPromotionDialog.pont-promotion-compact #pontPromotionSlotWrap{grid-column:1/-1;margin:1px 0;padding:9px;border-radius:10px}
@@ -582,7 +583,7 @@ body.pont-admin--city #myRequests .metrics{display:none!important}
 </dialog>
 </main><script src="../super-admin/config.js"></script><script type="module">
 const $=id=>document.getElementById(id);const cfg=window.PONT_CONFIG||{};
-const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+const today=()=>{const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const p=key=>parts.find(x=>x.type===key)?.value||'';return p('year')+'-'+p('month')+'-'+p('day')};
 let db,restaurant,user,citySubscriptionActive=false,citySubscriptionRequested=false,cityUploadedPoster='',cityEventRows=[],cityRequestRows=[],cityCashRequestRows=[],cityPaymentRows=[],cityOwnedSlots=[],cityEditingEvent=null,cityPaymentResponses=new Map();
 const stateNames={pending:'În așteptare',approved:'Aprobat',rejected:'Respins',removed:'Retras'};
 const requestLabels={remove:'Solicitare retragere',edit:'Solicitare modificare',pinned_event:'Fixare eveniment · 50 lei',exclusive_banner:'Bandă exclusivă · 100 lei'};
@@ -612,6 +613,9 @@ function pontPromotionAutoEnd(start,eventDate){
 async function pontRefreshPromotionSlots(){
  const isPin=cityPromotionType==='pinned_event',date=$('pontPromotionStartDate').value,endDate=$('pontPromotionEndDate').value,wrap=$('pontPromotionSlotWrap');
  wrap.hidden=false;
+ if(!cityPromotionEvent||!date||date<today()||date>cityPromotionEvent.event_date){
+  $('pontPromotionSlotOptions').replaceChildren();$('pontPromotionAvailability').textContent='Nu poți promova pentru o dată trecută sau după eveniment.';pontSlotQuote=null;pontPromotionQuotes=[];return;
+ }
  if(isPin&&(endDate!==pontPromotionAutoEnd(date,cityPromotionEvent.event_date)||endDate<date||(Date.parse(endDate+'T00:00:00Z')-Date.parse(date+'T00:00:00Z'))/86400000>=30)){
   $('pontPromotionSlotOptions').replaceChildren();$('pontPromotionAvailability').textContent='Selectează un interval valid (maximum 30 de zile) pentru verificarea pozițiilor.';pontSlotQuote=null;pontPromotionQuotes=[];return;
  }
@@ -706,6 +710,7 @@ async function openCityPromotion(event,type,price,card=null){
  $('pontPromotionDescription').textContent=event.title+' · '+price+' lei';
  const date=$('pontPromotionStartDate');
  date.min=today();date.max=event.event_date;date.value=date.min;
+ if(event.event_date<date.min){$('status').textContent='Evenimentul a expirat. Nu poate fi promovat.';return;}
  const endWrap=$('pontPromotionEndWrap'),endDate=$('pontPromotionEndDate');
  endWrap.hidden=type!=='pinned_event';endDate.required=type==='pinned_event';endDate.readOnly=type==='pinned_event';
  endDate.value=type==='pinned_event'?pontPromotionAutoEnd(date.value,event.event_date):'';endDate.min=date.value;endDate.max=event.event_date;
@@ -723,11 +728,21 @@ async function openCityPromotion(event,type,price,card=null){
   if(!error&&data?.length&&cityPromotionEvent?.id===event.id&&cityPromotionType===type){pontAvailablePromotionCredit=data[0];$('pontPromotionCreditWrap').hidden=false;$('pontPromotionCreditText').textContent='Folosește creditul existent de '+Number(data[0].amount).toLocaleString('ro-RO')+' lei pentru această promovare, fără o nouă plată Stripe.';}
  })();
 }
-$('pontPromotionStartDate').onchange=()=>{
- if(cityPromotionType==='pinned_event')$('pontPromotionEndDate').value=pontPromotionAutoEnd($('pontPromotionStartDate').value,cityPromotionEvent.event_date);
+function pontValidatePromotionStartDate(){
+ const start=$('pontPromotionStartDate'),minimum=today(),maximum=cityPromotionEvent?.event_date;
+ start.min=minimum;if(maximum)start.max=maximum;
+ if(!maximum)return;
+ if(!start.value||start.value<minimum||start.value>maximum){
+  start.value=minimum<=maximum?minimum:'';
+  $('pontPromotionStatus').textContent=minimum<=maximum?'Data trecută sau ulterioară evenimentului nu poate fi selectată. Am resetat data la astăzi.':'Evenimentul a expirat.';
+ }
+ if(cityPromotionType==='pinned_event')$('pontPromotionEndDate').value=pontPromotionAutoEnd(start.value,maximum);
+ $('pontPromotionEndDate').min=start.value;
  pontUpdatePromotionSummary();
  void pontRefreshPromotionSlots();
-};
+}
+$('pontPromotionStartDate').addEventListener('input',pontValidatePromotionStartDate);
+$('pontPromotionStartDate').addEventListener('change',pontValidatePromotionStartDate);
 $('pontPromotionEndDate').onchange=()=>{
  if(cityPromotionType==='pinned_event')$('pontPromotionEndDate').value=pontPromotionAutoEnd($('pontPromotionStartDate').value,cityPromotionEvent.event_date);
  pontUpdatePromotionSummary();
