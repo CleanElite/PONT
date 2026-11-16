@@ -3047,7 +3047,7 @@ function renderCommercialPayments(){
  $('pontPaymentsConfirmed').textContent=String(activeCity+menu.filter(x=>x.payment_status==='paid').length);
  $('pontPaymentsRevoked').textContent=String(city.filter(x=>x.status==='revoked').length);
  $('pontPaymentsCount').textContent=combined.length+' înregistrări';
- const create=$('pontCityPaymentCreate');create.hidden=pontPaymentFilter==='menu';
+ const create=$('pontCityPaymentCreate');create.hidden=true; // Formularul manual vechi este înlocuit de confirmările din fișa restaurantului.
  $('pontManualAuthCreate').hidden=pontPaymentFilter==='city';
  const authSelect=$('pontAuthRestaurant'),previousAuth=authSelect.value;
  authSelect.replaceChildren(pontPayElement('option','Selectează restaurantul'));authSelect.firstChild.value='';
