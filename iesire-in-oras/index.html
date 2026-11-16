@@ -230,7 +230,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
  <div class="pont-sponsor" aria-label="Această pagină este sponsorizată de Biblos Grivița"><div class="pont-sponsor__track" aria-hidden="true"><div class="pont-sponsor__run"><span class="pont-sponsor__eyebrow">Seri de neuitat</span><span class="pont-sponsor__separator">✦</span><span class="pont-sponsor__caption">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator">✦</span><strong class="pont-sponsor__brand">Biblos Grivița</strong><span class="pont-sponsor__separator">✦</span></div><div class="pont-sponsor__run"><span class="pont-sponsor__eyebrow">Seri de neuitat</span><span class="pont-sponsor__separator">✦</span><span class="pont-sponsor__caption">Această pagină este sponsorizată de</span><span class="pont-sponsor__separator">✦</span><strong class="pont-sponsor__brand">Biblos Grivița</strong><span class="pont-sponsor__separator">✦</span></div></div></div>
  <section id="events" aria-label="Evenimente în Slobozia și împrejurimi">
   <div id="pontPaidCityBanner" class="pont-paid-city-banner" hidden></div>
-  <div id="eventList" aria-live="polite"><div class="event-empty"><h2>Se pregătesc noi evenimente</h2><p>Revino pentru petreceri, seri cu lăutari, muzică live și alte experiențe din zonă.</p></div></div>
+  <div id="eventList" class="pont-events-loading" aria-live="polite"><div class="pont-event-loading" role="status">Se încarcă evenimentele…</div></div>
  </section>
  <section class="event-publisher" aria-labelledby="publishEventTitle">
   <h2 id="publishEventTitle">Organizezi un eveniment?</h2>
@@ -294,7 +294,7 @@ function refreshEvents(){
  renderEvents(sorted);
 }
 function renderEvents(events){
- const list=$('eventList');list.replaceChildren();
+ const list=$('eventList');list.classList.remove('pont-events-loading');list.replaceChildren();
  if(!events.length){
   const empty=document.createElement('div');empty.className='event-empty';
   const h=document.createElement('h2');h.textContent='Se pregătesc noi evenimente';
@@ -390,8 +390,12 @@ async function start(){
  db=createClient(config.url,config.anonKey);
  $('eventSubmitForm').elements.event_date.min=todayLocal();
  pontExternalFields();
- refreshEvents();
- await Promise.allSettled([loadEvents(),setupPublisher()]);
+ const [eventsResult]=await Promise.allSettled([loadEvents(),setupPublisher()]);
+ if(eventsResult.status==='rejected'){
+  const list=$('eventList');list.classList.remove('pont-events-loading');
+  list.textContent='Evenimentele nu pot fi încărcate momentan. Reîncarcă pagina.';
+  console.error('PONT evenimente:',eventsResult.reason);
+ }
 }
 start().catch(e=>{const list=$('eventList');list.textContent='Evenimentele nu pot fi încărcate momentan.';console.error('PONT evenimente:',e)});
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadEvents().catch(console.warn)});
@@ -424,4 +428,9 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadEvents
  #eventSubmitForm{grid-template-columns:1fr}
  #eventSubmitForm label:has(input[name="organizer_first_name"]),#eventSubmitForm label:has(input[name="organizer_last_name"]),#eventSubmitForm label:has(input[name="event_date"]),#eventSubmitForm label:has(input[name="start_time"]),#eventSubmitForm label:has(input[name="locality"]),#eventSubmitForm label:has(input[name="venue"]){grid-column:1/-1}
 }
+</style><style id="pont-city-events-cls-reserve-20261117">
+#eventList.pont-events-loading{min-height:clamp(680px,90svh,1050px);align-content:start}
+#eventList .pont-event-loading{display:flex;align-items:center;justify-content:center;min-height:120px;border:1px solid rgba(153,211,194,.34);border-radius:14px;background:linear-gradient(115deg,#0b3035,#123e3e 50%,#0b3035);color:#c9e0d8;font:600 12px/1.5 system-ui;letter-spacing:.025em}
+@media(prefers-reduced-motion:no-preference){#eventList .pont-event-loading{background-size:200% 100%;animation:pont-event-wait 2.8s ease-in-out infinite alternate}}
+@keyframes pont-event-wait{from{background-position:0 50%}to{background-position:100% 50%}}
 </style></body></html>
