@@ -322,6 +322,8 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #cityRequests .pont-city-unified-payment-step{display:flex;align-items:baseline;gap:7px;font-size:11px;line-height:1.4;color:#e0eee7}
 #cityRequests .pont-city-unified-step-dot{color:#dec38a;font-size:13px}
 #cityRequests .pont-city-unified-payment-step small{margin-left:auto;white-space:nowrap;font-size:9px;color:#a9c9bd}
+#cityRequests .pont-city-unified-step-count{display:inline-flex;align-items:center;justify-content:center;flex:none;margin-left:auto;padding:2px 6px;min-width:25px;border:1px solid #d2b9797a;border-radius:6px;color:#f6dfa8;background:#55472c66;font:750 10px/1.2 system-ui;font-variant-numeric:tabular-nums}
+#cityRequests .pont-city-unified-step-count+small{margin-left:3px}
 @media(max-width:430px){#cityRequests .pont-city-unified-payment-step{flex-wrap:wrap}#cityRequests .pont-city-unified-payment-step small{width:100%;padding-left:13px;margin-top:-3px}}
 </style><style id="pont-compact-account-centre">
 #restaurantRows .pont-restaurant-compact-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:410px!important}
@@ -3469,9 +3471,14 @@ function pontCityUnifiedPaymentCases(){
   item.title=item.service_type==='subscription'?'Solicitare abonament PONT':'Solicitare promovare eveniment';
   item.subtitle=item.service_type==='subscription'?'Abonament 30 zile':nameOfEvent(item.event_id)+' · '+(item.service_type==='pinned_event'?'Poziție fixă':'Bandă publicitară');
   item.steps.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
-  // Only eliminate truly identical records, never distinct cash/Stripe actions.
-  const seen=new Set();
-  item.steps=item.steps.filter(x=>{const key=x.label+'|'+x.date;if(seen.has(key))return false;seen.add(key);return true});
+  // Multiple occurrences of the same action share one status line and a visible counter.
+  const repeated=new Map();
+  for(const step of item.steps){
+   const existing=repeated.get(step.label);
+   if(existing){existing.count+=1;if(String(step.date)>String(existing.date))existing.date=step.date;}
+   else repeated.set(step.label,{...step,count:1});
+  }
+  item.steps=[...repeated.values()].sort((a,b)=>String(b.date).localeCompare(String(a.date)));
  }
  return result.sort((a,b)=>String(b.last).localeCompare(String(a.last)));
 }
@@ -3489,7 +3496,9 @@ function pontRenderCityUnifiedPaymentCard(item){
   const when=document.createElement('small');
   const date=new Date(step.date);
   when.textContent=Number.isNaN(date.getTime())?'':new Intl.DateTimeFormat('ro-RO',{dateStyle:'short',timeStyle:'short',timeZone:'Europe/Bucharest'}).format(date);
-  line.append(mark,label,when);list.append(line);
+  line.append(mark,label);
+  if(step.count>1){const counter=document.createElement('span');counter.className='pont-city-unified-step-count';counter.textContent='×'+step.count;counter.setAttribute('aria-label',step.count+' repetări');line.append(counter)}
+  line.append(when);list.append(line);
  }
  card.append(list);return card;
 }
