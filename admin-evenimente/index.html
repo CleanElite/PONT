@@ -219,6 +219,7 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 <nav class="pont-ar-city-navigation" aria-label="Administrare evenimente">
  <a href="?pagina=adauga" id="cityCreateNav">Adaugă eveniment</a>
  <a href="?pagina=evenimentele-mele" id="cityEventsNav">Evenimentele mele</a>
+ <a href="?pagina=cererile-mele" id="cityRequestsNav">Cererile mele <span id="cityRequestsNavCount" hidden></span></a>
 </nav>
 <p id="status" class="status" role="status">Se verifică permisiunile…</p>
 <section id="citySubscription" class="pont-city-subscription" hidden aria-label="Abonamentul meu">
@@ -232,7 +233,7 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
  <p id="citySubscriptionRequestStatus" class="status" role="status"></p>
  <small>Înainte de Stripe vei vedea confirmarea plății. PONT anunță AS când o deschizi, chiar dacă nu continui. Poți discuta și despre plata cash. AS decide manual când activează accesul.</small>
 </section>
-<section id="cityPromotionPayments" class="panel" hidden><h2>Plăți promovări</h2><div id="cityPromotionPaymentList"></div></section>
+
 <section id="cityNotifications" class="panel pont-city-notifications" hidden aria-label="Notificări de la administrator">
  <h2>Notificări <span id="cityNotificationCount"></span></h2>
  <div id="cityNotificationList"></div>
@@ -249,7 +250,7 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 <label class="wide">Detalii eveniment<textarea name="description" maxlength="1200" placeholder="Program, artiști, detalii privind rezervările"></textarea></label>
 <button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
 <section class="panel" id="myEvents"><h2>Evenimentele mele</h2><div class="pont-ar-approval-note"><strong>Pentru editarea sau retragerea unui eveniment, solicitați aprobarea AS.</strong><span>Alegeți evenimentul de mai jos, apăsați „Solicită modificare” sau „Solicită retragere” și trimiteți motivul. Cererea ajunge direct în panoul Administratorului Suprem. Nicio modificare nu se aplică automat.</span></div><div id="events"></div></section>
-<section class="panel" id="myRequests"><h2>Cererile mele</h2><p>Cereri de modificare, retragere și promovare — cu decizia administratorului.</p><div id="cityRequests"></div></section></div>
+<section class="panel" id="myRequests" hidden><h2>Cererile mele</h2><p>Toate cererile și promovările trimise către PONT, cu statusul lor și răspunsul Administratorului Suprem.</p><div id="cityRequests"></div><section id="cityPromotionPayments" class="pont-city-request-payments" hidden><h3>Promovări prin card sau credit</h3><div id="cityPromotionPaymentList"></div></section></section></div>
 <dialog id="cityStripeConfirmDialog" class="pont-city-stripe-confirm" aria-labelledby="cityStripeConfirmTitle">
  <div class="pont-stripe-eyebrow">PONT · FINALIZARE SERVICIU</div>
  <h2 id="cityStripeConfirmTitle">Confirmă plata</h2>
@@ -319,18 +320,19 @@ let db,restaurant,user,citySubscriptionActive=false,citySubscriptionRequested=fa
 const stateNames={pending:'În așteptare',approved:'Aprobat',rejected:'Respins',removed:'Retras'};
 const requestLabels={remove:'Solicitare retragere',edit:'Solicitare modificare',pinned_event:'Fixare eveniment · 50 lei',exclusive_banner:'Bandă exclusivă · 100 lei'};
 const requestStates={pending:'În analiză',approved:'Aprobată',rejected:'Respinsă'};
-// Două ecrane distincte cu URL propriu, fără pierderea sesiunii AR.
-const cityPage=new URLSearchParams(location.search).get('pagina')==='adauga'?'adauga':'evenimentele-mele';
+// Trei ecrane distincte; administratorul vede numai cererile restaurantului său.
+const cityPageParam=new URLSearchParams(location.search).get('pagina');
+const cityPage=['adauga','evenimentele-mele','cererile-mele'].includes(cityPageParam)?cityPageParam:'evenimentele-mele';
 function applyCityPage(){
- const isCreate=cityPage==='adauga';
+ const isCreate=cityPage==='adauga',isEvents=cityPage==='evenimentele-mele',isRequests=cityPage==='cererile-mele';
  $('createEvent').hidden=!isCreate;
- $('myEvents').hidden=isCreate;
- $('myRequests').hidden=isCreate;
- $('cityCreateNav').classList.toggle('is-active',isCreate);
- $('cityEventsNav').classList.toggle('is-active',!isCreate);
- if(isCreate)$('cityCreateNav').setAttribute('aria-current','page');
- else $('cityEventsNav').setAttribute('aria-current','page');
- document.title=(isCreate?'Adaugă eveniment':'Evenimentele mele')+' · PONT';
+ $('myEvents').hidden=!isEvents;
+ $('myRequests').hidden=!isRequests;
+ for(const [id,selected] of [['cityCreateNav',isCreate],['cityEventsNav',isEvents],['cityRequestsNav',isRequests]]){
+  const nav=$(id);nav.classList.toggle('is-active',selected);
+  if(selected)nav.setAttribute('aria-current','page');else nav.removeAttribute('aria-current');
+ }
+ document.title=(isCreate?'Adaugă eveniment':isEvents?'Evenimentele mele':'Cererile mele')+' · PONT';
 }
 applyCityPage();
 let cityPromotionEvent=null,cityPromotionType=null,cityPromotionPrice=0;
@@ -611,7 +613,7 @@ async function loadCitySubscription(){
  $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'Publicarea este blocată până la plata și confirmarea abonamentului.';
  const promotion=rows.filter(p=>p.service_type!=='subscription'&&['pending','confirmed'].includes(p.status));
  const paymentPanel=$('cityPromotionPayments'),list=$('cityPromotionPaymentList');list.replaceChildren();
- paymentPanel.hidden=cityPage==='adauga'||!promotion.length;
+ paymentPanel.hidden=cityPage!=='cererile-mele'||!promotion.length;
  for(const item of promotion){
   const card=document.createElement('article');card.className='event';
   const title=document.createElement('strong');
