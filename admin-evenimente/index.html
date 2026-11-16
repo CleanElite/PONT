@@ -604,11 +604,14 @@ function pontWarnAlreadyPromoted(card){
 }
 async function openCityPromotion(event,type,price,card=null){
  if(type==='pinned_event'){
-  const already=cityPaymentRows.some(p=>p.promoted_event_id===event.id&&p.service_type==='pinned_event'&&['pending','confirmed'].includes(p.status));
-  if(already){pontWarnAlreadyPromoted(card);return}
-  const {data:hasPromo,error}=await db.rpc('pont_city_event_has_fixed_promotion',{p_event_id:event.id});
-  if(error){$('status').textContent='Nu am putut verifica promovările pentru „'+event.title+'”: '+error.message;return}
-  if(hasPromo){pontWarnAlreadyPromoted(card);return}
+  const current=cityPaymentRows.filter(p=>p.promoted_event_id===event.id&&p.service_type==='pinned_event'&&['pending','confirmed'].includes(p.status));
+  const switchable=current.length===1&&current[0].status==='pending'&&!current[0].stripe_paid_at&&!current[0].promotion_credit_used&&!!current[0].stripe_checkout_session_id;
+  if(current.length&&!switchable){pontWarnAlreadyPromoted(card);return}
+  if(!switchable){
+   const {data:hasPromo,error}=await db.rpc('pont_city_event_has_fixed_promotion',{p_event_id:event.id});
+   if(error){$('status').textContent='Nu am putut verifica promovările pentru „'+event.title+'”: '+error.message;return}
+   if(hasPromo){pontWarnAlreadyPromoted(card);return}
+  }
  }
  cityPromotionEvent=event;cityPromotionType=type;cityPromotionPrice=price;pontChosenSlot=type==='pinned_event'?null:0;pontAvailablePromotionCredit=null;pontPromotionPaymentMethod='card';pontPromotionQuotes=[];
  $('pontPromotionCreditWrap').hidden=true;$('pontPromotionUseCredit').checked=false;
@@ -623,6 +626,8 @@ async function openCityPromotion(event,type,price,card=null){
  pontUpdatePromotionSummary();
  $('pontPromotionStatus').textContent='';
  $('pontPromotionCashConsent').checked=false;
+ const oldPending=cityPaymentRows.find(p=>p.promoted_event_id===event.id&&p.service_type===type&&p.status==='pending'&&!p.stripe_paid_at&&p.stripe_checkout_session_id);
+ if(oldPending){$('pontPromotionStatus').textContent='Ai o sesiune Stripe nefinalizată. Dacă alegi plata cash, sesiunea Stripe va fi anulată automat.';}
  $('pontPromotionSubmit').textContent='Finalizează plata prin Stripe';
  $('pontPromotionDialog').showModal();
  void pontRefreshPromotionSlots();
@@ -693,6 +698,7 @@ $('pontPromotionForm').onsubmit=async e=>{
    const result=await response.json().catch(()=>({}));
    if(!response.ok)throw Error(result.error||'Solicitarea cash nu a fost trimisă.');
    $('pontPromotionDialog').close();
+   await loadCitySubscription();
    $('status').textContent=result.alreadyRequested?'Ai trimis deja această solicitare cash. Administratorul PONT o poate vedea.':
      'Solicitarea cash a ajuns la administratorul PONT: '+(type==='pinned_event'?'locul '+position+' · '+actualStart+' – '+requestedEndDate:'bandă din '+actualStart)+'. Vei fi contactat pentru plată.';
    return;
@@ -834,7 +840,7 @@ async function loadCitySubscription(){
  if(activeError)throw activeError;
  citySubscriptionActive=Boolean(active);
  const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests')
-  .select('id,status,service_type,amount,event_id,promoted_event_id,promotion_position,promotion_credit_used,requested_start_date,requested_end_date,created_at,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount,revoke_reason')
+  .select('id,status,service_type,amount,event_id,promoted_event_id,promotion_position,promotion_credit_used,requested_start_date,requested_end_date,created_at,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount,stripe_checkout_session_id,revoke_reason')
   .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
  if(paymentError)throw paymentError;
  const rows=payments||[],subs=rows.filter(p=>p.service_type==='subscription');
