@@ -289,7 +289,7 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
  <p id="pontPromotionDescription"></p>
  <form id="pontPromotionForm">
   <label class="wide">Data de început<input type="date" name="requested_start_date" id="pontPromotionStartDate" required></label>
-  <label class="wide" id="pontPromotionEndWrap" hidden>Data de sfârșit (inclusiv) · data evenimentului<input type="date" name="requested_end_date" id="pontPromotionEndDate" readonly aria-readonly="true"></label>
+  <label class="wide" id="pontPromotionEndWrap" hidden>Data de sfârșit (inclusiv) · calculată automat<input type="date" name="requested_end_date" id="pontPromotionEndDate" readonly aria-readonly="true"></label>
   <fieldset class="wide pont-promotion-slot-picker" id="pontPromotionSlotWrap"><legend>Fixează evenimentul pe un loc</legend>
    <div id="pontPromotionSlotOptions" class="pont-slot-options"></div>
    <p id="pontPromotionAvailability" class="status" role="status"></p>
@@ -353,10 +353,15 @@ function applyCityPage(){
 applyCityPage();
 let cityPromotionEvent=null,cityPromotionType=null,cityPromotionPrice=0;
 let pontChosenSlot=null,pontSlotQuote=null,pontAvailablePromotionCredit=null,pontPromotionPaymentMethod='card',pontPromotionQuotes=[];
+function pontPromotionAutoEnd(start,eventDate){
+ if(!start||!eventDate)return '';
+ const day30=new Date(Date.parse(start+'T12:00:00Z')+29*86400000).toISOString().slice(0,10);
+ return day30<eventDate?day30:eventDate;
+}
 async function pontRefreshPromotionSlots(){
  const isPin=cityPromotionType==='pinned_event',date=$('pontPromotionStartDate').value,endDate=$('pontPromotionEndDate').value,wrap=$('pontPromotionSlotWrap');
  wrap.hidden=false;
- if(isPin&&(endDate!==cityPromotionEvent.event_date||endDate<date||(Date.parse(endDate+'T00:00:00Z')-Date.parse(date+'T00:00:00Z'))/86400000>=30)){
+ if(isPin&&(endDate!==pontPromotionAutoEnd(date,cityPromotionEvent.event_date)||endDate<date||(Date.parse(endDate+'T00:00:00Z')-Date.parse(date+'T00:00:00Z'))/86400000>=30)){
   $('pontPromotionSlotOptions').replaceChildren();$('pontPromotionAvailability').textContent='Selectează un interval valid (maximum 30 de zile) pentru verificarea pozițiilor.';pontSlotQuote=null;pontPromotionQuotes=[];return;
  }
  const list=$('pontPromotionSlotOptions'),info=$('pontPromotionAvailability');list.replaceChildren();
@@ -433,13 +438,11 @@ async function openCityPromotion(event,type,price,card=null){
  $('pontPromotionTitle').textContent=type==='pinned_event'?'Promovare pe poziție fixă':'Promovare pe bandă';
  $('pontPromotionDescription').textContent=event.title+' · '+price+' lei. '+(type==='pinned_event'?'Selectează intervalul de promovare.':'Selectează data de început.') ;
  const date=$('pontPromotionStartDate');
- const earliest=new Date(Date.parse(event.event_date+'T12:00:00Z')-29*86400000).toISOString().slice(0,10);
- date.min=type==='pinned_event'&&earliest>today()?earliest:today();
- date.max=event.event_date;date.value=date.min;
+ date.min=today();date.max=event.event_date;date.value=date.min;
  const endWrap=$('pontPromotionEndWrap'),endDate=$('pontPromotionEndDate');
  endWrap.hidden=type!=='pinned_event';endDate.required=type==='pinned_event';endDate.readOnly=type==='pinned_event';
- endDate.value=type==='pinned_event'?event.event_date:'';endDate.min=event.event_date;endDate.max=event.event_date;
- $('pontPromotionPeriodHint').textContent=type==='pinned_event'?'Data de sfârșit este automat data evenimentului ('+event.event_date+') și nu se poate modifica. Alege doar începutul promovării (maximum 30 de zile înainte de eveniment). Poziția se eliberează din ziua următoare evenimentului, fără prelungire automată. Activarea necesită aprobarea AS.':'Alege poziția și data de începere. Pentru locurile ocupate poți solicita prima perioadă liberă.';
+ endDate.value=type==='pinned_event'?pontPromotionAutoEnd(date.value,event.event_date):'';endDate.min=date.value;endDate.max=event.event_date;
+ $('pontPromotionPeriodHint').textContent=type==='pinned_event'?'Data de sfârșit se completează automat: data evenimentului sau ziua 30 de promovare, oricare este mai devreme. Poziția devine liberă în ziua următoare expirării. Nu se prelungește automat. Activarea necesită aprobarea AS.':'Alege poziția și data de începere. Pentru locurile ocupate poți solicita prima perioadă liberă.';
  $('pontPromotionStatus').textContent='';
  $('pontPromotionSubmit').textContent='Finalizează plata cu cardul · '+price+' lei';
  $('pontPromotionDialog').showModal();
@@ -450,11 +453,11 @@ async function openCityPromotion(event,type,price,card=null){
  })();
 }
 $('pontPromotionStartDate').onchange=()=>{
- if(cityPromotionType==='pinned_event')$('pontPromotionEndDate').value=cityPromotionEvent.event_date;
+ if(cityPromotionType==='pinned_event')$('pontPromotionEndDate').value=pontPromotionAutoEnd($('pontPromotionStartDate').value,cityPromotionEvent.event_date);
  void pontRefreshPromotionSlots();
 };
 $('pontPromotionEndDate').onchange=()=>{
- if(cityPromotionType==='pinned_event')$('pontPromotionEndDate').value=cityPromotionEvent.event_date;
+ if(cityPromotionType==='pinned_event')$('pontPromotionEndDate').value=pontPromotionAutoEnd($('pontPromotionStartDate').value,cityPromotionEvent.event_date);
  void pontRefreshPromotionSlots();
 };
 $('pontPromotionSubmit').onclick=()=>{pontPromotionPaymentMethod='card'};
@@ -466,7 +469,7 @@ $('pontPromotionForm').onsubmit=async e=>{
  const date=$('pontPromotionStartDate').value;
  if(!date||date<today()||date>cityPromotionEvent.event_date){$('pontPromotionStatus').textContent='Selectează o dată validă înainte de eveniment.';return}
  const isPinned=cityPromotionType==='pinned_event',requestedEndDate=isPinned?$('pontPromotionEndDate').value:null;
- if(isPinned&&(requestedEndDate!==cityPromotionEvent.event_date||requestedEndDate<date||(Date.parse(requestedEndDate+'T00:00:00Z')-Date.parse(date+'T00:00:00Z'))/86400000>=30)){ $('pontPromotionStatus').textContent='Promovarea trebuie să se încheie exact la data evenimentului, iar intervalul să nu depășească 30 zile.';return; }
+ if(isPinned&&(requestedEndDate!==pontPromotionAutoEnd(date,cityPromotionEvent.event_date)||requestedEndDate<date||(Date.parse(requestedEndDate+'T00:00:00Z')-Date.parse(date+'T00:00:00Z'))/86400000>=30)){ $('pontPromotionStatus').textContent='Data de sfârșit trebuie să fie data evenimentului sau ultima zi a celor 30 de zile de promovare.';return; }
  if(isPinned&&pontChosenSlot===null){$('pontPromotionStatus').textContent='Alege mai întâi locul 1, 2 sau 3.';pontPromotionPaymentMethod='card';return}
  if(!pontSlotQuote){$('pontPromotionStatus').textContent='Verifică disponibilitatea poziției înainte de plată.';pontPromotionPaymentMethod='card';return}
  const actualStart=!pontSlotQuote.available?pontSlotQuote.first_available:date;
