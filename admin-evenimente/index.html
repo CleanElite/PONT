@@ -198,6 +198,11 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 </style><style id="pont-promotion-approval-note-20261116">#pontPromotionForm .pont-promotion-approval-note{display:block;text-align:center;font:400 10px/1.45 system-ui;color:#b9c9c4;letter-spacing:.005em;margin:0 6px 2px}</style><style id="pont-promotion-manual-approval-label-20261116">
 #cityPromotionPaymentList .pont-city-promo-unconfirmed{display:block;color:#f4cf9e;font:750 11px/1.55 system-ui;margin:8px 0}
 #cityPromotionPaymentList .pont-city-promo-approved{display:block;color:#b9ebce;font:750 11px/1.55 system-ui;margin:8px 0}
+</style><style id="pont-single-fixed-promotion-20261116">
+@keyframes pont-already-promoted-shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}
+#events .pont-city-already-promoted-shake{animation:pont-already-promoted-shake .38s ease-in-out}
+#events .pont-city-already-promoted-message{display:block;width:100%;margin-top:7px;padding:6px 9px;border:1px solid #d8b98988;border-radius:8px;background:#4b332b;color:#ffe2bf;font:650 10px/1.45 system-ui;text-align:center}
+@media(prefers-reduced-motion:reduce){#events .pont-city-already-promoted-shake{animation:none}}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -375,7 +380,28 @@ function pontSetPromotionSelectedSlot(){
  consent.hidden=!next||next>cityPromotionEvent.event_date;
  if(next&&next>cityPromotionEvent.event_date)info.textContent+=' Evenimentul se încheie înainte ca locul să devină liber.';
 }
-function openCityPromotion(event,type,price){
+function pontWarnAlreadyPromoted(card){
+ const target=card||$('events');
+ const old=target.querySelector('.pont-city-already-promoted-message');
+ if(old)old.remove();
+ const warning=document.createElement('small');
+ warning.className='pont-city-already-promoted-message';
+ warning.setAttribute('role','status');
+ warning.textContent='Acest eveniment este deja promovat. Poți promova o singură dată un eveniment.';
+ const actions=target.querySelector('.pont-city-event-actions');
+ (actions||target).append(warning);
+ target.classList.remove('pont-city-already-promoted-shake');void target.offsetWidth;
+ target.classList.add('pont-city-already-promoted-shake');
+ if(typeof navigator.vibrate==='function')navigator.vibrate(65);
+}
+async function openCityPromotion(event,type,price,card=null){
+ if(type==='pinned_event'){
+  const already=cityPaymentRows.some(p=>p.promoted_event_id===event.id&&p.service_type==='pinned_event'&&['pending','confirmed'].includes(p.status));
+  if(already){pontWarnAlreadyPromoted(card);return}
+  const {data:hasPromo,error}=await db.rpc('pont_city_event_has_fixed_promotion',{p_event_id:event.id});
+  if(error){cityInfo('Nu am putut verifica promovările: '+error.message);return}
+  if(hasPromo){pontWarnAlreadyPromoted(card);return}
+ }
  cityPromotionEvent=event;cityPromotionType=type;cityPromotionPrice=price;pontChosenSlot=type==='pinned_event'?null:0;pontAvailablePromotionCredit=null;pontPromotionPaymentMethod='card';pontPromotionQuotes=[];
  $('pontPromotionCreditWrap').hidden=true;$('pontPromotionUseCredit').checked=false;
  $('pontPromotionTitle').textContent=type==='pinned_event'?'Promovare pe poziție fixă':'Promovare pe bandă';
@@ -674,7 +700,7 @@ async function refresh(){
    },pending.includes('remove')));
    if(e.status==='approved'){
     for(const [label,type,price] of [['Promovează · poziție fixă','pinned_event',50],['Promovează · bandă','exclusive_banner',100]]){
-     action.append(arButton(label,()=>openCityPromotion(e,type,price),pending.includes(type)));
+     action.append(arButton(label,()=>void openCityPromotion(e,type,price,card),pending.includes(type)));
     }
    }
    card.append(action);
