@@ -176,6 +176,9 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
 #eventList .pont-promoted-position .menu-card-copy{gap:2px!important}
 #eventList .pont-city-sponsored-label{font:750 9px/1.25 system-ui;letter-spacing:.10em;color:#e5c88d}
 @media(max-width:520px){#eventList .pont-promoted-position .event-card{min-height:100px!important;padding:8px 12px!important}#eventList .pont-city-sponsored-label{font-size:8px}}
+</style><style id="pont-subtle-promoted-mark-20261116">
+#eventList .pont-city-sponsored-label{display:inline-block;align-self:flex-start;width:max-content;max-width:100%;font:600 10px/1.25 system-ui;letter-spacing:.025em;text-transform:none;color:#e6d3a4;opacity:.88}
+@media(max-width:520px){#eventList .pont-city-sponsored-label{font-size:9px}}
 </style></head>
 <body class="lunch menu-showcase">
 <div class="menu-art" aria-hidden="true"></div>
@@ -259,6 +262,7 @@ function renderEvents(events){
   const outer=document.createElement('div');outer.className='event-tile menu-tile';
   const promotedSlot=activePromotions.find(p=>p.service_type==='pinned_event'&&p.event_id===event.id);
   const isFixed=Boolean(promotedSlot);
+  const isPromoted=isFixed||activePromotions.some(p=>p.service_type==='exclusive_banner'&&p.event_id===event.id);
   if(isFixed)outer.classList.add('pont-promoted-position');
   const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
   const hasPoster=!!(event.poster_url&&/^https:\/\//i.test(event.poster_url));if(!hasPoster)button.classList.add('event-card-no-photo');const img=hasPoster?document.createElement('img'):null;if(img){img.className='menu-card-photo';img.src=event.poster_url;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';img.onerror=()=>{img.remove();button.classList.add('event-card-no-photo')};}
@@ -268,7 +272,7 @@ function renderEvents(events){
   const place=document.createElement('span');place.className='menu-card-location';place.textContent=event.venue+' · '+event.locality;
   const hour=document.createElement('span');hour.className='event-category';hour.textContent='Ora '+String(event.start_time||'').slice(0,5);
   const meta=document.createElement('span');meta.className='event-card-meta';meta.append(place,hour);
-  if(isFixed){const premium=document.createElement('span');premium.className='pont-city-sponsored-label';premium.textContent='PROMOVAT · LOCUL '+promotedSlot.slot_number;copy.append(premium)}
+  if(isPromoted){const premium=document.createElement('span');premium.className='pont-city-sponsored-label';premium.textContent='Promovat';copy.append(premium)}
   copy.append(badge,name,meta);if(img)button.append(img);button.append(copy);
   button.addEventListener('click',()=>showDetails(event));outer.append(button);list.append(outer);
  }
