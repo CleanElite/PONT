@@ -30,9 +30,9 @@ for(const viewport of sizes){
   const result={viewport:viewport.name,size:viewport.width+'x'+viewport.height,path,url:ORIGIN+path,http:null,final_url:null,title:null,headings:[],has_description:false,canonical:null,og_image:null,horizontal_overflow:null,small_controls:null,load_ms:null,ttfb_ms:null,lcp_ms:null,cls:null,js_errors:errors,console_errors:consoleErrors,screenshot:null,status:'NETESTAT'};
   try{
    await page.addInitScript(()=>{
-    window.__qaVitals={lcp:null,cls:0};
+    window.__qaVitals={lcp:null,cls:0,shifts:[]};
     try{new PerformanceObserver(list=>{for(const item of list.getEntries())window.__qaVitals.lcp=item.startTime}).observe({type:'largest-contentful-paint',buffered:true})}catch{}
-    try{new PerformanceObserver(list=>{for(const item of list.getEntries())if(!item.hadRecentInput)window.__qaVitals.cls+=item.value}).observe({type:'layout-shift',buffered:true})}catch{}
+    try{new PerformanceObserver(list=>{for(const item of list.getEntries())if(!item.hadRecentInput){window.__qaVitals.cls+=item.value;if(item.value>.002)window.__qaVitals.shifts.push({value:Number(item.value.toFixed(4)),time:Math.round(item.startTime),sources:(item.sources||[]).slice(0,4).map(src=>({tag:src.node?.tagName||null,id:src.node?.id||null,class_name:String(src.node?.className||'').slice(0,90),before:src.previousRect?.y,after:src.currentRect?.y}))});}}).observe({type:'layout-shift',buffered:true})}catch{}
    });
    const started=Date.now();
    const response=await page.goto(ORIGIN+path,{waitUntil:'domcontentloaded',timeout:11000});
@@ -43,7 +43,7 @@ for(const viewport of sizes){
     const visible=el=>{const b=el.getBoundingClientRect(),s=getComputedStyle(el);return b.width>0&&b.height>0&&s.visibility!=='hidden'&&s.display!=='none'};
     const small=[...document.querySelectorAll('button,a,input,select,textarea')].filter(visible).filter(el=>{const b=el.getBoundingClientRect();return b.width<44||b.height<44}).slice(0,12).map(el=>({tag:el.tagName,text:(el.textContent||el.getAttribute('aria-label')||'').trim().slice(0,45),width:Math.round(el.getBoundingClientRect().width),height:Math.round(el.getBoundingClientRect().height)}));
     const nav=performance.getEntriesByType('navigation')[0];
-    return {description:!!document.querySelector('meta[name="description"]')?.content,canonical:document.querySelector('link[rel="canonical"]')?.href||null,og_image:document.querySelector('meta[property="og:image"]')?.content||null,headings:[...document.querySelectorAll('h1')].map(el=>el.textContent.trim().slice(0,90)),horizontal_overflow:Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0)>innerWidth+2,small_controls:small,ttfb_ms:nav?Math.round(nav.responseStart-nav.requestStart):null,lcp_ms:window.__qaVitals?.lcp?Math.round(window.__qaVitals.lcp):null,cls:window.__qaVitals?Number(window.__qaVitals.cls.toFixed(4)):null};
+    return {description:!!document.querySelector('meta[name="description"]')?.content,canonical:document.querySelector('link[rel="canonical"]')?.href||null,og_image:document.querySelector('meta[property="og:image"]')?.content||null,headings:[...document.querySelectorAll('h1')].map(el=>el.textContent.trim().slice(0,90)),horizontal_overflow:Math.max(document.documentElement.scrollWidth,document.body?.scrollWidth||0)>innerWidth+2,small_controls:small,ttfb_ms:nav?Math.round(nav.responseStart-nav.requestStart):null,lcp_ms:window.__qaVitals?.lcp?Math.round(window.__qaVitals.lcp):null,cls:window.__qaVitals?Number(window.__qaVitals.cls.toFixed(4)):null,shift_sources:window.__qaVitals?.shifts||[]};
    });
    Object.assign(result,scan);
    result.screenshot='qa-results/'+viewport.name+'-'+name+'.png';
