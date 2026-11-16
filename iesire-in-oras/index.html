@@ -181,6 +181,12 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
 @media(max-width:520px){#eventList .pont-city-sponsored-label{font-size:9px}}
 #eventSubmitForm .pont-guest-organizer[hidden]{display:none!important}
 #eventSubmitForm .pont-guest-organizer input[type=checkbox]{width:auto!important;display:inline-block;vertical-align:middle;margin-right:6px}
+/* Closed by default: compact public organizer invitation */
+.event-publisher:has(#eventSubmitWrap:not([open])){padding:11px 13px;margin:17px auto 25px;border-radius:12px}
+.event-publisher:has(#eventSubmitWrap:not([open])) h2{font-size:15px;line-height:1.3;margin:0 0 7px}
+.event-publisher:has(#eventSubmitWrap:not([open]))>p,.event-publisher:has(#eventSubmitWrap:not([open]))>#eventGuest{display:none}
+.event-publisher:has(#eventSubmitWrap:not([open])) #eventSubmitWrap{background:transparent;border:0}
+.event-publisher:has(#eventSubmitWrap:not([open])) #eventSubmitWrap>summary{padding:6px 8px;border:1px solid #8d9e8070;border-radius:9px;background:#12343a;font-size:12px}
 /* PONT · Formular public, compact și stabil indiferent de sesiunea AR */
 .event-publisher{max-width:810px;margin:22px auto 35px;padding:clamp(14px,3vw,23px);border-color:#b9a77978;border-radius:17px;background:linear-gradient(135deg,#0a3439,#061f29 80%)}
 .event-publisher h2{font-size:clamp(21px,4vw,28px);margin:0 0 5px}
@@ -223,7 +229,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   <h2 id="publishEventTitle">Organizezi un eveniment?</h2>
   <p>Propune evenimentul tău. Datele vor ajunge la PONT pentru verificare, iar mesajul complet se pregătește pe WhatsApp.</p>
   <div id="eventGuest">Ai cont de restaurant PONT? <a class="event-account-link" href="../login/">Autentifică-te</a> pentru administrarea evenimentelor.</div>
-  <details id="eventSubmitWrap" open>
+  <details id="eventSubmitWrap">
    <summary>Propune un eveniment</summary>
    <form id="eventSubmitForm" class="event-submit-form">
     <div class="full pont-event-form-section">Datele organizatorului</div>
