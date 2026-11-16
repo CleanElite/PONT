@@ -21,6 +21,7 @@ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 const report={generated_at:new Date().toISOString(),origin:ORIGIN,viewports:sizes.map(({name,width,height})=>({name,width,height})),checks:[]};
 for(const viewport of sizes){
  const context=await browser.newContext({viewport:{width:viewport.width,height:viewport.height},isMobile:viewport.isMobile,deviceScaleFactor:1,ignoreHTTPSErrors:false,locale:'ro-RO',serviceWorkers:'block'});
+ let failedNavigations=0;
  for(const {name,path} of pages){
   const page=await context.newPage();
   const errors=[],consoleErrors=[];
@@ -34,7 +35,7 @@ for(const viewport of sizes){
     try{new PerformanceObserver(list=>{for(const item of list.getEntries())if(!item.hadRecentInput)window.__qaVitals.cls+=item.value}).observe({type:'layout-shift',buffered:true})}catch{}
    });
    const started=Date.now();
-   const response=await page.goto(ORIGIN+path,{waitUntil:'domcontentloaded',timeout:30000});
+   const response=await page.goto(ORIGIN+path,{waitUntil:'domcontentloaded',timeout:11000});
    result.http=response?.status()??null;result.final_url=page.url();result.load_ms=Date.now()-started;
    await page.waitForTimeout(name==='meniul-zilei'||name==='iesire-in-oras'?4500:1200);
    result.title=await page.title();
@@ -48,10 +49,15 @@ for(const viewport of sizes){
    result.screenshot='qa-results/'+viewport.name+'-'+name+'.png';
    await page.screenshot({path:result.screenshot,fullPage:false,animations:'disabled',timeout:15000});
    result.status=result.http>=200&&result.http<400?'OK':'PROBLEMĂ';
-  }catch(error){result.status='NETESTAT';result.error=String(error).slice(0,350)}
+   failedNavigations=0;
+  }catch(error){result.status='NETESTAT';result.error=String(error).slice(0,350);failedNavigations++}
   report.checks.push(result);
   console.log('QA',result.viewport,result.path,result.status,result.http,result.error||'',result.horizontal_overflow===true?'OVERFLOW':'');
   await page.close();
+  if(failedNavigations>=2){
+    for(const pending of pages.slice(pages.findIndex(x=>x.name===name)+1))report.checks.push({viewport:viewport.name,size:viewport.width+'x'+viewport.height,path:pending.path,status:'NETESTAT',error:'Oprit după două eșecuri consecutive de conexiune; nu s-a accesat pagina.'});
+    break;
+  }
  }
  await context.close();
 }
