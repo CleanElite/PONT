@@ -1789,7 +1789,8 @@ function pontCommerceDetailsHtml(r){
    '<small>'+esc(status)+(item.stripe_paid_at?' · Stripe: '+esc(pontPaymentDate(item.stripe_paid_at)):'')+(item.promotion_credit_used?' · Achitat cu credit':'')+'</small></div>'+
    (canApprove?'<button type="button" data-commerce-city-payment="'+esc(item.id)+'" data-commerce-city-action="choose">Confirmă</button>':
     canRevoke?'<button type="button" data-commerce-city-payment="'+esc(item.id)+'" data-commerce-city-action="revoke">'+(item.manual_confirmation_mode==='access'?'Anulează accesul':'Anulează confirmarea')+'</button>':'')+
-   (canCredit?'<button type="button" data-commerce-city-credit="'+esc(item.id)+'">Transformă în credit</button>':'')+'</div>';
+   (canCredit?'<button type="button" data-commerce-city-credit="'+esc(item.id)+'">Transformă în credit</button>':'')+
+   (canApprove&&item.promotion_credit_used?'<button type="button" data-commerce-city-credit-cancel="'+esc(item.id)+'">Anulează rezervarea din credit</button>':'')+'</div>';
  }
  output+='<div class="pont-commerce-line pont-commerce-events"><header><strong>Ieșire în oraș</strong><span class="dashboard-badge">'+(r.access_iesire_in_oras?'Activ':'Inactiv')+'</span></header>';
  output+='<div class="pont-city-finance-subsection"><h4>Abonament · 50 lei / 30 zile</h4>';
@@ -1807,6 +1808,14 @@ function pontCommerceDetailsHtml(r){
  output+='<details class="pont-commerce-history"><summary>Istoric'+(logs.length?' · '+logs.length:'')+'</summary>';
  output+=logs.map(l=>'<p class="pont-commerce-note">'+esc(pontPaymentDate(l.occurred_at))+' · '+(l.module==='menu'?'Meniu':'Evenimente')+' · '+esc(l.action)+(l.reason?' · '+esc(l.reason):'')+'</p>').join('')||'<p class="pont-commerce-note">Nicio modificare înregistrată</p>';
  return output+'</details>';
+}
+async function pontCancelCityCreditBooking(item){
+ const answer=await pontASConfirm({title:'Anulează rezervarea din credit',message:'Anulezi rezervarea încă neaprobată și restitui automat creditul restaurantului. Nu se va face nicio operațiune în Stripe.',button:'Restituie creditul'});
+ if(!answer)return;
+ const {error}=await db.rpc('pont_city_cancel_credit_booking',{p_payment:item.id});
+ if(error){$('pontRestaurantCommerceNotice').textContent='Eroare: '+error.message;return}
+ await loadRestaurantCommercialData();
+ $('pontRestaurantCommerceNotice').textContent='Rezervarea a fost anulată și creditul restaurat.';
 }
 async function pontConvertCityPaymentCredit(item){
  const answer=await pontASConfirm({title:'Transformă promovarea în credit',message:'Anulezi rezervarea actuală. Restaurantul primește un credit de '+auctionMoney(item.amount)+' pentru o promovare viitoare de aceeași valoare. Această operațiune nu efectuează o rambursare Stripe.',button:'Acordă credit'});
@@ -3682,9 +3691,10 @@ $('restaurantForm').onsubmit = async event => {
 $('restaurantRows').onclick = async event => {
  const button = event.target.closest('button');
  if (!button) return;
- const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant,accountToggle,accountRestaurant,commerceAccess,commerceCityNew,commerceCityPayment,commerceCityAction,commerceCityCredit} = button.dataset;
+ const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant,accountToggle,accountRestaurant,commerceAccess,commerceCityNew,commerceCityPayment,commerceCityAction,commerceCityCredit,commerceCityCreditCancel} = button.dataset;
  if(commerceAccess){pontOpenRestaurantAccess(commerceAccess);return;}
  if(commerceCityNew){pontOpenCityCharge(commerceCityNew);return;}
+ if(commerceCityCreditCancel){const item=pontCityPaymentRows.find(x=>x.id===commerceCityCreditCancel);if(item)void pontCancelCityCreditBooking(item);return;}
  if(commerceCityCredit){const item=pontCityPaymentRows.find(x=>x.id===commerceCityCredit);if(item)void pontConvertCityPaymentCredit(item);return;}
  if(commerceCityPayment){const item=pontCityPaymentRows.find(x=>x.id===commerceCityPayment);if(item){if(commerceCityAction==='choose')pontOpenCityServiceApproval(item);else void operateCommercialPayment('city',item,commerceCityAction,button).then(()=>loadRestaurantCommercialData());}return;}
  if(accountToggle){void toggleRestaurantAccountAccess(accountToggle,accountRestaurant,button);return;}
