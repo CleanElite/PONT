@@ -180,6 +180,13 @@ body.pont-admin--city #cityStripeConfirmDialog form .primary{background:linear-g
 #pontPromotionCreditWrap[hidden]{display:none!important}
 #pontPromotionCreditWrap{display:flex;align-items:center;gap:10px;padding:13px;border:1px solid #bdab78;border-radius:12px;background:linear-gradient(135deg,#344432,#192e2d);font:650 12px/1.5 system-ui;color:#f5e5bd}
 #pontPromotionCreditWrap input{min-width:20px;width:20px;height:20px;accent-color:#d9c28d}
+</style><style id="pont-credit-cancellation-20261116">
+body.pont-admin--city #pontCreditCancelDialog{box-sizing:border-box;width:min(92vw,490px);max-height:85dvh;overflow:auto;margin:auto;padding:24px;border:1px solid #d2c18b;border-radius:19px;background:linear-gradient(145deg,#16403f,#071d27);color:#f8edd5;box-shadow:0 22px 75px #000a}
+body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;backdrop-filter:blur(5px)}
+#pontCreditCancelDialog h2{font:500 24px/1.2 Georgia,serif}
+#pontCreditCancelDialog p{font:450 13px/1.6 system-ui;color:#cce0d8}
+#pontCreditCancelDialog .pont-credit-cancel-buttons{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+#pontCreditCancelDialog .pont-credit-cancel-buttons button{min-height:43px;border-radius:10px;font-size:12px}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -259,6 +266,12 @@ body.pont-admin--city #cityStripeConfirmDialog form .primary{background:linear-g
   <p class="wide status" id="pontPromotionStatus" role="status"></p>
   <div class="wide pont-city-edit-actions"><button type="button" id="pontPromotionCancel">Anulează</button><button type="submit" class="primary" id="pontPromotionSubmit">Trimite cererea</button></div>
  </form>
+</dialog>
+<dialog id="pontCreditCancelDialog" aria-labelledby="pontCreditCancelTitle" class="pont-city-stripe-confirm">
+ <div class="pont-stripe-eyebrow">PONT · CREDIT PROMOVARE</div>
+ <h2 id="pontCreditCancelTitle">Anulezi această rezervare?</h2>
+ <p>Promovarea neaprobată va fi anulată, iar creditul va redeveni disponibil pentru o rezervare viitoare. Nu se va efectua nicio operațiune Stripe.</p>
+ <div class="pont-credit-cancel-buttons"><button type="button" id="pontCreditCancelNo">Păstrează rezervarea</button><button type="button" class="primary" id="pontCreditCancelYes">Eliberează creditul</button></div>
 </dialog>
 <dialog id="eventEditDialog" class="pont-city-edit-dialog" aria-labelledby="eventEditTitle">
  <h2 id="eventEditTitle">Solicită modificarea evenimentului</h2>
@@ -463,6 +476,17 @@ async function cityStartStripeCheckout(serviceType,paymentId=null,amount=50,even
  window.location.assign(data.checkoutUrl);
  return true;
 }
+function pontConfirmCancelCredit(){
+ return new Promise(resolve=>{
+  const d=$('pontCreditCancelDialog');let settled=false;
+  const finish=yes=>{if(settled)return;settled=true;d.oncancel=null;$('pontCreditCancelYes').onclick=null;$('pontCreditCancelNo').onclick=null;if(d.open)d.close();resolve(yes)};
+  $('pontCreditCancelYes').onclick=()=>finish(true);
+  $('pontCreditCancelNo').onclick=()=>finish(false);
+  d.oncancel=e=>{e.preventDefault();finish(false)};
+  d.showModal();
+ });
+}
+
 async function loadCitySubscription(){
  if(!db||!restaurant)return;
  const {data:active,error:activeError}=await db.rpc('pont_has_active_city_subscription',{p_restaurant_id:restaurant.id});
@@ -494,7 +518,7 @@ async function loadCitySubscription(){
   const title=document.createElement('strong');
   title.textContent=(item.service_type==='pinned_event'?'Poziție fixă':'Bandă publicitară')+' · '+Number(item.amount).toFixed(2)+' lei';
   const status=document.createElement('small');
-  status.textContent=item.promotion_credit_used?'Credit de promovare utilizat · Așteaptă confirmarea AS':item.stripe_paid_at?'Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei încasați · Așteaptă confirmarea AS':item.status==='confirmed'?'Activat manual de AS · Stripe: 0 lei':'Stripe: 0 lei încasați · Poți plăti online sau discuta cu AS pentru cash';
+  status.textContent=item.status==='confirmed'?'Activat de AS · '+(item.promotion_credit_used?'achitat cu credit':'Stripe '+Number(item.stripe_paid_amount||0).toFixed(2)+' lei'):item.promotion_credit_used?'Credit utilizat · Așteaptă confirmarea AS':item.stripe_paid_at?'Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei încasați · Așteaptă confirmarea AS':'Stripe: 0 lei încasați · Poți plăti online sau discuta cu AS pentru cash';
   card.append(title,status);
   const isPaid=Boolean(item.stripe_paid_at)||Boolean(item.promotion_credit_used)||item.status==='confirmed';
   const linkedEvent=cityEventRows.find(e=>e.id===(item.promoted_event_id||item.event_id));
@@ -502,8 +526,18 @@ async function loadCitySubscription(){
    &&['pending','approved'].includes(req.status)&&req.proposed_changes?.requested_start_date===item.requested_start_date);
   if(isPaid){
    const info=document.createElement('small');
-   info.textContent=item.status==='confirmed'?'Promovarea este confirmată de AS. Va apărea automat în perioada rezervată.':'Plata a fost confirmată de Stripe. AS verifică și activează rezervarea.';
+   info.textContent=item.status==='confirmed'?'Promovarea este confirmată de AS. Va apărea automat în perioada rezervată.':item.promotion_credit_used?'Creditul a rezervat poziția. Așteaptă activarea AS.':'Plata a fost confirmată de Stripe. AS verifică și activează rezervarea.';
    card.append(info);
+   if(item.promotion_credit_used&&item.status==='pending'){
+    const cancel=arButton('Anulează și recuperează creditul',async()=>{
+     if(!await pontConfirmCancelCredit())return;
+     cancel.disabled=true;
+     const {error}=await db.rpc('pont_city_cancel_credit_booking',{p_payment:item.id});
+     if(error){status.textContent='Nu s-a anulat: '+error.message;cancel.disabled=false;return}
+     $('status').textContent='Rezervarea a fost anulată. Creditul este disponibil din nou.';
+     await loadCitySubscription();
+    });card.append(cancel);
+   }
   }else if(linkedEvent){
    card.append(arButton('Verifică locurile și continuă plata',()=>openCityPromotion(linkedEvent,item.service_type,item.amount)));
   }
