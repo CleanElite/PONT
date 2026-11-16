@@ -587,6 +587,7 @@ const $=id=>document.getElementById(id);const cfg=window.PONT_CONFIG||{};
 const today=()=>{const parts=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const p=key=>parts.find(x=>x.type===key)?.value||'';return p('year')+'-'+p('month')+'-'+p('day')};
 let db,restaurant,user,citySubscriptionActive=false,citySubscriptionRequested=false,cityUploadedPoster='',cityEventRows=[],cityRequestRows=[],cityCashRequestRows=[],cityPaymentRows=[],cityOwnedSlots=[],cityEditingEvent=null,cityPaymentResponses=new Map();
 const stateNames={pending:'În așteptare',approved:'Aprobat',rejected:'Respins',removed:'Retras'};
+function pontAREventLabel(event){return (event?.event_code?event.event_code+' · ':'')+(event?.title||'Eveniment')}
 const requestLabels={remove:'Solicitare retragere',edit:'Solicitare modificare',pinned_event:'Fixare eveniment · 50 lei',exclusive_banner:'Bandă exclusivă · 100 lei'};
 const requestStates={pending:'În analiză',approved:'Aprobată',rejected:'Respinsă'};
 // Trei ecrane distincte; administratorul vede numai cererile restaurantului său.
@@ -717,7 +718,7 @@ async function openCityPromotion(event,type,price,card=null){
  cityPromotionEvent=event;cityPromotionType=type;cityPromotionPrice=price;pontChosenSlot=type==='pinned_event'?null:0;pontAvailablePromotionCredit=null;pontPromotionPaymentMethod='card';pontPromotionQuotes=[];
  $('pontPromotionCreditWrap').hidden=true;$('pontPromotionUseCredit').checked=false;
  $('pontPromotionTitle').textContent=type==='pinned_event'?'Promovare pe poziție fixă':'Promovare pe bandă';
- $('pontPromotionDescription').textContent=event.title+' · '+price+' lei';
+ $('pontPromotionDescription').textContent=pontAREventLabel(event)+' · '+price+' lei';
  const date=$('pontPromotionStartDate');
  date.min=today();date.max=event.event_date;date.value=date.min;
  if(event.event_date<date.min){$('status').textContent='Evenimentul a expirat. Nu poate fi promovat.';return;}
@@ -838,7 +839,8 @@ function renderCityNotifications(){
  $('cityNotificationCount').textContent=rejected.length?'('+rejected.length+')':'';
  for(const req of rejected){
   const item=document.createElement('article');item.className='pont-city-notification';
-  const title=document.createElement('strong');title.textContent='Solicitare respinsă · '+(requestLabels[req.request_type]||req.request_type);
+  const linkedEvent=cityEventRows.find(e=>e.id===req.event_id);
+  const title=document.createElement('strong');title.textContent='Solicitare respinsă · '+pontAREventLabel(linkedEvent)+' · '+(requestLabels[req.request_type]||req.request_type);
   const reason=document.createElement('p');reason.textContent='Motiv AS: '+(req.review_note||'Nu a fost comunicat un motiv. Contactează administratorul PONT.');
   const date=document.createElement('small');date.textContent=cityDate(req.created_at);
   item.append(title,reason,date);list.append(item);
@@ -1037,7 +1039,7 @@ $('eventEditForm').onsubmit=async evt=>{
  }catch(err){$('eventEditStatus').textContent=err.message}finally{btn.disabled=false}
 };
 async function refresh(){
- const {data,error}=await db.from('pont_city_events').select('id,title,description,venue,locality,contact_phone,poster_url,event_date,start_time,status,created_at')
+ const {data,error}=await db.from('pont_city_events').select('id,title,event_code,description,venue,locality,contact_phone,poster_url,event_date,start_time,status,created_at')
   .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
  if(error)throw error;const rows=data||[];cityEventRows=rows;
  for(const st of ['pending','approved','rejected'])$(st+'Count').textContent=rows.filter(e=>e.status===st).length;
@@ -1050,7 +1052,7 @@ async function refresh(){
  if(!rows.length){const p=document.createElement('p');p.textContent='Nu ai publicat încă evenimente.';container.append(p)}
  for(const e of rows){
   const card=document.createElement('article');card.className='event';
-  const title=document.createElement('strong');title.textContent=e.title;
+  const title=document.createElement('strong');title.textContent=pontAREventLabel(e);
   const details=document.createElement('small');details.textContent=e.venue+' · '+e.event_date+' · '+String(e.start_time).slice(0,5);
   const badge=document.createElement('span');badge.className='state';badge.textContent=stateNames[e.status]||e.status;
   card.append(title,details,badge);
@@ -1132,7 +1134,7 @@ function renderCityRequests(){
   const title=document.createElement('strong');
   const linked=cityEventRows.find(event=>event.id===(payment.promoted_event_id||payment.event_id));
   const isSubscription=payment.service_type==='subscription';
-  title.textContent=isSubscription?'Abonament PONT':'Promovare eveniment'+(linked?' · '+linked.title:'');
+  title.textContent=isSubscription?'Abonament PONT':'Promovare eveniment'+(linked?' · '+pontAREventLabel(linked):'');
   const date=document.createElement('small');date.className='pont-ar-simple-payment-date';
   date.textContent=cityDate(payment.created_at);
   const heading=document.createElement('div');heading.className='pont-ar-numbered-heading';
@@ -1158,7 +1160,7 @@ function renderCityRequests(){
   const label=document.createElement('summary');label.textContent='Alte cereri privind evenimentele ('+eventRequests.length+')';fold.append(label);
   for(const [requestIndex,item] of eventRequests.entries()){
    const line=document.createElement('div');line.className='pont-ar-other-request-row';
-   const name=cityEventRows.find(e=>e.id===item.event_id)?.title||'Eveniment';
+   const name=pontAREventLabel(cityEventRows.find(e=>e.id===item.event_id));
    const current=({pending:'În așteptare',approved:'Aprobată',rejected:'Respinsă',withdrawn:'Retrasă'})[item.status]||item.status;
    line.textContent=String(requestIndex+1).padStart(2,'0')+' · '+(item.request_type==='edit'?'Modificare':'Retragere')+' · '+name+' · '+cityDate(item.created_at)+' · '+current;
    fold.append(line);
