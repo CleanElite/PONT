@@ -625,6 +625,11 @@ async function loadCitySubscription(){
    item.stripe_paid_at?'ÎN AȘTEPTARE · Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei. Promovarea NU este activă până la confirmarea AS.':
    'ÎN AȘTEPTARE · Locul este doar rezervat temporar. Promovarea NU este publicată. Stripe: 0 lei.';
   card.append(title,status);
+  if(item.service_type==='pinned_event'&&item.requested_start_date&&item.requested_end_date){
+   const interval=document.createElement('small');
+   interval.textContent='Perioadă selectată: '+item.requested_start_date+' – '+item.requested_end_date+' (inclusiv)';
+   card.append(interval);
+  }
   const isPaid=Boolean(item.stripe_paid_at)||Boolean(item.promotion_credit_used)||item.status==='confirmed';
   const linkedEvent=cityEventRows.find(e=>e.id===(item.promoted_event_id||item.event_id));
   const alreadyRequested=cityRequestRows.some(req=>req.event_id===linkedEvent?.id&&req.request_type===item.service_type
