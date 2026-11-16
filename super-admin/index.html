@@ -403,6 +403,10 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-fields{min-width:0}
 #restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
 #restaurantRows .restaurant-admin-item>#restaurantForm[hidden],#restaurantRows .restaurant-admin-item>#restaurantAccess[hidden]{display:none!important}
+</style><style id="pont-restaurant-module-filters-20261116">
+#adminRestaurants .pont-restaurant-module-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(5px,1.5vw,12px);width:100%}
+#adminRestaurants .pont-restaurant-module-filters button{min-width:0;min-height:47px;padding:11px 5px;border:1px solid #638d83;border-radius:11px;background:#0e343b;color:#d1e9e0;font:750 clamp(11px,2.6vw,14px)/1.25 system-ui;white-space:normal;cursor:pointer}
+#adminRestaurants .pont-restaurant-module-filters button[aria-pressed="true"]{color:#ffe4a7;background:linear-gradient(145deg,#1f6558,#12483e);border-color:#e4d09c;box-shadow:inset 0 0 0 1px #f6e7b025}
 </style><style id="pont-city-single-month-subscription">
 #pontCityChargeCreate:disabled{opacity:.45;cursor:not-allowed;filter:grayscale(.6)}
 #pontCityChargeAlert:not(:empty){font-size:12px;line-height:1.5;color:#f4dbad;padding:8px 0}
@@ -1240,8 +1244,12 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
   <section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section>
 </section>
 
-<section id="adminRestaurants" class="pont-unified-admin" hidden aria-labelledby="pontUnifiedAdminTitle">
-  <div class="pont-unified-admin-header"><div><h2 id="pontUnifiedAdminTitle">Administrare restaurante</h2><p>Restaurante, conturi, plăți și informații comerciale într-o singură listă.</p></div></div>
+<section id="adminRestaurants" class="pont-unified-admin" hidden aria-label="Filtrare și administrare restaurante">
+  <div class="pont-unified-admin-header"><div class="pont-restaurant-module-filters" role="group" aria-label="Afișează restaurantele după secțiunea vizibilă în panoul AR">
+    <button type="button" data-restaurant-module-filter="all" aria-pressed="true">Toate</button>
+    <button type="button" data-restaurant-module-filter="menu" aria-pressed="false">Meniul zilei</button>
+    <button type="button" data-restaurant-module-filter="city" aria-pressed="false">Ieșire în oraș</button>
+  </div></div>
   <div id="pontManagePanels"></div>
 </section>
 <section id="restaurants" class="card dashboard-panel" aria-labelledby="restaurantsTitle" hidden>
@@ -2139,10 +2147,18 @@ $('pontCityChargeCreate').onclick=async()=>{
 };
 $('pontCityChargeDialog').addEventListener('close',()=>{pontCityChargeRestaurant=null});
 
+let pontRestaurantModuleFilter='all';
+$('adminRestaurants').querySelectorAll('[data-restaurant-module-filter]').forEach(button=>{
+ button.addEventListener('click',()=>{
+  pontRestaurantModuleFilter=button.dataset.restaurantModuleFilter;
+  $('adminRestaurants').querySelectorAll('[data-restaurant-module-filter]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
+  renderRestaurants();
+ });
+});
 function renderRestaurants(){
  const editorCurrentlyOpen=!$('restaurantForm').hidden&&Boolean($('editingRestaurant').value);
  if(editorCurrentlyOpen)pontRestoreRestaurantEditorHome();
- const result=restaurants;
+ const result=restaurants.filter(r=>pontRestaurantModuleFilter==='all'||(pontRestaurantModuleFilter==='menu'&&r.menu_module_visible===true)||(pontRestaurantModuleFilter==='city'&&r.city_module_visible===true));
  $('restaurantRows').innerHTML=result.length?result.map((r,index)=>{
   const id=esc(r.id),accounts=members.filter(m=>m.restaurant_id===r.id);
   const hasAccount=accounts.length>0,revoked=hasAccount&&accounts.every(m=>m.access_revoked===true);
@@ -2164,7 +2180,7 @@ function renderRestaurants(){
   '<div class="pont-account-divider"></div>'+
   pontCommerceDetailsHtml(r)+
   '</div></details></article>';
- }).join(''):emptyMessage('Nu există restaurante înregistrate.');
+ }).join(''):emptyMessage(pontRestaurantModuleFilter==='all'?'Nu există restaurante înregistrate.':'Nu există restaurante cu această secțiune afișată în panoul AR.');
  if(editorCurrentlyOpen)pontPlaceRestaurantEditor($('editingRestaurant').value);
 }
 $('restaurantRows').addEventListener('toggle',event=>{
