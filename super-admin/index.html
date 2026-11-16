@@ -1792,25 +1792,11 @@ function pontStripeStatusTile(amount,pending=false){
  return '<span class="pont-stripe-tile" data-stripe-state="'+(collected?(pending?'pending':'received'):'none')+'">Stripe<strong>'+esc(auctionMoney(collected?amount:0))+'</strong>'+
   (pending?'<small>De validat în AS</small>':collected?'<small>Încasat</small>':'')+'</span>';
 }
-function pontRestaurantPaymentOverview(r){
- const month=pontCommerceMonthValue();
- const offer=pontCommerceMonthOffer(r.id,month)||pontMenuPaymentRows.filter(x=>x.restaurant_id===r.id).sort((a,b)=>b.campaign_month.localeCompare(a.campaign_month))[0];
- const menuDue=Number(offer?.amount||0),menuPaid=pontVerifiedStripeMenuAmount(offer);
- const offerMonth=offer?.campaign_month?' · '+offer.campaign_month.slice(0,7):'';
- const subs=pontCityPaymentRows.filter(p=>p.restaurant_id===r.id&&p.service_type==='subscription');
- const subscription=subs.find(p=>p.status==='confirmed'&&p.stripe_paid_at&&new Date(p.expires_at)>new Date())||subs.find(p=>p.status==='pending'&&p.stripe_paid_at)||subs.find(p=>p.status==='pending')||subs[0];
- const cityDue=Number(subscription?.amount||0),cityPaid=pontVerifiedStripeCityAmount(subscription);
- const waiting=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id&&x.status==='pending'&&(x.stripe_paid_at||x.promotion_credit_used));
- const newCheckout=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id&&x.status==='pending'&&!x.stripe_paid_at);
- const cashRequests=pontCityCashRows.filter(x=>x.restaurant_id===r.id&&['pending','contacted'].includes(x.status));
- const fmt=v=>Number(v).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
- return '<div class="pont-restaurant-stripe-overview">'+
- '<div><strong>Meniul zilei</strong><span>Licitat '+fmt(menuDue)+offerMonth+' · Stripe '+fmt(menuPaid)+'</span></div>'+ 
- '<div><strong>Ieșire în oraș</strong><span>Abonament '+fmt(cityDue)+' · Stripe '+fmt(cityPaid)+'</span></div>'+ 
-
- (cashRequests.length?'<div class="pont-stripe-alert"><strong>Solicitări cash în curs</strong><span>'+cashRequests.length+' cerere/cereri pentru promovări · de verificat în restaurant</span></div>':'')+
- (waiting.length?'<div class="pont-stripe-alert"><strong>De validat în AS</strong><span>'+waiting.length+' serviciu/servicii achitate · Stripe '+fmt(waiting.reduce((n,x)=>n+pontVerifiedStripeCityAmount(x),0))+'</span></div>':newCheckout.length?'<div class="pont-stripe-alert"><strong>Plată inițiată</strong><span>'+newCheckout.length+' serviciu/servicii neplătite</span></div>':'')+
- '</div>';
+function pontRestaurantPaymentAlerts(r){
+ const awaiting=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id&&x.status==='pending'&&(x.stripe_paid_at||x.promotion_credit_used));
+ if(!awaiting.length)return '';
+ const total=awaiting.reduce((sum,x)=>sum+pontVerifiedStripeCityAmount(x),0);
+ return '<div class="pont-stripe-alert" role="status"><strong>De validat în AS</strong><span>'+awaiting.length+' plăți/servicii în așteptare · Stripe '+esc(auctionMoney(total))+'</span></div>';
 }
 function pontInlineAccessOptions(restaurantId,service,current){
  const options=[['paid','Plătit'],['authorization','Doar acces'],['none','Fără acces']];
@@ -1841,6 +1827,7 @@ function pontCommerceDetailsHtml(r){
  '<div class="pont-inline-access-status"><span>Abonament<strong>50 lei / 30 zile</strong>'+(activeSubscription?'<small>Expiră '+esc(pontPaymentDate(activeSubscription.expires_at))+'</small>':'')+'</span><span>Acces<strong data-payment-state="'+cityAccessMode+'">'+esc(cityAccessMode==='paid'?'Plătit':cityAccessMode==='authorization'?'Doar acces':'Fără acces')+'</strong></span>'+
  pontStripeStatusTile(referenceSubscription?pontVerifiedStripeCityAmount(referenceSubscription):0,referenceSubscription?.status==='pending'&&Boolean(referenceSubscription?.stripe_paid_at))+'</div>'+
  pontInlineAccessOptions(r.id,'city',cityAccessMode);
+ output+=pontRestaurantPaymentAlerts(r);
  output+='<div class="pont-city-finance-subsection"><h4>Promovare anunț solicitată'+(cashRows.length+promotions.filter(x=>x.status==='pending').length?' · '+(cashRows.length+promotions.filter(x=>x.status==='pending').length):'')+'</h4>';
  for(const req of cashRows){
   const event=pontCityApprovedEvents.find(x=>x.id===req.event_id);
@@ -2221,7 +2208,7 @@ function renderRestaurants(){
   '<label title="Afișează Ieșire în oraș în panoul AR"><span>II</span><input type="checkbox" data-module-visibility="city" data-restaurant-id="'+id+'" aria-label="Ieșire în oraș pentru '+esc(r.name)+'" '+(r.city_module_visible?'checked':'')+'></label>'+
   '</div>'+
   '<strong class="restaurant-list-name"><span class="pont-live-dot '+(restaurantOnlineIds.has(String(r.id))?'is-online':'is-offline')+'" aria-hidden="true"></span>'+esc(r.name)+'</strong>'+
-  '<div class="restaurant-list-meta"><span>Cod '+esc(r.short_code||'—')+'</span><span>'+esc(r.phone||'Telefon neconfigurat')+'</span></div>'+pontRestaurantPaymentOverview(r)+
+  '<div class="restaurant-list-meta"><span>Cod '+esc(r.short_code||'—')+'</span><span>'+esc(r.phone||'Telefon neconfigurat')+'</span></div>'+
   '<div class="dashboard-badges"><span class="dashboard-badge" data-state="'+(r.enabled?'enabled':'disabled')+'">'+(r.enabled?'Activ':'Suspendat')+'</span>'+
   '<span class="dashboard-badge">Meniul zilei '+(r.menu_module_visible?'vizibil':'ascuns')+'</span>'+
   '<span class="dashboard-badge">Meniu evenimente '+(r.city_module_visible?'vizibil':'ascuns')+'</span>'+
