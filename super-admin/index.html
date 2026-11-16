@@ -3379,15 +3379,17 @@ setInterval(()=>{if(!document.hidden&&cityMode)void loadCityCheckoutAttempts()},
 async function loadCityCheckoutAttempts(){
  const box=$('cityCheckoutAttemptRows'),msg=$('cityCheckoutAttemptStatus');
  msg.textContent='Se verifică interesele de plată ale restaurantelor…';
- const [dialogs,checkouts,cash]=await Promise.all([
+ const [dialogs,checkouts,cash,payments]=await Promise.all([
   db.from('pont_city_payment_dialogs').select('id,restaurant_id,service_type,amount,event_id,opened_at,continued_at,cancelled_at').order('opened_at',{ascending:false}).limit(250),
   db.from('pont_city_checkout_attempts').select('id,restaurant_id,service_type,amount,payment_id,created_at,stripe_checkout_session_id').order('created_at',{ascending:false}).limit(250),
-  db.from('pont_city_cash_requests').select('id,restaurant_id,event_id,service_type,position,requested_start_date,requested_end_date,amount,status,created_at').order('created_at',{ascending:false}).limit(250)
+  db.from('pont_city_cash_requests').select('id,restaurant_id,event_id,service_type,position,requested_start_date,requested_end_date,amount,status,created_at').order('created_at',{ascending:false}).limit(250),
+  db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,promoted_event_id,event_id,amount,status,created_at,stripe_paid_at,stripe_paid_amount,promotion_position,requested_start_date,requested_end_date').order('created_at',{ascending:false}).limit(500)
  ]);
- if(dialogs.error||checkouts.error||cash.error){
-  msg.textContent='Nu se pot încărca notificările: '+(dialogs.error?.message||checkouts.error?.message||cash.error?.message);return;
+ if(dialogs.error||checkouts.error||cash.error||payments.error){
+  msg.textContent='Nu se pot încărca notificările: '+(dialogs.error?.message||checkouts.error?.message||cash.error?.message||payments.error?.message);return;
  }
  const attempts=checkouts.data||[],entries=dialogs.data||[],cashRows=cash.data||[];
+ pontGroupedPaymentDialogs=entries;pontGroupedCashRequests=cashRows;pontGroupedPaymentRequests=payments.data||[];
  box.replaceChildren();
  $('cityPaymentAttemptsCount').textContent=entries.length+cashRows.length?'('+(entries.length+cashRows.length)+')':'';
  const cashHeader=document.createElement('h3');cashHeader.textContent='Solicitări de plată cash · '+cashRows.length;box.append(cashHeader);
@@ -3451,6 +3453,7 @@ async function loadCityCheckoutAttempts(){
  }
  if(!entries.length&&!attempts.length&&!cashRows.length){const empty=document.createElement('p');empty.textContent='Nu a fost deschis niciun dialog de confirmare a plății.';box.append(empty)}
  msg.textContent=cashRows.length+' cereri cash · '+entries.length+' dialoguri de plată · '+attempts.length+' accesări Stripe.';
+ pontRenderGroupedCityRequests();
 }
 function cityDate(date){
  const value=String(date||'');const parts=value.split('-').map(Number);
