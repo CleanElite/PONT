@@ -793,10 +793,10 @@ function pontARPaymentQuestion(payment){
  const question=document.createElement('small');
  question.textContent=payment.service_type==='subscription'?'Te interesează abonamentul PONT pentru evenimentele tale?':'Te interesează promovarea acestui eveniment prin PONT?';
  const buttons=document.createElement('div');buttons.className='pont-ar-payment-options';
- const options=[['claimed_paid','Am plătit prin Stripe'],['interested','Da, mă interesează'],['not_interested','Nu mă interesează']];
+ const options=[['claimed_paid','Da, am plătit prin Stripe'],['wants_cash','Da, dar plătesc cash'],['not_interested','Nu mă interesează']];
  const status=document.createElement('small');status.className='pont-ar-payment-choice-status';
  const current=cityPaymentResponses.get(payment.id);
- if(current)status.textContent=current==='claimed_paid'?'Ai declarat plata. PONT verifică încasarea direct în Stripe.':current==='interested'?'Interesul tău a fost trimis la PONT.':'Ai ales că nu te interesează.';
+ if(current)status.textContent=current==='claimed_paid'?'Ai declarat plata. PONT verifică încasarea direct în Stripe.':current==='wants_cash'?'Ai solicitat plata cash. PONT va verifica solicitarea.':'Ai ales că nu te interesează.';
  for(const [choice,label] of options){
   const button=arButton(label,async()=>{
    buttons.querySelectorAll('button').forEach(b=>b.disabled=true);
@@ -804,7 +804,7 @@ function pontARPaymentQuestion(payment){
    const {error}=await db.from('pont_city_payment_responses').upsert({payment_id:payment.id,restaurant_id:restaurant.id,response:choice,responded_by:user.id,updated_at:new Date().toISOString()},{onConflict:'payment_id'});
    if(error){status.textContent='Nu s-a putut înregistra: '+error.message;buttons.querySelectorAll('button').forEach(b=>b.disabled=false);return}
    cityPaymentResponses.set(payment.id,choice);
-   status.textContent=choice==='claimed_paid'?'Declarația a fost trimisă. Doar Stripe confirmă încasarea.':choice==='interested'?'PONT a primit interesul tău.':'Ai confirmat că nu te interesează.';
+   status.textContent=choice==='claimed_paid'?'Declarația a fost trimisă. Doar Stripe confirmă încasarea.':choice==='wants_cash'?'Solicitarea de plată cash a fost înregistrată în PONT.':'Ai confirmat că nu te interesează.';
    buttons.querySelectorAll('button').forEach(b=>{b.disabled=false;b.setAttribute('aria-pressed',String(b.dataset.choice===choice))});
   });button.dataset.choice=choice;button.setAttribute('aria-pressed',String(current===choice));buttons.append(button);
  }
