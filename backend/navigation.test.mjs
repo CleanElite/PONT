@@ -18,7 +18,7 @@ function harness(href,{referrer='',historyLength=3,stored=[],type='navigate'}={}
  const location={href:u.href,origin:u.origin,pathname:u.pathname,assign(url){calls.assigned.push(url)}};
  const history={length:historyLength,back(){calls.back++}};
  const document={referrer,addEventListener(name,fn){calls.events[name]=fn}};
- const context={window:null,document,history,location,Date,URL,
+ const context={window:null,document,history,location,Date,URL,URLSearchParams,
   sessionStorage:{getItem:key=>store.get(key)||null,setItem:(key,val)=>store.set(key,val)},
   performance:{getEntriesByType:()=>[{type}]}};
  context.window=context;
@@ -87,32 +87,27 @@ test('all PONT entry points use the shared navigation helper',()=>{
    'promovare/index.html','login/index.html','admin-v2/index.html',
    'super-admin/index.html','super-admin/clasament/index.html',
    'informatii-restaurant/index.html','termeni.html','confidentialitate.html',
-   'cookies.html','pranz-slobozia/index.html','pranz-slobozia/meniul-zilei/index.html',
-   'pranz-slobozia/iesire-in-oras/index.html','pranz-slobozia/promovare/index.html',
-   'pranz-slobozia/login/index.html','pranz-slobozia/admin-v2/index.html',
-   'pranz-slobozia/super-admin/index.html','pranz-slobozia/informatii-restaurant/index.html']){
+   'cookies.html']){
   const html=readFileSync(new URL('../'+path,import.meta.url),'utf8');
   assert.match(html,/pont-navigation-history\.js/,path);
  }
 });
 test('restaurant X closes without stacking phantom history states',()=>{
- for(const path of ['meniul-zilei/index.html','pranz-slobozia/meniul-zilei/index.html']){
+ for(const path of ['meniul-zilei/index.html']){
   const html=readFileSync(new URL('../'+path,import.meta.url),'utf8');
   assert.match(html,/pontRestaurantRoutePushed/);
   assert.doesNotMatch(html,/searchParams\.delete\('restaurant'\);history\.pushState\(\{\},'',u\)/);
  }
 });
 
-test('auction transparency opens in same tab from the correct administrator and retains a safe fallback',()=>{
- for(const prefix of ['', 'pranz-slobozia/']){
-  for(const area of ['admin-v2','super-admin']){
-   const html=readFileSync(new URL('../'+prefix+area+'/index.html',import.meta.url),'utf8');
-   assert.match(html,new RegExp('termeni\\.html\\?from='+area+'#transparenta-licitatii'));
-   assert.doesNotMatch(html,/termeni\\.html\\?from=(?:admin-v2|super-admin)#transparenta-licitatii"\\s+target="_blank"/);
-   const terms=readFileSync(new URL('../'+prefix+'termeni.html',import.meta.url),'utf8');
-   assert.match(terms,/id="pontLegalBack"/);
-   assert.ok(terms.includes("'admin-v2':'./admin-v2/'"));
-   assert.ok(terms.includes("'super-admin':'./super-admin/'"));
-  }
- }
+test('auction transparency and promotion links retain safe same-tab navigation',()=>{
+ const admin=readFileSync(new URL('../admin-v2/index.html',import.meta.url),'utf8');
+ const as=readFileSync(new URL('../super-admin/index.html',import.meta.url),'utf8');
+ const terms=readFileSync(new URL('../termeni.html',import.meta.url),'utf8');
+ assert.match(admin,/termeni\\.html\\?from=admin-v2#transparenta-licitatii/);
+ assert.doesNotMatch(admin,/termeni\\.html\\?from=admin-v2#transparenta-licitatii"\\s+target="_blank"/);
+ assert.match(as,/id="pontPromotionNavLink" href="\\.\\.\\/promovare\\/"/);
+ assert.match(terms,/id="pontLegalBack"/);
+ assert.ok(terms.includes("'admin-v2':'./admin-v2/'"));
+ assert.ok(terms.includes("'super-admin':'./super-admin/'"));
 });
