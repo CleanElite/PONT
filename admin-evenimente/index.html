@@ -249,6 +249,9 @@ body.pont-admin--city .pont-ar-payment-choice-error{display:block;margin-top:5px
 body.pont-admin--city .pont-ar-other-requests{margin-top:10px;padding:10px;border:1px solid #648e8170;border-radius:9px}
 body.pont-admin--city .pont-ar-other-requests>summary{font-size:11px;color:#dbc993;cursor:pointer}
 body.pont-admin--city .pont-ar-other-request-row{font-size:10px;line-height:1.5;color:#bad1c8;padding:7px 0;border-top:1px solid #486e6455}
+/* Thin one-line AR moderation notice */
+body.pont-admin--city #myEvents .pont-ar-approval-note{display:block;margin:0 0 10px;padding:7px 10px;border:1px solid #bda57775;border-radius:7px;background:#123238;box-shadow:none}
+body.pont-admin--city #myEvents .pont-ar-approval-note span{display:block;font:500 10px/1.35 system-ui;color:#e7d9b7;white-space:normal}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -295,7 +298,7 @@ body.pont-admin--city .pont-ar-other-request-row{font-size:10px;line-height:1.5;
 <label class="wide">Link afiș (completat automat după încărcare)<input name="poster_url" type="url" maxlength="700" placeholder="https://..." readonly></label>
 <label class="wide">Detalii eveniment<textarea name="description" maxlength="1200" placeholder="Program, artiști, detalii privind rezervările"></textarea></label>
 <button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
-<section class="panel" id="myEvents"><h2>Evenimentele mele</h2><div class="pont-ar-approval-note"><strong>Pentru editarea sau retragerea unui eveniment, solicitați aprobarea AS.</strong><span>Alegeți evenimentul de mai jos, apăsați „Solicită modificare” sau „Solicită retragere” și trimiteți motivul. Cererea ajunge direct în panoul Administratorului Suprem. Nicio modificare nu se aplică automat.</span></div><div id="events"></div></section>
+<section class="panel" id="myEvents"><h2>Evenimentele mele</h2><div class="pont-ar-approval-note" role="note"><span>Modificarea sau retragerea unui eveniment necesită aprobarea AS.</span></div><div id="events"></div></section>
 <section class="panel" id="myRequests" hidden><h2>Cererile mele</h2><p>Toate cererile și promovările trimise către PONT, cu statusul lor și răspunsul Administratorului Suprem.</p><div id="cityRequests"></div><section id="cityPromotionPayments" class="pont-city-request-payments" hidden><h3>Promovări prin card sau credit</h3><div id="cityPromotionPaymentList"></div></section></section></div>
 <dialog id="cityStripeConfirmDialog" class="pont-city-stripe-confirm" aria-labelledby="cityStripeConfirmTitle">
  <div class="pont-stripe-eyebrow">PONT · FINALIZARE SERVICIU</div>
