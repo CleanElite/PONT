@@ -745,7 +745,7 @@ async function loadCitySubscription(){
  $('submitEvent').disabled=!citySubscriptionActive;
  $('eventForm').hidden=!citySubscriptionActive;
  $('createEvent').hidden=cityPage!=='adauga'||!citySubscriptionActive;
- $('citySubscriptionNotice').hidden=citySubscriptionActive||cityPage!=='adauga';
+ $('citySubscriptionNotice').hidden=citySubscriptionActive||!['adauga','evenimentele-mele'].includes(cityPage);
  $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'';
  const promotion=rows.filter(p=>p.service_type!=='subscription');
  const paymentPanel=$('cityPromotionPayments');paymentPanel.hidden=true;
