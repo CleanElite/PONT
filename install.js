@@ -25,8 +25,9 @@ installButton.addEventListener('click', async () => {
     const prompt = installPrompt;
     installPrompt = undefined;
     try {
-      const { outcome } = await prompt.prompt();
-      if (outcome === 'accepted') installButton.hidden = true;
+      await prompt.prompt();
+      const choice = await prompt.userChoice;
+      if (choice?.outcome === 'accepted') installButton.hidden = true;
       return;
     } catch {
       // The browser menu still provides an installation route.
