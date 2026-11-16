@@ -4,6 +4,10 @@ on:
     branches: [main]
     paths:
       - 'qa/live-browser.mjs'
+      - 'index.html'
+      - 'meniul-zilei/index.html'
+      - 'iesire-in-oras/index.html'
+      - 'pont-privacy-consent.js'
       - '.github/workflows/pont-live-qa.yml'
   workflow_dispatch:
 permissions:
