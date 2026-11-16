@@ -387,6 +387,7 @@ function openCityPromotion(event,type,price){
  })();
 }
 $('pontPromotionStartDate').onchange=()=>void pontRefreshPromotionSlots();
+$('pontPromotionSubmit').onclick=()=>{pontPromotionPaymentMethod='card'};
 $('pontPromotionCash').onclick=()=>{pontPromotionPaymentMethod='cash';$('pontPromotionForm').requestSubmit()};
 $('pontPromotionCancel').onclick=()=>$('pontPromotionDialog').close();
 $('pontPromotionForm').onsubmit=async e=>{
