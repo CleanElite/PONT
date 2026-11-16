@@ -4281,6 +4281,34 @@ async function loadCityEvents(){
   moderationStatus.textContent=cityHistoryComplete?'':'Istoric parțial: verifică duplicatele manual.';
  }catch(error){cityStatus.textContent='Nu se pot încărca datele: '+error.message;moderationStatus.textContent=cityStatus.textContent}
 }
+// Actualizăm automat solicitările AR fără a întrerupe dialogurile active.
+let pontPendingRequestsPrevious=null;
+let pontRequestsRefreshInProgress=false;
+async function pontASRefreshRequestNotifications(){
+ if(pontRequestsRefreshInProgress||document.hidden||$('app').hidden||document.querySelector('dialog[open]'))return;
+ pontRequestsRefreshInProgress=true;
+ try{
+  await loadCityEvents();
+  const text=$('pontCityRequestsNavCount')?.textContent||'';
+  const count=Number(text.replace(/[^0-9]/g,''))||0;
+  const nav=document.querySelector('[data-city-tab="cityRequests"]');
+  if(nav){nav.title=count?count+' solicitări AR nevăzute':'Nu există solicitări AR nevăzute';nav.setAttribute('aria-label','Solicitări AR: '+count+' nevăzute');}
+  if(pontPendingRequestsPrevious!==null&&count>pontPendingRequestsPrevious){
+   let notice=$('pontASIncomingRequestsNotice');
+   if(!notice){
+    notice=document.createElement('button');notice.type='button';notice.id='pontASIncomingRequestsNotice';
+    notice.style.cssText='position:fixed;bottom:22px;right:18px;z-index:99999;max-width:min(340px,calc(100vw - 36px));padding:13px 17px;border:1px solid #e4cd8b;border-radius:12px;background:#201b12;color:#fff3d4;box-shadow:0 10px 36px #0009;font-weight:650;text-align:left;cursor:pointer';
+    notice.onclick=()=>{notice.hidden=true;selectCityPanel('cityRequests');};
+    document.body.append(notice);
+   }
+   notice.textContent='Ai solicitări AR noi ('+count+'). Deschide solicitările.';
+   notice.hidden=false;
+  }
+  pontPendingRequestsPrevious=count;
+ }catch(error){console.warn('Nu s-au putut actualiza notificările AR:',error)}
+ finally{pontRequestsRefreshInProgress=false}
+}
+setInterval(()=>{void pontASRefreshRequestNotifications()},60000);
 for(const button of platformTabs)button.onclick=()=>selectPlatformPanel(button.dataset.tab);
 for(const button of cityTabs)button.onclick=()=>selectCityPanel(button.dataset.cityTab);
 $('pontCityModuleToggle').onclick=()=>selectCityPanel('cityDashboard');
