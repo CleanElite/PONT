@@ -1801,6 +1801,67 @@ function pontCommerceDetailsHtml(r){
  output+=logs.map(l=>'<p class="pont-commerce-note">'+esc(pontPaymentDate(l.occurred_at))+' · '+(l.module==='menu'?'Meniu':'Evenimente')+' · '+esc(l.action)+(l.reason?' · '+esc(l.reason):'')+'</p>').join('')||'<p class="pont-commerce-note">Nicio modificare înregistrată</p>';
  return output+'</details>';
 }
+let pontCityApprovalPayment=null;
+function pontOpenCityServiceApproval(item){
+ pontCityApprovalPayment=item;
+ const row=restaurants.find(r=>r.id===item.restaurant_id);
+ const serviceNames={subscription:'Abonament 50 lei / 30 zile',pinned_event:'Promovare pe poziție fixă',exclusive_banner:'Bandă publicitară'};
+ $('pontCityApprovalTitle').textContent=serviceNames[item.service_type]||'Confirmare serviciu';
+ $('pontCityApprovalDetails').textContent=(row?.name||'Restaurant')+' · Serviciu '+auctionMoney(item.amount);
+ $('pontCityApprovalStripe').textContent='Stripe verificat: '+auctionMoney(pontVerifiedStripeCityAmount(item))+
+ (item.stripe_paid_at?' · '+pontPaymentDate(item.stripe_paid_at):' · Fără plată Stripe');
+ $('pontCityApprovalError').textContent='';
+ document.querySelectorAll('input[name="pontCityApprovalMode"]').forEach(r=>r.checked=false);
+ const select=$('pontCityApprovalPosition'),date=$('pontCityApprovalStart');
+ select.value=String(item.promotion_position||1);
+ date.min=todayRO();
+ date.value=item.requested_start_date&&item.requested_start_date>=todayRO()?item.requested_start_date:todayRO();
+ const requiresPosition=item.service_type==='pinned_event'&&!item.promotion_position;
+ $('pontCityApprovalSlotFields').hidden=!requiresPosition;
+ $('pontCityApprovalAvailability').textContent=requiresPosition?'Alege poziția și data rezervării.':'';
+ $('pontCityApprovalDialog').showModal();
+ if(requiresPosition)void pontVerifyCityManualPosition();
+}
+async function pontVerifyCityManualPosition(){
+ const item=pontCityApprovalPayment;if(!item||item.service_type!=='pinned_event'||item.promotion_position)return;
+ const pos=Number($('pontCityApprovalPosition').value),day=$('pontCityApprovalStart').value;
+ const event=pontCityApprovedEvents.find(e=>e.id===(item.promoted_event_id||item.event_id));
+ const msg=$('pontCityApprovalAvailability');
+ if(!event){msg.textContent='Evenimentul aprobat nu a fost găsit. Actualizează datele.';return}
+ if(day>event.event_date){msg.textContent='Data începerii trebuie să fie anterioară datei evenimentului: '+event.event_date;return}
+ msg.textContent='Verific disponibilitatea…';
+ const {data,error}=await db.rpc('pont_city_slot_quote_v2',{p_position:pos,p_desired:day,p_event_date:event.event_date});
+ if(error){msg.textContent='Nu se poate verifica: '+error.message;return}
+ const quote=data?.[0];
+ msg.textContent=quote?.available?'Disponibil: locul '+pos+' de la '+day:
+ 'Indisponibil până la '+(quote?.first_available||'—')+'. Selectează acea dată sau un loc liber.';
+}
+$('pontCityApprovalPosition').onchange=()=>void pontVerifyCityManualPosition();
+$('pontCityApprovalStart').onchange=()=>void pontVerifyCityManualPosition();
+$('pontCityApprovalCancel').onclick=()=>{ $('pontCityApprovalDialog').close();pontCityApprovalPayment=null;};
+$('pontCityApprovalDialog').addEventListener('close',()=>pontCityApprovalPayment=null);
+$('pontCityApprovalSave').onclick=async()=>{
+ const item=pontCityApprovalPayment;
+ const mode=document.querySelector('input[name="pontCityApprovalMode"]:checked')?.value;
+ const alert=$('pontCityApprovalError'),button=$('pontCityApprovalSave');
+ if(!item||!mode){alert.textContent='Alege Plătit sau Doar acces.';return}
+ const needsSlot=item.service_type==='pinned_event'&&!item.promotion_position;
+ const pos=needsSlot?Number($('pontCityApprovalPosition').value):null;
+ const date=needsSlot?$('pontCityApprovalStart').value:null;
+ if(needsSlot&&!date){alert.textContent='Alege data de început.';return}
+ button.disabled=true;alert.textContent='Se validează serviciul…';
+ try{
+  const {error}=await db.rpc('pont_city_activate_service',{p_payment:item.id,p_mode:mode,p_position:pos,p_start:date});
+  if(error)throw error;
+  $('pontCityApprovalDialog').close();
+  pontCityApprovalPayment=null;
+  await loadRestaurantCommercialData();
+  $('pontRestaurantCommerceNotice').textContent='Serviciul a fost activat: '+(mode==='paid'?'Plătit':'Doar acces')+
+  '. Stripe rămâne evidențiat separat.';
+ }catch(err){alert.textContent='Nu s-a confirmat: '+err.message}
+ finally{button.disabled=false}
+};
+
 async function loadRestaurantCommercialData(){
  if(pontCommerceLoading||pontPaymentBusy)return;
  pontCommerceLoading=true;
@@ -2877,14 +2938,14 @@ function renderCommercialPayments(){
    action='manage';label='Gestionează autorizarea';klass='primary';
   }else if(module==='city'){
    if(item.status==='confirmed'){action='revoke';label='Anulează confirmarea';klass='pont-payment-revoke'}
-   else{action='confirm';label=pontVerifiedStripeCityAmount(item)?'Validează accesul':'Confirmă accesul · cash/test';klass='primary'}
+   else{action='choose';label='Plătit / Doar acces';klass='primary'}
   }else{
    if(item.payment_status==='paid'){action='revoke';label='Anulează confirmarea';klass='pont-payment-revoke'}
    else{action='confirm';label='Încasarea este verificată de Stripe';klass='primary'}
   }
   const btn=pontPayElement('button',label,klass);btn.type='button';
   if(module==='menu'&&action==='confirm')btn.disabled=true;
-  btn.addEventListener('click',()=>{if(action==='manage')void manageManualAuthorization(item,btn);else void operateCommercialPayment(module,item,action,btn)});actions.append(btn);
+  btn.addEventListener('click',()=>{if(action==='manage')void manageManualAuthorization(item,btn);else if(action==='choose')pontOpenCityServiceApproval(item);else void operateCommercialPayment(module,item,action,btn)});actions.append(btn);
   if(module==='menu'){
    const jump=pontPayElement('button','Vezi licitația');
    jump.type='button';jump.onclick=()=>{
