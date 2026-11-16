@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ro"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><meta name="theme-color" content="#061c22"><title>Acces PONT · Restaurant</title>
+<style>*{box-sizing:border-box}body{margin:0;min-height:100dvh;background:radial-gradient(ellipse at 50% 0%,#154950,#061b21 65%,#031015);color:#f4f7f5;font:15px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:grid;place-items:center;padding:20px}main{width:min(100%,480px);padding:clamp(25px,6vw,44px);border:1px solid #63878179;border-radius:22px;background:linear-gradient(145deg,#123339,#081d26);box-shadow:0 24px 90px #0007;text-align:center}.brand{font-size:27px;letter-spacing:.21em;font-weight:800;margin:0 0 27px;color:#e5cf9f}.eyebrow{font-size:11px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:#9fcac4}h1{font-size:clamp(21px,5vw,28px);margin:12px 0 16px;line-height:1.2}p{color:#d6e6e2;margin:10px 0 22px}.restaurant{font-weight:700;color:#f2d7a1}.actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:30px}button{cursor:pointer;border:1px solid #789e94;border-radius:11px;background:#173e42;color:#fff;font:600 13px system-ui;padding:12px 18px}button.primary{background:#e1c48b;color:#102329;border-color:#e1c48b}#error{color:#ffb6ae;font-size:13px}</style></head>
+<body><main id="panel" hidden><div class="brand">PONT</div><div class="eyebrow">Panou administrator restaurant</div><h1>Acces în așteptarea validării</h1><p id="restaurant" class="restaurant"></p><p>Momentan contul tău nu este asociat cu nicio secțiune. Contactează administratorul PONT pentru validarea accesului.</p><div class="actions"><button class="primary" id="check" type="button">Verifică accesul</button><button id="logout" type="button">Deconectare</button></div><p id="error" role="status"></p></main>
+<script src="../super-admin/config.js"></script><script type="module">
+const cfg=window.PONT_CONFIG||{},panel=document.getElementById('panel'),notice=document.getElementById('error');
+if(!cfg.url||!cfg.anonKey){panel.hidden=false;notice.textContent='Configurarea PONT nu este disponibilă.'}
+else{
+try{
+const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+const db=createClient(cfg.url,cfg.anonKey);
+async function check(){
+const {data:{user},error}=await db.auth.getUser();if(error||!user){location.replace('../login/');return}
+const {data:profile,error:profileError}=await db.from('profiles').select('role').eq('user_id',user.id).maybeSingle();if(profileError)throw profileError;
+if(profile?.role==='super_admin'){location.replace('../super-admin/');return}
+if(profile?.role!=='restaurant'){location.replace('../login/');return}
+const {data:members,error:memberError}=await db.rpc('my_restaurant_access');if(memberError)throw memberError;
+const rid=members?.[0]?.restaurant_id;if(!rid){panel.hidden=false;return}
+const {data:r,error:restaurantError}=await db.from('restaurants').select('name,enabled,menu_module_visible,city_module_visible').eq('id',rid).single();if(restaurantError)throw restaurantError;
+document.getElementById('restaurant').textContent=r.name||'';
+if(r.enabled&&r.menu_module_visible){location.replace('../admin-v2/');return}
+if(r.enabled&&r.city_module_visible){location.replace('../admin-evenimente/');return}
+panel.hidden=false;
+}
+document.getElementById('check').onclick=()=>{notice.textContent='Se verifică accesul…';check().then(()=>notice.textContent='').catch(e=>notice.textContent=e.message)};
+document.getElementById('logout').onclick=async()=>{await db.auth.signOut();location.replace('../login/')};
+await check();
+}catch(error){panel.hidden=false;notice.textContent='Nu s-a putut verifica sesiunea: '+error.message}
+}
+</script></body></html>
