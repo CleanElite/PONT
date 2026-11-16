@@ -1747,10 +1747,12 @@ function pontRestaurantPaymentOverview(r){
  const cityDue=Number(subscription?.amount||0),cityPaid=pontVerifiedStripeCityAmount(subscription);
  const waiting=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id&&x.status==='pending'&&(x.stripe_paid_at||x.promotion_credit_used));
  const newCheckout=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id&&x.status==='pending'&&!x.stripe_paid_at);
+ const cashRequests=pontCityCashRows.filter(x=>x.restaurant_id===r.id&&['pending','contacted'].includes(x.status));
  const fmt=v=>Number(v).toLocaleString('ro-RO',{maximumFractionDigits:2})+' lei';
  return '<div class="pont-restaurant-stripe-overview">'+
  '<div><strong>Meniul zilei</strong><span>Licitat '+fmt(menuDue)+offerMonth+' · Stripe '+fmt(menuPaid)+'</span></div>'+
  '<div><strong>Ieșire în oraș</strong><span>Abonament '+fmt(cityDue)+' · Stripe '+fmt(cityPaid)+'</span></div>'+
+ (cashRequests.length?'<div class="pont-stripe-alert"><strong>Solicitări cash în curs</strong><span>'+cashRequests.length+' cerere/cereri pentru promovări · de verificat în restaurant</span></div>':'')+
  (waiting.length?'<div class="pont-stripe-alert"><strong>De validat în AS</strong><span>'+waiting.length+' serviciu/servicii achitate · Stripe '+fmt(waiting.reduce((n,x)=>n+pontVerifiedStripeCityAmount(x),0))+'</span></div>':newCheckout.length?'<div class="pont-stripe-alert"><strong>Plată inițiată</strong><span>'+newCheckout.length+' serviciu/servicii neplătite</span></div>':'')+
  '</div>';
 }
