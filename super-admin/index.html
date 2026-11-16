@@ -3674,6 +3674,13 @@ $('cityRequestsPaymentTab').onclick=()=>setCityRequestBranch('payments');
 $('cityRequestsRefresh').onclick=()=>{void loadCityEvents();void loadCityCheckoutAttempts()};
 // Încercările de plată se actualizează automat cât timp panoul AS este deschis.
 setInterval(()=>{if(!document.hidden&&cityMode)void loadCityCheckoutAttempts()},45000);
+// Actualizează notificările AS pentru evenimente și promovări, fără a întrerupe dialogurile deschise.
+let pontCityNotificationRefreshBusy=false;
+setInterval(async()=>{
+ if(document.hidden||!cityMode||$('app').hidden||pontCityNotificationRefreshBusy||document.querySelector('dialog[open]'))return;
+ pontCityNotificationRefreshBusy=true;
+ try{await loadCityEvents()}finally{pontCityNotificationRefreshBusy=false}
+},60000);
 async function loadCityCheckoutAttempts(){
  const box=$('cityCheckoutAttemptRows'),msg=$('cityCheckoutAttemptStatus');
  msg.textContent='Se verifică interesele de plată ale restaurantelor…';
