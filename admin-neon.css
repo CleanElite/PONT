@@ -402,7 +402,10 @@ body.pont-admin.pont-admin--restaurant.pont-admin-neon .pont-restaurant-topbar #
   font: 740 clamp(10px, 2.7vw, 13px)/1.2 system-ui, sans-serif !important;
 }
 
-.pont-restaurant-topbar #logout .admin-icon { width: clamp(14px, 3.8vw, 19px); height: auto; }
+.pont-restaurant-topbar #logout .admin-icon {
+  width: clamp(14px, 3.8vw, 19px);
+  height: clamp(14px, 3.8vw, 19px);
+}
 
 body.pont-admin.pont-admin-neon .pont-restaurant-topbar #pontAuctionBellMount .pont-auction-notice {
   display: grid;
