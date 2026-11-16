@@ -642,11 +642,15 @@ async function loadCitySubscription(){
    item.promotion_credit_used?'ÎN AȘTEPTARE · Credit utilizat. Promovarea NU este publicată până la confirmarea AS.':
    item.stripe_paid_at?'ÎN AȘTEPTARE · Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei. Promovarea NU este activă până la confirmarea AS.':
    'ÎN AȘTEPTARE · Locul este doar rezervat temporar. Promovarea NU este publicată. Stripe: 0 lei.';
+  const details=document.createElement('details');details.className='pont-ar-request-details';
+  const summary=document.createElement('summary');summary.textContent='Detalii';details.append(summary);
+  const fullStatus=document.createElement('small');fullStatus.textContent=status.textContent;details.append(fullStatus);
+  status.textContent=isRevoked?'Retrasă':isApproved?'Aprobată':item.stripe_paid_at?'Stripe încasat · așteaptă AS':'În așteptare';
   card.append(title,status);
   if(item.service_type==='pinned_event'&&item.requested_start_date&&item.requested_end_date){
    const interval=document.createElement('small');
-   interval.textContent='Perioadă selectată: '+item.requested_start_date+' – '+item.requested_end_date+' (inclusiv)';
-   card.append(interval);
+   interval.textContent='Perioadă: '+item.requested_start_date+' – '+item.requested_end_date;
+   details.append(interval);
   }
   const isPaid=Boolean(item.stripe_paid_at)||Boolean(item.promotion_credit_used)||item.status==='confirmed'||isRevoked;
   const linkedEvent=cityEventRows.find(e=>e.id===(item.promoted_event_id||item.event_id));
@@ -655,11 +659,11 @@ async function loadCitySubscription(){
   if(isPaid){
    const info=document.createElement('small');
    info.textContent=isRevoked?'Promovarea nu mai este activă. Istoricul rămâne disponibil.':item.status==='confirmed'?'Promovarea este confirmată de AS. Va apărea automat în perioada rezervată.':item.promotion_credit_used?'Creditul a rezervat poziția. Așteaptă activarea AS.':'Plata a fost confirmată de Stripe. AS verifică și activează rezervarea.';
-   card.append(info);
-
+   details.append(info);
   }else if(linkedEvent){
    card.append(arButton('Verifică locurile și continuă plata',()=>openCityPromotion(linkedEvent,item.service_type,item.amount)));
   }
+  card.append(details);
   if(item.status==='pending'&&!item.stripe_paid_at){
    const withdraw=arButton('Retrage solicitarea',async()=>{
     withdraw.disabled=true;
