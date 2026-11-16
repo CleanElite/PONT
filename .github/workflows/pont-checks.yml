@@ -6,6 +6,11 @@ on:
       - 'backend/**'
       - 'test/**'
       - 'pont-navigation-history.js'
+      - '**/*.html'
+      - 'sw.js'
+      - 'robots.txt'
+      - 'sitemap.xml'
+      - 'qa/**'
       - '.github/workflows/pont-checks.yml'
   pull_request:
     paths:
@@ -35,4 +40,4 @@ jobs:
           }
           NODE
       - name: Run backend and navigation tests
-        run: node --test backend/worker.test.mjs backend/navigation.test.mjs backend/daily-menu-availability.test.mjs
+        run: node --test backend/worker.test.mjs backend/navigation.test.mjs backend/daily-menu-availability.test.mjs qa/site-static.test.mjs
