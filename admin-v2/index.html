@@ -232,7 +232,7 @@
  <nav class="pont-ar-module-switch" aria-label="Modulele restaurantului">
  <span class="pont-ar-switch-label">Module PONT</span>
  <a class="pont-ar-module-link is-active" href="./" aria-current="page">Meniul zilei</a>
- <a class="pont-ar-module-link" id="pontArEveningTab" href="../admin-evenimente/" hidden>Ieșire în oraș</a>
+ <a class="pont-ar-module-link" id="pontArEveningTab" href="../admin-evenimente/">Ieșire în oraș</a>
 </nav>
  <nav class="admin-nav pont-restaurant-grouped-nav" aria-label="Secțiunile panoului">
   <div class="pont-restaurant-nav-group pont-restaurant-nav-menus" role="group" aria-label="Gestionare meniuri">
@@ -385,8 +385,9 @@ for (const button of restaurantTabs) button.onclick = () => showView(button.data
 window.addEventListener('hashchange', showHashView);
 async function load(){const ids=(await req(db.rpc('my_restaurant_access'))).map(x=>x.restaurant_id);const profile=await req(db.from('profiles').select('role').eq('user_id',user.id));if(profile[0]?.role==='super_admin')restaurants=await req(db.from('restaurants').select('*').order('name'));else restaurants=ids.length?await req(db.from('restaurants').select('*').in('id',ids).order('name')):[];if(!restaurants.length)throw Error('Contul nu are încă un restaurant atribuit.');
  const permitted=restaurants.filter(r=>r.enabled&&r.menu_module_visible);
- if(profile[0]?.role!=='super_admin'&&!permitted.length){if(restaurants[0]?.enabled&&restaurants[0]?.city_module_visible){location.replace('../admin-evenimente/?v=access-visibility-20261116');return false}location.replace('../acces-inactiv/');return false;}
- $('pontArEveningTab').hidden=!restaurants.some(r=>r.enabled&&r.city_module_visible);
+ if(profile[0]?.role!=='super_admin'&&!permitted.length){location.replace('../module-restaurante/?notapproved=menu');return false;}
+ $('pontArEveningTab').hidden=false;
+ $('pontArEveningTab').onclick=(event)=>{if(!restaurants.some(r=>r.enabled&&r.city_module_visible)){event.preventDefault();location.href='../module-restaurante/?notapproved=city';}};
  $('adminRestaurantContext').textContent=restaurants.length===1?restaurants[0].name:restaurants.length+' restaurante';const isSuperAdmin=profile[0]?.role==='super_admin';$('contactRestaurantField').hidden=!isSuperAdmin;$('contactRestaurantName').hidden=isSuperAdmin;if(!isSuperAdmin){$('contactRestaurantName').textContent='Restaurant: '+restaurants[0].name;}$('contactRestaurant').innerHTML=restaurants.map(r=>'<option value="'+esc(r.id)+'">'+esc(r.name)+'</option>').join('');syncContactPhone();menus=await req(db.from('menus').select('*').eq('published',true).in('restaurant_id',restaurants.map(r=>r.id)).order('service_date',{ascending:false}).limit(150));const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Bucharest'});const live=menus.filter(m=>m.service_date>=today);const formatMenuDate=value=>{
  const date=new Date(value+'T12:00:00');
  return Number.isNaN(date.getTime())?value:new Intl.DateTimeFormat('ro-RO',{day:'2-digit',month:'2-digit',year:'numeric'}).format(date);
