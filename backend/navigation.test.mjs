@@ -106,7 +106,7 @@ test('auction transparency and promotion links retain safe same-tab navigation',
  const terms=readFileSync(new URL('../termeni.html',import.meta.url),'utf8');
  assert.match(admin,/termeni\\.html\\?from=admin-v2#transparenta-licitatii/);
  assert.doesNotMatch(admin,/termeni\\.html\\?from=admin-v2#transparenta-licitatii"\\s+target="_blank"/);
- assert.match(as,/id="pontPromotionNavLink" href="\\.\\.\\/promovare\\/"/);
+ assert.ok(as.includes('id="pontPromotionNavLink" href="../promovare/"'));
  assert.match(terms,/id="pontLegalBack"/);
  assert.ok(terms.includes("'admin-v2':'./admin-v2/'"));
  assert.ok(terms.includes("'super-admin':'./super-admin/'"));
