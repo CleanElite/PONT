@@ -3775,7 +3775,7 @@ async function pontLoadCityRequests(){
  $('pontCityRequestsNavCount').textContent=allPending?'('+allPending+')':'';
  for(const item of [...pending,...rows.filter(r=>r.status!=='pending')])box.append(pontCityRequestCard(item));
  const [cash,pay]=await Promise.all([
-  db.from('pont_city_cash_requests').select('id,restaurant_id,event_id,service_type,position,status,created_at').eq('status','cancelled').order('created_at',{ascending:false}).limit(100),
+  db.from('pont_city_cash_requests').select('id,restaurant_id,event_id,service_type,position,status,created_at,withdrawn_by_ar_at').not('withdrawn_by_ar_at','is',null).order('withdrawn_by_ar_at',{ascending:false}).limit(100),
   db.from('pont_city_payment_requests').select('id,restaurant_id,promoted_event_id,service_type,amount,revoke_reason,revoked_at,created_at,stripe_paid_at').eq('status','revoked').eq('revoke_reason','Solicitare retrasă de administratorul restaurantului').order('created_at',{ascending:false}).limit(100)
  ]);
  if(cash.error||pay.error)throw cash.error||pay.error;
@@ -3786,7 +3786,7 @@ async function pontLoadCityRequests(){
   const name=document.createElement('strong');
   name.textContent=(entry.pontType==='cash'?'Solicitare cash':entry.service_type==='subscription'?'Abonament':'Solicitare promovare')+' — '+(restaurant?.name||'Restaurant');
   const detail=document.createElement('p');detail.className='pont-city-meta';
-  detail.textContent=(event?'Eveniment: '+event.title+' · ':'')+'Retrasă de AR · '+new Intl.DateTimeFormat('ro-RO',{dateStyle:'medium',timeStyle:'short'}).format(new Date(entry.revoked_at||entry.created_at));
+  detail.textContent=(event?'Eveniment: '+event.title+' · ':'')+'Retrasă de AR · '+new Intl.DateTimeFormat('ro-RO',{dateStyle:'medium',timeStyle:'short'}).format(new Date(entry.withdrawn_by_ar_at||entry.revoked_at||entry.created_at));
   card.append(name,detail);box.append(card);
  }
  if(!rows.length&&!(cash.data||[]).length&&!(pay.data||[]).length){const p=document.createElement('p');p.textContent='Nu există solicitări de la AR.';box.append(p)}
