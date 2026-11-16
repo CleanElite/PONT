@@ -39,3 +39,7 @@ for(const viewport of viewports){
 await browser.close();
 await mkdir('qa-a11y',{recursive:true});await writeFile('qa-a11y/results.json',JSON.stringify({generated_at:new Date().toISOString(),results},null,2));
 console.log('A11Y_SUMMARY',JSON.stringify({checks:results.length,issues:results.filter(x=>x.violations.length).length,violations_by_rule:[...new Set(results.flatMap(x=>x.violations.map(v=>v.id)))],untested:results.filter(x=>x.status==='NETESTAT').length}));
+// Prevent new blocking WCAG defects, small phone touch targets and reflow overflow.
+const blockers=results.filter(x=>x.status!=='OK'||x.violations.some(v=>['serious','critical'].includes(v.impact))||(x.viewport==='phone'&&x.touch_target_small.length>0)||x.font_200_percent_overflow===true);
+if(blockers.length){console.error('A11Y_REGRESSION_BLOCKERS',JSON.stringify(blockers.map(x=>({viewport:x.viewport,path:x.path,status:x.status,violations:x.violations.map(v=>v.id),small:x.touch_target_small.length,reflow:x.font_200_percent_overflow}))));process.exitCode=1;}
+
