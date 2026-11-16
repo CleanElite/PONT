@@ -1840,8 +1840,9 @@ async function pontDecideCashRequest(item){
   $('pontCityApprovalSlotFields').hidden=true;
   modes.forEach(r=>r.checked=false);
   const btn=$('pontCityApprovalSave'),cancel=$('pontCityApprovalCancel');
+  const oldSave=btn.onclick,oldCancel=cancel.onclick,oldOnCancel=dialog.oncancel;
   let done=false;
-  const close=value=>{if(done)return;done=true;btn.onclick=null;cancel.onclick=null;dialog.oncancel=null;if(dialog.open)dialog.close();resolve(value)};
+  const close=value=>{if(done)return;done=true;btn.onclick=oldSave;cancel.onclick=oldCancel;dialog.oncancel=oldOnCancel;if(dialog.open)dialog.close();resolve(value)};
   btn.disabled=false;
   btn.onclick=()=>{const mode=dialog.querySelector('input[name="pontCityApprovalMode"]:checked')?.value;if(!mode){$('pontCityApprovalError').textContent='Alege Plătit sau Doar acces.';return}close(mode)};
   cancel.onclick=()=>close(null);dialog.oncancel=e=>{e.preventDefault();close(null)};
