@@ -1324,6 +1324,7 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
  <div class="pont-as-approval-actions">
   <button type="button" id="pontCityApprovalCancel">Anulează</button>
   <button type="button" class="primary" id="pontCityApprovalSave">Confirmă accesul</button>
+  <button type="button" class="pont-city-reject" id="pontCityApprovalReject" hidden>Retrage solicitarea</button>
  </div>
 </dialog>
 <dialog id="pontCityUnifiedDialog" class="pont-as-city-approval" aria-labelledby="pontCityUnifiedTitle">
@@ -1891,6 +1892,7 @@ async function pontDecideCashRequest(item){
   $('pontCityApprovalStripe').textContent='Stripe: 0 lei. Confirmă Plătit numai după ce ai încasat efectiv cash; Doar acces oferă activare fără plată.';
   $('pontCityApprovalError').textContent='';
   $('pontCityApprovalSlotFields').hidden=true;
+  $('pontCityApprovalReject').hidden=true;
   modes.forEach(r=>r.checked=false);
   const btn=$('pontCityApprovalSave'),cancel=$('pontCityApprovalCancel');
   const oldSave=btn.onclick,oldCancel=cancel.onclick,oldOnCancel=dialog.oncancel;
@@ -1935,6 +1937,7 @@ function pontOpenCityServiceApproval(item){
  $('pontCityApprovalStripe').textContent='Stripe verificat: '+auctionMoney(pontVerifiedStripeCityAmount(item))+
  (item.stripe_paid_at?' · '+pontPaymentDate(item.stripe_paid_at):' · Fără plată Stripe');
  $('pontCityApprovalError').textContent='';
+ $('pontCityApprovalReject').hidden=!(item.service_type!=='subscription'&&item.status==='pending');
  document.querySelectorAll('input[name="pontCityApprovalMode"]').forEach(r=>r.checked=false);
  const select=$('pontCityApprovalPosition'),date=$('pontCityApprovalStart');
  select.value=String(item.promotion_position||1);
@@ -1965,6 +1968,20 @@ async function pontVerifyCityManualPosition(){
  msg.textContent=quote?.available?'Disponibil: '+(pos===0?'banda publicitară':'locul '+pos)+' de la '+day:
  'Indisponibil până la '+(quote?.first_available||'—')+'. Selectează acea dată sau un loc liber.';
 }
+$('pontCityApprovalReject').onclick=async()=>{
+ const item=pontCityApprovalPayment;
+ if(!item||item.status!=='pending'||item.service_type==='subscription')return;
+ $('pontCityApprovalDialog').close();
+ const approved=await pontASConfirm({title:'Retrage solicitarea de promovare',
+  message:'Anulezi cererea, eliberezi poziția și păstrezi separat orice plată Stripe înregistrată.',
+  button:'Retrage solicitarea'});
+ if(!approved)return;
+ const {error}=await db.rpc('pont_city_reject_promotion_request',{p_payment_id:item.id});
+ if(error){$('pontRestaurantCommerceNotice').textContent='Eroare: '+error.message;return}
+ await loadRestaurantCommercialData();
+ if(cityMode)await loadCityEvents();
+ $('pontRestaurantCommerceNotice').textContent='Solicitarea de promovare a fost retrasă.';
+};
 $('pontCityApprovalPosition').onchange=()=>void pontVerifyCityManualPosition();
 $('pontCityApprovalStart').onchange=()=>void pontVerifyCityManualPosition();
 $('pontCityApprovalCancel').onclick=()=>{ $('pontCityApprovalDialog').close();pontCityApprovalPayment=null;};
@@ -4770,4 +4787,8 @@ body.pont-admin--platform #pontCityUnifiedDialog::backdrop{background:#001015cf;
 #pontCityUnifiedDialog .pont-as-approval-actions button{flex:1;min-height:43px;border-radius:10px}
 #pontCityUnifiedRevoke{width:100%;margin-top:11px;min-height:42px;border:1px solid #c98780;color:#ffcdc5;background:transparent;border-radius:10px}
 #pontCityUnifiedDialog [hidden]{display:none!important}
+</style><style id="pont-city-payment-reject-20261116">
+#pontCityApprovalReject[hidden]{display:none!important}
+#pontCityApprovalReject{background:transparent;color:#edb0a8;border:1px solid #cf8b82;min-height:43px;border-radius:10px}
+#pontCityApprovalDialog .pont-as-approval-actions{flex-wrap:wrap}
 </style></body></html>
