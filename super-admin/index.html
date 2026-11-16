@@ -3490,7 +3490,13 @@ function pontASNoticeControls(card,key,date){
    catch(error){$('pontCityActionStatus').textContent='Notificarea nu s-a actualizat: '+error.message;controls.querySelectorAll('button').forEach(btn=>btn.disabled=false)}
   });
  }
- controls.append(seen,dismiss);card.append(controls);
+ controls.append(seen,dismiss);
+ // Acțiunile stau pe același rând cu titlul notificării, nu într-un rând separat.
+ const heading=card.querySelector(':scope > strong');
+ if(heading){
+  const bar=document.createElement('div');bar.className='pont-as-notice-heading';
+  heading.before(bar);bar.append(heading,controls);
+ }else card.prepend(controls);
  card.classList.toggle('pont-as-notice-read',!pontASNoticeUnread(key,date));
  return card;
 }
@@ -5342,10 +5348,12 @@ body.pont-admin--platform #pontCityUnifiedDialog::backdrop{background:#001015cf;
 #pontCityApprovalReject{background:transparent;color:#edb0a8;border:1px solid #cf8b82;min-height:43px;border-radius:10px}
 #pontCityApprovalDialog .pont-as-approval-actions{flex-wrap:wrap}
 </style><script src="../pont-date-display.js?v=dmy-20261116" defer></script><style id="pont-as-notifications-mark-seen-20261116">
-#pontCityGroupedRequests .pont-as-notice-actions{display:flex;justify-content:flex-end;align-items:center;gap:8px;margin:10px 0 0}
-#pontCityGroupedRequests .pont-as-notice-actions button{display:inline-flex;align-items:center;justify-content:center;flex:none;min-height:31px;border-radius:8px;padding:5px 10px;font:700 11px system-ui}
+#pontCityGroupedRequests .pont-as-notice-heading{display:flex;align-items:center;justify-content:space-between;gap:7px;min-width:0}
+#pontCityGroupedRequests .pont-as-notice-heading>strong{min-width:0;flex:1 1 auto;overflow-wrap:anywhere;line-height:1.35}
+#pontCityGroupedRequests .pont-as-notice-actions{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:flex-end;gap:4px;margin:0;padding:0}
+#pontCityGroupedRequests .pont-as-notice-actions button{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;flex:none;width:auto;height:23px;min-height:23px;max-height:23px;margin:0;padding:1px 5px;border-radius:5px;font:700 9px/1 system-ui;white-space:nowrap;box-shadow:none}
 #pontCityGroupedRequests .pont-as-notice-actions .pont-as-notice-seen{border:1px solid #a7c9b0;background:#164b43;color:#e7f7df}
 #pontCityGroupedRequests .pont-as-notice-actions .pont-as-notice-seen:disabled{opacity:.55;cursor:default}
-#pontCityGroupedRequests .pont-as-notice-actions .pont-as-notice-dismiss{height:31px;width:31px;min-width:31px;padding:0;border:1px solid #be8e85;background:transparent;color:#f3c2bc;font-size:18px}
+#pontCityGroupedRequests .pont-as-notice-actions .pont-as-notice-dismiss{height:23px;width:23px;min-width:23px;padding:0;border:1px solid #be8e85;background:transparent;color:#f3c2bc;font-size:14px}
 #pontCityGroupedRequests .pont-as-notice-read{border-color:#547a7066;opacity:.84}
 </style></body></html>
