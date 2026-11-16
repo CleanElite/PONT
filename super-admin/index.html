@@ -3160,8 +3160,8 @@ async function loadCityCheckoutAttempts(){
    new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',dateStyle:'medium',timeStyle:'short'}).format(new Date(item.created_at));
   const note=document.createElement('p');note.textContent='Plată cash solicitată · Nu este încasare Stripe. Contactează restaurantul și confirmă manual accesul din secțiunea Restaurante.';
   card.append(title,detail,note);
-  const phone=String(restaurant?.phone||'').trim(),dial=phone.replace(/[^+\\d]/g,'');
-  if(/^\\+?\\d{7,15}$/.test(dial)){const a=document.createElement('a');a.href='tel:'+dial;a.className='pont-ar-payment-contact';a.textContent='Sună restaurantul · '+phone;card.append(a)}
+  const phone=String(restaurant?.phone||'').trim(),dial=phone.replace(/[^+\d]/g,'');
+  if(/^\+?\d{7,15}$/.test(dial)){const a=document.createElement('a');a.href='tel:'+dial;a.className='pont-ar-payment-contact';a.textContent='Sună restaurantul · '+phone;card.append(a)}
   box.append(card);
  }
  const cardHeader=document.createElement('h3');cardHeader.textContent='Formulare Stripe și confirmări · '+entries.length;box.append(cardHeader);
