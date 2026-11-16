@@ -413,7 +413,7 @@ function pontWarnAlreadyPromoted(card){
  const warning=document.createElement('small');
  warning.className='pont-city-already-promoted-message';
  warning.setAttribute('role','status');
- warning.textContent='Acest eveniment este deja promovat. Poți promova o singură dată un eveniment.';
+ warning.textContent='Există o solicitare activă pentru acest eveniment. O cerere retrasă sau anulată nu blochează promovări noi.';
  const actions=target.querySelector('.pont-city-event-actions');
  (actions||target).append(warning);
  target.classList.remove('pont-city-already-promoted-shake');void target.offsetWidth;
@@ -425,7 +425,7 @@ async function openCityPromotion(event,type,price,card=null){
   const already=cityPaymentRows.some(p=>p.promoted_event_id===event.id&&p.service_type==='pinned_event'&&['pending','confirmed'].includes(p.status));
   if(already){pontWarnAlreadyPromoted(card);return}
   const {data:hasPromo,error}=await db.rpc('pont_city_event_has_fixed_promotion',{p_event_id:event.id});
-  if(error){cityInfo('Nu am putut verifica promovările: '+error.message);return}
+  if(error){$('status').textContent='Nu am putut verifica promovările pentru „'+event.title+'”: '+error.message;return}
   if(hasPromo){pontWarnAlreadyPromoted(card);return}
  }
  cityPromotionEvent=event;cityPromotionType=type;cityPromotionPrice=price;pontChosenSlot=type==='pinned_event'?null:0;pontAvailablePromotionCredit=null;pontPromotionPaymentMethod='card';pontPromotionQuotes=[];
