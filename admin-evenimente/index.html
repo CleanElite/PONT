@@ -192,6 +192,9 @@ body.pont-admin--city #cityStripeConfirmDialog form .primary{background:linear-g
 </style><style id="pont-city-service-consent-20261116">
 #cityStripeConfirmDialog .pont-stripe-consent{grid-column:1/-1;display:flex;gap:9px;align-items:flex-start;font:550 11px/1.5 system-ui;color:#d5e2d7;text-align:left;padding:8px 0}
 #cityStripeConfirmDialog .pont-stripe-consent input{width:18px;height:18px;min-width:18px;accent-color:#e2c78c;margin:0}
+@keyframes pont-cash-consent-shake{0%,100%{transform:translateX(0)}18%,54%{transform:translateX(-5px)}36%,72%{transform:translateX(5px)}}
+#cityStripeConfirmDialog .pont-stripe-consent--shake{animation:pont-cash-consent-shake .38s ease-in-out;border-radius:8px;outline:1px solid #e4bb77;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){#cityStripeConfirmDialog .pont-stripe-consent--shake{animation:none;outline:2px solid #e4bb77}}
 </style><style id="pont-credit-ar-20261116">
 #pontPromotionCreditWrap[hidden]{display:none!important}
 #pontPromotionCreditWrap{display:flex;align-items:center;gap:10px;padding:13px;border:1px solid #bdab78;border-radius:12px;background:linear-gradient(135deg,#344432,#192e2d);font:650 12px/1.5 system-ui;color:#f5e5bd}
@@ -657,16 +660,21 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
   $('cityStripeConfirmStatus').textContent='';
   const termsConsent=$('cityStripeTermsConsent');
   const cashButton=$('cityStripeConfirmCash');
+  const consentBox=termsConsent.closest('.pont-stripe-consent');
   termsConsent.checked=false;
-  const syncCashConsent=()=>{cashButton.disabled=!termsConsent.checked};
-  termsConsent.onchange=syncCashConsent;
-  syncCashConsent();
+  cashButton.disabled=false;
+  const shakeConsent=()=>{
+   consentBox.classList.remove('pont-stripe-consent--shake');
+   void consentBox.offsetWidth;
+   consentBox.classList.add('pont-stripe-consent--shake');
+   termsConsent.focus({preventScroll:true});
+  };
+  consentBox.addEventListener('animationend',()=>consentBox.classList.remove('pont-stripe-consent--shake'));
   let finished=false;
   const finish=async choice=>{
    if(finished)return;
    if(choice==='cash'&&!termsConsent.checked){
-    $('cityStripeConfirmStatus').textContent='Bifează mai întâi acordul privind prețul și perioada serviciului.';
-    termsConsent.focus();
+    shakeConsent();
     return;
    }
    finished=true;
@@ -684,7 +692,7 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
     resolve(choice);
    }catch(err){
     $('cityStripeConfirmStatus').textContent='Nu s-a putut înregistra alegerea: '+err.message;
-    finished=false;$('cityStripeConfirmProceed').disabled=false;syncCashConsent();
+    finished=false;$('cityStripeConfirmProceed').disabled=false;cashButton.disabled=false;
     form.onsubmit=e=>{e.preventDefault();void finish('stripe')};
     $('cityStripeConfirmCancel').onclick=()=>void finish('cancel');
     $('cityStripeConfirmCash').onclick=()=>void finish('cash');
@@ -694,7 +702,7 @@ async function cityConfirmStripePayment(serviceType,amount,paymentId=null,eventI
   $('cityStripeConfirmCancel').onclick=()=>void finish('cancel');
   $('cityStripeConfirmCash').onclick=()=>void finish('cash');
   dialog.oncancel=e=>{e.preventDefault();void finish('cancel')};
-  $('cityStripeConfirmProceed').disabled=false;syncCashConsent();
+  $('cityStripeConfirmProceed').disabled=false;cashButton.disabled=false;
   dialog.showModal();
  });
 }
