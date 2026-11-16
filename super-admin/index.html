@@ -321,6 +321,7 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #cityRequests .pont-city-unified-payment-steps{display:flex;flex-direction:column;gap:5px}
 #cityRequests .pont-city-unified-payment-step{display:flex;align-items:baseline;gap:7px;font-size:11px;line-height:1.4;color:#e0eee7}
 #cityRequests .pont-city-unified-step-dot{color:#dec38a;font-size:13px}
+#cityRequests .pont-city-unified-step-dot--declared{color:#48c98e;text-shadow:0 0 5px #48c98e66}
 #cityRequests .pont-city-unified-payment-step small{margin-left:auto;white-space:nowrap;font-size:9px;color:#a9c9bd}
 #cityRequests .pont-city-unified-step-count{display:inline-flex;align-items:center;justify-content:center;flex:none;margin-left:auto;padding:2px 6px;min-width:25px;border:1px solid #d2b9797a;border-radius:6px;color:#f6dfa8;background:#55472c66;font:750 10px/1.2 system-ui;font-variant-numeric:tabular-nums}
 #cityRequests .pont-city-unified-step-count+small{margin-left:3px}
@@ -3491,7 +3492,10 @@ function pontRenderCityUnifiedPaymentCard(item){
  const list=document.createElement('div');list.className='pont-city-unified-payment-steps';
  for(const [i,step] of item.steps.entries()){
   const line=document.createElement('div');line.className='pont-city-unified-payment-step';
-  const mark=document.createElement('span');mark.className='pont-city-unified-step-dot';mark.textContent=i===0?'●':'·';
+  const mark=document.createElement('span');mark.className='pont-city-unified-step-dot';
+  const declaration=step.label==='A ales explicit plata cash'||step.label==='AR declară plata Stripe · de verificat';
+  if(declaration)mark.classList.add('pont-city-unified-step-dot--declared');
+  mark.textContent=declaration||i===0?'●':'·';
   const label=document.createElement('span');label.textContent=step.label;
   const when=document.createElement('small');
   const date=new Date(step.date);
