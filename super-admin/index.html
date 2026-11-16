@@ -1780,11 +1780,16 @@ function pontCommerceDetailsHtml(r){
   const status=item.status==='revoked'?'Anulat':active?mode:confirmed?'Expirat':stripeAmount?'Stripe încasat · aşteaptă AS':mode;
   const canRevoke=confirmed&&new Date(item.expires_at)>new Date();
   const canApprove=item.status==='pending';
+  const originalSlot=pontCitySlotRows.find(x=>x.payment_id===item.id&&x.status==='reserved');
+  const canCredit=confirmed&&item.service_type!=='subscription'&&!item.promotion_credit_used&&
+   (stripeAmount>0||item.manual_confirmation_mode==='paid')&&originalSlot&&originalSlot.start_date>=todayRO()&&
+   !pontCityCreditRows.some(x=>x.source_payment_id===item.id);
   return '<div class="pont-commerce-payment-item"><div class="pont-city-service-summary"><strong>'+esc(label)+esc(assigned)+'</strong>'+
    '<small>Serviciu '+esc(auctionMoney(item.amount))+' · Stripe '+esc(auctionMoney(stripeAmount))+esc(dates)+'</small>'+
-   '<small>'+esc(status)+(item.stripe_paid_at?' · Stripe: '+esc(pontPaymentDate(item.stripe_paid_at)):'')+'</small></div>'+
+   '<small>'+esc(status)+(item.stripe_paid_at?' · Stripe: '+esc(pontPaymentDate(item.stripe_paid_at)):'')+(item.promotion_credit_used?' · Achitat cu credit':'')+'</small></div>'+
    (canApprove?'<button type="button" data-commerce-city-payment="'+esc(item.id)+'" data-commerce-city-action="choose">Confirmă</button>':
-    canRevoke?'<button type="button" data-commerce-city-payment="'+esc(item.id)+'" data-commerce-city-action="revoke">Anulează confirmarea</button>':'')+'</div>';
+    canRevoke?'<button type="button" data-commerce-city-payment="'+esc(item.id)+'" data-commerce-city-action="revoke">'+(item.manual_confirmation_mode==='access'?'Anulează accesul':'Anulează confirmarea')+'</button>':'')+
+   (canCredit?'<button type="button" data-commerce-city-credit="'+esc(item.id)+'">Transformă în credit</button>':'')+'</div>';
  }
  output+='<div class="pont-commerce-line pont-commerce-events"><header><strong>Ieșire în oraș</strong><span class="dashboard-badge">'+(r.access_iesire_in_oras?'Activ':'Inactiv')+'</span></header>';
  output+='<div class="pont-city-finance-subsection"><h4>Abonament · 50 lei / 30 zile</h4>';
@@ -1794,12 +1799,22 @@ function pontCommerceDetailsHtml(r){
  if(promotionRows.length)output+=promotionRows.slice(0,12).map(cityLine).join('');
  else output+='<p class="pont-commerce-note">Nicio promovare. Stripe: 0 lei.</p>';
  output+='</div>';
+ const availableCredits=pontCityCreditRows.filter(c=>c.restaurant_id===r.id&&c.status==='available');
+ if(availableCredits.length)output+='<p class="pont-city-credit-balance">Credite disponibile: '+availableCredits.map(c=>esc(auctionMoney(c.amount))+' · '+(c.service_type==='pinned_event'?'Poziție fixă':'Bandă')).join(' / ')+'</p>';
  if(r.access_iesire_in_oras)output+='<button type="button" data-commerce-city-new="'+esc(r.id)+'">Înregistrează serviciu cash / test</button>';
  output+='</div>';
  const logs=pontPaymentHistory.filter(x=>x.restaurant_id===r.id).slice(0,5);
  output+='<details class="pont-commerce-history"><summary>Istoric'+(logs.length?' · '+logs.length:'')+'</summary>';
  output+=logs.map(l=>'<p class="pont-commerce-note">'+esc(pontPaymentDate(l.occurred_at))+' · '+(l.module==='menu'?'Meniu':'Evenimente')+' · '+esc(l.action)+(l.reason?' · '+esc(l.reason):'')+'</p>').join('')||'<p class="pont-commerce-note">Nicio modificare înregistrată</p>';
  return output+'</details>';
+}
+async function pontConvertCityPaymentCredit(item){
+ const answer=await pontASConfirm({title:'Transformă promovarea în credit',message:'Anulezi rezervarea actuală. Restaurantul primește un credit de '+auctionMoney(item.amount)+' pentru o promovare viitoare de aceeași valoare. Această operațiune nu efectuează o rambursare Stripe.',button:'Acordă credit'});
+ if(!answer)return;
+ const {error}=await db.rpc('pont_city_convert_to_credit',{p_payment:item.id});
+ if(error){$('pontRestaurantCommerceNotice').textContent='Nu s-a acordat creditul: '+error.message;return}
+ await loadRestaurantCommercialData();
+ $('pontRestaurantCommerceNotice').textContent='Rezervarea a fost anulată; creditul a fost înregistrat.';
 }
 let pontCityApprovalPayment=null;
 function pontOpenCityServiceApproval(item){
@@ -2852,7 +2867,7 @@ async function addManualAuthorization(){
  }catch(e){pontPaymentBusy=false;$('pontAuthSubmit').disabled=false;$('pontAuthStatus').textContent=e.message}
 }
 
-let pontPaymentFilter='all',pontPaymentBusy=false,pontCityPaymentRows=[],pontCitySlotRows=[],pontMenuPaymentRows=[],pontPaymentHistory=[],pontCityApprovedEvents=[],pontManualApprovals=[];
+let pontPaymentFilter='all',pontPaymentBusy=false,pontCityPaymentRows=[],pontCitySlotRows=[],pontCityCreditRows=[],pontMenuPaymentRows=[],pontPaymentHistory=[],pontCityApprovedEvents=[],pontManualApprovals=[];
 const pontPaymentServiceNames={subscription:'Abonament evenimente',pinned_event:'Eveniment fix',exclusive_banner:'Bandă exclusivă',auction:'Licitație poziție'};
 const pontPaymentDate=v=>v?new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(v)):'—';
 function pontPayElement(tag,text,cls){
@@ -2874,16 +2889,17 @@ async function loadCommercialPayments(){
  if(pontPaymentBusy)return;
  const st=$('pontPaymentsStatus');st.textContent='Se verifică plățile și istoricul…';
  try{
-  const [city,menu,audit,approved,manual,slots]=await Promise.all([
-   db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,event_id,promoted_event_id,promotion_position,amount,status,manual_confirmation_mode,created_at,confirmed_at,confirmed_by,expires_at,revoked_at,revoked_by,revoke_reason,stripe_paid_at,stripe_paid_amount,stripe_currency,stripe_payment_intent_id,requested_start_date').order('created_at',{ascending:false}).limit(500),
+  const [city,menu,audit,approved,manual,slots,credits]=await Promise.all([
+   db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,event_id,promoted_event_id,promotion_position,amount,status,manual_confirmation_mode,created_at,confirmed_at,confirmed_by,expires_at,revoked_at,revoked_by,revoke_reason,stripe_paid_at,stripe_paid_amount,stripe_currency,stripe_payment_intent_id,promotion_credit_used,requested_start_date').order('created_at',{ascending:false}).limit(500),
    db.from('auction_offers').select('id,restaurant_id,campaign_month,amount,payment_status,payment_method,payment_reference,paid_at,round').order('campaign_month',{ascending:false}).limit(500),
    db.from('pont_payment_audit').select('id,restaurant_id,module,service_type,reference_id,action,previous_state,new_state,amount,reason,actor_id,occurred_at').order('occurred_at',{ascending:false}).limit(300),
    db.from('pont_city_events').select('id,restaurant_id,title,event_date,status').eq('status','approved').order('event_date',{ascending:true}).limit(500),
    db.from('pont_manual_payment_approvals').select('restaurant_id,campaign_month,approval_type').limit(500),
-   db.from('pont_city_promotion_slots').select('payment_id,position,start_date,end_date,status').limit(500)
+   db.from('pont_city_promotion_slots').select('payment_id,position,start_date,end_date,status').limit(500),
+   db.from('pont_city_promotion_credits').select('id,restaurant_id,source_payment_id,service_type,amount,status,used_payment_id,created_at').order('created_at',{ascending:false}).limit(500)
   ]);
-  for(const x of [city,menu,audit,approved,manual,slots])if(x.error)throw x.error;
-  pontCityPaymentRows=city.data||[];pontCitySlotRows=slots.data||[];pontMenuPaymentRows=menu.data||[];pontPaymentHistory=audit.data||[];pontCityApprovedEvents=approved.data||[];pontManualApprovals=manual.data||[];
+  for(const x of [city,menu,audit,approved,manual,slots,credits])if(x.error)throw x.error;
+  pontCityPaymentRows=city.data||[];pontCitySlotRows=slots.data||[];pontCityCreditRows=credits.data||[];pontMenuPaymentRows=menu.data||[];pontPaymentHistory=audit.data||[];pontCityApprovedEvents=approved.data||[];pontManualApprovals=manual.data||[];
   renderCommercialPayments();
   st.textContent='Actualizat la '+new Intl.DateTimeFormat('ro-RO',{hour:'2-digit',minute:'2-digit',timeZone:'Europe/Bucharest'}).format(new Date())+'.';
  }catch(e){st.textContent='Eroare la încărcarea plăților: '+e.message;}
@@ -3662,9 +3678,10 @@ $('restaurantForm').onsubmit = async event => {
 $('restaurantRows').onclick = async event => {
  const button = event.target.closest('button');
  if (!button) return;
- const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant,accountToggle,accountRestaurant,commerceAccess,commerceCityNew,commerceCityPayment,commerceCityAction} = button.dataset;
+ const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant,accountToggle,accountRestaurant,commerceAccess,commerceCityNew,commerceCityPayment,commerceCityAction,commerceCityCredit} = button.dataset;
  if(commerceAccess){pontOpenRestaurantAccess(commerceAccess);return;}
  if(commerceCityNew){pontOpenCityCharge(commerceCityNew);return;}
+ if(commerceCityCredit){const item=pontCityPaymentRows.find(x=>x.id===commerceCityCredit);if(item)void pontConvertCityPaymentCredit(item);return;}
  if(commerceCityPayment){const item=pontCityPaymentRows.find(x=>x.id===commerceCityPayment);if(item){if(commerceCityAction==='choose')pontOpenCityServiceApproval(item);else void operateCommercialPayment('city',item,commerceCityAction,button).then(()=>loadRestaurantCommercialData());}return;}
  if(accountToggle){void toggleRestaurantAccountAccess(accountToggle,accountRestaurant,button);return;}
  const restaurant = restaurants.find(item => item.id === (toggle || editRestaurant || deleteRestaurant || createAccess || exhaustedRestaurant));
@@ -4433,4 +4450,7 @@ body.pont-admin--platform #pontCityApprovalDialog::backdrop{background:#001015cb
 #pontCityApprovalDialog .pont-as-approval-actions button{min-height:43px;border-radius:10px}
 </style><style id="pont-as-banner-date-fields-20261116">
 #pontCityApprovalSlotFields label[hidden]{display:none!important}
+</style><style id="pont-as-city-credit-styles-20261116">
+#restaurants .pont-city-credit-balance{font:650 12px/1.5 system-ui;color:#f3dfa8;border:1px solid #a8995a88;background:#303b2f;padding:11px;border-radius:11px}
+#restaurants [data-commerce-city-credit]{background:#544423!important;border-color:#d1b37b!important;color:#f9e6ba!important}
 </style></body></html>
