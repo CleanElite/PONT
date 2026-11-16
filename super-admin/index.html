@@ -60,6 +60,7 @@
 #restaurantRows .restaurant-list-meta{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:4px 12px;font-size:11px;color:#f0e6cc}
 #restaurantRows .restaurant-list-meta span{overflow-wrap:anywhere}
 #restaurantRows .dashboard-badges{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+#restaurantRows .pont-restaurant-module-statuses{justify-content:center;width:100%;margin-inline:auto;gap:8px}
 #restaurantRows .dashboard-badge{font-size:10px;padding:4px 8px;border-radius:20px;line-height:1.2}
 #restaurantRows .restaurant-admin-actions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));justify-content:center;gap:7px;width:100%;max-width:620px;margin:0 auto}
 #restaurantRows .restaurant-admin-actions button{width:100%;min-width:0;min-height:36px;padding:8px 5px;font-size:11px;line-height:1.25;white-space:normal;border-radius:9px;background:rgba(6,23,28,.58);border-color:rgba(255,255,255,.25)}
@@ -2210,10 +2211,8 @@ function renderRestaurants(){
   '</div>'+
   '<strong class="restaurant-list-name"><span class="pont-live-dot '+(restaurantOnlineIds.has(String(r.id))?'is-online':'is-offline')+'" aria-hidden="true"></span>'+esc(r.name)+'</strong>'+
   '<div class="restaurant-list-meta"><span>Cod '+esc(r.short_code||'—')+'</span><span>'+esc(r.phone||'Telefon neconfigurat')+'</span></div>'+
-  '<div class="dashboard-badges"><span class="dashboard-badge" data-state="'+(r.enabled?'enabled':'disabled')+'">'+(r.enabled?'Activ':'Suspendat')+'</span>'+
-  '<span class="dashboard-badge">Meniul zilei '+(r.menu_module_visible?'vizibil':'ascuns')+'</span>'+
-  '<span class="dashboard-badge">Meniu evenimente '+(r.city_module_visible?'vizibil':'ascuns')+'</span>'+
-  (!hasAccount?'<span class="dashboard-badge">Fără cont</span>':revoked?'<span class="dashboard-badge">Cont blocat</span>':'')+'</div></div>'+
+  '<div class="dashboard-badges pont-restaurant-module-statuses"><span class="dashboard-badge">Meniul zilei '+(r.menu_module_visible?'vizibil':'ascuns')+'</span>'+
+  '<span class="dashboard-badge">Ieșire în oraș '+(r.city_module_visible?'vizibil':'ascuns')+'</span></div></div>'+
   '<div class="restaurant-admin-actions pont-restaurant-compact-actions"><button type="button" data-edit-restaurant="'+id+'">Editează</button><button type="button" data-toggle="'+id+'">'+(r.enabled?'Suspendă':'Reactivează')+'</button></div>'+
   '<details class="pont-account-details" data-account-panel="'+id+'" '+(accountPanelOpenId===r.id?'open':'')+'><summary>Administrare</summary><div class="pont-account-body">'+
   '<div class="pont-account-row"><strong>Cont administrator</strong></div>'+
