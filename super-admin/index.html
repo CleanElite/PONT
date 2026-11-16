@@ -1656,6 +1656,21 @@ body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{
     <div id="cityAsRejectedHistory" class="pont-city-list pont-city-history"></div>
   </details>
 </section>
+<dialog id="pontASCityPreviewDialog" class="pont-as-event-preview-dialog" aria-labelledby="pontASCityPreviewHeading">
+ <div class="pont-as-preview-header"><span>PREVIZUALIZARE · NU ESTE PUBLICAT</span><button type="button" id="pontASCityPreviewClose" aria-label="Închide previzualizarea">×</button></div>
+ <h2 id="pontASCityPreviewHeading">Previzualizare eveniment</h2>
+ <div class="pont-as-preview-card" id="pontASCityPreviewCard">
+  <div class="pont-as-preview-photo" id="pontASCityPreviewPhoto"></div>
+  <div class="pont-as-preview-copy">
+   <span id="pontASCityPreviewDate"></span>
+   <strong id="pontASCityPreviewName"></strong>
+   <p id="pontASCityPreviewRestaurant"></p>
+   <small id="pontASCityPreviewPlace"></small>
+  </div>
+ </div>
+ <p id="pontASCityPreviewDescription"></p>
+ <p class="pont-as-preview-hint">Aspect orientativ al cardului public. Previzualizarea nu publică sau aprobă evenimentul.</p>
+</dialog>
 <dialog id="pontCityAsEditDialog" class="pont-city-as-edit-dialog" aria-labelledby="pontCityAsEditTitle">
   <h2 id="pontCityAsEditTitle">Editează evenimentul</h2>
   <p>Modificarea este imediată și se înregistrează în istoricul de audit.</p>
@@ -3939,6 +3954,26 @@ $('pontASPromoForm').onsubmit=async e=>{
   $('cityModerationStatus').textContent='Promovarea a fost confirmată pe locul '+position+'.';
  }catch(error){status.textContent='Eroare: '+error.message;button.disabled=false}
 };
+function pontASPreviewEvent(e){
+ const dialog=$('pontASCityPreviewDialog');
+ const restaurant=restaurants.find(r=>r.id===e.restaurant_id);
+ $('pontASCityPreviewHeading').textContent='Previzualizare eveniment';
+ $('pontASCityPreviewDate').textContent=cityDate(e.event_date);
+ $('pontASCityPreviewName').textContent=e.title||'Eveniment';
+ $('pontASCityPreviewRestaurant').textContent=restaurant?.name||e.venue||'Restaurant';
+ $('pontASCityPreviewPlace').textContent=(e.locality||'')+' · Ora '+String(e.start_time||'').slice(0,5);
+ $('pontASCityPreviewDescription').textContent=e.description||'Pentru detalii și rezervări, contactează organizatorul.';
+ const poster=$('pontASCityPreviewPhoto');poster.replaceChildren();
+ if(e.poster_url&&/^https:\/\//i.test(e.poster_url)){
+  const blur=document.createElement('img'),front=document.createElement('img');
+  blur.className='pont-as-preview-blur';blur.src=e.poster_url;blur.alt='';blur.setAttribute('aria-hidden','true');
+  front.className='pont-as-preview-front';front.src=e.poster_url;front.alt='Afișul evenimentului';
+  front.onerror=()=>{poster.replaceChildren();poster.classList.add('pont-as-preview-no-photo')};
+  poster.classList.remove('pont-as-preview-no-photo');poster.append(blur,front);
+ }else poster.classList.add('pont-as-preview-no-photo');
+ dialog.showModal();
+}
+$('pontASCityPreviewClose').onclick=()=>$('pontASCityPreviewDialog').close();
 function cityRow(e,pending=false,compact=false){
  const article=document.createElement('article');article.className='pont-city-event'+(compact?' pont-city-event-compact':'');
  const name=document.createElement('strong');name.textContent=e.title||'Eveniment fără titlu';article.append(name);
@@ -3979,17 +4014,20 @@ function cityRow(e,pending=false,compact=false){
      $('cityModerationStatus').textContent=next==='approved'?'Eveniment aprobat.':'Eveniment respins.';
     }catch(err){$('cityModerationStatus').textContent='Eroare: '+err.message;[...actions.querySelectorAll('button')].forEach(b=>b.disabled=false)}
    });actions.append(button);
-  }article.append(actions);
+  }
+  const previewPending=document.createElement('button');previewPending.type='button';previewPending.className='pont-city-preview-button';previewPending.textContent='Previzualizare eveniment';
+  previewPending.onclick=()=>pontASPreviewEvent(e);actions.append(previewPending);article.append(actions);
  }
  if(e.status!=='removed'){
   const manage=document.createElement('div');manage.className='pont-city-actions pont-city-as-actions';
   const edit=document.createElement('button');edit.type='button';edit.textContent='Editează';edit.onclick=()=>pontCityAsEdit(e);
+  const preview=document.createElement('button');preview.type='button';preview.className='pont-city-preview-button';preview.textContent='Previzualizare';preview.onclick=()=>pontASPreviewEvent(e);
   const promote=document.createElement('button');promote.type='button';promote.className='pont-city-promote-button';promote.textContent='Promovează';
   promote.disabled=e.status!=='approved'||e.event_date<todayRO();promote.title=promote.disabled?'Doar evenimente aprobate și viitoare':'Promovează pe poziție fixă';
   promote.onclick=()=>pontASOpenPromo(e);
   const remove=document.createElement('button');remove.type='button';remove.textContent='Retrage evenimentul';remove.className='pont-city-reject';
   remove.onclick=async()=>{edit.disabled=true;promote.disabled=true;remove.disabled=true;try{await pontCityAsWithdraw(e)}catch(error){$('cityModerationStatus').textContent='Eroare: '+error.message;edit.disabled=false;promote.disabled=e.status!=='approved'||e.event_date<todayRO();remove.disabled=false}};
-  manage.append(edit,promote,remove);article.append(manage);
+  manage.append(edit,preview,promote,remove);article.append(manage);
  }else{
   const info=document.createElement('small');info.className='pont-city-meta';info.textContent='Retras — păstrat în istoric';article.append(info);
  }
@@ -5356,4 +5394,27 @@ body.pont-admin--platform #pontCityUnifiedDialog::backdrop{background:#001015cf;
 #pontCityGroupedRequests .pont-as-notice-actions .pont-as-notice-seen:disabled{opacity:.55;cursor:default}
 #pontCityGroupedRequests .pont-as-notice-actions .pont-as-notice-dismiss{height:23px;width:23px;min-width:23px;padding:0;border:1px solid #be8e85;background:transparent;color:#f3c2bc;font-size:14px}
 #pontCityGroupedRequests .pont-as-notice-read{border-color:#547a7066;opacity:.84}
+</style><style id="pont-as-event-preview-20261116">
+#cityModeration .pont-city-as-actions,.pont-city-as-actions{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:5px!important}
+#cityModeration .pont-city-as-actions button,.pont-city-as-actions button{font-size:clamp(9px,2.15vw,11px)!important;overflow-wrap:anywhere;min-width:0}
+.pont-city-preview-button{background:#153f43;color:#e8d29e;border:1px solid #a38f6d;border-radius:9px}
+.pont-as-event-preview-dialog{width:min(95vw,630px);max-height:90dvh;overflow:auto;margin:auto;padding:clamp(15px,3vw,24px);border:1px solid #baa773;border-radius:17px;background:linear-gradient(145deg,#103b3c,#061c28);color:#f5f3e5;box-shadow:0 30px 70px #000a}
+.pont-as-event-preview-dialog::backdrop{background:#000c11d1}
+.pont-as-preview-header{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pont-as-preview-header span{color:#e2c187;font:700 10px/1.3 system-ui;letter-spacing:.1em}
+.pont-as-preview-header button{width:32px;height:32px;min-width:32px;border-radius:8px;background:#244043;color:#fff;border:1px solid #6b8b7e;font-size:20px}
+.pont-as-event-preview-dialog h2{font:500 24px/1.2 Georgia,serif;color:#f4dfaf;margin:10px 0 15px}
+.pont-as-preview-card{position:relative;isolation:isolate;display:flex;align-items:center;overflow:hidden;min-height:clamp(136px,28vw,205px);border:1px solid #9ed9d1;border-radius:13px;background:#0a282d}
+.pont-as-preview-photo{position:absolute;inset:0 0 0 auto;width:70%;height:100%;overflow:hidden;background:#153b40}
+.pont-as-preview-photo img{position:absolute;inset:0;width:100%;height:100%}
+.pont-as-preview-blur{object-fit:cover;filter:blur(14px) brightness(.55);transform:scale(1.1)}
+.pont-as-preview-front{object-fit:contain}
+.pont-as-preview-copy{position:relative;z-index:1;display:grid;justify-items:start;gap:5px;width:57%;padding:16px;background:linear-gradient(90deg,#071e22 15%,#071e22e8 60%,transparent)}
+.pont-as-preview-copy>span{font:700 10px system-ui;background:#ddc28d;color:#132828;border-radius:5px;padding:4px 7px}
+.pont-as-preview-copy strong{font:600 clamp(17px,3.8vw,25px)/1.1 Georgia,serif;color:#fff8e6;overflow-wrap:anywhere}
+.pont-as-preview-copy p{font:750 clamp(12px,2.4vw,15px)/1.25 system-ui;color:#f9fffb;margin:0}
+.pont-as-preview-copy small{font:550 11px/1.25 system-ui;color:#e6cf94}
+#pontASCityPreviewDescription{font:500 12px/1.6 system-ui;color:#dbebe5;margin:14px 0}
+.pont-as-preview-hint{font:500 10px/1.4 system-ui;color:#c8c1a2}
+.pont-as-preview-no-photo{background:#092e30}
 </style></body></html>
