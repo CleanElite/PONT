@@ -185,6 +185,8 @@ if (!isRestaurantAdmin) {
   $('pontDishList').before(dishListMessage);
 }
 
+const courseIcons = {first:'bowl-food',second:'fork-knife',dessert:'cake'};
+const displayIcon = name => '<svg class="pont-neon-icon" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=2#' + name + '"></use></svg>';
 const form = document.createElement('form');
 form.id = 'pontDailyBuilder';
 form.classList.add(isRestaurantAdmin ? 'pont-daily-builder--restaurant' : 'pont-daily-builder--super');
@@ -203,8 +205,8 @@ form.innerHTML = `
     <p id="pontDailyError" class="pont-dish-error" role="alert"></p>
     <div class="pont-dish-actions">
       <button id="pontDailyCancel" type="button">Anulează</button>
-      <button id="pontDailySaveModel" type="button" class="pont-daily-save-model">Salvează ca model</button>
-      <button id="pontDailyNext" type="submit" class="primary">Publică</button>
+      <button id="pontDailySaveModel" type="button" class="pont-daily-save-model">${displayIcon('bookmark-simple')}<span>Salvează ca model</span></button>
+      <button id="pontDailyNext" type="submit" class="primary">${displayIcon('paper-plane-tilt')}<span>Publică</span></button>
     </div>
   </div>
   <dialog id="pontDailyPicker" class="pont-daily-picker" aria-labelledby="pontDailyPickerTitle">
@@ -361,10 +363,11 @@ function renderPicker() {
   if (!pickerCategory) return;
   $('pontDailyPickerTitle').textContent = groups.find(([key]) => key === pickerCategory)?.[1] || 'Preparate';
   const entries = menuChoices().filter(([,dish]) => dish.category === pickerCategory);
-  $('pontDailyPickerList').innerHTML = entries.length ? entries.map(([key,dish]) => {
+  $('pontDailyPickerList').innerHTML = entries.length ? entries.map(([key,dish],index) => {
     const checked = selected.has(key);
     const price = checked ? selected.get(key).price : dish.price;
     return '<div class="pont-daily-picker-row">' +
+      '<span class="pont-daily-picker-number" aria-hidden="true">' + (index + 1) + '</span>' +
       '<span class="pont-daily-picker-name">' + esc(dish.name) + '</span>' +
       (pickerCategory === 'dessert' ? '<small>Inclus</small>' :
         checked ? '<label class="pont-daily-picker-price"><input data-price="' + esc(key) +
@@ -406,7 +409,7 @@ function stockIndexForItem(item) {
 function choices() {
   $('pontDailyDishes').innerHTML = groups.map(([key,label]) =>
     '<button type="button" class="pont-daily-course-open" data-open-course="' + key + '">' +
-    label + '</button>').join('');
+    displayIcon(courseIcons[key]) + '<span>' + label + '</span></button>').join('');
   $('pontDailySummaryList').innerHTML = groups.map(([key,label]) => {
     const items = [...selected.entries()].filter(([,item]) => item.category === key);
     const list = items.length ? '<ol class="pont-daily-selected-list">' + items.map(([id,item], itemIndex) => {
@@ -415,14 +418,16 @@ function choices() {
         (soldOut ? ' is-soldout' : '') + '" data-editor-stock="' + stockIndex + '" aria-pressed="' +
         String(soldOut) + '" aria-label="' + esc((soldOut ? 'Marchează disponibil: ' : 'Marchează epuizat: ') + item.name) +
         '">' + (soldOut ? '✓ Epuizat' : 'Epuizat') + '</button>';
+      const price = key !== 'dessert' && item.price != null && Number.isFinite(Number(item.price))
+        ? '<small class="pont-neon-dish-price">' + priceRO.format(item.price) + ' lei</small>' : '';
       return '<li class="pont-editor-dish-row' + (soldOut && stockIndex >= 0 ? ' is-soldout' : '') +
-        '"><span class="pont-editor-dish-number" aria-hidden="true">' + (itemIndex + 1) + '.</span><span class="pont-editor-dish-name">' + esc(item.name) + '</span>' + stockButton +
+        '"><span class="pont-editor-dish-number" aria-hidden="true">' + (itemIndex + 1) + '</span><span class="pont-editor-dish-name">' + esc(item.name) + '</span>' + price + stockButton +
         '<button type="button" data-unselect="' + esc(id) +
         '" aria-label="Elimină ' + esc(item.name) + '" title="Elimină preparatul">×</button></li>';
     }).join('') + '</ol>' :
       '<p class="pont-daily-none">Niciun preparat selectat</p>';
     return '<div class="pont-daily-summary-group"><div class="pont-daily-summary-group-head">' +
-      '<strong>' + label + '</strong><button type="button" data-open-course="' + key +
+      '<strong>' + displayIcon(courseIcons[key]) + label + '</strong><button type="button" data-open-course="' + key +
       '" aria-label="Modifică selecția pentru ' + label + '">Modifică</button></div>' + list + '</div>';
   }).join('');
   if (pickerCategory) renderPicker();
@@ -542,7 +547,7 @@ function resetModelSaved() {
   const button = $('pontDailySaveModel');
   if (!button) return;
   button.classList.remove('is-saved');
-  button.textContent = 'Salvează ca model';
+  button.lastElementChild.textContent = 'Salvează ca model';
   syncSaveModelButton();
 }
 function selectedModelIds() {
@@ -556,7 +561,7 @@ function modelSignature() {
   return rid() + '|' + (selectedModelIds() || []).join(',');
 }
 function syncMenuAction() {
-  $('pontDailyNext').textContent = editingMenu ? 'Salvează' : 'Publică';
+  $('pontDailyNext').lastElementChild.textContent = editingMenu ? 'Salvează' : 'Publică';
 }
 function resetDaily() {
   resetModelSaved();
@@ -713,7 +718,7 @@ $('pontDailySaveModel').onclick = async () => {
     month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit', hourCycle:'h23'}).format(new Date());
   savingModel = true;
   button.disabled = true;
-  button.textContent = 'Se salvează…';
+  button.lastElementChild.textContent = 'Se salvează…';
   try {
     const {error} = await db.from('pont_menu_templates').insert({
       restaurant_id:restaurant, name:('Model ' + stamp).slice(0, 80), dish_ids:ids
@@ -721,7 +726,7 @@ $('pontDailySaveModel').onclick = async () => {
     if (error) throw error;
     if (signature === modelSignature()) {
       button.classList.add('is-saved');
-      button.textContent = '✓ Salvat ca model';
+      button.lastElementChild.textContent = '✓ Salvat ca model';
     } else resetModelSaved();
     window.pontMenuModels?.refresh()?.catch(() => {});
   } catch (error) {

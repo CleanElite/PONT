@@ -156,7 +156,7 @@
 .pont-day-exhausted-button[data-exhausted="true"]{background:#e6bc73!important;color:#183233!important}
 .pont-day-exhausted-panel span{font-size:11px;color:#d4cbaa;text-align:center}
 </style><link rel="stylesheet" href="../admin-theme.css?v=7">
-<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=premium-controls-20261112"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-header-bell-fit-20261112">
+<link rel="stylesheet" href="../pont-navigation.css?v=2"><link rel="stylesheet" href="../admin-compact.css?v=neon-20261116"><link rel="stylesheet" href="../menu-templates.css?v=stock-thin-line-20261113d"><style id="pont-header-bell-fit-20261112">
 /* Restaurant title card fills the remaining width; bell/payment cluster keeps intrinsic width. */
 .pont-admin #app .pont-restaurant-premium-heading{
  display:grid!important;
@@ -224,8 +224,9 @@
 <section id="setup" class="card" hidden><h1>Configurare necesară</h1><p>Panoul este instalat. Pentru autentificare reală, conectează-l la Supabase și atribuie restaurantul contului.</p></section><section id="login" class="card" hidden><h1>Cont restaurant</h1><p>Fiecare partener își gestionează exclusiv propriile meniuri.</p><form id="auth" autocomplete="on"><label for="email">Email sau nume de utilizator</label><input id="email" name="username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required><label for="password">Parolă</label><input id="password" name="password" type="password" autocomplete="current-password" required><p><button class="primary">Conectare</button></p></form><p id="error" class="error"></p></section><section id="app" hidden><button type="button" id="logout" class="admin-logout" aria-label="Deconectare"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=1#sign-out"></use></svg><span class="admin-control-text">Deconectare</span></button>
 <div class="admin-hero pont-restaurant-premium-heading">
   <div class="admin-hero-copy pont-restaurant-title-card">
-    <div id="adminRestaurantContext" class="pont-admin-heading-name">Restaurant</div>
-    <div class="pont-live-datetime pont-restaurant-card-clock" role="group" aria-label="Data și ora României"><span class="pont-live-datetime__date" data-pont-clock-date>--.--.----</span><time class="pont-live-datetime__time" data-pont-clock-time>--:--</time></div>
+    <span class="pont-neon-emblem" aria-hidden="true"><svg class="pont-neon-icon" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=2#chef-hat"></use></svg></span>
+    <div class="pont-restaurant-identity"><span class="pont-neon-restaurant-label">Restaurant</span><h1 id="adminRestaurantContext" class="pont-admin-heading-name">Restaurant</h1></div>
+    <div class="pont-live-datetime pont-restaurant-card-clock" role="group" aria-label="Data și ora României"><svg class="pont-neon-icon" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=2#calendar-blank"></use></svg><span class="pont-live-datetime__date" data-pont-clock-date>--.--.----</span><span class="pont-live-datetime__separator" aria-hidden="true"></span><time class="pont-live-datetime__time" data-pont-clock-time>--:--</time></div>
   </div>
   <div id="pontAuctionBellMount" class="pont-bell-header-slot" aria-label="Notificări licitații"></div>
 </div>
@@ -534,7 +535,7 @@ $('menus').onclick = async event => {
   status(error.message,true);
  }
 };
-const {initPontDishEditor}=await import('../dish-editor.js?v=no-auto-focus-20261114');
+const {initPontDishEditor}=await import('../dish-editor.js?v=neon-20261116');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:true});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
@@ -543,10 +544,13 @@ const dailyExhaustedButton=$('toggleDailyExhausted');
  const dailyExhaustedHolder=dailyExhaustedButton?.parentElement;
  const renderTodayMenu=(resetExpanded=false)=>{
   renderPublishedToday($('pontTodayMenu'), menus, restaurants, restaurants.length > 1, resetExpanded);
+  for(const edit of $('pontTodayMenu').querySelectorAll('.pont-today-edit')){
+   edit.insertAdjacentHTML('afterbegin','<svg class="pont-neon-icon" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=2#pencil-simple"></use></svg>');
+  }
   const actions=$('pontTodayMenu').querySelector('.pont-today-header .pont-today-actions');
   if(actions && dailyExhaustedButton){
    dailyExhaustedButton.classList.add('pont-today-exhausted-inline');
-   actions.insertBefore(dailyExhaustedButton,actions.querySelector('.pont-today-delete'));
+   actions.appendChild(dailyExhaustedButton);
   }else if(dailyExhaustedButton && dailyExhaustedHolder){
    dailyExhaustedHolder.appendChild(dailyExhaustedButton);
   }
@@ -592,7 +596,7 @@ $('pontTodayMenu').addEventListener('click', async event => {
 window.pontMenuModels=initMenuTemplates({db,getRestaurants:()=>restaurants,refreshHistory:()=>load()});
 showHashView();
 if(await adminSession.resume())await enter();else{$('login').hidden=false;$('app').hidden=true}
-const {initPontOperations}=await import('../order-operations.js?v=fix-hours-null-x6-20261113');
+const {initPontOperations}=await import('../order-operations.js?v=neon-20261116');
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();
@@ -1229,5 +1233,5 @@ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exh
  .pont-admin--restaurant #app .pont-ar-switch-label{display:none!important}
  .pont-admin--restaurant #app .pont-ar-module-link{min-height:36px!important;padding:7px 6px!important;font-size:12px!important}
 }
-</style><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script><script src="../pont-date-display.js?v=dmy-20261116" defer></script><link rel="stylesheet" href="../admin-neon.css?v=20261116-neon1">
+</style><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script><script src="../pont-date-display.js?v=dmy-20261116" defer></script><link rel="stylesheet" href="../admin-neon.css?v=20261116-neon2">
 </body></html>

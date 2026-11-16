@@ -348,7 +348,7 @@ body.pont-admin #app :is(.stat strong,.pont-insight strong,.auction-amount,.save
 }
 /* Subtle turquoise outline and slim glass buttons, like the compact weekly rows.
    Avoid icon-only commands, destructive actions and the approved weekly planner. */
-body.pont-admin #app button:not(.primary):not(.admin-danger):not(.danger):not(.pont-week-day-action):not(.pont-op-button):not(.pont-week-create-remaining):not(.pont-nav-action):not(.admin-logout):not(.admin-row-actions button):not(.pont-daily-switch):not(.pont-password-toggle):not([aria-pressed='true']):not(.active):not([role='switch']){
+body.pont-admin:not(.pont-admin-neon) #app button:not(.primary):not(.admin-danger):not(.danger):not(.pont-week-day-action):not(.pont-op-button):not(.pont-week-create-remaining):not(.pont-nav-action):not(.admin-logout):not(.admin-row-actions button):not(.pont-daily-switch):not(.pont-password-toggle):not([aria-pressed='true']):not(.active):not([role='switch']){
   border:1px solid rgba(114,249,227,.59)!important;
   border-radius:clamp(9px,2vw,13px)!important;
   background:linear-gradient(145deg,#0B665E 0%,#06443F 55%,#052D33 100%)!important;
