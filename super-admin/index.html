@@ -3627,12 +3627,29 @@ async function pontCityManagePromotion(payment,action,buttons){
   notice.textContent=pause?'Promovarea este pe pauză, cu locul rezervat.':resume?'Promovarea a fost reluată.':'Promovarea a fost retrasă; locul a fost eliberat.';
  }catch(err){notice.textContent='Eroare: '+err.message;buttons.forEach(button=>button.disabled=false)}
 }
+function pontCityShowEventDecision(message){
+ const notice=$('cityModerationStatus');
+ notice.textContent=message;
+ notice.scrollIntoView({block:'nearest',behavior:'smooth'});
+}
+function pontCityPrepareApprovalDialog(){
+ const dialog=$('pontCityApprovalDialog');
+ // Dialogul a fost creat în fișa Restaurante, ascunsă în Moderare.
+ // Mutarea la body permite showModal() și din panoul Evenimente.
+ if(dialog.parentElement!==document.body)document.body.appendChild(dialog);
+}
 async function pontCityApproveCashFromEvent(item){
- await loadCommercialPayments();
- await pontDecideCashRequest(item);
- await loadCityEvents();
+ pontCityPrepareApprovalDialog();
+ pontCityShowEventDecision('Se deschide confirmarea solicitării cash…');
+ try{
+  await loadCommercialPayments();
+  await pontDecideCashRequest(item);
+  await loadCityEvents();
+  pontCityShowEventDecision('Solicitarea cash a fost procesată. Verifică statusul și accesul în fișa restaurantului.');
+ }catch(err){pontCityShowEventDecision('Nu s-a putut confirma solicitarea cash: '+err.message)}
 }
 async function pontCityRejectCashFromEvent(item){
+ pontCityShowEventDecision('Se verifică respingerea solicitării cash…');
  const approved=await pontASConfirm({
   title:'Respinge solicitarea cash',
   message:'Respingi cererea de promovare și păstrezi evenimentul publicat fără promovare. Nu este înregistrată nicio încasare Stripe.',
@@ -3645,11 +3662,16 @@ async function pontCityRejectCashFromEvent(item){
  $('cityModerationStatus').textContent='Solicitarea cash a fost respinsă; evenimentul rămâne publicat.';
 }
 async function pontCityApprovePaymentFromEvent(pay){
- await loadCommercialPayments();
- const item=pontCityPaymentRows.find(row=>row.id===pay.id)||pay;
- pontOpenCityServiceApproval(item);
+ pontCityPrepareApprovalDialog();
+ pontCityShowEventDecision('Se deschide aprobarea promovării…');
+ try{
+  await loadCommercialPayments();
+  const item=pontCityPaymentRows.find(row=>row.id===pay.id)||pay;
+  pontOpenCityServiceApproval(item);
+ }catch(err){pontCityShowEventDecision('Nu s-a putut deschide aprobarea: '+err.message)}
 }
 async function pontCityRejectPaymentFromEvent(pay){
+ pontCityShowEventDecision('Se verifică respingerea promovării…');
  const approved=await pontASConfirm({
   title:'Respinge promovarea',
   message:'Promovarea nu va fi publicată, iar poziția se eliberează. Dacă Stripe a încasat bani, încasarea se păstrează în evidență și va trebui soluționată separat.',
