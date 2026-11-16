@@ -195,7 +195,10 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 @keyframes pont-slot-unavailable-shake{0%,100%{transform:translateX(0)}18%,54%{transform:translateX(-6px)}36%,72%{transform:translateX(6px)}}
 #pontPromotionSlotOptions .pont-slot-shake{animation:pont-slot-unavailable-shake .4s ease-in-out}
 @media(prefers-reduced-motion:reduce){#pontPromotionSlotOptions .pont-slot-shake{animation:none}}
-</style><style id="pont-promotion-approval-note-20261116">#pontPromotionForm .pont-promotion-approval-note{display:block;text-align:center;font:400 10px/1.45 system-ui;color:#b9c9c4;letter-spacing:.005em;margin:0 6px 2px}</style></head>
+</style><style id="pont-promotion-approval-note-20261116">#pontPromotionForm .pont-promotion-approval-note{display:block;text-align:center;font:400 10px/1.45 system-ui;color:#b9c9c4;letter-spacing:.005em;margin:0 6px 2px}</style><style id="pont-promotion-manual-approval-label-20261116">
+#cityPromotionPaymentList .pont-city-promo-unconfirmed{display:block;color:#f4cf9e;font:750 11px/1.55 system-ui;margin:8px 0}
+#cityPromotionPaymentList .pont-city-promo-approved{display:block;color:#b9ebce;font:750 11px/1.55 system-ui;margin:8px 0}
+</style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
  <a class="pont-ar-back" href="../" aria-label="Acasă">Înapoi</a>
@@ -562,9 +565,15 @@ async function loadCitySubscription(){
  for(const item of promotion){
   const card=document.createElement('article');card.className='event';
   const title=document.createElement('strong');
-  title.textContent=(item.service_type==='pinned_event'?'Poziție fixă':'Bandă publicitară')+' · '+Number(item.amount).toFixed(2)+' lei';
+  const isApproved=item.status==='confirmed';
+  const slotName=item.service_type==='pinned_event'?(item.promotion_position?'Locul '+item.promotion_position:'Poziție fixă'):'Bandă publicitară';
+  title.textContent=(isApproved?'Promovare aprobată · ':'Promovare neactivată · ')+slotName+' · '+Number(item.amount).toFixed(2)+' lei';
   const status=document.createElement('small');
-  status.textContent=item.status==='confirmed'?'Activat de AS · '+(item.promotion_credit_used?'achitat cu credit':'Stripe '+Number(item.stripe_paid_amount||0).toFixed(2)+' lei'):item.promotion_credit_used?'Credit utilizat · Așteaptă confirmarea AS':item.stripe_paid_at?'Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei încasați · Așteaptă confirmarea AS':'Stripe: 0 lei încasați · Poți plăti online sau discuta cu AS pentru cash';
+  status.classList.add(isApproved?'pont-city-promo-approved':'pont-city-promo-unconfirmed');
+  status.textContent=isApproved?'Confirmată manual de AS · '+(item.promotion_credit_used?'achitat cu credit':'Stripe '+Number(item.stripe_paid_amount||0).toFixed(2)+' lei'):
+   item.promotion_credit_used?'ÎN AȘTEPTARE · Credit utilizat. Promovarea NU este publicată până la confirmarea AS.':
+   item.stripe_paid_at?'ÎN AȘTEPTARE · Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei. Promovarea NU este activă până la confirmarea AS.':
+   'ÎN AȘTEPTARE · Locul este doar rezervat temporar. Promovarea NU este publicată. Stripe: 0 lei.';
   card.append(title,status);
   const isPaid=Boolean(item.stripe_paid_at)||Boolean(item.promotion_credit_used)||item.status==='confirmed';
   const linkedEvent=cityEventRows.find(e=>e.id===(item.promoted_event_id||item.event_id));
