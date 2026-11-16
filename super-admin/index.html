@@ -403,6 +403,12 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-fields{min-width:0}
 #restaurantRows .restaurant-admin-item>#restaurantForm .dashboard-actions{display:flex;gap:8px;flex-wrap:wrap}
 #restaurantRows .restaurant-admin-item>#restaurantForm[hidden],#restaurantRows .restaurant-admin-item>#restaurantAccess[hidden]{display:none!important}
+</style><style id="pont-today-restaurant-exhaustion-20261116">
+#pontTodayMenu .pont-today-card .pont-today-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px}
+#pontTodayMenu .pont-today-card-actions{display:inline-flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;min-width:0}
+#pontTodayMenu .pont-today-restaurant-exhausted{font:700 11px/1.2 system-ui;border:1px solid #dcbb83;border-radius:9px;background:linear-gradient(140deg,#4f3a20,#322d23);color:#f7ddac;padding:8px 10px;min-height:32px;cursor:pointer}
+#pontTodayMenu .pont-today-restaurant-exhausted[aria-pressed="true"]{background:linear-gradient(140deg,#722c37,#451d28);border-color:#ff9ca4;color:#ffe2e3}
+#pontTodayMenu .pont-today-restaurant-exhausted:disabled{opacity:.6;cursor:wait}
 </style><style id="pont-restaurant-card-visibility-20261116">
 #restaurantRows .restaurant-admin-heading{position:relative}
 #restaurantRows .pont-restaurant-visibility{position:absolute;top:0;right:0;z-index:2;display:flex;align-items:center;justify-content:flex-end;gap:6px;height:28px;white-space:nowrap}
@@ -1776,16 +1782,13 @@ function pontRestaurantPaymentOverview(r){
 function pontCommerceDetailsHtml(r){
  const month=pontCommerceMonthValue(),offer=pontCommerceMonthOffer(r.id,month),mode=pontCommerceCurrentMode(r.id,month);
  const rank=pontCommerceRank(r.id,month),labels={paid:'Plătit',authorization:'Acces',none:'Neconfirmat'};
- const menuEnabled=r.access_meniul_zilei;
  let output='<div class="pont-commerce-line pont-commerce-menu"><header><strong>Meniul zilei</strong><span class="dashboard-badge" data-payment-state="'+mode+'">'+esc(labels[mode])+'</span></header>'+
  '<div class="pont-commerce-facts">'+
  (offer?'<span>'+esc(auctionMoney(offer.amount))+' licitați</span><span>Stripe: '+esc(auctionMoney(pontVerifiedStripeMenuAmount(offer)))+' încasați</span>':'')+
  (rank?'<span>Locul '+rank+'</span>':'')+
  (offer?'<span>Runda '+esc(offer.round)+'</span>':'')+
  (!offer?'<span>Fără ofertă</span>':'')+
- '</div><div class="pont-service-controls"><button type="button" data-commerce-access="'+esc(r.id)+'">Confirmă accesul</button>'+
- (menuEnabled?'<button type="button" class="restaurant-day-toggle" data-exhausted-restaurant="'+esc(r.id)+'" aria-pressed="'+dailyMenuExhaustedIds.has(r.id)+'">'+(dailyMenuExhaustedIds.has(r.id)?'Reactivează meniul':'Meniu epuizat')+'</button>':'')+
- '</div></div>';
+ '</div><div class="pont-service-controls"><button type="button" data-commerce-access="'+esc(r.id)+'">Confirmă accesul</button></div></div>';
  const allItems=pontCityPaymentRows.filter(x=>x.restaurant_id===r.id).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
  const subscriptions=allItems.filter(x=>x.service_type==='subscription');
  const activeSubscription=subscriptions.find(x=>x.status==='confirmed'&&new Date(x.expires_at)>new Date());
@@ -3992,7 +3995,7 @@ $('restaurantForm').onsubmit = async event => {
 $('restaurantRows').onclick = async event => {
  const button = event.target.closest('button');
  if (!button) return;
- const {toggle,editRestaurant,deleteRestaurant,createAccess,exhaustedRestaurant,accountToggle,accountRestaurant,commerceAccess,commerceCityNew,commerceCityPayment,commerceCityAction,commerceCityCredit,commerceCityCreditCancel,commerceCashId} = button.dataset;
+ const {toggle,editRestaurant,deleteRestaurant,createAccess,accountToggle,accountRestaurant,commerceAccess,commerceCityNew,commerceCityPayment,commerceCityAction,commerceCityCredit,commerceCityCreditCancel,commerceCashId} = button.dataset;
  if(button.dataset.cityUnifiedSub){pontCityUnifiedOpen('subscription',button.dataset.cityUnifiedSub);return;}
  if(button.dataset.cityUnifiedCash){const cash=pontCityCashRows.find(x=>x.id===button.dataset.cityUnifiedCash);if(cash)pontCityUnifiedOpen('cash',cash);return;}
  if(button.dataset.cityUnifiedPayment){const payment=pontCityPaymentRows.find(x=>x.id===button.dataset.cityUnifiedPayment);if(payment)pontOpenCityServiceApproval(payment);return;}
@@ -4004,19 +4007,8 @@ $('restaurantRows').onclick = async event => {
  if(commerceCityCredit){const item=pontCityPaymentRows.find(x=>x.id===commerceCityCredit);if(item)void pontConvertCityPaymentCredit(item);return;}
  if(commerceCityPayment){const item=pontCityPaymentRows.find(x=>x.id===commerceCityPayment);if(item){if(commerceCityAction==='choose')pontOpenCityServiceApproval(item);else void operateCommercialPayment('city',item,commerceCityAction,button).then(()=>loadRestaurantCommercialData());}return;}
  if(accountToggle){void toggleRestaurantAccountAccess(accountToggle,accountRestaurant,button);return;}
- const restaurant = restaurants.find(item => item.id === (toggle || editRestaurant || deleteRestaurant || createAccess || exhaustedRestaurant));
+ const restaurant = restaurants.find(item => item.id === (toggle || editRestaurant || deleteRestaurant || createAccess));
  if (!restaurant) return;
- if (exhaustedRestaurant) {
-  button.disabled=true;
-  const exhausted=!dailyMenuExhaustedIds.has(restaurant.id);
-  try{
-   await req(db.rpc('pont_set_daily_menu_exhausted',{p_restaurant_id:restaurant.id,p_exhausted:exhausted}));
-   if(exhausted)dailyMenuExhaustedIds.add(restaurant.id);else dailyMenuExhaustedIds.delete(restaurant.id);
-   renderRestaurants();
-   status(exhausted?'Meniul zilei a fost marcat ca epuizat pentru '+restaurant.name+'.':'Meniul zilei a fost reactivat pentru '+restaurant.name+'.');
-  }catch(error){button.disabled=false;status(error.message,true)}
-  return;
- }
  if (editRestaurant) {
   openRestaurantEditor(restaurant);
   return;
@@ -4243,12 +4235,28 @@ const {initPontDishEditor}=await import('../dish-editor.js?v=no-auto-focus-20261
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
-const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=no-auto-focus-20261114');
-const renderTodayMenu=(resetExpanded=false)=>renderPublishedToday($('pontTodayMenu'), menus, restaurants, true, resetExpanded);
+const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=today-exhausted-by-restaurant-20261116');
+const renderTodayMenu=(resetExpanded=false)=>renderPublishedToday($('pontTodayMenu'), menus, restaurants, true, resetExpanded, dailyMenuExhaustedIds);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) renderTodayMenu(); });
 $('pontTodayMenu').addEventListener('click', async event => {
- const button = event.target.closest('[data-today-availability], [data-today-edit], [data-today-delete]');
+ const button = event.target.closest('[data-today-exhausted], [data-today-availability], [data-today-edit], [data-today-delete]');
  if (!button) return;
+ if (button.hasAttribute('data-today-exhausted')) {
+  const restaurantId=button.dataset.todayExhausted;
+  const restaurant=restaurants.find(row=>row.id===restaurantId);
+  const isToday=button.dataset.serviceDate===todayRO();
+  const hasMenu=menus.some(menu=>menu.restaurant_id===restaurantId&&menu.published&&menu.service_date===todayRO());
+  if(!restaurant||!isToday||!hasMenu){status('Meniul nu mai este publicat pentru ziua în curs. Reîncarcă pagina.',true);return}
+  const exhausted=!dailyMenuExhaustedIds.has(restaurantId);
+  button.disabled=true;
+  try{
+   await req(db.rpc('pont_set_daily_menu_exhausted',{p_restaurant_id:restaurantId,p_exhausted:exhausted}));
+   if(exhausted)dailyMenuExhaustedIds.add(restaurantId);else dailyMenuExhaustedIds.delete(restaurantId);
+   renderTodayMenu();
+   status(exhausted?'Meniul zilei a fost marcat ca epuizat astăzi pentru '+restaurant.name+'.':'Meniul zilei a fost reactivat astăzi pentru '+restaurant.name+'.');
+  }catch(error){status(error.message,true);if(button.isConnected)button.disabled=false}
+  return;
+ }
  if (button.hasAttribute('data-today-availability')) {
   const menu = menus.find(item => item.id === button.dataset.todayAvailability && item.published);
   if (!menu) { status('Meniul nu mai este disponibil. Reîncarcă pagina.', true); return; }
