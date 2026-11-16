@@ -598,7 +598,7 @@ async function loadCitySubscription(){
  if(activeError)throw activeError;
  citySubscriptionActive=Boolean(active);
  const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests')
-  .select('id,status,service_type,amount,event_id,promoted_event_id,promotion_position,promotion_credit_used,requested_start_date,requested_end_date,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount')
+  .select('id,status,service_type,amount,event_id,promoted_event_id,promotion_position,promotion_credit_used,requested_start_date,requested_end_date,created_at,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount')
   .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(80);
  if(paymentError)throw paymentError;
  const rows=payments||[],subs=rows.filter(p=>p.service_type==='subscription');
@@ -761,10 +761,9 @@ function renderCityRequests(){
   items.push({date:date||'',title,state,notes:notes.filter(Boolean),rejected});
  };
  for(const event of cityEventRows){
-  if(event.status==='pending'||event.status==='rejected'){
-   add(event.created_at,'Publicare eveniment · '+event.title,event.status==='pending'?'În așteptarea aprobării AS':'Respins',
-    ['Data evenimentului: '+event.event_date]);
-  }
+  const eventStatus=({pending:'În așteptarea aprobării AS',approved:'Aprobat de AS',rejected:'Respins de AS',removed:'Retras'})[event.status]||event.status;
+  add(event.created_at,'Publicare eveniment · '+event.title,eventStatus,
+   ['Data evenimentului: '+event.event_date],event.status==='rejected');
  }
  for(const request of cityRequestRows){
   const status=requestStates[request.status]||request.status;
