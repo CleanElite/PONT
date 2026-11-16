@@ -356,16 +356,15 @@ body.pont-admin.pont-admin--restaurant.pont-admin-neon .admin-topbar.pont-restau
   --pont-topbar-control-height: 44px;
   --pont-topbar-icon-width: 40px;
   --pont-topbar-gap: clamp(4px, 1.2vw, 9px);
-  display: grid !important;
-  grid-template: "brand brand" auto "back actions" auto / auto minmax(0, 1fr);
-  justify-content: stretch !important;
+  display: flex !important;
+  flex-wrap: nowrap;
+  justify-content: flex-start !important;
   align-items: center;
-  gap: 7px var(--pont-topbar-gap) !important;
+  gap: var(--pont-topbar-gap) !important;
   margin-bottom: 13px !important;
 }
 
 body.pont-admin.pont-admin--restaurant.pont-admin-neon .pont-restaurant-topbar .admin-back.pont-nav-action {
-  grid-area: back;
   width: var(--pont-topbar-icon-width) !important;
   min-width: var(--pont-topbar-icon-width) !important;
   max-width: var(--pont-topbar-icon-width) !important;
@@ -376,16 +375,7 @@ body.pont-admin.pont-admin--restaurant.pont-admin-neon .pont-restaurant-topbar .
 }
 
 .pont-restaurant-topbar .admin-back .pont-nav-action__label { display: none !important; }
-.pont-restaurant-topbar-brand {
-  display: block;
-  grid-area: brand;
-  justify-self: center;
-}
-
-body.pont-admin.pont-admin-neon .pont-restaurant-topbar .pont-restaurant-topbar-brand .admin-brand {
-  width: 80px !important;
-  height: auto !important;
-}
+.pont-restaurant-topbar-brand { flex: none; }
 
 .pont-restaurant-topbar-actions,
 .pont-restaurant-topbar .pont-auction-notify {
@@ -395,10 +385,7 @@ body.pont-admin.pont-admin-neon .pont-restaurant-topbar .pont-restaurant-topbar-
   min-width: 0;
 }
 
-.pont-restaurant-topbar-actions {
-  grid-area: actions;
-  justify-content: flex-end;
-}
+.pont-restaurant-topbar-actions { margin-inline-start: auto; }
 .pont-restaurant-topbar #pontAuctionBellMount { min-width: 0; }
 .pont-restaurant-topbar [hidden] { display: none !important; }
 
@@ -478,6 +465,10 @@ body.pont-admin.pont-admin-neon .pont-restaurant-topbar #pontAuctionBellMount .p
   border: 1px solid #493b2b;
   border-radius: 50%;
   background: #dfba77;
+}
+
+@media (max-width: 560px) {
+  .pont-restaurant-topbar:has(.pont-restaurant-topbar-actions:not([hidden]) .pont-auction-notice:not([hidden])) > .pont-restaurant-topbar-brand { display: none; }
 }
 
 body.pont-admin.pont-admin--restaurant.pont-admin-neon #app .pont-restaurant-premium-heading {
