@@ -4014,9 +4014,7 @@ function cityRow(e,pending=false,compact=false){
      $('cityModerationStatus').textContent=next==='approved'?'Eveniment aprobat.':'Eveniment respins.';
     }catch(err){$('cityModerationStatus').textContent='Eroare: '+err.message;[...actions.querySelectorAll('button')].forEach(b=>b.disabled=false)}
    });actions.append(button);
-  }
-  const previewPending=document.createElement('button');previewPending.type='button';previewPending.className='pont-city-preview-button';previewPending.textContent='Previzualizare eveniment';
-  previewPending.onclick=()=>pontASPreviewEvent(e);actions.append(previewPending);article.append(actions);
+  }article.append(actions);
  }
  if(e.status!=='removed'){
   const manage=document.createElement('div');manage.className='pont-city-actions pont-city-as-actions';
