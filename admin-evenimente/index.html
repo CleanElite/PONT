@@ -227,6 +227,19 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 .pont-ar-payment-options button[aria-pressed=true]{background:#dccc9d!important;color:#102f30!important;border-color:#efdcaa!important}
 .pont-ar-payment-choice-status{color:#f0d8a0!important;margin-bottom:4px}
 @media(max-width:420px){.pont-ar-payment-options{display:grid;grid-template-columns:1fr 1fr}.pont-ar-payment-options button:first-child{grid-column:1/-1}}
+/* One compact payment decision per restaurant payment record. */
+body.pont-admin--city .pont-ar-simple-payment{padding:10px 12px;margin:7px 0;border-radius:10px;min-height:0}
+body.pont-admin--city .pont-ar-simple-payment>strong{display:block;font:700 12px/1.3 system-ui;color:#f5e5c4}
+body.pont-admin--city .pont-ar-simple-payment-date{display:block;margin:3px 0 0;font:500 10px/1.4 system-ui;color:#accbc4}
+body.pont-admin--city .pont-ar-simple-payment .pont-ar-payment-choice{margin:8px 0 0;padding:0;border:0;background:none}
+body.pont-admin--city .pont-ar-payment-prompt{display:block;font:600 11px/1.35 system-ui;color:#d6e8dd}
+body.pont-admin--city .pont-ar-payment-options{margin:7px 0 0;display:flex;flex-wrap:wrap;gap:5px}
+body.pont-admin--city .pont-ar-payment-options button{width:auto;min-height:29px;padding:6px 9px;font:600 10px/1.2 system-ui}
+body.pont-admin--city .pont-ar-payment-thanks{display:block;margin-top:7px;font:600 11px/1.4 system-ui;color:#cbe6d3}
+body.pont-admin--city .pont-ar-payment-choice-error{display:block;margin-top:5px;font-size:10px;color:#f2b9a3}
+body.pont-admin--city .pont-ar-other-requests{margin-top:10px;padding:10px;border:1px solid #648e8170;border-radius:9px}
+body.pont-admin--city .pont-ar-other-requests>summary{font-size:11px;color:#dbc993;cursor:pointer}
+body.pont-admin--city .pont-ar-other-request-row{font-size:10px;line-height:1.5;color:#bad1c8;padding:7px 0;border-top:1px solid #486e6455}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -643,51 +656,7 @@ async function loadCitySubscription(){
  $('eventForm').hidden=!citySubscriptionActive;
  $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'Publicarea este blocată până la plata și confirmarea abonamentului.';
  const promotion=rows.filter(p=>p.service_type!=='subscription');
- const paymentPanel=$('cityPromotionPayments'),list=$('cityPromotionPaymentList');list.replaceChildren();
- paymentPanel.hidden=cityPage!=='cererile-mele'||!promotion.length;
- for(const item of promotion){
-  const card=document.createElement('article');card.className='event';
-  const title=document.createElement('strong');
-  const isApproved=item.status==='confirmed',isRevoked=item.status==='revoked';
-  const slotName=item.service_type==='pinned_event'?(item.promotion_position?'Locul '+item.promotion_position:'Poziție fixă'):'Bandă publicitară';
-  title.textContent=(isApproved?'Promovare aprobată · ':isRevoked?'Promovare retrasă · ':'Promovare în așteptare · ')+slotName+' · '+Number(item.amount).toFixed(2)+' lei';
-  const status=document.createElement('small');
-  status.classList.add(isApproved?'pont-city-promo-approved':'pont-city-promo-unconfirmed');
-  status.textContent=isRevoked?(item.revoke_reason||'Solicitare retrasă sau anulată.'):isApproved?'Confirmată manual de AS · '+(item.promotion_credit_used?'achitat cu credit':'Stripe '+Number(item.stripe_paid_amount||0).toFixed(2)+' lei'):
-   item.promotion_credit_used?'ÎN AȘTEPTARE · Credit utilizat. Promovarea NU este publicată până la confirmarea AS.':
-   item.stripe_paid_at?'ÎN AȘTEPTARE · Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei. Promovarea NU este activă până la confirmarea AS.':
-   'ÎN AȘTEPTARE · Locul este doar rezervat temporar. Promovarea NU este publicată. Stripe: 0 lei.';
-  const details=document.createElement('details');details.className='pont-ar-request-details';
-  const summary=document.createElement('summary');summary.textContent='Detalii';details.append(summary);
-  const fullStatus=document.createElement('small');fullStatus.textContent=status.textContent;details.append(fullStatus);
-  status.textContent=isRevoked?'Retrasă':isApproved?'Aprobată':item.stripe_paid_at?'Stripe încasat · așteaptă AS':'În așteptare';
-  card.append(title,status);
-  if(item.service_type==='pinned_event'&&item.requested_start_date&&item.requested_end_date){
-   const interval=document.createElement('small');
-   interval.textContent='Perioadă: '+item.requested_start_date+' – '+item.requested_end_date;
-   details.append(interval);
-  }
-  const isPaid=Boolean(item.stripe_paid_at)||Boolean(item.promotion_credit_used)||item.status==='confirmed'||isRevoked;
-  const linkedEvent=cityEventRows.find(e=>e.id===(item.promoted_event_id||item.event_id));
-  const alreadyRequested=cityRequestRows.some(req=>req.event_id===linkedEvent?.id&&req.request_type===item.service_type
-   &&['pending','approved'].includes(req.status)&&req.proposed_changes?.requested_start_date===item.requested_start_date);
-  if(isPaid){
-   const info=document.createElement('small');
-   info.textContent=isRevoked?'Promovarea nu mai este activă. Istoricul rămâne disponibil.':item.status==='confirmed'?'Promovarea este confirmată de AS. Va apărea automat în perioada rezervată.':item.promotion_credit_used?'Creditul a rezervat poziția. Așteaptă activarea AS.':'Plata a fost confirmată de Stripe. AS verifică și activează rezervarea.';
-   details.append(info);
-  }else if(linkedEvent){
-   card.append(arButton('Verifică locurile și continuă plata',()=>openCityPromotion(linkedEvent,item.service_type,item.amount)));
-  }
-  card.append(details);
-  const paymentQuestion=pontARPaymentQuestion(item);if(paymentQuestion)card.append(paymentQuestion);
-  if(item.status==='pending'&&!item.stripe_paid_at){
-   const withdraw=arButton('Retrage solicitarea',async()=>{
-    withdraw.disabled=true;
-    try{await pontWithdrawCityRequest('promotion',item.id)}finally{withdraw.disabled=false}
-   });withdraw.classList.add('pont-ar-request-withdraw');card.append(withdraw);
-  }
-  list.append(card);
- }
+ const paymentPanel=$('cityPromotionPayments');paymentPanel.hidden=true;
  renderCityRequests();
 }
 $('requestCitySubscription').onclick=async()=>{
@@ -790,102 +759,85 @@ async function pontWithdrawCityRequest(kind,id){
 function pontARPaymentQuestion(payment){
  if(!payment||payment.status!=='pending'||payment.stripe_paid_at||payment.promotion_credit_used)return null;
  const wrapper=document.createElement('section');wrapper.className='pont-ar-payment-choice';
- const question=document.createElement('small');
- question.textContent=payment.service_type==='subscription'?'Te interesează abonamentul PONT pentru evenimentele tale?':'Te interesează promovarea acestui eveniment prin PONT?';
+ const existing=cityPaymentResponses.get(payment.id);
+ if(existing){
+  const thanks=document.createElement('div');thanks.className='pont-ar-payment-thanks';
+  thanks.textContent='✓ Mulțumim pentru informații.';
+  wrapper.append(thanks);return wrapper;
+ }
+ const prompt=document.createElement('small');prompt.className='pont-ar-payment-prompt';
+ prompt.textContent=payment.service_type==='subscription'?'Cum dorești să continui cu abonamentul PONT?':'Cum dorești să continui cu promovarea evenimentului?';
  const buttons=document.createElement('div');buttons.className='pont-ar-payment-options';
  const options=[['claimed_paid','Da, am plătit prin Stripe'],['wants_cash','Da, dar plătesc cash'],['not_interested','Nu mă interesează']];
- const status=document.createElement('small');status.className='pont-ar-payment-choice-status';
- const current=cityPaymentResponses.get(payment.id);
- if(current)status.textContent=current==='claimed_paid'?'Ai declarat plata. PONT verifică încasarea direct în Stripe.':current==='wants_cash'?'Ai solicitat plata cash. PONT va verifica solicitarea.':'Ai ales că nu te interesează.';
- for(const [choice,label] of options){
+ const errorLine=document.createElement('small');errorLine.className='pont-ar-payment-choice-error';errorLine.setAttribute('role','status');
+ for(const [value,label] of options){
   const button=arButton(label,async()=>{
    buttons.querySelectorAll('button').forEach(b=>b.disabled=true);
-   status.textContent='Se înregistrează răspunsul…';
-   const {error}=await db.from('pont_city_payment_responses').upsert({payment_id:payment.id,restaurant_id:restaurant.id,response:choice,responded_by:user.id,updated_at:new Date().toISOString()},{onConflict:'payment_id'});
-   if(error){status.textContent='Nu s-a putut înregistra: '+error.message;buttons.querySelectorAll('button').forEach(b=>b.disabled=false);return}
-   cityPaymentResponses.set(payment.id,choice);
-   status.textContent=choice==='claimed_paid'?'Declarația a fost trimisă. Doar Stripe confirmă încasarea.':choice==='wants_cash'?'Solicitarea de plată cash a fost înregistrată în PONT.':'Ai confirmat că nu te interesează.';
-   buttons.querySelectorAll('button').forEach(b=>{b.disabled=false;b.setAttribute('aria-pressed',String(b.dataset.choice===choice))});
-  });button.dataset.choice=choice;button.setAttribute('aria-pressed',String(current===choice));buttons.append(button);
+   errorLine.textContent='';
+   const {error}=await db.from('pont_city_payment_responses').upsert({
+    payment_id:payment.id,restaurant_id:restaurant.id,response:value,responded_by:user.id,updated_at:new Date().toISOString()
+   },{onConflict:'payment_id'});
+   if(error){errorLine.textContent='Răspunsul nu a fost salvat. Încearcă din nou.';buttons.querySelectorAll('button').forEach(b=>b.disabled=false);return}
+   cityPaymentResponses.set(payment.id,value);
+   buttons.remove();prompt.remove();errorLine.remove();
+   const thanks=document.createElement('div');thanks.className='pont-ar-payment-thanks';
+   thanks.textContent='✓ Mulțumim pentru informații.';
+   wrapper.append(thanks);
+   const badge=$('cityRequestsNavCount');if(badge){
+    const pending=cityPaymentRows.filter(p=>p.status==='pending'&&!p.stripe_paid_at&&!p.promotion_credit_used&&!cityPaymentResponses.has(p.id)).length+
+     cityRequestRows.filter(x=>x.status==='pending'&&['edit','remove'].includes(x.request_type)).length;
+    badge.hidden=!pending;badge.textContent=pending?String(pending):'';
+   }
+  });
+  buttons.append(button);
  }
- const caution=document.createElement('small');caution.textContent='Alegerea „Am plătit” nu confirmă plata și nu activează serviciul.';
- wrapper.append(question,buttons,status,caution);return wrapper;
+ wrapper.append(prompt,buttons,errorLine);return wrapper;
 }
 function renderCityRequests(){
  const target=$('cityRequests');if(!target||!restaurant)return;
  target.replaceChildren();
- const eventName=id=>cityEventRows.find(event=>event.id===id)?.title||'Eveniment';
- const items=[];
- const add=(date,title,state,notes=[],kind=null,id=null,withdrawable=false)=>{
-  items.push({date:date||'',title,state,notes:notes.filter(Boolean),kind,id,withdrawable});
- };
- for(const event of cityEventRows){
-  const eventStatus=({pending:'În așteptare',approved:'Aprobat',rejected:'Respins',removed:'Retras'})[event.status]||event.status;
-  add(event.created_at,'Publicare · '+event.title,eventStatus,
-   ['Data evenimentului: '+event.event_date],'event_submission',event.id,event.status==='pending');
- }
- for(const request of cityRequestRows){
-  const status=({pending:'În așteptare',approved:'Aprobată',rejected:'Respinsă',withdrawn:'Retrasă'})[request.status]||request.status;
-  const period=request.proposed_changes?.requested_start_date?
-   'Perioadă: '+request.proposed_changes.requested_start_date+(request.proposed_changes.requested_end_date?' – '+request.proposed_changes.requested_end_date:''):'';
-  add(request.created_at,(requestLabels[request.request_type]||request.request_type)+' · '+eventName(request.event_id),status,
-   [period,request.reason?'Motiv: '+request.reason:'',request.review_note?'Răspuns AS: '+request.review_note:''],
-   'event_request',request.id,request.status==='pending');
- }
- for(const cash of cityCashRequestRows){
-  const status=cash.status==='cancelled'&&cash.withdrawn_by_ar_at?'Retrasă de tine':({pending:'În așteptare',contacted:'Contactat',resolved:'Aprobată',cancelled:'Anulată'})[cash.status]||cash.status;
-  const name=cash.service_type==='pinned_event'?'Poziție fixă · Locul '+cash.position:'Bandă publicitară';
-  add(cash.created_at,'Solicitare cash · '+name+' · '+eventName(cash.event_id),status,
-   ['Perioadă: '+cash.requested_start_date+(cash.requested_end_date?' – '+cash.requested_end_date:''),
-    'Sumă: '+Number(cash.amount||0).toLocaleString('ro-RO')+' lei'],
-   'cash',cash.id,['pending','contacted'].includes(cash.status));
- }
- for(const pay of cityPaymentRows.filter(item=>item.service_type==='subscription')){
-  const status=pay.status==='confirmed'?'Aprobat':pay.status==='revoked'?'Retras':
-   pay.stripe_paid_at?'Stripe încasat · așteaptă AS':'În așteptare';
-  add(pay.created_at||pay.confirmed_at,'Abonament Ieșire în oraș',status,
-   [pay.stripe_paid_at?'Stripe: '+Number(pay.stripe_paid_amount||0).toLocaleString('ro-RO')+' lei':'Stripe: 0 lei',
-    pay.expires_at?'Expiră: '+cityDate(pay.expires_at):''],
-   'subscription',pay.id,pay.status==='pending'&&!pay.stripe_paid_at);
- }
- items.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
- for(const item of items){
-  const card=document.createElement('article');card.className='event pont-ar-request-record';
-  const main=document.createElement('div');main.className='pont-ar-request-main';
-  const heading=document.createElement('strong');heading.textContent=item.title;
-  const state=document.createElement('span');state.className='pont-ar-request-status';state.textContent=item.state;
-  main.append(heading,state);card.append(main);
-  const bottom=document.createElement('div');bottom.className='pont-ar-request-bottom';
-  const date=document.createElement('small');date.textContent=cityDate(item.date);
-  bottom.append(date);
-  if(item.withdrawable){
-   const button=arButton('Retrage solicitarea',async()=>{
-    button.disabled=true;
-    try{await pontWithdrawCityRequest(item.kind,item.id)}finally{button.disabled=false}
-   });
-   button.classList.add('pont-ar-request-withdraw');bottom.append(button);
-  }
-  card.append(bottom);
-  if(item.notes.length){
-   const details=document.createElement('details');details.className='pont-ar-request-details';
-   const summary=document.createElement('summary');summary.textContent='Detalii';details.append(summary);
-   for(const note of item.notes){const line=document.createElement('small');line.textContent=note;details.append(line)}
-   card.append(details);
-  }
-  if(item.kind==='subscription'){
-   const pay=cityPaymentRows.find(p=>p.id===item.id);
-   const question=pontARPaymentQuestion(pay);if(question)card.append(question);
+ const financial=[...cityPaymentRows].sort((a,b)=>String(b.created_at||'').localeCompare(String(a.created_at||'')));
+ for(const payment of financial){
+  const card=document.createElement('article');card.className='event pont-ar-request-record pont-ar-simple-payment';
+  const title=document.createElement('strong');
+  const linked=cityEventRows.find(event=>event.id===(payment.promoted_event_id||payment.event_id));
+  const isSubscription=payment.service_type==='subscription';
+  title.textContent=isSubscription?'Abonament PONT':'Promovare eveniment'+(linked?' · '+linked.title:'');
+  const date=document.createElement('small');date.className='pont-ar-simple-payment-date';
+  date.textContent=cityDate(payment.created_at);
+  card.append(title,date);
+  if(payment.status==='confirmed'||payment.stripe_paid_at||payment.promotion_credit_used){
+   const status=document.createElement('small');status.className='pont-ar-payment-thanks';
+   status.textContent=payment.status==='confirmed'?'✓ Acces aprobat':payment.promotion_credit_used?'✓ Credit aplicat · așteaptă activarea':'✓ Plată Stripe înregistrată · așteaptă aprobarea';
+   card.append(status);
+  }else if(payment.status==='revoked'){
+   const status=document.createElement('small');status.textContent='Solicitare retrasă';card.append(status);
+  }else{
+   const question=pontARPaymentQuestion(payment);if(question)card.append(question);
   }
   target.append(card);
  }
- const total=items.length+cityPaymentRows.filter(item=>item.service_type!=='subscription').length;
- if(!total){const empty=document.createElement('p');empty.textContent='Nu ai trimis încă cereri către PONT.';target.append(empty)}
- const pendingEvents=cityEventRows.filter(item=>item.status==='pending').length;
- const pendingRequests=cityRequestRows.filter(item=>item.status==='pending').length;
- const pendingCash=cityCashRequestRows.filter(item=>['pending','contacted'].includes(item.status)).length;
- const pendingPayments=cityPaymentRows.filter(item=>item.status==='pending').length;
- const badge=$('cityRequestsNavCount'),pending=pendingEvents+pendingRequests+pendingCash+pendingPayments;
- badge.hidden=!pending;badge.textContent=pending?String(pending):'';
+ // Solicitările efective de modificare/retragere a evenimentelor rămân disponibile,
+ // dar nu sunt amestecate cu întrebările privind plata.
+ const eventRequests=cityRequestRows.filter(item=>['edit','remove'].includes(item.request_type));
+ if(eventRequests.length){
+  const fold=document.createElement('details');fold.className='pont-ar-other-requests';
+  const label=document.createElement('summary');label.textContent='Alte cereri privind evenimentele ('+eventRequests.length+')';fold.append(label);
+  for(const item of eventRequests){
+   const line=document.createElement('div');line.className='pont-ar-other-request-row';
+   const name=cityEventRows.find(e=>e.id===item.event_id)?.title||'Eveniment';
+   const current=({pending:'În așteptare',approved:'Aprobată',rejected:'Respinsă',withdrawn:'Retrasă'})[item.status]||item.status;
+   line.textContent=(item.request_type==='edit'?'Modificare':'Retragere')+' · '+name+' · '+cityDate(item.created_at)+' · '+current;
+   fold.append(line);
+  }
+  target.append(fold);
+ }
+ if(!financial.length&&!eventRequests.length){
+  const empty=document.createElement('p');empty.textContent='Nu există cereri înregistrate.';target.append(empty);
+ }
+ const pending=financial.filter(p=>p.status==='pending'&&!p.stripe_paid_at&&!p.promotion_credit_used&&!cityPaymentResponses.has(p.id)).length+
+  eventRequests.filter(x=>x.status==='pending').length;
+ const badge=$('cityRequestsNavCount');badge.hidden=!pending;badge.textContent=pending?String(pending):'';
 }
 
 async function start(){
