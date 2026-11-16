@@ -353,8 +353,7 @@ body.pont-admin--city #citySubscriptionNotice span{
  <h2>Notificări <span id="cityNotificationCount"></span></h2>
  <div id="cityNotificationList"></div>
 </section>
-<div id="workspace" hidden><section class="metrics" aria-label="Statistici evenimente"><div class="metric"><strong id="pendingCount">0</strong><span>În așteptare</span></div><div class="metric"><strong id="approvedCount">0</strong><span>Aprobate</span></div><div class="metric"><strong id="rejectedCount">0</strong><span>Respinse</span></div></section>
-<section class="panel" id="createEvent"><h2>Publică un eveniment</h2><p>Completează informațiile reale. Anunțul va fi vizibil numai după aprobarea PONT.</p><form id="eventForm">
+<div id="workspace" hidden><section class="panel" id="createEvent" hidden><h2>Publică un eveniment</h2><p>Completează informațiile reale. Anunțul va fi vizibil numai după aprobarea PONT.</p><form id="eventForm">
 <label class="wide">Titlul evenimentului<input name="title" required minlength="5" maxlength="100" placeholder="Ex.: Seară cu muzică live"></label>
 <label>Data evenimentului<input name="event_date" type="date" required></label><label>Ora începerii<input name="start_time" type="time" required></label>
 <label>Localitate<input name="locality" required maxlength="80" placeholder="Slobozia"></label><label>Locație / restaurant<input name="venue" required maxlength="120"></label>
@@ -364,7 +363,7 @@ body.pont-admin--city #citySubscriptionNotice span{
 <label class="wide">Link afiș (completat automat după încărcare)<input name="poster_url" type="url" maxlength="700" placeholder="https://..." readonly></label>
 <label class="wide">Detalii eveniment<textarea name="description" maxlength="1200" placeholder="Program, artiști, detalii privind rezervările"></textarea></label>
 <button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
-<section class="panel" id="myEvents"><h2>Evenimentele mele</h2><div class="pont-ar-approval-note" role="note"><span>Modificarea sau retragerea unui eveniment necesită aprobarea AS.</span></div><div id="events"></div></section>
+<section class="panel" id="myEvents"><h2>Evenimentele mele</h2><section class="metrics" aria-label="Statistici evenimente"><div class="metric"><strong id="pendingCount">0</strong><span>În așteptare</span></div><div class="metric"><strong id="approvedCount">0</strong><span>Aprobate</span></div><div class="metric"><strong id="rejectedCount">0</strong><span>Respinse</span></div></section><div class="pont-ar-approval-note" role="note"><span>Modificarea sau retragerea unui eveniment necesită aprobarea AS.</span></div><div id="events"></div></section>
 <section class="panel" id="myRequests" hidden><h2>Cererile mele</h2><p>Toate cererile și promovările trimise către PONT, cu statusul lor și răspunsul Administratorului Suprem.</p><div id="cityRequests"></div><section id="cityPromotionPayments" class="pont-city-request-payments" hidden><h3>Promovări prin card sau credit</h3><div id="cityPromotionPaymentList"></div></section></section></div>
 <dialog id="cityStripeConfirmDialog" class="pont-city-stripe-confirm" aria-labelledby="cityStripeConfirmTitle">
  <div class="pont-stripe-eyebrow">PONT · FINALIZARE SERVICIU</div>
@@ -440,7 +439,7 @@ const cityPageParam=new URLSearchParams(location.search).get('pagina');
 const cityPage=['adauga','evenimentele-mele','cererile-mele'].includes(cityPageParam)?cityPageParam:'adauga';
 function applyCityPage(){
  const isCreate=cityPage==='adauga',isEvents=cityPage==='evenimentele-mele',isRequests=cityPage==='cererile-mele';
- $('createEvent').hidden=!isCreate;
+ $('createEvent').hidden=!isCreate||!citySubscriptionActive;
  $('myEvents').hidden=!isEvents;
  $('myRequests').hidden=!isRequests;
  for(const [id,selected] of [['cityCreateNav',isCreate],['cityEventsNav',isEvents],['cityRequestsNav',isRequests]]){
@@ -746,6 +745,7 @@ async function loadCitySubscription(){
  $('citySubscriptionRequestStatus').textContent=stripeReceived?'Stripe a confirmat plata. Activarea se face manual de AS.':'Achită online 50 lei prin Stripe pentru 30 de zile sau contactează PONT pentru plata cash.';
  $('submitEvent').disabled=!citySubscriptionActive;
  $('eventForm').hidden=!citySubscriptionActive;
+ $('createEvent').hidden=cityPage!=='adauga'||!citySubscriptionActive;
  $('citySubscriptionNotice').hidden=citySubscriptionActive||cityPage!=='adauga';
  $('status').textContent=citySubscriptionActive?'Abonament activ. Poți trimite evenimente spre aprobare.':'';
  const promotion=rows.filter(p=>p.service_type!=='subscription');
