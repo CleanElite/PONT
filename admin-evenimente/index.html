@@ -607,7 +607,7 @@ async function loadCitySubscription(){
  if(activeError)throw activeError;
  citySubscriptionActive=Boolean(active);
  const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests')
-  .select('id,status,service_type,amount,event_id,promoted_event_id,promotion_position,promotion_credit_used,requested_start_date,requested_end_date,created_at,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount')
+  .select('id,status,service_type,amount,event_id,promoted_event_id,promotion_position,promotion_credit_used,requested_start_date,requested_end_date,created_at,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount,revoke_reason')
   .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
  if(paymentError)throw paymentError;
  const rows=payments||[],subs=rows.filter(p=>p.service_type==='subscription');
@@ -638,7 +638,7 @@ async function loadCitySubscription(){
   title.textContent=(isApproved?'Promovare aprobată · ':isRevoked?'Promovare retrasă · ':'Promovare în așteptare · ')+slotName+' · '+Number(item.amount).toFixed(2)+' lei';
   const status=document.createElement('small');
   status.classList.add(isApproved?'pont-city-promo-approved':'pont-city-promo-unconfirmed');
-  status.textContent=isRevoked?'Confirmarea a fost retrasă de AS.':isApproved?'Confirmată manual de AS · '+(item.promotion_credit_used?'achitat cu credit':'Stripe '+Number(item.stripe_paid_amount||0).toFixed(2)+' lei'):
+  status.textContent=isRevoked?(item.revoke_reason||'Solicitare retrasă sau anulată.'):isApproved?'Confirmată manual de AS · '+(item.promotion_credit_used?'achitat cu credit':'Stripe '+Number(item.stripe_paid_amount||0).toFixed(2)+' lei'):
    item.promotion_credit_used?'ÎN AȘTEPTARE · Credit utilizat. Promovarea NU este publicată până la confirmarea AS.':
    item.stripe_paid_at?'ÎN AȘTEPTARE · Stripe: '+Number(item.stripe_paid_amount).toFixed(2)+' lei. Promovarea NU este activă până la confirmarea AS.':
    'ÎN AȘTEPTARE · Locul este doar rezervat temporar. Promovarea NU este publicată. Stripe: 0 lei.';
@@ -656,18 +656,15 @@ async function loadCitySubscription(){
    const info=document.createElement('small');
    info.textContent=isRevoked?'Promovarea nu mai este activă. Istoricul rămâne disponibil.':item.status==='confirmed'?'Promovarea este confirmată de AS. Va apărea automat în perioada rezervată.':item.promotion_credit_used?'Creditul a rezervat poziția. Așteaptă activarea AS.':'Plata a fost confirmată de Stripe. AS verifică și activează rezervarea.';
    card.append(info);
-   if(item.promotion_credit_used&&item.status==='pending'){
-    const cancel=arButton('Anulează și recuperează creditul',async()=>{
-     if(!await pontConfirmCancelCredit())return;
-     cancel.disabled=true;
-     const {error}=await db.rpc('pont_city_cancel_credit_booking',{p_payment:item.id});
-     if(error){status.textContent='Nu s-a anulat: '+error.message;cancel.disabled=false;return}
-     $('status').textContent='Rezervarea a fost anulată. Creditul este disponibil din nou.';
-     await loadCitySubscription();
-    });card.append(cancel);
-   }
+
   }else if(linkedEvent){
    card.append(arButton('Verifică locurile și continuă plata',()=>openCityPromotion(linkedEvent,item.service_type,item.amount)));
+  }
+  if(item.status==='pending'&&!item.stripe_paid_at){
+   const withdraw=arButton('Retrage solicitarea',async()=>{
+    withdraw.disabled=true;
+    try{await pontWithdrawCityRequest('promotion',item.id)}finally{withdraw.disabled=false}
+   });withdraw.classList.add('pont-ar-request-withdraw');card.append(withdraw);
   }
   list.append(card);
  }
