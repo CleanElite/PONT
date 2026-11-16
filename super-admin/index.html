@@ -3488,10 +3488,10 @@ function pontRenderGroupedCityRequests(){
     body.append(noteCard('Solicitare · '+service+' · '+Number(item.amount||0).toLocaleString('ro-RO')+' lei',
      (item.service_type==='subscription'?'Ieșire în oraș':eventName(item.promoted_event_id||item.event_id))+' · '+humanDate(item.created_at),state));
    }
-   for(const item of [...dialogs].filter(d=>!d.payment_id||!payments.some(p=>p.id===d.payment_id)).sort((a,b)=>String(b.opened_at).localeCompare(String(a.opened_at)))){
-    const state=item.continued_at?'A continuat către Stripe':item.cancelled_at?'Renunțat la plată':'Dialog deschis, fără încasare confirmată';
-    body.append(noteCard('Interes de plată · '+Number(item.amount||0).toLocaleString('ro-RO')+' lei',
-     humanDate(item.opened_at)+' · '+({subscription:'Abonament',pinned_event:'Poziție fixă',exclusive_banner:'Bandă publicitară'})[item.service_type],state));
+   for(const item of [...dialogs].filter(d=>!d.payment_id||!payments.some(p=>p.id===d.payment_id)).sort((a,b)=>String(b.continued_at).localeCompare(String(a.continued_at)))){
+    const state='A apăsat „Finalizează plata” · Stripe neconfirmat';
+    body.append(noteCard('Plată inițiată · '+Number(item.amount||0).toLocaleString('ro-RO')+' lei',
+     humanDate(item.continued_at)+' · '+({subscription:'Abonament',pinned_event:'Poziție fixă',exclusive_banner:'Bandă publicitară'})[item.service_type],state));
    }
    if(!cash.length&&!payments.length&&!dialogs.length)blank(body,'Nicio solicitare de plată.');
   });
@@ -3520,14 +3520,18 @@ async function loadCityCheckoutAttempts(){
   db.from('pont_city_payment_dialogs').select('id,restaurant_id,service_type,amount,event_id,payment_id,opened_at,continued_at,cancelled_at').order('opened_at',{ascending:false}).limit(250),
   db.from('pont_city_checkout_attempts').select('id,restaurant_id,service_type,amount,payment_id,created_at,stripe_checkout_session_id').order('created_at',{ascending:false}).limit(250),
   db.from('pont_city_cash_requests').select('id,restaurant_id,event_id,service_type,position,requested_start_date,requested_end_date,amount,status,created_at').order('created_at',{ascending:false}).limit(250),
-  db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,promoted_event_id,event_id,amount,status,created_at,stripe_paid_at,stripe_paid_amount,promotion_position,requested_start_date,requested_end_date').order('created_at',{ascending:false}).limit(500),
+  db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,promoted_event_id,event_id,amount,status,created_at,stripe_paid_at,stripe_paid_amount,stripe_checkout_session_id,promotion_position,requested_start_date,requested_end_date').order('created_at',{ascending:false}).limit(500),
   db.from('pont_city_payment_responses').select('payment_id,response,restaurant_id,updated_at').limit(1000)
  ]);
  if(dialogs.error||checkouts.error||cash.error||payments.error||responses.error){
   msg.textContent='Nu se pot încărca notificările: '+(dialogs.error?.message||checkouts.error?.message||cash.error?.message||payments.error?.message||responses.error?.message);return;
  }
- const attempts=checkouts.data||[],entries=dialogs.data||[],cashRows=cash.data||[];
- pontGroupedPaymentDialogs=entries;pontGroupedCashRequests=cashRows;pontGroupedPaymentRequests=payments.data||[];
+ // Afișăm în AS numai continuările explicite către Stripe, nu simpla deschidere a dialogului.
+ const entries=(dialogs.data||[]).filter(row=>Boolean(row.continued_at));
+ const attempts=checkouts.data||[],cashRows=cash.data||[];
+ const continuedPaymentIds=new Set(entries.map(row=>row.payment_id).filter(Boolean));
+ const visiblePaymentRequests=(payments.data||[]).filter(row=>Boolean(row.stripe_checkout_session_id||row.stripe_paid_at||row.status==='confirmed'||continuedPaymentIds.has(row.id)));
+ pontGroupedPaymentDialogs=entries;pontGroupedCashRequests=cashRows;pontGroupedPaymentRequests=visiblePaymentRequests;
  pontGroupedPaymentResponses=new Map((responses.data||[]).map(x=>[x.payment_id,x.response]));
  box.replaceChildren();
  $('cityPaymentAttemptsCount').textContent=entries.length+cashRows.length?'('+(entries.length+cashRows.length)+')':'';
@@ -3547,15 +3551,15 @@ async function loadCityCheckoutAttempts(){
   if(/^\+?\d{7,15}$/.test(dial)){const a=document.createElement('a');a.href='tel:'+dial;a.className='pont-ar-payment-contact';a.textContent='Sună restaurantul · '+phone;card.append(a)}
   box.append(card);
  }
- const cardHeader=document.createElement('h3');cardHeader.textContent='Formulare Stripe și confirmări · '+entries.length;box.append(cardHeader);
+ const cardHeader=document.createElement('h3');cardHeader.textContent='Plăți Stripe inițiate · '+entries.length;box.append(cardHeader);
  const types={subscription:'abonament Ieșire în oraș',pinned_event:'promovare pe poziție fixă',exclusive_banner:'promovare pe bandă'};
  for(const item of entries){
   const restaurant=restaurants.find(r=>r.id===item.restaurant_id);
   const card=document.createElement('article');card.className='pont-city-event pont-ar-checkout-attempt';
   const heading=document.createElement('strong');
-  heading.textContent=(restaurant?.name||'Restaurant')+' a deschis confirmarea pentru '+(types[item.service_type]||item.service_type)+' · '+Number(item.amount).toLocaleString('ro-RO')+' lei';
+  heading.textContent=(restaurant?.name||'Restaurant')+' a apăsat „Finalizează plata” pentru '+(types[item.service_type]||item.service_type)+' · '+Number(item.amount).toLocaleString('ro-RO')+' lei';
   const details=document.createElement('p');details.className='pont-city-meta';
-  details.textContent='Deschis: '+new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',dateStyle:'medium',timeStyle:'short'}).format(new Date(item.opened_at));
+  details.textContent='Inițiat: '+new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',dateStyle:'medium',timeStyle:'short'}).format(new Date(item.continued_at));
   const status=document.createElement('p');status.className='pont-city-payment-dialog-status';
   if(item.continued_at){
    status.textContent='A apăsat „Finalizează plata” · '+new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',hour:'2-digit',minute:'2-digit'}).format(new Date(item.continued_at));
@@ -3568,7 +3572,7 @@ async function loadCityCheckoutAttempts(){
    status.dataset.state='opened';
   }
   const help=document.createElement('p');help.className='pont-city-meta';
-  help.textContent='Interes de plată, nu confirmare de încasare. Pentru ajutor sau plată cash, contactează restaurantul.';
+  help.textContent='A continuat procesul Stripe. Încasarea se confirmă separat.';
   card.append(heading,details,status,help);
   const phone=String(restaurant?.phone||'').trim();
   const dial=phone.replace(/[^+\d]/g,'');
@@ -3580,18 +3584,8 @@ async function loadCityCheckoutAttempts(){
   }
   box.append(card);
  }
- // Keep legacy attempts visible when they predate introduction of the confirmation dialog.
- if(!entries.length&&attempts.length){
-  for(const item of attempts){
-   const card=document.createElement('article');card.className='pont-city-event';
-   const heading=document.createElement('strong');
-   heading.textContent=(restaurants.find(r=>r.id===item.restaurant_id)?.name||'Restaurant')+' a deschis Stripe pentru '+(types[item.service_type]||item.service_type);
-   const info=document.createElement('p');info.className='pont-city-meta';info.textContent=new Intl.DateTimeFormat('ro-RO',{dateStyle:'medium',timeStyle:'short',timeZone:'Europe/Bucharest'}).format(new Date(item.created_at));
-   card.append(heading,info);box.append(card);
-  }
- }
- if(!entries.length&&!attempts.length&&!cashRows.length){const empty=document.createElement('p');empty.textContent='Nu a fost deschis niciun dialog de confirmare a plății.';box.append(empty)}
- msg.textContent=cashRows.length+' cereri cash · '+entries.length+' dialoguri de plată · '+attempts.length+' accesări Stripe.';
+ if(!entries.length&&!cashRows.length){const empty=document.createElement('p');empty.textContent='Nicio plată inițiată prin „Finalizează plata”.';box.append(empty)}
+ msg.textContent=cashRows.length+' cereri cash · '+entries.length+' plăți Stripe inițiate.';
  pontRenderGroupedCityRequests();
 }
 function cityDate(date){
