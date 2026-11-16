@@ -96,21 +96,25 @@ export function renderPublishedToday(target, menus, restaurants, showRestaurantN
   const cards = published.map(({menu, restaurant}) => {
     const heading = showRestaurantName ? '<h4>' + esc(restaurant.name) + '</h4>' : '';
     const action = published.length > 1 ? menuActions(menu) : '';
-    const exhausted = exhaustedRestaurantIds instanceof Set && exhaustedRestaurantIds.has(restaurant.id);
-    const exhaustedAction = exhaustedRestaurantIds instanceof Set && showRestaurantName
-      ? '<button type="button" class="pont-today-restaurant-exhausted" data-today-exhausted="' + esc(restaurant.id) +
-        '" data-service-date="' + date + '" aria-pressed="' + exhausted +
-        '" title="Disponibilitatea meniului pentru data de ' + formatDate(date) + '">' +
-        (exhausted ? 'Reactivează meniul' : 'Meniu epuizat') + '</button>'
-      : '';
     const courses = renderMenuCourses(menu, true, true);
     return '<article class="pont-archive-row pont-today-card">' +
-      (heading || action || exhaustedAction ? '<div class="pont-today-meta">' + heading +
-        (action || exhaustedAction ? '<span class="pont-today-card-actions">' + action + exhaustedAction + '</span>' : '') + '</div>' : '') +
+      (heading || action ? '<div class="pont-today-meta">' + heading + action + '</div>' : '') +
       (courses ? '<dl>' + courses + '</dl>' : '<p>Detalii indisponibile.</p>') + '</article>';
   }).join('');
+  const exhaustionControls = exhaustedRestaurantIds instanceof Set && showRestaurantName && published.length
+    ? '<div class="pont-today-exhaustion-footer" role="group" aria-label="Disponibilitatea meniurilor publicate astăzi">' +
+      published.map(({restaurant}) => {
+        const exhausted = exhaustedRestaurantIds.has(restaurant.id);
+        return '<div class="pont-today-exhaustion-row"><span class="pont-today-exhaustion-name">' +
+          esc(restaurant.name) + '</span><button type="button" class="pont-today-restaurant-exhausted" data-today-exhausted="' +
+          esc(restaurant.id) + '" data-service-date="' + date + '" aria-pressed="' + exhausted +
+          '" title="Disponibilitatea meniului pentru data de ' + formatDate(date) + '">' +
+          (exhausted ? 'Reactivează meniul' : 'Meniu epuizat') + '</button></div>';
+      }).join('') + '</div>'
+    : '';
   target.innerHTML = header + '<div id="pontTodayDetails"' + (expanded ? '' : ' hidden') + '>' +
-    (cards || '<p class="pont-today-empty">Nu există meniuri publicate azi.</p>') + '</div>';
+    (cards || '<p class="pont-today-empty">Nu există meniuri publicate azi.</p>') +
+    exhaustionControls + '</div>';
   const toggle = target.querySelector('.pont-today-toggle');
   const details = target.querySelector('#pontTodayDetails');
   toggle.addEventListener('click', () => {
