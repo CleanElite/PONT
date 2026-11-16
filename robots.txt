@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+Disallow: /test/
+Disallow: /admin/
+Disallow: /admin-demo/
+Disallow: /admin-v2/
+Disallow: /admin-evenimente/
+Disallow: /login/
+Disallow: /login-manual/
+Disallow: /super-admin/
+Disallow: /module-restaurante/
+Disallow: /acces-inactiv/
+Sitemap: https://pont.city/sitemap.xml
