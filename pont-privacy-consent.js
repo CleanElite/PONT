@@ -13,7 +13,7 @@
   const legacy=document.getElementById('pontAnalyticsConsent');
   if(legacy)legacy.hidden=true;
   const css=document.createElement('style');
-  css.textContent='.pont-global-consent[hidden]{display:none!important}.pont-global-consent{position:fixed;z-index:2147483000;bottom:max(13px,env(safe-area-inset-bottom));left:12px;right:12px;margin:auto;max-width:560px;padding:14px;border:1px solid #7cd2c1;border-radius:18px;background:#052a30;color:#f1fffb;box-shadow:0 16px 60px #000a;font:12px/1.48 system-ui;text-align:left}.pont-global-consent p{margin:0 0 12px}.pont-global-consent a{color:#9ef7e5;text-decoration:underline}.pont-global-consent div{display:flex;gap:10px;flex-wrap:wrap}.pont-global-consent button{flex:1 1 140px;min-height:44px;border-radius:11px;border:1px solid #8edccd;font:700 13px system-ui;cursor:pointer;padding:9px 13px}.pont-global-consent .pont-consent-yes{background:#b7f9e7;color:#07362f}.pont-global-consent .pont-consent-no{background:transparent;color:#edfff8}';
+  css.textContent='.pont-global-consent[hidden]{display:none!important}.pont-global-consent{position:fixed;z-index:2147483000;bottom:max(13px,env(safe-area-inset-bottom));left:12px;right:12px;margin:auto;max-width:560px;padding:14px;border:1px solid #7cd2c1;border-radius:18px;background:#052a30;color:#f1fffb;box-shadow:0 16px 60px #000a;font:12px/1.48 system-ui;text-align:left}.pont-global-consent p{margin:0 0 12px}.pont-global-consent a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:8px 5px;color:#9ef7e5;text-decoration:underline}.pont-global-consent a:focus-visible{outline:2px solid #fff;outline-offset:2px;border-radius:5px}.pont-global-consent div{display:flex;gap:10px;flex-wrap:wrap}.pont-global-consent button{flex:1 1 140px;min-height:44px;border-radius:11px;border:1px solid #8edccd;font:700 13px system-ui;cursor:pointer;padding:9px 13px}.pont-global-consent .pont-consent-yes{background:#b7f9e7;color:#07362f}.pont-global-consent .pont-consent-no{background:transparent;color:#edfff8}';
   document.head.append(css);
   const banner=document.createElement('aside');banner.id='pontGlobalPrivacyBanner';banner.className='pont-global-consent';banner.setAttribute('aria-label','Preferințe privind cookie-urile');
   banner.innerHTML='<p><strong>Confidențialitatea ta contează.</strong> PONT folosește stocarea necesară funcționării site-ului. Cu acordul tău, poate salva un identificator aleatoriu pentru statistici privind vizitele repetate. Refuzul nu limitează utilizarea platformei. <a href="'+new URL('cookies.html',import.meta.url).href+'">Detalii cookie</a> · <a href="'+new URL('confidentialitate.html',import.meta.url).href+'">GDPR</a></p><div><button class="pont-consent-no" type="button">Refuză</button><button class="pont-consent-yes" type="button">Acceptă toate</button></div>';
@@ -29,7 +29,7 @@
    const nav=footer.querySelector('nav')||footer;
    const link=document.createElement('a');link.href=new URL('confidentialitate.html',import.meta.url).href;
    link.textContent='GDPR';link.dataset.pontGdpr='true';
-   link.style.cssText='display:inline-block;margin:6px 10px;color:inherit;text-decoration:underline';
+   link.style.cssText='display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:9px 11px;margin:0 4px;color:inherit;text-decoration:underline';
    nav.append(link);
   }
   // Visitors must be able to revise a prior decision without waiting for the banner.
