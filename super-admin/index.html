@@ -3377,23 +3377,31 @@ async function pontCityRejectPaymentFromEvent(pay){
  $('cityModerationStatus').textContent=pay.stripe_paid_at?'Promovare respinsă. Atenție: plata Stripe trebuie soluționată separat.':'Promovare respinsă și poziție eliberată.';
 }
 function pontCityRenderPromotionRequests(e,article){
- const cash=cityEventCashRequests.filter(x=>x.event_id===e.id&&['pending','contacted'].includes(x.status));
+ const cash=cityEventCashRequests.filter(x=>x.event_id===e.id);
  for(const req of cash){
   const section=document.createElement('section');section.className='pont-city-promo-admin pont-city-promo-request';
   const title=document.createElement('strong');title.textContent='SOLICITARE PROMOVARE · '+(req.service_type==='pinned_event'?'Locul '+req.position:'Bandă publicitară');
   const meta=document.createElement('small');meta.textContent='Plată cash la administratorul PONT · '+Number(req.amount).toLocaleString('ro-RO')+' lei · Data: '+pontPromotionDateLabel(req.requested_start_date);
-  const status=document.createElement('small');status.className='pont-city-promo-state';status.dataset.state='pending';status.textContent='În așteptarea verdictului AS · Stripe: 0 lei';
+  const status=document.createElement('small');status.className='pont-city-promo-state';status.dataset.state=['pending','contacted'].includes(req.status)?'pending':'expired';status.textContent=req.status==='resolved'?'Aprobată de AS':req.status==='cancelled'?'Respinsă de AS':'În așteptarea verdictului AS · Stripe: 0 lei';
   const controls=document.createElement('div');controls.className='pont-city-promo-controls';
   const yes=document.createElement('button');yes.type='button';yes.className='primary';yes.textContent='Aprobă';
   const no=document.createElement('button');no.type='button';no.className='pont-city-reject';no.textContent='Respinge';
   yes.onclick=()=>void pontCityApproveCashFromEvent(req);
   no.onclick=()=>void pontCityRejectCashFromEvent(req);
-  controls.append(yes,no);section.append(title,meta,status,controls);article.append(section);
+  if(['pending','contacted'].includes(req.status))controls.append(yes,no);
+  section.append(title,meta,status);
+  if(controls.childElementCount)section.append(controls);
+  article.append(section);
  }
 }
 function pontCityPromotionDetails(e,article){
- const promotions=cityEventPromotions.filter(x=>(x.promoted_event_id||x.event_id)===e.id&&['pending','confirmed'].includes(x.status));
+ const promotions=cityEventPromotions.filter(x=>(x.promoted_event_id||x.event_id)===e.id&&['pending','confirmed','revoked'].includes(x.status));
  for(const pay of promotions){
+  if(pay.status==='revoked'){
+   const note=document.createElement('small');note.className='pont-city-promo-historic';
+   note.textContent=pay.confirmed_at?'Promovare retrasă de AS · istoric păstrat':'Solicitare de promovare respinsă/anulată · nu a fost publicată';
+   article.append(note);continue;
+  }
   const slot=pay.pontSlot;
   if(slot&&!['reserved','held'].includes(slot.status))continue;
   if(!slot&&pay.status==='confirmed')continue;
@@ -3416,21 +3424,6 @@ function pontCityPromotionDetails(e,article){
    yes.onclick=()=>void pontCityApprovePaymentFromEvent(pay);
    no.onclick=()=>void pontCityRejectPaymentFromEvent(pay);
    controls.append(yes,no);detail.append(controls);
-  }
-  if(false&&pending&&!pay.stripe_paid_at){
-   const controls=document.createElement('div');controls.className='pont-city-promo-controls';
-   const cancel=document.createElement('button');cancel.type='button';cancel.className='pont-city-reject';cancel.textContent='Anulează rezervarea temporară';
-   cancel.onclick=async()=>{
-    const accept=await pontASConfirm({title:'Eliberează poziția rezervată',message:'Anulezi rezervarea temporară neplătită pentru „'+e.title+'” și eliberezi locul. Dacă formularul Stripe vechi este ulterior achitat, plata trebuie rambursată.',button:'Eliberează poziția'});
-    if(!accept)return;
-    cancel.disabled=true;
-    try{
-     const {error}=await db.rpc('pont_city_cancel_pending_promotion',{p_payment_id:pay.id});
-     if(error)throw error;
-     await loadCityEvents();$('cityModerationStatus').textContent='Rezervarea temporară a fost anulată. Poziția este disponibilă.';
-    }catch(error){$('cityModerationStatus').textContent='Nu am putut elibera poziția: '+error.message;cancel.disabled=false}
-   };
-   controls.append(cancel);detail.append(controls);
   }
   if(active){
    const controls=document.createElement('div');controls.className='pont-city-promo-controls';
@@ -3602,7 +3595,7 @@ async function loadCityEvents(){
  try{
   const [result,promos,slots,cash]=await Promise.all([
    db.from('pont_city_events').select('id,restaurant_id,title,description,event_date,start_time,venue,locality,contact_phone,poster_url,status,created_at',{count:'exact'}).order('created_at',{ascending:false}).limit(999),
-   db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,event_id,promoted_event_id,status,confirmed_at,confirmed_by,expires_at,promotion_paused_at,manual_confirmation_mode,stripe_paid_at').in('service_type',['pinned_event','exclusive_banner']).in('status',['confirmed','pending']).limit(999),
+   db.from('pont_city_payment_requests').select('id,restaurant_id,service_type,event_id,promoted_event_id,status,confirmed_at,confirmed_by,expires_at,promotion_paused_at,manual_confirmation_mode,stripe_paid_at').in('service_type',['pinned_event','exclusive_banner']).in('status',['confirmed','pending','revoked']).limit(999),
    db.from('pont_city_promotion_slots').select('payment_id,position,start_date,end_date,status,hold_until').in('status',['reserved','held']).limit(999),
    db.from('pont_city_cash_requests').select('id,event_id,restaurant_id,service_type,position,requested_start_date,amount,status,created_at').order('created_at',{ascending:false}).limit(999)
   ]);
@@ -4703,4 +4696,4 @@ body.pont-admin--platform .pont-city-promo-request{border-color:#deb977;box-shad
 body.pont-admin--platform .pont-city-promo-request>strong{color:#ffe4b2}
 body.pont-admin--platform .pont-city-promo-controls .primary{background:#dec895;color:#162d31;border:1px solid #e1cfaa}
 body.pont-admin--platform .pont-city-promo-state[data-state="pending"]{color:#ffdaa0;font-weight:750}
-</style></body></html>
+</style><style id="pont-as-event-promotion-verdict-20261116">body.pont-admin--platform .pont-city-promo-historic{display:block;margin:8px 0;padding:8px 10px;border-left:2px solid #aebbb4;color:#b7c6c0;font:600 11px/1.5 system-ui}</style></body></html>
