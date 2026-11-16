@@ -303,6 +303,18 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #pontCityExternalEventRows .pont-external-event-card>small{display:block;font-size:11px;color:#b8d9ce}
 #pontCityExternalEventRows summary{font-size:11px;color:#e9d69d;cursor:pointer}
 #pontCityExternalEventRows .pont-external-event-details p{font-size:11px;margin:5px 0;overflow-wrap:anywhere}
+#cityModeration .pont-city-folded-history{border:1px solid #7b9f9070;border-radius:11px;margin:9px 0;background:linear-gradient(120deg,#0b3038,#09252c);overflow:hidden}
+#cityModeration .pont-city-folded-history>summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 13px;color:#f1dfad;font-size:12px;font-weight:750}
+#cityModeration .pont-city-folded-history>summary::-webkit-details-marker{display:none}
+#cityModeration .pont-city-folded-history>summary::after{content:'⌄';margin-left:auto;font-size:17px;line-height:1;transition:transform .18s}
+#cityModeration .pont-city-folded-history[open]>summary::after{transform:rotate(180deg)}
+#cityModeration .pont-city-folded-history>summary span{font-size:11px;color:#b8ddd1;font-weight:600}
+#cityModeration .pont-city-folded-history>div{padding:3px 9px 10px;border-top:1px solid #688c8060}
+#cityModeration .pont-city-event-history-row{padding:9px 11px;margin:6px 0}
+#cityModeration .pont-city-event-history-row>strong{font-size:12px}
+#cityModeration .pont-city-event-history-row>small{display:block;margin-top:3px;font-size:10px;color:#c1d9d0}
+#cityModeration .pont-city-history-event-more>summary{font-size:10px;color:#ecd6a2;cursor:pointer;margin-top:7px}
+#cityModeration .pont-city-history-event-content p{font-size:11px;margin:5px 0}
 </style><style id="pont-compact-account-centre">
 #restaurantRows .pont-restaurant-compact-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:410px!important}
 #restaurantRows .pont-account-details{width:100%;min-width:0;text-align:left;border:1px solid #b8dcc755;border-radius:11px;background:#06252b9e;overflow:hidden}
@@ -1605,14 +1617,18 @@ body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{
   <p id="cityModerationStatus" class="dashboard-message" role="status"></p>
   <div class="pont-city-section-heading"><h3>Aprobate</h3></div>
   <div id="cityApprovedRows" class="pont-city-list"></div>
-  <div class="pont-city-section-heading"><h3>Respinse</h3></div>
-  <div id="cityRejectedRows" class="pont-city-list"></div>
-  <div class="pont-city-section-heading"><h3>Retrase (istoric)</h3></div>
-  <div id="cityRemovedRows" class="pont-city-list"></div>
-  <div class="pont-city-section-heading"><h3>Istoric solicitări anulate de restaurante <span id="cityArCancelledCount"></span></h3></div>
-  <div id="cityArCancelledHistory" class="pont-city-list pont-city-history"></div>
-  <div class="pont-city-section-heading"><h3>Istoric solicitări respinse de AS <span id="cityAsRejectedCount"></span></h3></div>
-  <div id="cityAsRejectedHistory" class="pont-city-list pont-city-history"></div>
+  <details class="pont-city-folded-history" id="cityEventHistoryFold">
+    <summary>Istoric evenimente <span id="cityEventHistoryCount">(0)</span></summary>
+    <div id="cityEventHistoryRows" class="pont-city-list pont-city-history"></div>
+  </details>
+  <details class="pont-city-folded-history" id="cityArCancelledFold">
+    <summary>Solicitări anulate de restaurante <span id="cityArCancelledCount">(0)</span></summary>
+    <div id="cityArCancelledHistory" class="pont-city-list pont-city-history"></div>
+  </details>
+  <details class="pont-city-folded-history" id="cityAsRejectedFold">
+    <summary>Solicitări respinse de AS <span id="cityAsRejectedCount">(0)</span></summary>
+    <div id="cityAsRejectedHistory" class="pont-city-list pont-city-history"></div>
+  </details>
 </section>
 <dialog id="pontCityAsEditDialog" class="pont-city-as-edit-dialog" aria-labelledby="pontCityAsEditTitle">
   <h2 id="pontCityAsEditTitle">Editează evenimentul</h2>
@@ -4033,12 +4049,31 @@ async function loadCityEvents(){
   const recent=$('cityRecent');recent.replaceChildren();
   for(const event of events.slice(0,8))recent.append(cityRow(event));
   if(!events.length){const p=document.createElement('p');p.textContent='Nu există încă evenimente înregistrate.';recent.append(p)}
-  const groups=[['cityPendingRows','pending'],['cityApprovedRows','approved'],['cityRejectedRows','rejected'],['cityRemovedRows','removed']];
-  for(const [id,state] of groups){
-   const node=$(id);node.replaceChildren();const items=events.filter(x=>x.status===state);
-   items.forEach(x=>node.append(cityRow(x,state==='pending',state==='approved')));
-   if(!items.length){const p=document.createElement('p');p.textContent='Nu există evenimente în această categorie.';node.append(p)}
+  const approvedActive=events.filter(e=>e.status==='approved'&&e.event_date>=today);
+  const approved=$('cityApprovedRows');approved.replaceChildren();
+  for(const e of approvedActive)approved.append(cityRow(e,false,true));
+  if(!approvedActive.length){const p=document.createElement('p');p.textContent='Nu există evenimente active sau viitoare.';approved.append(p)}
+  const historyEvents=events.filter(e=>e.status==='rejected'||e.status==='removed'||(e.status==='approved'&&e.event_date<today));
+  historyEvents.sort((a,b)=>String(b.event_date||'').localeCompare(String(a.event_date||''))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
+  $('cityEventHistoryCount').textContent='('+historyEvents.length+')';
+  const historyHost=$('cityEventHistoryRows');historyHost.replaceChildren();
+  for(const e of historyEvents){
+   const article=document.createElement('article');article.className='pont-city-event pont-city-event-history-row';
+   const title=document.createElement('strong');title.textContent=e.title||'Eveniment';
+   const meta=document.createElement('small');
+   const restaurant=restaurants.find(r=>r.id===e.restaurant_id);
+   const label=e.status==='removed'?'Retras':e.status==='rejected'?'Respins':'Expirat';
+   meta.textContent=label+' · '+(restaurant?.name||e.venue||'Restaurant')+' · '+cityDate(e.event_date)+' · '+String(e.start_time||'').slice(0,5);
+   article.append(title,meta);
+   const details=document.createElement('details');details.className='pont-city-history-event-more';
+   const summary=document.createElement('summary');summary.textContent='Detalii';
+   const content=document.createElement('div');content.className='pont-city-history-event-content';
+   if(e.description){const desc=document.createElement('p');desc.textContent=e.description;content.append(desc)}
+   const place=document.createElement('p');place.textContent='Locație: '+(e.venue||'—')+' · '+(e.locality||'—');content.append(place);
+   const phone=document.createElement('p');phone.textContent='Telefon: '+(e.contact_phone||'—');content.append(phone);
+   details.append(summary,content);article.append(details);historyHost.append(article);
   }
+  if(!historyEvents.length){const p=document.createElement('p');p.textContent='Niciun eveniment în istoric.';historyHost.append(p)}
   $('cityPendingLabel').textContent='('+events.filter(e=>e.status==='pending').length+')';
   try{await pontLoadCityRequests();pontRenderCityModerationHistory();if(!$('pontCityExternalRequestsBody').hidden)await pontLoadCityExternalRequests()}catch(requestError){
    $('cityEventRequestRows').textContent='Nu s-au putut încărca solicitările: '+requestError.message;
