@@ -4151,17 +4151,20 @@ function pontCityRequestCard(req){
  const card=document.createElement('article');card.className='pont-city-event pont-city-request-card';
  const e=cityEventsLoaded.find(x=>x.id===req.event_id);
  const restaurant=restaurants.find(x=>x.id===req.restaurant_id);
- const heading=document.createElement('strong');heading.textContent=(pontCityRequestLabels[req.request_type]||req.request_type)+' — '+pontCityEventCode(e)+' · '+(restaurant?.name||'Restaurant');
- const event=document.createElement('p');event.className='pont-city-meta';event.textContent='Eveniment: '+pontCityEventCode(e)+' · '+(req.event_snapshot?.title||e?.title||req.event_id);
+ const heading=document.createElement('strong');heading.textContent=(pontCityRequestLabels[req.request_type]||req.request_type)+' · '+pontCityEventCode(e);
+ const event=document.createElement('p');event.className='pont-city-meta';event.textContent=(restaurant?.name||'Restaurant')+' · '+(req.event_snapshot?.title||e?.title||req.event_id);
  const details=document.createElement('p');details.className='pont-city-meta';
- details.textContent='Solicitat: '+new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',dateStyle:'medium',timeStyle:'short'}).format(new Date(req.created_at))+' · '+(pontCityRequestStatuses[req.status]||req.status);
+ details.textContent='Solicitat: '+pontPromotionSubmittedAt(req.created_at)+' · '+(pontCityRequestStatuses[req.status]||req.status);
  card.append(heading,event,details);
+ const requestInfo=document.createElement('details');requestInfo.className='pont-city-inline-details pont-city-request-more';
+ const requestSummary=document.createElement('summary');requestSummary.textContent=req.request_type==='edit'?'Vezi modificările și motivul':'Vezi detaliile și motivul';
+ const requestBody=document.createElement('div');requestInfo.append(requestSummary,requestBody);
  if(['pinned_event','exclusive_banner'].includes(req.request_type)&&req.proposed_changes?.requested_start_date){
   const requested=document.createElement('p');requested.className='pont-city-meta';
   requested.textContent='Data de începere dorită: '+req.proposed_changes.requested_start_date+' (neconfirmată)';
-  card.append(requested);
+  requestBody.append(requested);
  }
- if(req.reason){const reason=document.createElement('p');reason.textContent='Motiv: '+req.reason;card.append(reason)}
+ if(req.reason){const reason=document.createElement('p');reason.textContent='Motiv: '+req.reason;requestBody.append(reason)}
  if(req.request_type==='edit'){
   const previous=req.event_snapshot||{};
   const changes=req.proposed_changes||{};
@@ -4173,9 +4176,10 @@ function pontCityRequestCard(req){
    line.textContent=labels[key]+': '+String(previous[key]??'—')+' → '+String(val||'—');
    changesBox.append(line);
   }
-  card.append(changesBox);
+  requestBody.append(changesBox);
  }
- if(req.review_note){const note=document.createElement('p');note.textContent='Răspuns: '+req.review_note;card.append(note)}
+ if(req.review_note){const note=document.createElement('p');note.textContent='Răspuns: '+req.review_note;requestBody.append(note)}
+ if(requestBody.childElementCount)card.append(requestInfo);
  if(req.status==='pending'){
   const actions=document.createElement('div');actions.className='pont-city-actions';
   for(const [label,status,className] of [['Aprobă','approved','primary'],['Respinge','rejected','pont-city-reject']]){
