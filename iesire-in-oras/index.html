@@ -356,7 +356,6 @@ $('eventSubmitForm').onsubmit=async e=>{
    form.reset();
    status.textContent='Solicitarea a fost înregistrată în PONT. Deschidem WhatsApp — apasă Trimite pentru a expedia mesajul.';
    window.location.href='https://api.whatsapp.com/send?phone='+pontWhatsappOwner+'&text='+encodeURIComponent(message);
-  }
  }catch(error){status.textContent='Anunțul nu a fost salvat: '+error.message}
  finally{button.disabled=false}
 };
