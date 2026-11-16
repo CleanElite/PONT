@@ -219,6 +219,14 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 #events .pont-city-already-promoted-shake{animation:pont-already-promoted-shake .38s ease-in-out}
 #events .pont-city-already-promoted-message{display:block;width:100%;margin-top:7px;padding:6px 9px;border:1px solid #d8b98988;border-radius:8px;background:#4b332b;color:#ffe2bf;font:650 10px/1.45 system-ui;text-align:center}
 @media(prefers-reduced-motion:reduce){#events .pont-city-already-promoted-shake{animation:none}}
+/* Compact payment intent decisions for both subscription and promotions */
+.pont-ar-payment-choice{margin-top:9px;padding:9px 10px;border:1px solid #78978c70;border-radius:10px;background:#082c33}
+.pont-ar-payment-choice>small{display:block;color:#c7dfd6;font-size:10px;line-height:1.4}
+.pont-ar-payment-options{display:flex;flex-wrap:wrap;gap:5px;margin:7px 0}
+.pont-ar-payment-options button{min-height:30px;padding:6px 8px;font-size:10px;line-height:1.2;border-radius:8px}
+.pont-ar-payment-options button[aria-pressed=true]{background:#dccc9d!important;color:#102f30!important;border-color:#efdcaa!important}
+.pont-ar-payment-choice-status{color:#f0d8a0!important;margin-bottom:4px}
+@media(max-width:420px){.pont-ar-payment-options{display:grid;grid-template-columns:1fr 1fr}.pont-ar-payment-options button:first-child{grid-column:1/-1}}
 </style></head>
 <body class="pont-admin pont-admin--restaurant pont-admin--city"><main>
 <header class="pont-ar-city-topbar">
@@ -332,7 +340,7 @@ body.pont-admin--city #pontCreditCancelDialog::backdrop{background:#001015cb;bac
 </main><script src="../super-admin/config.js"></script><script type="module">
 const $=id=>document.getElementById(id);const cfg=window.PONT_CONFIG||{};
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Bucharest',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-let db,restaurant,user,citySubscriptionActive=false,citySubscriptionRequested=false,cityUploadedPoster='',cityEventRows=[],cityRequestRows=[],cityCashRequestRows=[],cityPaymentRows=[],cityOwnedSlots=[],cityEditingEvent=null;
+let db,restaurant,user,citySubscriptionActive=false,citySubscriptionRequested=false,cityUploadedPoster='',cityEventRows=[],cityRequestRows=[],cityCashRequestRows=[],cityPaymentRows=[],cityOwnedSlots=[],cityEditingEvent=null,cityPaymentResponses=new Map();
 const stateNames={pending:'În așteptare',approved:'Aprobat',rejected:'Respins',removed:'Retras'};
 const requestLabels={remove:'Solicitare retragere',edit:'Solicitare modificare',pinned_event:'Fixare eveniment · 50 lei',exclusive_banner:'Bandă exclusivă · 100 lei'};
 const requestStates={pending:'În analiză',approved:'Aprobată',rejected:'Respinsă'};
@@ -616,6 +624,9 @@ async function loadCitySubscription(){
  if(paymentError)throw paymentError;
  const rows=payments||[],subs=rows.filter(p=>p.service_type==='subscription');
  cityPaymentRows=rows;
+ const {data:responses,error:responseError}=await db.from('pont_city_payment_responses').select('payment_id,response').eq('restaurant_id',restaurant.id);
+ if(responseError)console.warn('Răspunsurile pentru plăți nu au putut fi încărcate:',responseError.message);
+ cityPaymentResponses=new Map((responses||[]).map(x=>[x.payment_id,x.response]));
  const {data:ownSlots,error:slotErr}=await db.from('pont_city_promotion_slots').select('payment_id,position,start_date,end_date,status,hold_until').limit(150);
  if(!slotErr)cityOwnedSlots=ownSlots||[];
  const valid=subs.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date());
@@ -668,6 +679,7 @@ async function loadCitySubscription(){
    card.append(arButton('Verifică locurile și continuă plata',()=>openCityPromotion(linkedEvent,item.service_type,item.amount)));
   }
   card.append(details);
+  const paymentQuestion=pontARPaymentQuestion(item);if(paymentQuestion)card.append(paymentQuestion);
   if(item.status==='pending'&&!item.stripe_paid_at){
    const withdraw=arButton('Retrage solicitarea',async()=>{
     withdraw.disabled=true;
@@ -775,6 +787,30 @@ async function pontWithdrawCityRequest(kind,id){
  $('status').textContent='Solicitarea a fost retrasă. Schimbarea este vizibilă și în Super Admin.';
  await Promise.all([refresh(),loadCitySubscription()]);
 }
+function pontARPaymentQuestion(payment){
+ if(!payment||payment.status!=='pending'||payment.stripe_paid_at||payment.promotion_credit_used)return null;
+ const wrapper=document.createElement('section');wrapper.className='pont-ar-payment-choice';
+ const question=document.createElement('small');
+ question.textContent=payment.service_type==='subscription'?'Te interesează abonamentul PONT pentru evenimentele tale?':'Te interesează promovarea acestui eveniment prin PONT?';
+ const buttons=document.createElement('div');buttons.className='pont-ar-payment-options';
+ const options=[['claimed_paid','Am plătit prin Stripe'],['interested','Da, mă interesează'],['not_interested','Nu mă interesează']];
+ const status=document.createElement('small');status.className='pont-ar-payment-choice-status';
+ const current=cityPaymentResponses.get(payment.id);
+ if(current)status.textContent=current==='claimed_paid'?'Ai declarat plata. PONT verifică încasarea direct în Stripe.':current==='interested'?'Interesul tău a fost trimis la PONT.':'Ai ales că nu te interesează.';
+ for(const [choice,label] of options){
+  const button=arButton(label,async()=>{
+   buttons.querySelectorAll('button').forEach(b=>b.disabled=true);
+   status.textContent='Se înregistrează răspunsul…';
+   const {error}=await db.from('pont_city_payment_responses').upsert({payment_id:payment.id,restaurant_id:restaurant.id,response:choice,responded_by:user.id,updated_at:new Date().toISOString()},{onConflict:'payment_id'});
+   if(error){status.textContent='Nu s-a putut înregistra: '+error.message;buttons.querySelectorAll('button').forEach(b=>b.disabled=false);return}
+   cityPaymentResponses.set(payment.id,choice);
+   status.textContent=choice==='claimed_paid'?'Declarația a fost trimisă. Doar Stripe confirmă încasarea.':choice==='interested'?'PONT a primit interesul tău.':'Ai confirmat că nu te interesează.';
+   buttons.querySelectorAll('button').forEach(b=>{b.disabled=false;b.setAttribute('aria-pressed',String(b.dataset.choice===choice))});
+  });button.dataset.choice=choice;button.setAttribute('aria-pressed',String(current===choice));buttons.append(button);
+ }
+ const caution=document.createElement('small');caution.textContent='Alegerea „Am plătit” nu confirmă plata și nu activează serviciul.';
+ wrapper.append(question,buttons,status,caution);return wrapper;
+}
 function renderCityRequests(){
  const target=$('cityRequests');if(!target||!restaurant)return;
  target.replaceChildren();
@@ -835,6 +871,10 @@ function renderCityRequests(){
    const summary=document.createElement('summary');summary.textContent='Detalii';details.append(summary);
    for(const note of item.notes){const line=document.createElement('small');line.textContent=note;details.append(line)}
    card.append(details);
+  }
+  if(item.kind==='subscription'){
+   const pay=cityPaymentRows.find(p=>p.id===item.id);
+   const question=pontARPaymentQuestion(pay);if(question)card.append(question);
   }
   target.append(card);
  }
