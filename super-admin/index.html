@@ -1195,7 +1195,6 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
     <button type="button" data-tab="auctions" aria-pressed="false" aria-controls="auctions"><span>Licitații</span></button>
-    <button type="button" id="pontOpenCityRequestsFromMenu"><span>Solicitări AR</span></button>
     <a id="pontPromotionNavLink" href="../promovare/?v=bid-keyboard-fit-20261113d"><span>Promovare</span></a>
   </div>
 </nav>
@@ -3232,7 +3231,6 @@ function selectCityPanel(id='cityDashboard', remember=true){
  if(panel==='cityRequests')void loadCityCheckoutAttempts();
  if(panel==='members')renderMembers();
 }
-$('pontOpenCityRequestsFromMenu').onclick=()=>selectCityPanel('cityRequests');
 let cityRequestBranch='events';
 function setCityRequestBranch(branch){
  cityRequestBranch=branch==='payments'?'payments':'events';
