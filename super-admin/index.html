@@ -1641,6 +1641,7 @@ body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{
 <section id="cityModeration" class="card dashboard-panel" hidden aria-labelledby="cityModerationTitle">
   <div class="dashboard-heading"><div><h2 id="cityModerationTitle">Moderare evenimente</h2><p>Verifică fiecare anunț înainte să apară public.</p></div><button type="button" id="cityModerationRefresh" class="primary">Actualizează</button></div>
   <p id="cityModerationStatus" class="dashboard-message" role="status"></p>
+  <section id="pontCityModerationPendingSection" aria-label="Solicitări de evenimente în așteptare" hidden><div class="pont-city-section-heading"><h3>Solicitări de aprobat <span id="pontCityModerationPendingCount"></span></h3></div><div id="pontCityModerationPendingList" class="pont-city-list"></div></section>
   <div class="pont-city-section-heading"><h3>Aprobate</h3></div>
   <div id="cityApprovedRows" class="pont-city-list"></div>
   <details class="pont-city-folded-history" id="cityEventHistoryFold">
@@ -4177,6 +4178,12 @@ async function pontLoadCityRequests(){
   .order('created_at',{ascending:false}).limit(250);
  if(error)throw error;
  const rows=data||[];pontGroupedEventRequests=rows;const pending=rows.filter(r=>r.status==='pending');
+ const moderationPending=$('pontCityModerationPendingList');moderationPending.replaceChildren();
+ const pendingNewEvents=cityEventsLoaded.filter(e=>e.status==='pending');
+ for(const item of pendingNewEvents)moderationPending.append(cityRow(item,true));
+ for(const item of pending)moderationPending.append(pontCityRequestCard(item));
+ $('pontCityModerationPendingSection').hidden=!pending.length&&!pendingNewEvents.length;
+ $('pontCityModerationPendingCount').textContent='('+(pending.length+pendingNewEvents.length)+')';
  $('cityRequestsPendingLabel').textContent='('+pending.length+')';
  // Contorul global include și solicitările de plată; se actualizează după încărcarea tuturor surselor.
  for(const item of [...pending,...rows.filter(r=>r.status!=='pending')])box.append(pontCityRequestCard(item));
