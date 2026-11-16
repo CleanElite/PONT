@@ -446,6 +446,22 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #restaurantRows .pont-restaurant-visibility input:disabled{opacity:.5;cursor:wait}
 #restaurantRows .restaurant-admin-heading>.restaurant-list-name{padding-right:88px!important;padding-left:35px!important}
 @media(max-width:390px){#restaurantRows .pont-restaurant-visibility{gap:4px}#restaurantRows .pont-restaurant-visibility label{font-size:9px}#restaurantRows .pont-restaurant-visibility input{width:13px!important;height:13px!important;min-width:13px!important;min-height:13px!important}#restaurantRows .restaurant-admin-heading>.restaurant-list-name{padding-right:80px!important}}
+</style><style id="pont-city-grouped-requests-20261116">
+#pontCityGroupedRequests{display:flex;flex-direction:column;gap:10px;margin-top:13px}
+#pontCityGroupedRequests .pont-city-grouped-restaurant{border:1px solid rgba(127,174,161,.4);border-radius:12px;background:linear-gradient(130deg,#082c33,#102c30);padding:11px;min-width:0}
+#pontCityGroupedRequests .pont-city-grouped-name{margin:0 0 9px;text-align:center;color:#f2e0b2;font:750 14px/1.35 system-ui}
+#pontCityGroupedRequests .pont-city-grouped-branches{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+#pontCityGroupedRequests .pont-city-grouped-branch{min-width:0;border:1px solid rgba(95,159,146,.6);border-radius:9px;background:#0c383e}
+#pontCityGroupedRequests .pont-city-grouped-branch[open]{grid-column:1/-1}
+#pontCityGroupedRequests summary{display:flex;align-items:center;justify-content:center;gap:5px;min-height:40px;padding:9px 6px;text-align:center;cursor:pointer;color:#eff9f0;font:750 clamp(10px,2.5vw,12px)/1.25 system-ui;list-style:none}
+#pontCityGroupedRequests summary::-webkit-details-marker{display:none}
+#pontCityGroupedRequests summary:before{content:'▸';font-size:12px;color:#dac388}
+#pontCityGroupedRequests details[open]>summary:before{content:'▾'}
+#pontCityGroupedRequests .pont-city-grouped-count{color:#e4c584;font-variant-numeric:tabular-nums}
+#pontCityGroupedRequests .pont-city-grouped-body{padding:8px;border-top:1px solid rgba(110,163,147,.35);display:grid;gap:8px}
+#pontCityGroupedRequests .pont-city-grouped-body .pont-city-event{margin:0}
+#pontCityGroupedRequests .pont-city-group-state{font:700 11px/1.35 system-ui;color:#e9d299}
+@media(max-width:390px){#pontCityGroupedRequests .pont-city-grouped-restaurant{padding:8px}#pontCityGroupedRequests summary{font-size:10px;padding:7px 4px}}
 </style><style id="pont-restaurant-module-filters-20261116">
 #adminRestaurants .pont-restaurant-module-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(5px,1.5vw,12px);width:100%}
 #adminRestaurants .pont-restaurant-module-filters button{min-width:0;min-height:47px;padding:11px 5px;border:1px solid #638d83;border-radius:11px;background:#0e343b;color:#d1e9e0;font:750 clamp(11px,2.6vw,14px)/1.25 system-ui;white-space:normal;cursor:pointer}
@@ -3362,6 +3378,76 @@ function selectCityPanel(id='cityDashboard', remember=true){
  if(panel==='members')renderMembers();
 }
 let pontGroupedEventRequests=[],pontGroupedCashRequests=[],pontGroupedPaymentRequests=[],pontGroupedPaymentDialogs=[];
+
+function pontRenderGroupedCityRequests(){
+ const host=$('pontCityGroupedRequests');if(!host)return;
+ const open=new Set([...host.querySelectorAll('details[open][data-request-group]')].map(x=>x.dataset.requestGroup));
+ host.replaceChildren();
+ const visible=restaurants.filter(r=>r.city_module_visible===true).sort((a,b)=>String(a.name||'').localeCompare(String(b.name||''),'ro'));
+ if(!visible.length){const p=document.createElement('p');p.className='pont-city-requests-note';p.textContent='Niciun restaurant nu are afișată secțiunea Ieșire în oraș în panoul AR.';host.append(p);return}
+ const makeText=(tag,value,className)=>{const el=document.createElement(tag);el.textContent=value;if(className)el.className=className;return el};
+ const humanDate=value=>{if(!value)return '—';const t=new Date(value);return Number.isNaN(t.getTime())?String(value):new Intl.DateTimeFormat('ro-RO',{timeZone:'Europe/Bucharest',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}).format(t)};
+ const eventName=id=>cityEventsLoaded.find(e=>e.id===id)?.title||'Eveniment';
+ const blank=(container,label)=>{container.append(makeText('p',label,'pont-city-requests-note'))};
+ const noteCard=(title,detail,state,kind)=>{
+  const card=document.createElement('article');card.className='pont-city-event pont-city-request-card pont-city-group-note';
+  card.append(makeText('strong',title));
+  card.append(makeText('p',detail,'pont-city-meta'));
+  if(state)card.append(makeText('small',state,'pont-city-group-state'));
+  return card;
+ };
+ for(const restaurant of visible){
+  const rid=restaurant.id;
+  const pendingEvents=cityEventsLoaded.filter(e=>e.restaurant_id===rid&&e.status==='pending');
+  const requests=pontGroupedEventRequests.filter(x=>x.restaurant_id===rid);
+  const cash=pontGroupedCashRequests.filter(x=>x.restaurant_id===rid);
+  const payments=pontGroupedPaymentRequests.filter(x=>x.restaurant_id===rid);
+  const dialogs=pontGroupedPaymentDialogs.filter(x=>x.restaurant_id===rid);
+  const eventCount=pendingEvents.length+requests.filter(x=>x.status==='pending').length;
+  const paymentCount=cash.filter(x=>['pending','contacted'].includes(x.status)).length+payments.filter(x=>x.status==='pending').length;
+  const card=document.createElement('section');card.className='pont-city-grouped-restaurant';
+  card.append(makeText('h3',restaurant.name,'pont-city-grouped-name'));
+  const sections=document.createElement('div');sections.className='pont-city-grouped-branches';
+  const group=(type,label,count,fill)=>{
+   const details=document.createElement('details');details.className='pont-city-grouped-branch';
+   details.dataset.requestGroup=rid+':'+type;details.open=open.has(details.dataset.requestGroup);
+   const summary=document.createElement('summary');
+   summary.append(makeText('span',label));
+   summary.append(makeText('strong','('+count+')','pont-city-grouped-count'));
+   details.append(summary);
+   const body=document.createElement('div');body.className='pont-city-grouped-body';fill(body);
+   details.append(body);sections.append(details);
+  };
+  group('events','Solicitări evenimente',eventCount,body=>{
+   for(const event of pendingEvents)body.append(cityRow(event,true));
+   const sorted=[...requests].sort((a,b)=>(a.status==='pending'?0:1)-(b.status==='pending'?0:1)||String(b.created_at).localeCompare(String(a.created_at)));
+   for(const item of sorted)body.append(pontCityRequestCard(item));
+   if(!pendingEvents.length&&!requests.length)blank(body,'Nicio solicitare de eveniment.');
+  });
+  group('payments','Solicitări plăți',paymentCount,body=>{
+   for(const item of [...cash].sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))){
+    const service=item.service_type==='pinned_event'?'Poziție fixă · locul '+item.position:'Bandă publicitară';
+    const state=({pending:'În așteptare',contacted:'Contactat',resolved:'Aprobată',cancelled:'Retrasă / anulată'})[item.status]||item.status;
+    body.append(noteCard('Cash · '+service+' · '+Number(item.amount||0).toLocaleString('ro-RO')+' lei',
+     eventName(item.event_id)+' · '+(item.requested_start_date||'')+(item.requested_end_date?' – '+item.requested_end_date:'')+' · '+humanDate(item.created_at),state));
+   }
+   for(const item of [...payments].sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))){
+    const service=({subscription:'Abonament',pinned_event:'Poziție fixă',exclusive_banner:'Bandă publicitară'})[item.service_type]||item.service_type;
+    const state=item.status==='pending'?(item.stripe_paid_at?'Stripe încasat · așteaptă AS':'Așteaptă plata / aprobarea'):item.status==='confirmed'?'Aprobată':'Retrasă';
+    body.append(noteCard('Solicitare · '+service+' · '+Number(item.amount||0).toLocaleString('ro-RO')+' lei',
+     (item.service_type==='subscription'?'Ieșire în oraș':eventName(item.promoted_event_id||item.event_id))+' · '+humanDate(item.created_at),state));
+   }
+   for(const item of [...dialogs].sort((a,b)=>String(b.opened_at).localeCompare(String(a.opened_at)))){
+    const state=item.continued_at?'A continuat către Stripe':item.cancelled_at?'Renunțat la plată':'Dialog deschis, fără încasare confirmată';
+    body.append(noteCard('Interes de plată · '+Number(item.amount||0).toLocaleString('ro-RO')+' lei',
+     humanDate(item.opened_at)+' · '+({subscription:'Abonament',pinned_event:'Poziție fixă',exclusive_banner:'Bandă publicitară'})[item.service_type],state));
+   }
+   if(!cash.length&&!payments.length&&!dialogs.length)blank(body,'Nicio solicitare de plată.');
+  });
+  card.append(sections);host.append(card);
+ }
+}
+
 let cityRequestBranch='events';
 function setCityRequestBranch(branch){
  cityRequestBranch=branch==='payments'?'payments':'events';
