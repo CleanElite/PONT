@@ -405,7 +405,11 @@ body.pont-admin--platform #app #pontCitySuperNav[hidden],body.pont-admin--platfo
 #restaurantRows .restaurant-admin-item>#restaurantForm[hidden],#restaurantRows .restaurant-admin-item>#restaurantAccess[hidden]{display:none!important}
 </style><style id="pont-today-restaurant-exhaustion-20261116">
 #pontTodayMenu .pont-today-card .pont-today-meta{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:7px}
-#pontTodayMenu .pont-today-card-actions{display:inline-flex;align-items:center;justify-content:flex-end;gap:6px;flex-wrap:wrap;min-width:0}
+#pontTodayMenu .pont-today-exhaustion-footer{display:grid;gap:8px;margin:14px 0 0;padding:14px 0 1px;border-top:1px solid rgba(103,207,191,.42)}
+#pontTodayMenu .pont-today-exhaustion-row{display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;flex-wrap:wrap}
+#pontTodayMenu .pont-today-exhaustion-name{font:700 13px/1.3 system-ui;color:#f3f6ec;overflow-wrap:anywhere}
+#pontTodayMenu .pont-today-exhaustion-row>.pont-today-restaurant-exhausted{margin-left:auto;flex:none}
+@media(max-width:430px){#pontTodayMenu .pont-today-exhaustion-name{font-size:12px}#pontTodayMenu .pont-today-exhaustion-footer{padding-top:12px}}
 #pontTodayMenu .pont-today-restaurant-exhausted{font:700 11px/1.2 system-ui;border:1px solid #dcbb83;border-radius:9px;background:linear-gradient(140deg,#4f3a20,#322d23);color:#f7ddac;padding:8px 10px;min-height:32px;cursor:pointer}
 #pontTodayMenu .pont-today-restaurant-exhausted[aria-pressed="true"]{background:linear-gradient(140deg,#722c37,#451d28);border-color:#ff9ca4;color:#ffe2e3}
 #pontTodayMenu .pont-today-restaurant-exhausted:disabled{opacity:.6;cursor:wait}
@@ -1631,7 +1635,7 @@ body.pont-admin--platform .pont-as-confirm-dialog .pont-as-confirm-actions butto
   </details>
 </section>
 <p id="status" class="dashboard-message" role="status"></p>
-<footer class="pont-admin-legal-footer" style="text-align:center;padding:18px 12px 28px;font:500 12px/1.5 system-ui"><a href="../termeni.html?from=super-admin#transparenta-licitatii" style="color:#9acfc6;text-decoration:underline;text-underline-offset:4px">Transparența licitațiilor</a></footer></section></main><script src="./config.js"></script><script type="module">
+</section></main><script src="./config.js"></script><script type="module">
 import {pontAuctionDateLabel} from '../pont-auction-calendar.js?v=20261114';
 const $=id=>document.getElementById(id),c=window.PONT_CONFIG||{};if(!c.url||!c.anonKey){$('setup').hidden=false}else start().catch(e=>{$('setup').hidden=false;$('setup').querySelector('p').textContent=e.message});
 async function start(){
@@ -4235,7 +4239,7 @@ const {initPontDishEditor}=await import('../dish-editor.js?v=no-auto-focus-20261
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
-const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=today-exhausted-by-restaurant-20261116');
+const {initMenuTemplates,renderMenuArchive,renderPublishedToday,toggleTodayDishAvailability}=await import('../menu-templates-stock-v2.js?v=today-exhausted-footer-20261116');
 const renderTodayMenu=(resetExpanded=false)=>renderPublishedToday($('pontTodayMenu'), menus, restaurants, true, resetExpanded, dailyMenuExhaustedIds);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) renderTodayMenu(); });
 $('pontTodayMenu').addEventListener('click', async event => {
