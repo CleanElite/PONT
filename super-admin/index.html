@@ -1305,7 +1305,7 @@ body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{
   </div>
   <div class="pont-nav-cluster pont-nav-cluster--commercial" role="group" aria-label="Licitații și promovare">
     <button type="button" data-tab="auctions" aria-pressed="false" aria-controls="auctions"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=2#coins"></use></svg><span>Licitații</span></button>
-    <a id="pontPromotionNavLink" href="../promovare/?v=bid-keyboard-fit-20261113d"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=2#megaphone"></use></svg><span>Promovare</span></a>
+    <a id="pontPromotionNavLink" href="../promovare/"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=2#megaphone"></use></svg><span>Promovare</span></a>
   </div>
 </nav>
 <nav id="pontCitySuperNav" class="admin-nav pont-admin-grouped-nav" aria-label="Secțiunile Ieșire în oraș" hidden>
@@ -3009,7 +3009,7 @@ const selectedCampaignParam=new URLSearchParams(location.search).get('month');
 auctionControlMonth.value=/^\d{4}-(0[1-9]|1[0-2])$/.test(selectedCampaignParam||'')?selectedCampaignParam:nextAuctionMonth().slice(0,7);
 function syncPromotionCampaignLink(){
  const link=$('pontPromotionNavLink');
- if(link&&selectedAuctionMonth())link.href='../promovare/?v=bid-keyboard-fit-20261113d&month='+encodeURIComponent(auctionControlMonth.value);
+ if(link&&selectedAuctionMonth())link.href='../promovare/?month='+encodeURIComponent(auctionControlMonth.value);
 }
 syncPromotionCampaignLink();
 function displayAuctionControl(month,isOpen,paused,finalized){
