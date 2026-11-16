@@ -416,7 +416,9 @@ async function openCityPromotion(event,type,price,card=null){
  $('pontPromotionDescription').textContent=event.title+' · '+price+' lei. '+(type==='pinned_event'?'Selectează intervalul de promovare.':'Selectează data de început.') ;
  const date=$('pontPromotionStartDate');date.min=today();date.max=event.event_date;date.value=today();
  const endWrap=$('pontPromotionEndWrap'),endDate=$('pontPromotionEndDate');
- endWrap.hidden=type!=='pinned_event';endDate.required=type==='pinned_event';endDate.value='';endDate.min=date.value;endDate.max=event.event_date;
+ endWrap.hidden=type!=='pinned_event';endDate.required=type==='pinned_event';endDate.value='';endDate.min=date.value;
+ const maxRangeDate=new Date(Date.parse(date.value+'T12:00:00Z')+29*86400000).toISOString().slice(0,10);
+ endDate.max=maxRangeDate<event.event_date?maxRangeDate:event.event_date;
  $('pontPromotionPeriodHint').textContent=type==='pinned_event'?'Selectează data de început și data de sfârșit (inclusiv), maximum 30 de zile și fără depășirea datei evenimentului. Locul trebuie să fie liber în întreg intervalul. Activarea necesită aprobarea AS.':'Alege poziția și data de începere. Pentru locurile ocupate poți solicita prima perioadă liberă.';
  $('pontPromotionStatus').textContent='';
  $('pontPromotionSubmit').textContent='Finalizează plata cu cardul · '+price+' lei';
@@ -587,12 +589,12 @@ async function loadCitySubscription(){
  if(activeError)throw activeError;
  citySubscriptionActive=Boolean(active);
  const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests')
-  .select('id,status,service_type,amount,event_id,promoted_event_id,promotion_position,promotion_credit_used,requested_start_date,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount')
+  .select('id,status,service_type,amount,event_id,promoted_event_id,promotion_position,promotion_credit_used,requested_start_date,requested_end_date,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount')
   .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(80);
  if(paymentError)throw paymentError;
  const rows=payments||[],subs=rows.filter(p=>p.service_type==='subscription');
  cityPaymentRows=rows;
- const {data:ownSlots,error:slotErr}=await db.from('pont_city_promotion_slots').select('payment_id,position,start_date,status,hold_until').limit(150);
+ const {data:ownSlots,error:slotErr}=await db.from('pont_city_promotion_slots').select('payment_id,position,start_date,end_date,status,hold_until').limit(150);
  if(!slotErr)cityOwnedSlots=ownSlots||[];
  const valid=subs.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date());
  const stripeReceived=subs.find(p=>p.status==='pending'&&p.stripe_paid_at);
