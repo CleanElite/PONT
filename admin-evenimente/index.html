@@ -610,8 +610,11 @@ function pontPromotionAutoEnd(start,eventDate){
  const day30=new Date(Date.parse(start+'T12:00:00Z')+29*86400000).toISOString().slice(0,10);
  return day30<eventDate?day30:eventDate;
 }
+let pontPromotionQuoteRequest=0;
 async function pontRefreshPromotionSlots(){
- const isPin=cityPromotionType==='pinned_event',date=$('pontPromotionStartDate').value,endDate=$('pontPromotionEndDate').value,wrap=$('pontPromotionSlotWrap');
+ const request=++pontPromotionQuoteRequest;
+ const eventId=cityPromotionEvent?.id,eventDate=cityPromotionEvent?.event_date,type=cityPromotionType;
+ const isPin=type==='pinned_event',date=$('pontPromotionStartDate').value,endDate=$('pontPromotionEndDate').value,wrap=$('pontPromotionSlotWrap');
  wrap.hidden=false;
  if(!cityPromotionEvent||!date||date<today()||date>cityPromotionEvent.event_date){
   $('pontPromotionSlotOptions').replaceChildren();$('pontPromotionAvailability').textContent='Nu poți promova pentru o dată trecută sau după eveniment.';pontSlotQuote=null;pontPromotionQuotes=[];return;
@@ -629,6 +632,10 @@ async function pontRefreshPromotionSlots(){
   const owned=cityOwnedSlots.find(x=>x.payment_id===ownPayment?.id&&x.position===n&&x.start_date===date&&x.status==='held'&&new Date(x.hold_until)>new Date());
   return {n,quote:owned?{available:true,first_available:date,owned:true}:data?.[0],error};
  }));
+ // Ignore previous availability checks when the user changes the date again.
+ if(request!==pontPromotionQuoteRequest||cityPromotionEvent?.id!==eventId||cityPromotionType!==type||
+    $('pontPromotionStartDate').value!==date||$('pontPromotionEndDate').value!==endDate)return;
+ const fragment=document.createDocumentFragment();
  for(const {n,quote,error} of checks){
   const label=document.createElement('label');label.className='pont-slot-option';
   const radio=document.createElement('input');radio.type='radio';radio.name='pontSlotChoice';radio.value=String(n);radio.checked=n===pontChosenSlot;
@@ -637,7 +644,7 @@ async function pontRefreshPromotionSlots(){
   caption.textContent=error?'Nu poate fi verificat':quote?.owned?'Rezervat temporar pentru tine':quote?.available?'Disponibil':'Indisponibil până la '+(quote?.first_available||'—');
   if(isPin&&!quote?.available)radio.disabled=true;
   label.classList.toggle('is-unavailable',!quote?.available);
-  label.append(radio,title,caption);list.append(label);
+  label.append(radio,title,caption);fragment.append(label);
   radio.onchange=()=>{
    pontChosenSlot=n;
    pontSetPromotionSelectedSlot();
@@ -647,6 +654,8 @@ async function pontRefreshPromotionSlots(){
    }
   };
  }
+ // Atomically replace the three locations, never append a second set.
+ list.replaceChildren(fragment);
  pontPromotionQuotes=checks;
  pontSetPromotionSelectedSlot();
 }
