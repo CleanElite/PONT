@@ -221,6 +221,22 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
 #eventList .event-card .menu-card-copy{z-index:2}
 #eventList .event-card::after{z-index:1}
 @media(max-width:520px){#eventList .event-card .pont-event-poster-fill,#eventList .event-card .pont-event-poster-fit.menu-card-photo{width:71%}}
+</style><style id="pont-promoted-events-edge-to-edge-20261117">
+/* Promoted events are full-bleed strips, not inset cards; retain existing height. */
+#eventList .pont-promoted-edge-to-edge {
+  width:100vw;
+  width:100dvw;
+  max-width:none;
+  margin-left:calc(50% - 50vw);
+  margin-left:calc(50% - 50dvw);
+}
+#eventList .pont-promoted-edge-to-edge > .event-card {
+  width:100%;
+  max-width:none;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
 </style></head>
 <body class="lunch menu-showcase">
 <a class="pont-skip-content" href="#pontMainContent">Sari la conținut</a>
@@ -314,6 +330,7 @@ function renderEvents(events){
   const isFixed=Boolean(promotedSlot);
   const isPromoted=isFixed||activePromotions.some(p=>p.service_type==='exclusive_banner'&&p.event_id===event.id);
   if(isFixed)outer.classList.add('pont-promoted-position');
+  if(isPromoted)outer.classList.add('pont-promoted-edge-to-edge');
   const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
   const hasPoster=!!(event.poster_url&&/^https:\/\//i.test(event.poster_url));
   if(!hasPoster)button.classList.add('event-card-no-photo');
