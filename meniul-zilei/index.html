@@ -542,7 +542,7 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-menu.css?v=20261118-07">
+<link rel="stylesheet" href="./restaurant-menu.css?v=20261118-08">
 <style id="pont-restaurant-header-clean-20261117">
 /* Header-only safeguard: old cached background art contains a bright diagonal streak. */
 #order.pont-menu-view .pont-menu-header {
@@ -761,10 +761,6 @@ const selection=()=>{
 const validCustomerPhone=value=>{const digits=String(value||'').replace(/[\s().-]/g,'');return /^07[0-9]{8}$/.test(digits)||/^\+407[0-9]{8}$/.test(digits)||/^00407[0-9]{8}$/.test(digits)};
 let phoneTouched=false;
 function update(){
-  form.querySelectorAll('.pont-menu-dish').forEach(row=>{
-    const input=row.querySelector('[data-qty]');
-    row.classList.toggle('pont-dish-selected',!!input&&!input.disabled&&Number(input.value)>0);
-  });
   const phoneValue=form.elements.phone.value.trim();
   const phoneValid=validCustomerPhone(phoneValue);
   const showPhoneError=(phoneTouched||phoneValue.length>0)&&!phoneValid;
