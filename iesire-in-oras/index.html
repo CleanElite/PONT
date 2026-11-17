@@ -302,6 +302,21 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
  #eventList .pont-promoted-edge-to-edge > .event-card .menu-card-name {font-size:clamp(16px,4.4vw,21px)}
  #eventList .pont-promoted-edge-to-edge > .event-card::after {background:linear-gradient(90deg,#04171cf7 0%,#04171ce8 31%,#04171c9e 53%,#04171c0d 86%)}
 }
+</style><style id="pont-promoted-image-fade-20261117">
+/* Keep all banner copy readable while photography disappears naturally into the text zone. */
+#eventList .pont-promoted-edge-to-edge > .event-card .pont-event-poster-fit.menu-card-photo {
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 23%,rgba(0,0,0,.78) 49%,#000 70%);
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 23%,rgba(0,0,0,.78) 49%,#000 70%);
+}
+#eventList .pont-promoted-edge-to-edge > .event-card::after {
+  background:linear-gradient(90deg,#04171cf2 0%,#04171cdb 27%,#04171c61 47%,transparent 75%);
+}
+@media(max-width:520px) {
+ #eventList .pont-promoted-edge-to-edge > .event-card .pont-event-poster-fit.menu-card-photo {
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 26%,rgba(0,0,0,.85) 55%,#000 79%);
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.12) 26%,rgba(0,0,0,.85) 55%,#000 79%);
+ }
+}
 </style></head>
 <body class="lunch menu-showcase">
 <a class="pont-skip-content" href="#pontMainContent">Sari la conținut</a>
