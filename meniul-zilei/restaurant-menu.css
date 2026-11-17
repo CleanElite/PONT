@@ -479,9 +479,30 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   fill: currentColor;
 }
 
-/* Center section titles in the full header width, independent of the left icon and right chevron. */
-#order.pont-menu-view .pont-menu-course-heading:not(.pont-menu-course-heading--dessert) { position:relative; }
-#order.pont-menu-view .pont-menu-course-heading:not(.pont-menu-course-heading--dessert) .pont-menu-course-title {
+/* Center the icon and heading as one compact group, leaving the chevron at right. */
+#order.pont-menu-view .pont-menu-course-heading:not(.pont-menu-course-heading--dessert) { position:relative;justify-content:center; }
+#order.pont-menu-view .pont-menu-course-heading:not(.pont-menu-course-heading--dessert) .pont-menu-course-name {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(5px,1.5cqw,12px);
+  margin-inline:auto;
+}
+#order.pont-menu-view .pont-menu-course-heading:not(.pont-menu-course-heading--dessert) .pont-menu-course-symbol {
+  width:clamp(22px,6cqw,48px);
+  height:clamp(22px,5.7cqw,46px);
+  padding-inline-end:clamp(3px,1cqw,8px);
+}
+#order.pont-menu-view .pont-menu-course-heading:not(.pont-menu-course-heading--dessert) .pont-menu-course-chevron {
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+}
+#order.pont-menu-view .pont-menu-course--second[open] .pont-menu-course-chevron {
+  transform:translateY(-50%) rotate(180deg);
+}
+.pont-menu-course-title {
   position:absolute;
   left:50%;
   top:50%;
