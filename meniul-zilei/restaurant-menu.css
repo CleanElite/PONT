@@ -50,23 +50,26 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   background: linear-gradient(157deg, #011718, #032525 44%, #021b1e 82%, #032324);
 }
 
+/* Premium restaurant masthead — centered identity and single-line title. */
 .pont-menu-header {
   position: relative;
   display: flex;
   align-items: center;
-  min-height: clamp(65px, 17.2cqw, 142px);
+  justify-content: center;
+  min-height: clamp(108px, 26.8cqw, 196px);
   margin: 0;
-  padding: clamp(7px, 2.55cqw, 20px) 5% clamp(8px, 2.4cqw, 19px) 26.6%;
+  padding: clamp(10px, 2.35cqw, 20px) clamp(60px, 14cqw, 115px) clamp(8px, 2.15cqw, 18px);
   background: url('../assets/pont-menu-header.webp') center top / 100% auto no-repeat;
+  isolation: isolate;
 }
-
 #order.pont-menu-view #close {
   position: absolute;
+  z-index: 2;
   top: 50%;
   left: 5.35%;
   display: grid;
   place-items: center;
-  width: clamp(39px, 9.35cqw, 70px);
+  width: clamp(42px, 9.35cqw, 70px);
   aspect-ratio: 1;
   padding: 0;
   transform: translateY(-50%);
@@ -76,80 +79,122 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   box-shadow: inset 0 0 6px #bffbf665;
   color: #f8fffc;
 }
-
 .pont-menu-back svg { width: 43%; height: 43%; }
-.pont-menu-identity { min-width: 0; }
-#order.pont-menu-view #orderTitle {
-  margin: 0;
-  color: #fff;
-  font: 700 clamp(24px, 7.75cqw, 62px)/1.02 var(--serif-menu);
-  overflow-wrap: anywhere;
+.pont-menu-identity {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  text-align: center;
 }
-
+.pont-menu-crest {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(4px, 1.3cqw, 11px);
+  width: min(80%, 280px);
+  height: clamp(20px, 5.5cqw, 39px);
+  margin-bottom: clamp(0px, .3cqw, 3px);
+  color: #f4cc75;
+}
+.pont-menu-crest span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, #dcae61 80%, #f9d688);
+  box-shadow: 0 0 4px #eabd7466;
+}
+.pont-menu-crest span:last-child { transform: rotate(180deg); }
+.pont-menu-crest svg {
+  flex: none;
+  width: clamp(19px, 5.4cqw, 37px);
+  height: clamp(19px, 5.4cqw, 37px);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.1;
+  filter: drop-shadow(0 0 3px #f3bf6555);
+}
+#order.pont-menu-view #orderTitle,
+#order.pont-menu-view .pont-menu-identity--long #orderTitle {
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: #fffaf2;
+  font: 700 clamp(28px, 8cqw, 62px)/1.02 var(--serif-menu);
+  white-space: nowrap;
+  overflow-wrap: normal;
+  letter-spacing: -.012em;
+  text-overflow: clip;
+  text-shadow: 0 2px 6px #0007;
+}
 #order.pont-menu-view #orderTitle:focus { outline: none; }
-#order.pont-menu-view .pont-menu-identity--long #orderTitle { font-size: clamp(22px, 6.4cqw, 52px); }
 .pont-menu-city {
   display: flex;
   align-items: center;
-  gap: clamp(4px, 1.4cqw, 11px);
-  margin: clamp(2px, .75cqw, 6px) 0 0;
-  color: #fff;
-  font: 700 clamp(13px, 3.5cqw, 27px)/1.1 var(--serif-menu);
+  justify-content: center;
+  gap: clamp(4px, 1.25cqw, 10px);
+  margin: clamp(1px, .6cqw, 5px) 0 0;
+  color: #fffdf5;
+  font: 700 clamp(12px, 3.35cqw, 27px)/1.1 var(--serif-menu);
 }
-
 .pont-menu-city svg { width: .95em; height: .95em; flex: none; }
 .pont-menu-meta {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  margin-inline: var(--menu-edge);
-  padding: clamp(3px, .85cqw, 7px) 0;
-  border-block: 1px solid #d5ad6278;
+  min-height: clamp(41px, 10.3cqw, 67px);
+  margin-inline: clamp(13px, 4.7cqw, 38px);
+  padding: clamp(3px, .75cqw, 7px) 0;
+  border: 1.5px solid #e6bc72;
+  border-radius: 999px;
+  background: linear-gradient(165deg, #17443a 0%, #052b2a 46%, #042324 100%);
+  box-shadow: inset 0 1px 4px #f7d69338, inset 0 -1px 4px #e1b75a35, 0 0 7px #e7b76460;
   color: #fffaf1;
-  font: 700 clamp(11px, 3.32cqw, 27px)/1.12 var(--serif-menu);
+  font: 700 clamp(10px, 2.83cqw, 23px)/1.1 var(--serif-menu);
   text-align: center;
 }
-
 .pont-menu-meta-label {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(4px, 1.55cqw, 13px);
+  gap: clamp(3px, .9cqw, 10px);
   min-width: 0;
-  padding-inline: 2px;
+  padding-inline: clamp(3px, 1cqw, 9px);
+  white-space: nowrap;
 }
-
 .pont-menu-meta-label svg { width: 1.08em; height: 1.08em; flex: none; fill: currentColor; }
 .pont-menu-meta-price {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-inline: clamp(7px, 3.55cqw, 29px);
-  color: #190f03;
-  background: linear-gradient(116deg, #f4c979, #ffe3a0 56%, #edba62);
+  padding: clamp(4px, 1.05cqw, 9px) clamp(8px, 3.1cqw, 26px);
   border-radius: 999px;
-  padding-block: clamp(4px, 1.22cqw, 10px);
+  background: linear-gradient(116deg, #f4c979, #ffe3a0 56%, #edba62);
+  color: #190f03;
   white-space: nowrap;
 }
-
 .pont-menu-meta-total {
-  padding-inline: clamp(5px, 3.55cqw, 29px);
   position: relative;
+  padding-inline: clamp(3px, 1.6cqw, 13px);
 }
-
 .pont-menu-meta-total::before,
 .pont-menu-meta-total::after {
   position: absolute;
-  top: 17%;
-  bottom: 17%;
+  top: 12%;
+  bottom: 12%;
   width: 1px;
   background: #d3aa62;
   content: '';
 }
-
 .pont-menu-meta-total::before { left: 0; }
 .pont-menu-meta-total::after { right: 0; }
-
+#pontOrderMinimum {
+  padding-inline: clamp(3px, 1cqw, 9px);
+  white-space: nowrap;
+  font-size: clamp(9px, 2.7cqw, 22px);
+}
 .pont-dish-gallery {
   --gallery-gap: clamp(5px, 1.45cqw, 12px);
   display: grid;
