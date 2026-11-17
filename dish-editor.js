@@ -44,10 +44,10 @@ catalog.innerHTML = `
             <label class="admin-dish-photo">
               <img id="pontDishPreview" alt="" hidden>
               <span class="admin-dish-photo-empty" id="pontDishPhotoEmpty">${icon('camera')}Adaugă fotografie</span>
-              <span class="admin-dish-photo-edit" id="pontDishPhotoEdit" hidden>${icon('camera')}</span>
+              <span class="admin-dish-photo-edit" id="pontDishPhotoEdit" hidden>${icon('camera')}<span>Înlocuiește fotografia</span></span>
               <input type="file" id="pontDishPhoto" aria-label="Fotografie preparat" aria-describedby="pontDishPhotoHelp" accept="image/jpeg,image/png,image/webp">
             </label>
-            <small id="pontDishPhotoHelp">JPG, PNG sau WebP · max. 2 MB</small>
+            <small id="pontDishPhotoHelp">Apasă pe fotografie pentru a o înlocui · JPG, PNG sau WebP · max. 2 MB</small>
             <button type="button" id="pontDishRemovePhoto" hidden>Elimină poza</button>
           </div>
           <div class="pont-dish-grid">
@@ -271,7 +271,7 @@ function syncStandardPrice(){
   $('pontDailyComboDisplay').classList.toggle('is-missing', !valid);
 }
 
-const photoUrl = dish => dish?.photo_path ? db.storage.from('pont-dish-images').getPublicUrl(dish.photo_path).data.publicUrl : '';
+const photoUrl = dish => { const path=String(dish?.photo_path||''); return /^https:\/\//i.test(path) ? path : path ? db.storage.from('pont-dish-images').getPublicUrl(path).data.publicUrl : ''; };
 
 function options() {
   const restaurants = getRestaurants() || [];
