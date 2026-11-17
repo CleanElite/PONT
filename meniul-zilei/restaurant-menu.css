@@ -152,7 +152,6 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
 
 .pont-dish-gallery {
   --gallery-gap: clamp(5px, 1.45cqw, 12px);
-  --gallery-cycle-marker-width: clamp(14px, 3.8cqw, 28px);
   display: grid;
   grid-template-columns: clamp(15px, 5.8cqw, 42px) minmax(0, 1fr) clamp(15px, 5.8cqw, 42px);
   align-items: center;
@@ -173,7 +172,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   -webkit-touch-callout: none;
 }
 
-.pont-dish-gallery[data-loop] .pont-dish-gallery__viewport { cursor: grab; }
+.pont-dish-gallery__viewport { cursor: grab; }
 .pont-dish-gallery[data-dragging] .pont-dish-gallery__viewport { cursor: grabbing; }
 .pont-dish-gallery__track, .pont-dish-gallery__sequence {
   display: flex;
@@ -184,44 +183,60 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
 
 .pont-dish-gallery__track { will-change: transform; }
 .pont-dish-gallery__sequence { flex: none; }
-/* Beginning of a complete loop: thin champagne lines and a tiny cooking pot.
-   Unlike a stationary overlay, this moves together with the real cards and the loop copy. */
-.pont-dish-gallery__cycle-start {
-  flex: 0 0 var(--gallery-cycle-marker-width);
-  width: var(--gallery-cycle-marker-width);
+/* Finite gallery: a faded horizontal line marks the real beginning and end. */
+.pont-dish-gallery__edge {
+  flex: 0 0 clamp(15px, 4cqw, 31px);
+  align-self: center;
+  height: 1px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, transparent, #f2d48c 45%, transparent);
+  box-shadow: 0 0 5px #edce7d55;
+  pointer-events: none;
+}
+
+/* Two narrow, legible ribbons at the transition from Felul 1 to Felul 2. */
+.pont-dish-gallery__course-divider {
+  flex: 0 0 clamp(42px, 10.8cqw, 76px);
+  width: clamp(42px, 10.8cqw, 76px);
   align-self: stretch;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  gap: clamp(3px, .75cqw, 7px);
-  color: #eac778;
-  filter: drop-shadow(0 0 3px #e2b86487);
+  gap: clamp(5px, 1.45cqw, 11px);
+  padding-inline: 1px;
   pointer-events: none;
 }
-.pont-dish-gallery__cycle-line {
-  width: 1px;
-  height: 22%;
-  min-height: 13px;
-  border-radius: 99px;
-  background: linear-gradient(to bottom, transparent, #f4cf7e 45%, #9d7030 100%);
-  box-shadow: 0 0 5px #f1c36c6b;
+.pont-dish-gallery__divider-ribbon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(15px, 4.2cqw, 26px);
+  padding: 2px 1px;
+  border: 1px solid #e2bf756e;
+  border-radius: 999px;
+  background: linear-gradient(140deg, #3d3320, #11231e 70%);
+  color: #ffe6a9;
+  font: 700 clamp(8px, 2.3cqw, 13px)/1.05 var(--serif-menu);
+  white-space: nowrap;
+  text-shadow: 0 0 4px #0008;
 }
-.pont-dish-gallery__cycle-line:last-child {
-  transform: rotate(180deg);
+.pont-dish-gallery__divider-ribbon--first {
+  border-color: #eacb8b;
+  box-shadow: 0 0 5px #eacb8b44;
 }
-.pont-dish-gallery__cycle-start svg {
-  display: block;
-  width: clamp(13px, 3.25cqw, 23px);
-  height: clamp(13px, 3.25cqw, 23px);
-  overflow: visible;
+.pont-dish-gallery__divider-ribbon--second {
+  border-color: #7de7d6;
+  background: linear-gradient(140deg, #123f3b, #082b29);
+  color: #c8fff0;
+  box-shadow: 0 0 5px #6cdbc144;
 }
 .pont-dish-gallery__item {
   flex: 0 0 auto;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  /* Fit the marker plus four complete cards into the initial gallery viewport. */
-  width: calc((100cqw - 4 * var(--gallery-gap) - var(--gallery-cycle-marker-width)) / 4);
+  /* Four photos across when possible; the transition ribbons occupy real scroll space. */
+  width: calc((100cqw - 4 * var(--gallery-gap) - clamp(15px, 4cqw, 31px)) / 4);
   min-width: 0;
   overflow: hidden;
   border: 1px solid #dcb46b;
@@ -282,6 +297,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   color: #f9deb0;
 }
 
+.pont-dish-gallery__arrow:disabled { opacity: .28; cursor: default; }
 .pont-dish-gallery__arrow[data-gallery-step="-1"] { grid-column: 1; }
 .pont-dish-gallery__arrow[data-gallery-step="1"] { grid-column: 3; }
 .pont-dish-gallery__arrow svg { width: 62%; height: 62%; fill: currentColor; }
