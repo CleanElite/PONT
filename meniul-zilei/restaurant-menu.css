@@ -166,7 +166,8 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   min-width: 0;
   padding-block: 1px;
   container-type: inline-size;
-  touch-action: pan-y pinch-zoom;
+  /* Prevent Safari/Android from cancelling an active horizontal pointer drag. */
+  touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -181,6 +182,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   width: max-content;
 }
 
+.pont-dish-gallery__track { will-change: transform; }
 .pont-dish-gallery__sequence { flex: none; }
 /* Beginning of a complete loop: thin champagne lines and a tiny cooking pot.
    Unlike a stationary overlay, this moves together with the real cards and the loop copy. */
