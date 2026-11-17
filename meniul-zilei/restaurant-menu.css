@@ -330,14 +330,14 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   color: #b99a62;
 }
 
-/* Fit the full uploaded image inside the photo square, with breathing room. */
+/* Edge-to-edge photographs, without cropping the source image. */
 .pont-dish-gallery__photo img {
   position: absolute;
   inset: 0;
   display: block;
   width: 100%;
   height: 100%;
-  padding: clamp(7px, 2.2cqw, 13px);
+  padding: 0;
   box-sizing: border-box;
   object-fit: contain;
   object-position: center;
