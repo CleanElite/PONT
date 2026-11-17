@@ -557,6 +557,7 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
     <div class="pont-menu-header">
       <button type="button" id="close" class="pont-menu-back" aria-label="Înapoi la restaurante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></button>
       <div class="pont-menu-identity">
+        <div class="pont-menu-crest" aria-hidden="true"><span></span><svg viewBox="0 0 24 24" focusable="false"><use href="../admin-icons.svg?v=1#chef-hat"></use></svg><span></span></div>
         <h2 id="orderTitle" tabindex="-1" autofocus></h2>
         <p class="pont-menu-city"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Slobozia</span></p>
       </div>
@@ -898,10 +899,47 @@ function openOrder(m,trigger){
   const minimum = m.min_full_menus || 1;
   $('#pontOrderMinimum').textContent = 'Minim ' + minimum + (minimum === 1 ? ' meniu' : ' meniuri');
   $('#send').querySelector('.pont-whatsapp-label').textContent=m.phone?'Trimite comanda pe WhatsApp':isMenuPreview?'Comenzile sunt dezactivate în previzualizare':'WhatsApp indisponibil — lipsește numărul';$('#send').disabled=!m.phone;const callPhone=normalizeCallPhone(m.phone);$('#callNow').hidden=!callPhone;if(callPhone){$('#callNow').href='tel:'+callPhone;}else{$('#callNow').removeAttribute('href');}
-  $('.pont-menu-identity').classList.toggle('pont-menu-identity--long',m.name.length>26);
+  // Measure the rendered heading instead of guessing from character count:
+  // every restaurant name stays on ONE line at 320px, 390px and desktop widths.
+  function pontFitRestaurantTitle(){
+    const title=document.getElementById('orderTitle');
+    const identity=title?.closest('.pont-menu-identity');
+    if(!title||!identity||!identity.clientWidth)return;
+    title.style.removeProperty('font-size');
+    title.style.removeProperty('letter-spacing');
+    const maxWidth=Math.max(1,identity.clientWidth-6);
+    const style=getComputedStyle(title);
+    const baseSize=parseFloat(style.fontSize)||30;
+    const weight=style.fontWeight;
+    const family=style.fontFamily;
+    const text=title.textContent||'';
+    const canvas=pontFitRestaurantTitle.canvas||(pontFitRestaurantTitle.canvas=document.createElement('canvas'));
+    const ctx=canvas.getContext('2d');
+    if(!ctx)return;
+    ctx.font=weight+' '+baseSize+'px '+family;
+    const width=ctx.measureText(text).width;
+    const desired=Math.min(baseSize,baseSize*maxWidth/Math.max(width,1));
+    title.style.fontSize=Math.max(11,desired-.5)+'px';
+    // Exceptionally long names can exceed the available width even at 11px.
+    if(title.scrollWidth>maxWidth){
+      title.style.fontSize=Math.max(8,11*maxWidth/Math.max(title.scrollWidth,1)-.25)+'px';
+    }
+  }
+  window.pontResizeRestaurantTitle=pontFitRestaurantTitle;
+  requestAnimationFrame(()=>pontFitRestaurantTitle());
+  document.fonts?.ready.then(()=>requestAnimationFrame(pontFitRestaurantTitle)).catch(()=>{});
+
   $('#orderMsg').textContent='';
   $('#order').showModal();update();
+  pontFitRestaurantTitle();
 }
+new ResizeObserver(()=>{
+ const title=document.getElementById('orderTitle');
+ if(title && document.getElementById('order')?.open){
+   // Debounced to avoid layout feedback loops.
+   requestAnimationFrame(()=>window.pontResizeRestaurantTitle?.());
+ }
+}).observe(document.querySelector('.pont-menu-header'));
 let pontRestaurantRoutePushed=false;
 function enterRestaurant(id,trigger=null,changeUrl=true){
  const m=menus().find(x=>x.id===id);
