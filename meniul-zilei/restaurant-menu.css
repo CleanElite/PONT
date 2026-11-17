@@ -510,8 +510,23 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   border-top: 1px solid rgba(232, 191, 113, .7);
 }
 
-#order.pont-menu-view .pont-menu-dish-name { min-width: 0; margin: 0; color: inherit; font: 700 clamp(12px, 3.5cqw, 30px)/1.1 var(--serif-menu); overflow-wrap: anywhere; }
-.pont-menu-dish-price { font: 700 clamp(10px, 3.07cqw, 25px)/1.08 var(--serif-menu); white-space: nowrap; }
+/* Long dish names remain fully readable in their own column; price is a distinct compact label. */
+#order.pont-menu-view .pont-menu-dish-name {
+  min-width:0;margin:0;color:inherit;
+  font:650 clamp(11px,2.95cqw,23px)/1.18 var(--serif-menu);
+  overflow-wrap:normal;word-break:normal;hyphens:auto;
+  padding-right:clamp(3px,.7cqw,7px);
+}
+#order.pont-menu-view .pont-menu-dish-price {
+  display:inline-flex;align-items:center;justify-content:center;
+  min-width:0;max-width:100%;box-sizing:border-box;
+  font:750 clamp(9px,2.65cqw,20px)/1.1 var(--serif-menu);
+  white-space:nowrap;text-align:center;
+  color:#ffe3a5;padding:clamp(4px,.85cqw,7px) clamp(5px,1.1cqw,10px);
+  border:1px solid rgba(216,180,108,.75);border-radius:9px;
+  background:linear-gradient(155deg,rgba(122,88,38,.24),rgba(6,29,29,.85));
+  box-shadow:inset 0 1px 0 #ffe9ae19;
+}
 .pont-menu-dish[data-sold-out] .pont-menu-dish-price { color: #ffc6b3; }
 .pont-menu-dish[data-sold-out] .pont-menu-dish-name { opacity: .65; }
 
