@@ -398,8 +398,8 @@ function renderEvents(events){
   if(isPromoted)outer.classList.add('pont-promoted-edge-to-edge');
   const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
   const promotedArtwork={
-   'a9c43028-e400-4058-9a99-bc23f134a118':'../assets/pont-event-game-night.svg',
-   '470b12b0-7d74-4dd8-982b-385a34fa4ce9':'../assets/pont-event-stand-up.svg'
+   'a9c43028-e400-4058-9a99-bc23f134a118':'https://static.toiimg.com/thumb/msid-126413252%2Cwidth-1280%2Cheight-720%2Cresizemode-4/126413252.jpg',
+   '470b12b0-7d74-4dd8-982b-385a34fa4ce9':'https://rightroyalcomedy.com/assets/hero-stage-EF6tIdjC.jpg'
   };
   const posterSource=(isPromoted&&promotedArtwork[event.id])||event.poster_url;
   const hasPoster=!!(posterSource&&(/^(https:\/\/|\.\.\/assets\/)/i.test(posterSource)));
