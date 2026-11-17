@@ -4889,7 +4889,7 @@ async function toggleRestaurantAccountAccess(userId,restaurantId,button){
 }
 $('memberRows').onclick=e=>{const b=e.target.closest('[data-revoke]');if(b)void toggleRestaurantAccountAccess(b.dataset.revoke,b.dataset.restaurant,b)};
 
-const {initPontDishEditor}=await import('../dish-editor.js?v=icons-20261116');
+const {initPontDishEditor}=await import('../dish-editor.js?v=aromas-photo-preview-20261117');
 const pontDishUI=initPontDishEditor({db,getRestaurants:()=>restaurants,refreshMenus:()=>load(),isRestaurantAdmin:false});
 window.pontDishUI=pontDishUI;
 window.pontAllMenus=()=>menus;
