@@ -1,6 +1,12 @@
 /* Shared PONT navigation. Back is contextual; Home always goes to the entry page. */
 (()=>{
  'use strict';
+ // Disable double-tap zoom across PONT, while preserving pinch zoom.
+ // touch-action: manipulation allows panning and pinch scaling.
+ const noDoubleTapZoom=document.createElement('style');
+ noDoubleTapZoom.id='pont-disable-double-tap-zoom';
+ noDoubleTapZoom.textContent='html, body { touch-action: manipulation; }';
+ (document.head||document.documentElement).appendChild(noDoubleTapZoom);
  const KEY='pont_navigation_stack_v2';
  const MAX=24;
  const TTL=2*60*60*1000;
