@@ -462,7 +462,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   justify-content: space-between;
   gap: clamp(6px, 2cqw, 16px);
   margin-inline: clamp(7px, 2.7cqw, 22px);
-  padding-block: clamp(5px, 1.45cqw, 14px);
+  padding-block: clamp(4px, 1.05cqw, 10px);
   color: #fffaf2;
 }
 
@@ -479,7 +479,7 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   fill: currentColor;
 }
 
-.pont-menu-course-title { display: block; font: 700 clamp(17px, 5.1cqw, 43px)/1.04 var(--serif-menu); white-space: nowrap; }
+.pont-menu-course-title { display: block; font: 700 clamp(16px, 4.35cqw, 36px)/1.06 var(--serif-menu); white-space: nowrap; }
 .pont-menu-course-subtitle { display: block; margin-top: 3px; color: var(--gold-menu); font: 700 clamp(7px, 2.14cqw, 17px)/1.12 var(--serif-menu); }
 .pont-menu-course-chevron { width: clamp(14px, 3.95cqw, 31px); height: clamp(14px, 3.95cqw, 31px); flex: none; fill: var(--gold-menu); }
 .pont-menu-course--second[open] .pont-menu-course-chevron { transform: rotate(180deg); }
@@ -530,7 +530,7 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
 /* Long dish names remain fully readable in their own column; price is a distinct compact label. */
 #order.pont-menu-view .pont-menu-dish-name {
   min-width:0;margin:0;color:inherit;
-  font:650 clamp(11px,2.95cqw,23px)/1.18 var(--serif-menu);
+  font:650 clamp(12px,3.22cqw,25px)/1.18 var(--serif-menu);
   overflow-wrap:anywhere;word-break:normal;white-space:normal;hyphens:auto;
   padding-right:clamp(3px,.7cqw,7px);
 }
