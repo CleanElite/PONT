@@ -228,10 +228,16 @@
     const first = document.createElement('span');
     first.className = 'pont-dish-gallery__divider-ribbon pont-dish-gallery__divider-ribbon--first';
     first.textContent = '‹ Felul 1';
+    const emblem = document.createElement('span');
+    emblem.className = 'pont-dish-gallery__divider-emblem';
+    emblem.innerHTML = '<svg viewBox="0 0 44 36" aria-hidden="true" focusable="false">' +
+      '<path d="M16 7c-4-4 5-4 1-9M23 8c-4-4 5-5 1-10M30 7c-4-4 5-4 1-9" transform="translate(0 4)"/>' +
+      '<path d="M4 26h36M7 25a15 15 0 0 1 30 0M3 29h38M20 9h4"/>' +
+      '</svg>';
     const second = document.createElement('span');
     second.className = 'pont-dish-gallery__divider-ribbon pont-dish-gallery__divider-ribbon--second';
     second.textContent = 'Felul 2 ›';
-    divider.append(first, second);
+    divider.append(first, emblem, second);
     return divider;
   }
 
