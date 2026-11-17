@@ -571,21 +571,51 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
 }
 
 .pont-menu-stepper input::-webkit-inner-spin-button, .pont-menu-stepper input::-webkit-outer-spin-button { appearance: none; margin: 0; }
+/* One-row selection summary: fixed compact icon + label, elastic value. */
 .pont-menu-selection {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto max-content minmax(0, 1fr);
   align-items: center;
-  gap: clamp(6px, 2.65cqw, 21px);
+  column-gap: clamp(4px, 1.5cqw, 12px);
+  min-width: 0;
   margin: clamp(10px, 2.75cqw, 22px) 0 clamp(13px, 4cqw, 33px);
-  padding: clamp(7px, 2.15cqw, 17px) clamp(8px, 3.55cqw, 28px);
+  padding: clamp(7px, 2.15cqw, 17px) clamp(7px, 2.4cqw, 20px);
   border: 1.5px solid #efc776;
   border-radius: 999px;
   background: #052526;
   color: #fffdf9;
-  font: 700 clamp(11px, 3.35cqw, 27px)/1.16 var(--serif-menu);
+  font: 700 clamp(10px, 2.65cqw, 20px)/1.12 var(--serif-menu);
 }
-
-.pont-menu-selection > svg { flex: none; width: 1.45em; height: 1.45em; }
-.pont-menu-selection p { display: flex; flex-wrap: wrap; gap: 2px 6px; min-width: 0; margin: 0; color: #f9d684; }
+.pont-menu-selection > svg {
+  width: clamp(16px, 4.1cqw, 28px);
+  height: clamp(16px, 4.1cqw, 28px);
+  min-width: 0;
+}
+.pont-menu-selection > strong {
+  min-width: 0;
+  white-space: nowrap;
+  font-size: clamp(10px, 2.75cqw, 21px);
+  line-height: 1.1;
+}
+.pont-menu-selection p {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(2px, .7cqw, 6px);
+  min-width: 0;
+  margin: 0;
+  color: #f9d684;
+  font-size: clamp(9px, 2.45cqw, 19px);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.pont-menu-selection .pont-summary-piece,
+.pont-menu-selection .pont-summary-divider,
+.pont-menu-selection .pont-summary-empty {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
 .pont-menu-selection .pont-summary-empty { color: #deeae5; font-size: .87em; }
 .pont-menu-selection .pont-summary-divider { opacity: .6; }
 .pont-menu-send { margin-inline: 2px; }
