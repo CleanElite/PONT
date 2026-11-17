@@ -542,7 +542,7 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-menu.css?v=20261117-21">
+<link rel="stylesheet" href="./restaurant-menu.css?v=20261117-22">
 <style id="pont-restaurant-header-clean-20261117">
 /* Header-only safeguard: old cached background art contains a bright diagonal streak. */
 #order.pont-menu-view .pont-menu-header {
@@ -771,7 +771,6 @@ function update(){
   $('#address').hidden=!delivery;
   form.elements.address.required=delivery;
   const items=selection();
-  form.querySelectorAll('[data-qty]').forEach(field=>{const index=field.id.replace('qty-','');const check=form.querySelector('[data-pick="'+index+'"]');if(check)check.checked=Number(field.value)>0;});
   $('#total').textContent=lei(subtotal(items));
   const combos=items.filter(item=>item.short==='meniuri complete').reduce((n,item)=>n+item.qty,0);
   const singles=items.filter(item=>item.short!=='meniuri complete');
@@ -892,7 +891,6 @@ function openOrder(m,trigger){
       const disabled=soldOut?' disabled':'';
       const price=soldOut?'Epuizat':lei(dish.price);
       return '<div class="pont-menu-dish"'+(soldOut?' data-sold-out':'')+'>'+
-        '<label class="pont-menu-pick"><input type="checkbox" data-pick="'+index+'" aria-label="Selectează '+name+'"'+disabled+'><span aria-hidden="true"></span></label>'+
         '<label class="pont-menu-dish-name" for="qty-'+index+'">'+name+'</label>'+
         '<span class="pont-menu-dish-price">'+esc(price)+'</span>'+
         '<div class="pont-menu-stepper"><button type="button" data-step="-1"'+disabled+' aria-label="Scade '+name+'">−</button>'+
@@ -1022,8 +1020,6 @@ $('#order').addEventListener('close',()=>{if($('#order').open)return;closeChecko
 $('#order').addEventListener('cancel',e=>{e.preventDefault();if(checkoutLayer.open)closeCheckoutPanel();else returnToRestaurants()});
 form.oninput=update;form.elements.phone.addEventListener('blur',()=>{phoneTouched=true;update()});checkoutLayer.querySelectorAll('[data-method]').forEach(b=>b.addEventListener('click',()=>{if(b.disabled)return;form.elements.method.value=b.dataset.method;update()}));
 $('#choices').onclick=e=>{
-const pick=e.target.closest('[data-pick]');
-if(pick){const field=form.querySelector('#qty-'+pick.dataset.pick);if(field&&!field.disabled){field.value=pick.checked?'1':'0';update()}return;}
 const step=Number(e.target.dataset.step);
 if(!step)return;
 const input=e.target.parentElement.querySelector('[data-qty]');
