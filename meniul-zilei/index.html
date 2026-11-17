@@ -542,7 +542,7 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-menu.css?v=20261117-11">
+<link rel="stylesheet" href="./restaurant-menu.css?v=20261117-12">
 <link rel="stylesheet" href="./order-details.css?v=20261117-4">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
 <style>.pont-menu-price-tag{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;width:max-content;max-width:100%;padding:2px 7px;border:1px solid #eacb8580;border-radius:999px;background:#eacb85;color:#221605;font:750 10px/1.35 system-ui,sans-serif;white-space:nowrap;box-shadow:0 2px 6px #0003}</style>
@@ -557,9 +557,8 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
     <div class="pont-menu-header">
       <button type="button" id="close" class="pont-menu-back" aria-label="Înapoi la restaurante"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></button>
       <div class="pont-menu-identity">
-        <div class="pont-menu-crest" aria-hidden="true"><span></span><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M8 20c-3 0-5-3-5-6a6 6 0 0 1 8-5 6 6 0 0 1 10 0 6 6 0 0 1 8 5c0 3-2 6-5 6"/><path d="M8 17v11h16V17M8 24h16M13 16v7m6-7v7"/></svg><span></span></div>
-        <div class="pont-menu-title-line"><span aria-hidden="true"></span><h2 id="orderTitle" tabindex="-1" autofocus></h2><span aria-hidden="true"></span></div>
-        <p class="pont-menu-city"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Slobozia</span></p>
+        <div class="pont-menu-title-line"><h2 id="orderTitle" tabindex="-1" autofocus></h2></div>
+        <p class="pont-menu-city">Slobozia</p>
       </div>
     </div>
     <div class="pont-menu-meta">
@@ -908,7 +907,7 @@ function openOrder(m,trigger){
     title.style.removeProperty('font-size');
     title.style.removeProperty('letter-spacing');
     const titleLine=title.closest('.pont-menu-title-line');
-    const maxWidth=Math.max(1,(titleLine?.clientWidth||identity.clientWidth)-16);
+    const maxWidth=Math.max(1,Math.floor(titleLine?.getBoundingClientRect().width||identity.getBoundingClientRect().width)-8);
     const style=getComputedStyle(title);
     const baseSize=parseFloat(style.fontSize)||30;
     const weight=style.fontWeight;
@@ -920,11 +919,11 @@ function openOrder(m,trigger){
     ctx.font=weight+' '+baseSize+'px '+family;
     const width=ctx.measureText(text).width;
     const desired=Math.min(baseSize,baseSize*maxWidth/Math.max(width,1));
-    title.style.fontSize=Math.max(11,desired-.5)+'px';
-    // Measure actual browser layout too (font metrics can differ from canvas).
-    if(title.scrollWidth>maxWidth){
+    title.style.fontSize=Math.max(8,desired-.75)+'px';
+    // Account for real glyph widths, including fonts loaded after opening.
+    for(let i=0;i<3 && title.scrollWidth>maxWidth;i++){
       const current=parseFloat(getComputedStyle(title).fontSize)||desired;
-      title.style.fontSize=Math.max(8,current*maxWidth/Math.max(title.scrollWidth,1)-.5)+'px';
+      title.style.fontSize=Math.max(6,current*maxWidth/Math.max(title.scrollWidth,1)-.75)+'px';
     }
   }
   window.pontResizeRestaurantTitle=pontFitRestaurantTitle;
