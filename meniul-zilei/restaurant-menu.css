@@ -497,7 +497,7 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
 
 .pont-menu-dish {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) max-content max-content;
   align-items: center;
   column-gap: clamp(5px, 1.95cqw, 16px);
   min-height: clamp(29px, 7.45cqw, 60px);
@@ -505,6 +505,10 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   color: #fbfdf8;
 }
 
+/* Each item owns its grid column: the title wraps inside the remaining width. */
+#order.pont-menu-view .pont-menu-dish > .pont-menu-dish-name { grid-column:1; min-width:0; max-width:100%; }
+#order.pont-menu-view .pont-menu-dish > .pont-menu-dish-price { grid-column:2; }
+#order.pont-menu-view .pont-menu-dish > .pont-menu-stepper { grid-column:3; }
 /* Delicate gold separators only between selectable dishes, not above the first row. */
 .pont-menu-course-rows > .pont-menu-dish + .pont-menu-dish {
   border-top: 1px solid rgba(232, 191, 113, .7);
@@ -514,7 +518,7 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
 #order.pont-menu-view .pont-menu-dish-name {
   min-width:0;margin:0;color:inherit;
   font:650 clamp(11px,2.95cqw,23px)/1.18 var(--serif-menu);
-  overflow-wrap:normal;word-break:normal;hyphens:auto;
+  overflow-wrap:anywhere;word-break:normal;white-space:normal;hyphens:auto;
   padding-right:clamp(3px,.7cqw,7px);
 }
 #order.pont-menu-view .pont-menu-dish-price {
