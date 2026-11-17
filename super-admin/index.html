@@ -1268,7 +1268,7 @@ body.pont-admin .pont-as-confirm-dialog #pontASConfirmError{font:600 12px system
 body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:19px}
 body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button{min-height:45px;border:1px solid #6ba59980;border-radius:11px;background:#17464a;color:#f7fffc;font:750 13px system-ui}
 body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{background:linear-gradient(135deg,#f2dfa8,#c3a665);border-color:#ffebbe;color:#13282c}
-</style><body class="pont-admin pont-admin--platform pont-admin-neon"><dialog id="pontASConfirmDialog" class="pont-as-confirm-dialog" aria-labelledby="pontASConfirmTitle">
+</style><style id="pont-admin-loading-ui">#pontAdminLoading{position:fixed;inset:0;z-index:2147483000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:17px;background:#061d20;color:#f0fbf8;font:600 14px system-ui,sans-serif}#pontAdminLoading[hidden]{display:none!important}#pontAdminLoading .ring{width:40px;height:40px;border:3px solid #81f8e733;border-top-color:#81f8e7;border-radius:50%;animation:pontSpin .8s linear infinite}@keyframes pontSpin{to{transform:rotate(360deg)}}@media(prefers-reduced-motion:reduce){#pontAdminLoading .ring{animation:none}}</style><body class="pont-admin pont-admin--platform pont-admin-neon"><div id="pontAdminLoading" role="status" aria-live="polite"><span class="ring" aria-hidden="true"></span><span>Meniul se încarcă</span></div><dialog id="pontASConfirmDialog" class="pont-as-confirm-dialog" aria-labelledby="pontASConfirmTitle">
  <div class="pont-as-confirm-overline">PONT · ADMINISTRATOR SUPREM</div>
  <h2 id="pontASConfirmTitle">Confirmă acțiunea</h2>
  <p id="pontASConfirmMessage"></p>
@@ -4478,7 +4478,7 @@ async function enter() {
   const {data} = await db.auth.getUser();
   const user = data?.user;
   $('login').hidden = Boolean(user);
-  if (!user) return;
+  if (!user) {document.getElementById('pontAdminLoading').hidden=true;return;}
   const profiles = await req(db.from('profiles').select('role').eq('user_id',user.id));
   if (profiles[0]?.role !== 'super_admin') throw Error('Acest cont nu are rol Super Admin.');
   $('app').hidden=false;
@@ -4504,10 +4504,12 @@ async function enter() {
    history.replaceState(null, '', location.pathname+location.search+'#analytics');
    selectPlatformPanel('analytics', false);
   }
+  document.getElementById('pontAdminLoading').hidden=true;
   window.pontDishUI?.refresh().catch(error => {
    $('pontDailyError').textContent = error.message;
   });
  } catch (error) {
+  document.getElementById('pontAdminLoading').hidden=true;
   if(!$('app').hidden){status('Eroare la încărcarea dashboardului: '+error.message,true);return;}
   $('login').hidden = false;
   $('error').textContent = error.message;
@@ -4516,8 +4518,9 @@ async function enter() {
 try{const saved=localStorage.getItem('pont_last_login_identifier');if(saved?.includes('@')&&!$('email').value)$('email').value=saved;}catch(_){}
 $('auth').onsubmit = async event => {
  event.preventDefault();
+ document.getElementById('pontAdminLoading').hidden=false;
  const {error} = await db.auth.signInWithPassword({email:$('email').value,password:$('password').value});
- if (error) $('error').textContent = error.message;
+ if (error) { $('error').textContent = error.message;document.getElementById('pontAdminLoading').hidden=true; }
  else { try{localStorage.setItem('pont_last_login_identifier',$('email').value.trim());}catch(_){}await adminSession.markLogin(); await enter(); }
 };
 $('logout').onclick = async () => {
