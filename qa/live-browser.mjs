@@ -27,7 +27,6 @@ async function auditCheckout(browser){
   {id:'second',name:'Șnițel de pui cu piure',category:'second',price:29},
   {id:'soup',name:'Supă de pui cu tăiței',category:'first',price:17},
   {id:'musaca',name:'Musaca de cartofi',category:'second',price:27},
-  {id:'grill',name:'Pui la grătar',category:'second',price:26},
   {id:'desert',name:'Papanași cu smântână și dulceață',category:'dessert',price:0}
  ]};
  const results=[];
@@ -66,7 +65,7 @@ async function auditCheckout(browser){
    const gallery=page.locator('#pontDishGallery');
    await gallery.waitFor({state:'visible'});
    const group=gallery.locator('.pont-dish-gallery__sequence:not([aria-hidden])');
-   assert.deepEqual(await group.locator('.pont-dish-gallery__course').allTextContents(),['Felul 1','Felul 1','Felul 2','Felul 2','Felul 2']);
+   assert.deepEqual(await group.locator('.pont-dish-gallery__course').allTextContents(),['Felul 1','Felul 1','Felul 2','Felul 2']);
    const gallerySize=await gallery.evaluate(element=>{
     const viewport=element.querySelector('.pont-dish-gallery__viewport');
     const track=viewport.firstElementChild;

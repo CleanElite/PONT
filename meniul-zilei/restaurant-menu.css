@@ -306,6 +306,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
 .pont-menu-course {
   --course-border: #d9c378;
   overflow: hidden;
+  margin: 0;
   border: 1px solid var(--course-border);
   border-radius: clamp(12px, 3.8cqw, 32px);
   background: linear-gradient(161deg, #47452a, #073333 19%, #031e20 60%, #04282b);
@@ -324,7 +325,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   justify-content: space-between;
   gap: clamp(6px, 2cqw, 16px);
   margin-inline: clamp(7px, 2.7cqw, 22px);
-  padding-block: clamp(6px, 1.9cqw, 16px);
+  padding-block: clamp(5px, 1.45cqw, 14px);
   color: #fffaf2;
 }
 
@@ -362,7 +363,7 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;
   column-gap: clamp(5px, 1.95cqw, 16px);
-  min-height: clamp(33px, 7.45cqw, 60px);
+  min-height: clamp(29px, 7.45cqw, 60px);
   padding-block: clamp(2px, .42cqw, 4px);
   color: #fbfdf8;
 }
@@ -376,8 +377,9 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   position: relative;
   display: grid;
   place-items: center;
-  width: clamp(21px, 5.2cqw, 41px);
+  width: clamp(24px, 5.2cqw, 41px);
   height: clamp(24px, 6.05cqw, 44px);
+  margin: 0;
   cursor: pointer;
 }
 
