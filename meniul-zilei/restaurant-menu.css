@@ -707,3 +707,16 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   .pont-menu-selection { column-gap: 5px; }
   .pont-menu-selection > svg { width: 1.22em; height: 1.22em; }
 }
+
+/* Selected dishes: restrained turquoise neon, without changing row dimensions. */
+#order.pont-menu-view .pont-menu-dish.pont-dish-selected {
+  position:relative;
+  z-index:1;
+  border-radius:clamp(5px,1.3cqw,11px);
+  background:linear-gradient(90deg,rgba(37,208,192,.15),rgba(18,134,129,.08));
+  box-shadow:inset 0 0 0 1px rgba(111,255,233,.82),inset 0 0 12px rgba(41,239,212,.13),0 0 9px rgba(60,240,218,.24);
+}
+#order.pont-menu-view .pont-menu-dish.pont-dish-selected .pont-menu-dish-name {
+  color:#eafffa;
+  text-shadow:0 0 7px rgba(101,255,227,.3);
+}
