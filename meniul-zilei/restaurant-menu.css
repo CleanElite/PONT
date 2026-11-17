@@ -324,13 +324,14 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   display: grid;
   place-items: center;
   width: 100%;
-  aspect-ratio: 1;
+  /* The illustrated dish photos are landscape: match their ratio rather than letterboxing them in a square. */
+  aspect-ratio: 1.78;
   overflow: hidden;
   background: radial-gradient(ellipse at 50% 25%, #224641, #102623 75%);
   color: #b99a62;
 }
 
-/* Edge-to-edge photographs, without cropping the source image. */
+/* Full-bleed until the dish name; retain the complete plated subject. */
 .pont-dish-gallery__photo img {
   position: absolute;
   inset: 0;
@@ -339,7 +340,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   height: 100%;
   padding: 0;
   box-sizing: border-box;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   pointer-events: none;
 }
