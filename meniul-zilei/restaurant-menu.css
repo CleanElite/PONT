@@ -497,7 +497,7 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
 
 .pont-menu-dish {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) max-content max-content;
+  grid-template-columns: clamp(19px, 4.7cqw, 34px) minmax(0, 1fr) max-content max-content;
   align-items: center;
   column-gap: clamp(5px, 1.95cqw, 16px);
   min-height: clamp(29px, 7.45cqw, 60px);
@@ -505,10 +505,23 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   color: #fbfdf8;
 }
 
-/* Each item owns its grid column: the title wraps inside the remaining width. */
-#order.pont-menu-view .pont-menu-dish > .pont-menu-dish-name { grid-column:1; min-width:0; max-width:100%; }
-#order.pont-menu-view .pont-menu-dish > .pont-menu-dish-price { grid-column:2; }
-#order.pont-menu-view .pont-menu-dish > .pont-menu-stepper { grid-column:3; }
+/* Number remains centered across the full height of a one- or multi-line dish. */
+#order.pont-menu-view .pont-menu-dish > .pont-menu-dish-index {
+  grid-column:1;
+  align-self:stretch;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  border-right:1px solid rgba(220,188,119,.52);
+  padding-right:clamp(3px,.7cqw,6px);
+  color:#e8c985;
+  font:700 clamp(10px,2.65cqw,20px)/1 var(--serif-menu);
+  font-variant-numeric:tabular-nums;
+}
+#order.pont-menu-view .pont-menu-dish > .pont-menu-dish-name { grid-column:2; min-width:0; max-width:100%; }
+#order.pont-menu-view .pont-menu-dish > .pont-menu-dish-price { grid-column:3; }
+#order.pont-menu-view .pont-menu-dish > .pont-menu-stepper { grid-column:4; }
 /* Delicate gold separators only between selectable dishes, not above the first row. */
 .pont-menu-course-rows > .pont-menu-dish + .pont-menu-dish {
   border-top: 1px solid rgba(232, 191, 113, .7);
