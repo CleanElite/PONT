@@ -56,16 +56,16 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: clamp(108px, 26.8cqw, 196px);
+  min-height: clamp(86px, 23cqw, 160px);
   margin: 0;
-  padding: clamp(10px, 2.35cqw, 20px) clamp(60px, 14cqw, 115px) clamp(8px, 2.15cqw, 18px);
+  padding: clamp(5px, 1.45cqw, 12px) clamp(46px, 11.2cqw, 92px) clamp(3px, .8cqw, 7px);
   background: url('../assets/pont-menu-header.webp') center top / 100% auto no-repeat;
   isolation: isolate;
 }
 #order.pont-menu-view #close {
   position: absolute;
   z-index: 2;
-  top: 50%;
+  top: 49%;
   left: 5.35%;
   display: grid;
   place-items: center;
@@ -94,9 +94,9 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   align-items: center;
   justify-content: center;
   gap: clamp(4px, 1.3cqw, 11px);
-  width: min(80%, 280px);
-  height: clamp(20px, 5.5cqw, 39px);
-  margin-bottom: clamp(0px, .3cqw, 3px);
+  width: min(76%, 240px);
+  height: clamp(19px, 4.9cqw, 35px);
+  margin-bottom: 0;
   color: #f4cc75;
 }
 .pont-menu-crest span {
@@ -115,14 +115,31 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   stroke-width: 1.1;
   filter: drop-shadow(0 0 3px #f3bf6555);
 }
+.pont-menu-title-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(4px, 1.3cqw, 10px);
+  width: 100%;
+  min-width: 0;
+}
+.pont-menu-title-line > span {
+  flex: 1 1 0;
+  max-width: clamp(21px, 7cqw, 60px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e7c784);
+  box-shadow: 0 0 3px #e7b66b55;
+}
+.pont-menu-title-line > span:last-child { transform: rotate(180deg); }
 #order.pont-menu-view #orderTitle,
 #order.pont-menu-view .pont-menu-identity--long #orderTitle {
   display: block;
   max-width: 100%;
   min-width: 0;
+  flex: 0 1 auto;
   margin: 0;
   color: #fffaf2;
-  font: 700 clamp(28px, 8cqw, 62px)/1.02 var(--serif-menu);
+  font: 700 clamp(27px, 8.2cqw, 64px)/1.02 var(--serif-menu);
   white-space: nowrap;
   overflow-wrap: normal;
   letter-spacing: -.012em;
@@ -144,15 +161,15 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  min-height: clamp(41px, 10.3cqw, 67px);
-  margin-inline: clamp(13px, 4.7cqw, 38px);
-  padding: clamp(3px, .75cqw, 7px) 0;
+  min-height: clamp(30px, 7.1cqw, 51px);
+  margin-inline: clamp(18px, 6cqw, 48px);
+  padding: 2px 0;
   border: 1.5px solid #e6bc72;
   border-radius: 999px;
   background: linear-gradient(165deg, #17443a 0%, #052b2a 46%, #042324 100%);
   box-shadow: inset 0 1px 4px #f7d69338, inset 0 -1px 4px #e1b75a35, 0 0 7px #e7b76460;
   color: #fffaf1;
-  font: 700 clamp(10px, 2.83cqw, 23px)/1.1 var(--serif-menu);
+  font: 700 clamp(10px, 2.65cqw, 21px)/1.08 var(--serif-menu);
   text-align: center;
 }
 .pont-menu-meta-label {
@@ -169,7 +186,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(4px, 1.05cqw, 9px) clamp(8px, 3.1cqw, 26px);
+  padding: clamp(2px, .72cqw, 6px) clamp(8px, 2.7cqw, 23px);
   border-radius: 999px;
   background: linear-gradient(116deg, #f4c979, #ffe3a0 56%, #edba62);
   color: #190f03;
@@ -193,7 +210,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
 #pontOrderMinimum {
   padding-inline: clamp(3px, 1cqw, 9px);
   white-space: nowrap;
-  font-size: clamp(9px, 2.7cqw, 22px);
+  font-size: clamp(9px, 2.55cqw, 20px);
 }
 .pont-dish-gallery {
   --gallery-gap: clamp(5px, 1.45cqw, 12px);
