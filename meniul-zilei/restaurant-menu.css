@@ -330,7 +330,19 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   color: #b99a62;
 }
 
-.pont-dish-gallery__photo img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; pointer-events: none; }
+/* Fit the full uploaded image inside the photo square, with breathing room. */
+.pont-dish-gallery__photo img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: clamp(7px, 2.2cqw, 13px);
+  box-sizing: border-box;
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+}
 .pont-dish-gallery__photo svg { width: 34%; height: 34%; fill: currentColor; }
 .pont-dish-gallery__name {
   display: grid;
