@@ -69,8 +69,9 @@
   function moveByCard(direction) {
     if (!animation) return;
     const card = track.querySelector('.pont-dish-gallery__item');
-    const width = cycleWidth / card.parentElement.childElementCount;
-    seek(position() + direction * width);
+    if (!card) return;
+    const gap = parseFloat(getComputedStyle(card.parentElement).gap) || 0;
+    seek(position() + direction * (card.getBoundingClientRect().width + gap));
     resumeAfterInteraction();
   }
 
@@ -171,6 +172,22 @@
     return card;
   }
 
+  // A repeatable visual cue: the beginning of today's dish sequence.
+  // Its copy at the loop seam makes the reset legible without interrupting the animation.
+  function makeCycleStartMarker() {
+    const marker = document.createElement('div');
+    marker.className = 'pont-dish-gallery__cycle-start';
+    marker.setAttribute('aria-hidden', 'true');
+    marker.innerHTML = '<span class="pont-dish-gallery__cycle-line"></span>' +
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">' +
+      '<path d="M7 5c-2-2 2-3 0-5M12 5c-2-2 2-3 0-5M17 5c-2-2 2-3 0-5" transform="translate(0 2)"/>' +
+      '<path d="M4 11h16l-1.5 5.5a5 5 0 0 1-4.8 3.5h-3.4a5 5 0 0 1-4.8-3.5L4 11Z"/>' +
+      '<path d="M2 21h20"/>' +
+      '</svg>' +
+      '<span class="pont-dish-gallery__cycle-line"></span>';
+    return marker;
+  }
+
   window.pontRenderDishGallery = dishes => {
     clearTimeout(resumeTimer);
     resumeTimer = 0;
@@ -195,7 +212,8 @@
     const sequence = document.createElement('div');
     sequence.className = 'pont-dish-gallery__sequence';
     sequence.setAttribute('role', 'list');
-    sequence.append(...cards.map((dish, index) => makeDishCard(dish, index < 4)));
+    // The gold cooking-pot marker precedes the first Felul 1, once per cycle.
+    sequence.append(makeCycleStartMarker(), ...cards.map((dish, index) => makeDishCard(dish, index < 4)));
     track.append(sequence);
     if (loops) {
       const copy = sequence.cloneNode(true);
