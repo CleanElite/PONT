@@ -324,6 +324,105 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   border-bottom:1px solid rgba(248,213,137,.88)!important;
   box-shadow:inset 0 1px 0 rgba(255,241,195,.24),inset 0 -1px 0 rgba(255,241,195,.24),0 -1px 9px rgba(225,168,70,.3),0 1px 9px rgba(225,168,70,.3)!important;
 }
+</style><style id="pont-premium-event-type-20261117">
+/* Compact editorial hierarchy, without a separate box around the text. */
+#eventList .pont-promoted-edge-to-edge > .event-card .menu-card-copy {
+  display:flex!important;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  width:min(60%,520px);
+  min-width:0;
+  height:100%;
+  padding:clamp(8px,1.3vw,16px) 0;
+  gap:clamp(4px,.6vw,8px)!important;
+  text-align:left;
+}
+#eventList .pont-promoted-edge-to-edge .pont-event-premium-eyebrow {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:clamp(6px,1vw,13px);
+  max-width:100%;
+  min-width:0;
+}
+#eventList .pont-promoted-edge-to-edge .pont-city-sponsored-label {
+  margin:0!important;
+  font:700 clamp(8px,1.05vw,10px)/1.2 system-ui!important;
+  letter-spacing:.15em!important;
+  color:#e7c48a!important;
+  opacity:1;
+}
+#eventList .pont-promoted-edge-to-edge .event-date {
+  position:static!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:none!important;
+  box-shadow:none!important;
+  color:#e9d9b5!important;
+  font:600 clamp(9px,1.25vw,12px)/1.2 system-ui!important;
+  letter-spacing:.02em;
+  white-space:nowrap;
+}
+#eventList .pont-promoted-edge-to-edge .pont-event-premium-eyebrow .event-date::before {
+  content:"";
+  display:inline-block;
+  width:1px;
+  height:.85em;
+  background:rgba(235,197,124,.58);
+  vertical-align:-.06em;
+  margin-right:clamp(6px,1vw,13px);
+}
+#eventList .pont-promoted-edge-to-edge .menu-card-name {
+  display:block;
+  max-width:100%;
+  margin:0;
+  font:600 clamp(19px,2.65vw,31px)/1.08 Georgia,serif!important;
+  letter-spacing:-.035em;
+  color:#fff8e9;
+  text-shadow:0 2px 14px rgba(0,0,0,.7);
+  text-wrap:balance;
+  overflow-wrap:break-word;
+}
+#eventList .pont-promoted-edge-to-edge .event-card-meta {
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  column-gap:clamp(6px,1vw,12px);
+  row-gap:2px;
+  max-width:100%;
+  margin:0;
+}
+#eventList .pont-promoted-edge-to-edge .menu-card-location {
+  font:500 clamp(10px,1.5vw,14px)/1.22 system-ui!important;
+  letter-spacing:.01em;
+  color:#e0e9e5!important;
+  text-shadow:0 1px 7px #0009;
+}
+#eventList .pont-promoted-edge-to-edge .event-category {
+  font:600 clamp(10px,1.4vw,13px)/1.2 system-ui!important;
+  color:#edc983!important;
+}
+@media(max-width:520px) {
+ #eventList .pont-promoted-edge-to-edge > .event-card .menu-card-copy {
+  width:62%;
+  padding:6px 0;
+  gap:3px!important;
+ }
+ #eventList .pont-promoted-edge-to-edge .menu-card-name {
+  font-size:clamp(16px,4.25vw,20px)!important;
+  line-height:1.07!important;
+ }
+ #eventList .pont-promoted-edge-to-edge .menu-card-location {
+  font-size:clamp(9px,2.6vw,11px)!important;
+  line-height:1.12!important;
+ }
+ #eventList .pont-promoted-edge-to-edge .event-category {font-size:9px!important}
+ #eventList .pont-promoted-edge-to-edge .pont-city-sponsored-label {font-size:8px!important}
+ #eventList .pont-promoted-edge-to-edge .event-date {font-size:9px!important}
+}
 </style></head>
 <body class="lunch menu-showcase">
 <a class="pont-skip-content" href="#pontMainContent">Sari la conținut</a>
@@ -439,8 +538,11 @@ function renderEvents(events){
   const place=document.createElement('span');place.className='menu-card-location';place.textContent=eventRestaurantName(event)+' · '+event.locality;
   const hour=document.createElement('span');hour.className='event-category';hour.textContent='Ora '+String(event.start_time||'').slice(0,5);
   const meta=document.createElement('span');meta.className='event-card-meta';meta.append(place,hour);
-  if(isPromoted){const premium=document.createElement('span');premium.className='pont-city-sponsored-label';premium.textContent='Promovat';copy.append(premium)}
-  copy.append(badge,name,meta);if(img)button.append(backdrop,img);button.append(copy);
+  if(isPromoted){
+   const eyebrow=document.createElement('span');eyebrow.className='pont-event-premium-eyebrow';
+   const premium=document.createElement('span');premium.className='pont-city-sponsored-label';premium.textContent='PROMOVAT';
+   eyebrow.append(premium,badge);copy.append(eyebrow,name,meta);
+  }else{copy.append(badge,name,meta)}if(img)button.append(backdrop,img);button.append(copy);
   button.addEventListener('click',()=>showDetails(event));outer.append(button);list.append(outer);
  }
 }
