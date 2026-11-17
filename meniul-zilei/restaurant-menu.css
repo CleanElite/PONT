@@ -89,48 +89,14 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   min-width: 0;
   text-align: center;
 }
-.pont-menu-crest {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(4px, 1.3cqw, 11px);
-  width: min(76%, 240px);
-  height: clamp(19px, 4.9cqw, 35px);
-  margin-bottom: 0;
-  color: #f4cc75;
-}
-.pont-menu-crest span {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(to right, transparent, #dcae61 80%, #f9d688);
-  box-shadow: 0 0 4px #eabd7466;
-}
-.pont-menu-crest span:last-child { transform: rotate(180deg); }
-.pont-menu-crest svg {
-  flex: none;
-  width: clamp(19px, 5.4cqw, 37px);
-  height: clamp(19px, 5.4cqw, 37px);
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.1;
-  filter: drop-shadow(0 0 3px #f3bf6555);
-}
 .pont-menu-title-line {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: clamp(4px, 1.3cqw, 10px);
   width: 100%;
   min-width: 0;
+  overflow: hidden;
 }
-.pont-menu-title-line > span {
-  flex: 1 1 0;
-  max-width: clamp(21px, 7cqw, 60px);
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #e7c784);
-  box-shadow: 0 0 3px #e7b66b55;
-}
-.pont-menu-title-line > span:last-child { transform: rotate(180deg); }
 #order.pont-menu-view #orderTitle,
 #order.pont-menu-view .pont-menu-identity--long #orderTitle {
   display: block;
@@ -142,6 +108,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   font: 700 clamp(27px, 8.2cqw, 64px)/1.02 var(--serif-menu);
   white-space: nowrap;
   overflow-wrap: normal;
+  overflow: hidden;
   letter-spacing: -.012em;
   text-overflow: clip;
   text-shadow: 0 2px 6px #0007;
