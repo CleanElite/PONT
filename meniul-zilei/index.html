@@ -542,7 +542,7 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-menu.css?v=20261117-25">
+<link rel="stylesheet" href="./restaurant-menu.css?v=20261117-26">
 <style id="pont-restaurant-header-clean-20261117">
 /* Header-only safeguard: old cached background art contains a bright diagonal streak. */
 #order.pont-menu-view .pont-menu-header {
@@ -884,14 +884,14 @@ function openOrder(m,trigger){
     const heading=first
       ? '<div class="pont-menu-course-heading'+(dessertHeader?' pont-menu-course-heading--dessert':'')+'">'+courseName+dessertHeader+'</div>'
       : '<summary class="pont-menu-course-heading">'+courseName+'<svg class="pont-menu-course-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></summary>';
-    const rows=dishes.map(dish=>{
+    const rows=dishes.map((dish, dishNumber)=>{
       const index=optionDishes.indexOf(dish);
       const name=esc(dish.name);
       const soldOut=!dish.available;
       const disabled=soldOut?' disabled':'';
       const price=soldOut?'Epuizat':lei(dish.price);
       return '<div class="pont-menu-dish"'+(soldOut?' data-sold-out':'')+'>'+
-        '<label class="pont-menu-dish-name" for="qty-'+index+'">'+name+'</label>'+
+        '<label class="pont-menu-dish-name" for="qty-'+index+'"><span class="pont-menu-dish-number">'+(dishNumber+1)+'.</span><span class="pont-menu-dish-title">'+name+'</span></label>'+
         '<span class="pont-menu-dish-price">'+esc(price)+'</span>'+
         '<div class="pont-menu-stepper"><button type="button" data-step="-1"'+disabled+' aria-label="Scade '+name+'">−</button>'+
         '<input id="qty-'+index+'" data-qty type="number" inputmode="numeric" min="0" max="99" value="0"'+disabled+' aria-label="Cantitate '+name+'">'+
