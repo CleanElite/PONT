@@ -152,6 +152,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
 
 .pont-dish-gallery {
   --gallery-gap: clamp(5px, 1.45cqw, 12px);
+  --gallery-cycle-marker-width: clamp(14px, 3.8cqw, 28px);
   display: grid;
   grid-template-columns: clamp(15px, 5.8cqw, 42px) minmax(0, 1fr) clamp(15px, 5.8cqw, 42px);
   align-items: center;
@@ -181,11 +182,44 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
 }
 
 .pont-dish-gallery__sequence { flex: none; }
+/* Beginning of a complete loop: thin champagne lines and a tiny cooking pot.
+   Unlike a stationary overlay, this moves together with the real cards and the loop copy. */
+.pont-dish-gallery__cycle-start {
+  flex: 0 0 var(--gallery-cycle-marker-width);
+  width: var(--gallery-cycle-marker-width);
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(3px, .75cqw, 7px);
+  color: #eac778;
+  filter: drop-shadow(0 0 3px #e2b86487);
+  pointer-events: none;
+}
+.pont-dish-gallery__cycle-line {
+  width: 1px;
+  height: 22%;
+  min-height: 13px;
+  border-radius: 99px;
+  background: linear-gradient(to bottom, transparent, #f4cf7e 45%, #9d7030 100%);
+  box-shadow: 0 0 5px #f1c36c6b;
+}
+.pont-dish-gallery__cycle-line:last-child {
+  transform: rotate(180deg);
+}
+.pont-dish-gallery__cycle-start svg {
+  display: block;
+  width: clamp(13px, 3.25cqw, 23px);
+  height: clamp(13px, 3.25cqw, 23px);
+  overflow: visible;
+}
 .pont-dish-gallery__item {
   flex: 0 0 auto;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  width: calc((100cqw - 3 * var(--gallery-gap)) / 4);
+  /* Fit the marker plus four complete cards into the initial gallery viewport. */
+  width: calc((100cqw - 4 * var(--gallery-gap) - var(--gallery-cycle-marker-width)) / 4);
   min-width: 0;
   overflow: hidden;
   border: 1px solid #dcb46b;
