@@ -69,12 +69,20 @@ async function auditCheckout(browser){
    const gallerySize=await gallery.evaluate(element=>{
     const viewport=element.querySelector('.pont-dish-gallery__viewport');
     const track=viewport.firstElementChild;
-    const card=track.querySelector('.pont-dish-gallery__item');
+    const sequence=track.firstElementChild;
+    const copy=sequence.nextElementSibling;
+    const card=sequence.firstElementChild;
     const photo=card.firstElementChild.getBoundingClientRect();
     const caption=card.querySelector('.pont-dish-gallery__name').getBoundingClientRect();
-    return {viewport:viewport.clientWidth,card:card.getBoundingClientRect().width,gap:parseFloat(getComputedStyle(track).columnGap),photoWidth:photo.width,photoHeight:photo.height,captionBelow:caption.top>=photo.bottom-1};
+    const markersFit=[sequence,copy].every(list=>{
+     const line=getComputedStyle(list,'::before');
+     const start=parseFloat(line.insetInlineStart);
+     return line.content==='""' && start>=0 && start+parseFloat(line.inlineSize)<=parseFloat(getComputedStyle(list).paddingInlineStart);
+    });
+    return {viewport:viewport.clientWidth,card:card.getBoundingClientRect().width,gap:parseFloat(getComputedStyle(sequence).columnGap),photoWidth:photo.width,photoHeight:photo.height,captionBelow:caption.top>=photo.bottom-1,markersFit,seam:copy.firstElementChild.getBoundingClientRect().left-sequence.lastElementChild.getBoundingClientRect().right};
    });
-   assert.ok(Math.abs(gallerySize.viewport-4*gallerySize.card-3*gallerySize.gap)<2 && Math.abs(gallerySize.photoWidth-gallerySize.photoHeight)<1 && gallerySize.captionBelow,JSON.stringify(gallerySize));
+   assert.ok(Math.abs(gallerySize.viewport-4*(gallerySize.card+gallerySize.gap))<2 && Math.abs(gallerySize.photoWidth-gallerySize.photoHeight)<1 && gallerySize.captionBelow,JSON.stringify(gallerySize));
+   assert.ok(gallerySize.markersFit && Math.abs(gallerySize.seam-gallerySize.gap)<1,JSON.stringify(gallerySize));
    if(width===393&&!menuPath.includes('/test/')){
     const galleryViewport=gallery.locator('.pont-dish-gallery__viewport');
     const box=await galleryViewport.boundingBox();

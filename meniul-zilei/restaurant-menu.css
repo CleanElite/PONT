@@ -176,16 +176,32 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
 .pont-dish-gallery__track, .pont-dish-gallery__sequence {
   display: flex;
   align-items: stretch;
-  gap: var(--gallery-gap);
   width: max-content;
 }
 
-.pont-dish-gallery__sequence { flex: none; }
+.pont-dish-gallery__sequence {
+  position: relative;
+  flex: none;
+  gap: var(--gallery-gap);
+  padding-inline-start: var(--gallery-gap);
+}
+
+.pont-dish-gallery__sequence::before {
+  position: absolute;
+  inset-block: 9%;
+  inset-inline-start: calc(var(--gallery-gap) / 2 - 1px);
+  inline-size: 2px;
+  border-radius: 999px;
+  background: var(--gold-menu);
+  content: '';
+  pointer-events: none;
+}
+
 .pont-dish-gallery__item {
   flex: 0 0 auto;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  width: calc((100cqw - 3 * var(--gallery-gap)) / 4);
+  width: calc(25cqw - var(--gallery-gap));
   min-width: 0;
   overflow: hidden;
   border: 1px solid #dcb46b;
