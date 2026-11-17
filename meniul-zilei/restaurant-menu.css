@@ -59,7 +59,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   min-height: clamp(86px, 23cqw, 160px);
   margin: 0;
   padding: clamp(5px, 1.45cqw, 12px) clamp(46px, 11.2cqw, 92px) clamp(3px, .8cqw, 7px);
-  background: url('../assets/pont-menu-header.webp') center top / 100% auto no-repeat;
+  background: linear-gradient(157deg, #011718, #032525 44%, #021b1e 82%, #032324);
   isolation: isolate;
 }
 #order.pont-menu-view #close {
