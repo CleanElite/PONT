@@ -479,6 +479,18 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   fill: currentColor;
 }
 
+/* Center section titles in the full header width, independent of the left icon and right chevron. */
+#order.pont-menu-view .pont-menu-course-heading:not(.pont-menu-course-heading--dessert) { position:relative; }
+#order.pont-menu-view .pont-menu-course-heading:not(.pont-menu-course-heading--dessert) .pont-menu-course-title {
+  position:absolute;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+  margin:0;
+  text-align:center;
+  white-space:nowrap;
+  pointer-events:none;
+}
 .pont-menu-course-title { display: block; font: 700 clamp(16px, 4.35cqw, 36px)/1.06 var(--serif-menu); white-space: nowrap; }
 .pont-menu-course-subtitle { display: block; margin-top: 3px; color: var(--gold-menu); font: 700 clamp(7px, 2.14cqw, 17px)/1.12 var(--serif-menu); }
 .pont-menu-course-chevron { width: clamp(14px, 3.95cqw, 31px); height: clamp(14px, 3.95cqw, 31px); flex: none; fill: var(--gold-menu); }
