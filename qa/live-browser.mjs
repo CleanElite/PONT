@@ -63,6 +63,8 @@ async function auditCheckout(browser){
    await page.locator('#qty-1').fill('2');
    await page.locator('#openCheckout').click();
    const checkout=page.locator('#pontCheckoutOverlay[open]');
+   assert.deepEqual(await checkout.locator('.pont-checkout-header button').evaluateAll(buttons=>buttons.map(button=>button.id)),['backCheckout']);
+   assert.equal(await checkout.locator('#pontCheckoutTitle:focus').evaluate(title=>getComputedStyle(title).outlineStyle),'none');
    const layout=()=>checkout.evaluate(element=>{
     const send=element.querySelector('#send').getBoundingClientRect();
     const frame=element.querySelector('.pont-checkout-frame').getBoundingClientRect();

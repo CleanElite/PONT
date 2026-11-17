@@ -100,6 +100,8 @@ html:has(.pont-checkout-screen[open]) {
   -webkit-text-fill-color: transparent;
 }
 
+#pontCheckoutTitle:focus { outline: none; }
+
 .pont-checkout-round {
   position: absolute;
   top: clamp(8px, 3.2cqw, 23px);
@@ -116,8 +118,6 @@ html:has(.pont-checkout-screen[open]) {
 }
 
 #backCheckout { left: var(--inset); }
-#closeCheckout { right: var(--inset); }
-.pont-checkout-round span { font: 400 clamp(26px, 6.3cqw, 37px)/1 system-ui; }
 .pont-checkout-screen .pont-checkout-round svg { width: 55%; height: 55%; color: inherit; }
 
 .pont-checkout-fields {

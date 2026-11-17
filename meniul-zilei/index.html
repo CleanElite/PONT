@@ -543,7 +543,7 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
 }
 </style>
 <link rel="stylesheet" href="./restaurant-page.css?v=whatsapp-text-icon-fit-20261112">
-<link rel="stylesheet" href="./order-details.css?v=20261117-3">
+<link rel="stylesheet" href="./order-details.css?v=20261117-4">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
 <style>.pont-menu-price-tag{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;width:max-content;max-width:100%;padding:2px 7px;border:1px solid #eacb8580;border-radius:999px;background:#eacb85;color:#221605;font:750 10px/1.35 system-ui,sans-serif;white-space:nowrap;box-shadow:0 2px 6px #0003}</style>
 <style>
@@ -566,7 +566,6 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
       <button id="backCheckout" class="pont-checkout-round" type="button" aria-label="Înapoi la meniu"><svg class="pont-checkout-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#caret-left"></use></svg></button>
       <span class="pont-checkout-kicker">FINALIZARE COMANDĂ</span>
       <h3 id="pontCheckoutTitle" tabindex="-1" autofocus>Detalii comandă</h3>
-      <button id="closeCheckout" class="pont-checkout-round" type="button" aria-label="Închide detaliile comenzii"><span aria-hidden="true">×</span></button>
     </header>
     <section class="pont-checkout-fields" aria-label="Datele comenzii">
       <div class="pont-checkout-receive">
@@ -928,7 +927,6 @@ function closeCheckoutPanel(restoreFocus=true){
 }
 $('#openCheckout').addEventListener('click',openCheckoutPanel);
 $('#backCheckout').addEventListener('click',()=>closeCheckoutPanel());
-$('#closeCheckout').addEventListener('click',()=>closeCheckoutPanel());
 checkoutLayer.addEventListener('cancel',event=>{event.preventDefault();closeCheckoutPanel()});
 checkoutLayer.querySelectorAll('.pont-checkout-option[aria-controls]').forEach(button=>{
  const sheet=document.getElementById(button.getAttribute('aria-controls'));
