@@ -16,27 +16,29 @@
     ['snitel de pui cu piure', 'pont-dish-snitel-piure.webp'],
     ['musaca de cartofi', 'pont-dish-musaca.webp']
   ]);
+  // The carousel is finite: the autoplay gently reverses at each real end.
   const pixelsPerSecond = 14;
-  // The content is triplicated: one cycle on either side of the displayed cycle.
-  // This permits long continuous drags in either direction without a hard edge.
-  let cycleWidth = 0;
+  let maxOffset = 0;
   let offset = 0;
+  let direction = 1;
   let frameId = 0;
   let lastFrameTime = 0;
   let resumeTimer = 0;
   let drag = null;
 
-  const normalize = value => cycleWidth ? ((value % cycleWidth) + cycleWidth) % cycleWidth : 0;
+  const clampOffset = value => Math.max(0, Math.min(maxOffset, value));
   const hasKeyboardFocus = () => gallery.contains(document.activeElement) && document.activeElement.matches(':focus-visible');
 
   function paint() {
-    if (!cycleWidth) return;
-    // The middle sequence is always the visible starting point.
-    track.style.transform = `translate3d(${-cycleWidth - normalize(offset)}px, 0, 0)`;
+    track.style.transform = `translate3d(${-offset}px, 0, 0)`;
+    arrows.forEach(arrow => {
+      const left = Number(arrow.dataset.galleryStep) < 0;
+      arrow.disabled = maxOffset < 1 || (left ? offset < .5 : offset >= maxOffset - .5);
+    });
   }
 
   function canAutoPlay() {
-    return cycleWidth > 0 && menu.open && !checkout.open && !document.hidden &&
+    return maxOffset > 1 && menu.open && !checkout.open && !document.hidden &&
       !reducedMotion.matches && !hasKeyboardFocus() && !drag && !resumeTimer;
   }
 
@@ -47,8 +49,16 @@
       return;
     }
     if (lastFrameTime) {
-      // The cap prevents an unexpected jump after a suspended background frame.
-      offset += Math.min(now - lastFrameTime, 64) * pixelsPerSecond / 1000;
+      let next = offset + direction * Math.min(now - lastFrameTime, 64) * pixelsPerSecond / 1000;
+      // Reflect at the bounds instead of jumping back to a cloned sequence.
+      if (next >= maxOffset) {
+        next = maxOffset - (next - maxOffset);
+        direction = -1;
+      } else if (next <= 0) {
+        next = -next;
+        direction = 1;
+      }
+      offset = clampOffset(next);
       paint();
     }
     lastFrameTime = now;
@@ -68,15 +78,12 @@
     }
   }
 
-  function measureLoop() {
-    const first = track.firstElementChild;
-    const next = first?.nextElementSibling;
-    if (!next || !viewport.clientWidth) return;
-    const width = next.getBoundingClientRect().left - first.getBoundingClientRect().left;
-    if (width <= 0 || Math.abs(width - cycleWidth) < .5) return;
-    const progress = cycleWidth ? normalize(offset) / cycleWidth : 0;
-    cycleWidth = width;
-    offset = progress * width;
+  function measureTrack() {
+    if (!viewport.clientWidth || !track.firstElementChild) return;
+    maxOffset = Math.max(0, track.firstElementChild.scrollWidth - viewport.clientWidth);
+    offset = clampOffset(offset);
+    if (offset >= maxOffset - .5) direction = -1;
+    if (offset <= .5) direction = 1;
     paint();
     syncPlayback();
   }
@@ -90,18 +97,19 @@
     syncPlayback();
   }
 
-  function moveByCard(direction) {
-    if (!cycleWidth) return;
+  function moveByCard(step) {
+    if (maxOffset < 1) return;
     const card = track.querySelector('.pont-dish-gallery__item');
     if (!card) return;
     const gap = parseFloat(getComputedStyle(card.parentElement).gap) || 0;
-    offset += direction * (card.getBoundingClientRect().width + gap);
+    offset = clampOffset(offset + step * (card.getBoundingClientRect().width + gap));
+    direction = offset >= maxOffset - .5 ? -1 : offset <= .5 ? 1 : step;
     paint();
     resumeAfterInteraction();
   }
 
   viewport.addEventListener('pointerdown', event => {
-    if (!cycleWidth || !event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    if (!maxOffset || !event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
     clearTimeout(resumeTimer);
     resumeTimer = 0;
     drag = { id: event.pointerId, x: event.clientX };
@@ -112,8 +120,9 @@
 
   viewport.addEventListener('pointermove', event => {
     if (drag?.id !== event.pointerId) return;
-    // Incremental movement avoids accumulated touch offsets and wrap-around jumps.
-    offset -= event.clientX - drag.x;
+    const delta = event.clientX - drag.x;
+    offset = clampOffset(offset - delta);
+    if (Math.abs(delta) > .2) direction = delta < 0 ? 1 : -1;
     drag.x = event.clientX;
     paint();
     if (event.cancelable) event.preventDefault();
@@ -123,6 +132,8 @@
     if (drag?.id !== event.pointerId) return;
     drag = null;
     delete gallery.dataset.dragging;
+    if (offset >= maxOffset - .5) direction = -1;
+    else if (offset <= .5) direction = 1;
     resumeAfterInteraction();
   }
 
@@ -132,7 +143,7 @@
 
   arrows.forEach(arrow => arrow.addEventListener('click', () => moveByCard(Number(arrow.dataset.galleryStep))));
   viewport.addEventListener('keydown', event => {
-    if (!cycleWidth || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) return;
+    if (maxOffset < 1 || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) return;
     event.preventDefault();
     moveByCard(event.key === 'ArrowLeft' ? -1 : 1);
   });
@@ -141,10 +152,9 @@
   gallery.addEventListener('focusout', () => queueMicrotask(syncPlayback));
   reducedMotion.addEventListener('change', syncPlayback);
   document.addEventListener('visibilitychange', syncPlayback);
-  const dialogState = new MutationObserver(syncPlayback);
-  dialogState.observe(menu, { attributeFilter: ['open'] });
-  dialogState.observe(checkout, { attributeFilter: ['open'] });
-  new ResizeObserver(measureLoop).observe(viewport);
+  new MutationObserver(syncPlayback).observe(menu, { attributeFilter: ['open'] });
+  new MutationObserver(syncPlayback).observe(checkout, { attributeFilter: ['open'] });
+  new ResizeObserver(measureTrack).observe(viewport);
 
   track.addEventListener('error', event => {
     const image = event.target;
@@ -204,20 +214,25 @@
     return card;
   }
 
-  // A repeatable visual cue: the beginning of today's dish sequence.
-  // Its copy at the loop seam makes the reset legible without interrupting the animation.
-  function makeCycleStartMarker() {
-    const marker = document.createElement('div');
-    marker.className = 'pont-dish-gallery__cycle-start';
-    marker.setAttribute('aria-hidden', 'true');
-    marker.innerHTML = '<span class="pont-dish-gallery__cycle-line"></span>' +
-      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" focusable="false">' +
-      '<path d="M7 5c-2-2 2-3 0-5M12 5c-2-2 2-3 0-5M17 5c-2-2 2-3 0-5" transform="translate(0 2)"/>' +
-      '<path d="M4 11h16l-1.5 5.5a5 5 0 0 1-4.8 3.5h-3.4a5 5 0 0 1-4.8-3.5L4 11Z"/>' +
-      '<path d="M2 21h20"/>' +
-      '</svg>' +
-      '<span class="pont-dish-gallery__cycle-line"></span>';
-    return marker;
+  function makeEdge() {
+    const edge = document.createElement('span');
+    edge.className = 'pont-dish-gallery__edge';
+    edge.setAttribute('aria-hidden', 'true');
+    return edge;
+  }
+
+  function makeCourseDivider() {
+    const divider = document.createElement('div');
+    divider.className = 'pont-dish-gallery__course-divider';
+    divider.setAttribute('aria-hidden', 'true');
+    const first = document.createElement('span');
+    first.className = 'pont-dish-gallery__divider-ribbon pont-dish-gallery__divider-ribbon--first';
+    first.textContent = '‹ Felul 1';
+    const second = document.createElement('span');
+    second.className = 'pont-dish-gallery__divider-ribbon pont-dish-gallery__divider-ribbon--second';
+    second.textContent = 'Felul 2 ›';
+    divider.append(first, second);
+    return divider;
   }
 
   window.pontRenderDishGallery = dishes => {
@@ -228,37 +243,30 @@
     if (frameId) cancelAnimationFrame(frameId);
     frameId = 0;
     lastFrameTime = 0;
-    cycleWidth = 0;
+    maxOffset = 0;
     offset = 0;
+    direction = 1;
     track.style.transform = '';
     track.replaceChildren();
 
-    const [first, second] = Object.keys(labelByCourse).map(category =>
-      dishes.filter(dish => dish.category === category && dish.name.trim())
-    );
-    const cards = [...first.slice(0, 2), ...second.slice(0, 2), ...first.slice(2), ...second.slice(2)];
-    const loops = cards.length >= 4;
+    const first = dishes.filter(dish => dish.category === 'first' && dish.name.trim());
+    const second = dishes.filter(dish => dish.category === 'second' && dish.name.trim());
+    const cards = [...first, ...second];
     gallery.hidden = !cards.length;
-    gallery.toggleAttribute('data-loop', loops);
-    viewport.tabIndex = loops ? 0 : -1;
-    arrows.forEach(arrow => { arrow.hidden = !loops; });
     if (!cards.length) return;
 
     const sequence = document.createElement('div');
     sequence.className = 'pont-dish-gallery__sequence';
     sequence.setAttribute('role', 'list');
-    // The gold cooking-pot marker precedes the first Felul 1, once per cycle.
-    sequence.append(makeCycleStartMarker(), ...cards.map((dish, index) => makeDishCard(dish, index < 4)));
+    sequence.append(makeEdge());
+    first.forEach((dish, index) => sequence.append(makeDishCard(dish, index < 4)));
+    if (first.length && second.length) sequence.append(makeCourseDivider());
+    second.forEach((dish, index) => sequence.append(makeDishCard(dish, first.length + index < 4)));
+    sequence.append(makeEdge());
     track.append(sequence);
-    if (loops) {
-      const before = sequence.cloneNode(true);
-      const after = sequence.cloneNode(true);
-      for (const copy of [before, after]) {
-        copy.setAttribute('aria-hidden', 'true');
-        copy.querySelectorAll('img').forEach(image => { image.loading = 'lazy'; });
-      }
-      track.replaceChildren(before, sequence, after);
-    }
-    measureLoop();
+    gallery.removeAttribute('data-loop');
+    viewport.tabIndex = 0;
+    // The ends and the available distance can change when images/fonts finish loading.
+    measureTrack();
   };
 })();
