@@ -71,22 +71,30 @@ async function auditCheckout(browser){
     const track=viewport.firstElementChild;
     const sequence=track.querySelector('.pont-dish-gallery__sequence:not([aria-hidden])');
     const card=sequence.querySelector('.pont-dish-gallery__item');
-    const marker=sequence.querySelector('.pont-dish-gallery__cycle-start');
     const photo=card.firstElementChild.getBoundingClientRect();
     const caption=card.querySelector('.pont-dish-gallery__name').getBoundingClientRect();
-    return {viewport:viewport.clientWidth,card:card.getBoundingClientRect().width,gap:parseFloat(getComputedStyle(sequence).columnGap),marker:marker?.getBoundingClientRect().width||0,markers:marker?1:0,photoWidth:photo.width,photoHeight:photo.height,captionBelow:caption.top>=photo.bottom-1};
+    return {viewport:viewport.clientWidth,card:card.getBoundingClientRect().width,
+      photoWidth:photo.width,photoHeight:photo.height,captionBelow:caption.top>=photo.bottom-1,
+      sequenceWidth:sequence.scrollWidth,
+      beginning:!!sequence.querySelector('.pont-dish-gallery__edge:first-child'),
+      ending:!!sequence.querySelector('.pont-dish-gallery__edge:last-child'),
+      ribbons:[...sequence.querySelectorAll('.pont-dish-gallery__divider-ribbon')].map(x=>x.textContent.trim()),
+      copies:track.querySelectorAll('.pont-dish-gallery__sequence').length};
    });
-   assert.ok(Math.abs(gallerySize.viewport-4*gallerySize.card-(gallerySize.markers?4:3)*gallerySize.gap-gallerySize.marker)<2 && Math.abs(gallerySize.photoWidth-gallerySize.photoHeight)<1 && gallerySize.captionBelow,JSON.stringify(gallerySize));
+   assert.ok(Math.abs(gallerySize.photoWidth-gallerySize.photoHeight)<1 && gallerySize.captionBelow,JSON.stringify(gallerySize));
+   if(!menuPath.includes('/test/')){
+    assert.deepEqual(gallerySize.ribbons,['‹ Felul 1','Felul 2 ›']);
+    assert.ok(gallerySize.beginning&&gallerySize.ending&&gallerySize.copies===1&&gallerySize.sequenceWidth>gallerySize.viewport,'Finite gallery needs both ends, one sequence and a scrollable area: '+JSON.stringify(gallerySize));
+    assert.ok(gallerySize.card*4 < gallerySize.viewport && gallerySize.card*4 > gallerySize.viewport*.65,'Four cards should fit horizontally: '+JSON.stringify(gallerySize));
+   }
    if(width===393&&!menuPath.includes('/test/')){
     const galleryViewport=gallery.locator('.pont-dish-gallery__viewport');
     const box=await galleryViewport.boundingBox();
-    const readGallery=()=>galleryViewport.evaluate(element=>{
-      const track=element.firstElementChild;
-      const copies=track.querySelectorAll('.pont-dish-gallery__sequence');
-      const transform=track.style.transform;
-      const x=Number(transform.split('translate3d(')[1]?.split('px')[0]);
-      const w=copies[1].getBoundingClientRect().left-copies[0].getBoundingClientRect().left;
-      return {x,w,dragging:element.closest('#pontDishGallery').hasAttribute('data-dragging'),copies:copies.length};
+    const readGallery=()=>galleryViewport.evaluate(el=>{
+      const track=el.firstElementChild,seq=track.firstElementChild;
+      return {x:Number(track.style.transform.split('translate3d(')[1]?.split('px')[0]),
+        max:Math.max(0,seq.scrollWidth-el.clientWidth),
+        dragging:el.closest('#pontDishGallery').hasAttribute('data-dragging')};
     });
     await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').style.transform.includes('translate3d'));
     const x=box.x+box.width/2,y=box.y+box.height/2;
@@ -94,42 +102,52 @@ async function auditCheckout(browser){
     await page.mouse.move(x,y);
     await page.mouse.down();
     const held=await readGallery();
-    assert.ok(held.dragging&&held.copies===3&&held.w>100,JSON.stringify(held));
-    await page.waitForTimeout(160);
+    assert.ok(held.dragging&&held.max>20,JSON.stringify(held));
+    await page.waitForTimeout(150);
     const heldStill=await readGallery();
-    assert.ok(Math.abs(heldStill.x-held.x)<1.5,'Autoplay must pause during the held pointer gesture');
-    // Simulate an uninterrupted pointer hold crossing >4 complete loops in each
-    // direction. There must be movement at every step and no hard carousel end.
-    const gesture=await galleryViewport.evaluate((element,startX)=>{
-      const track=element.firstElementChild;
-      const id=Number(element.dataset.qaPointerId);
+    assert.ok(Math.abs(heldStill.x-held.x)<1.5,'Autoplay must pause during held touch');
+    const gesture=await galleryViewport.evaluate((el,startX)=>{
+      const id=Number(el.dataset.qaPointerId),track=el.firstElementChild;
       const read=()=>Number(track.style.transform.split('translate3d(')[1]?.split('px')[0]);
-      const progress=[];
-      for(let step=1;step<=190;step++){
-        element.dispatchEvent(new PointerEvent('pointermove',{pointerId:id,isPrimary:true,clientX:startX-step*12,bubbles:true,cancelable:true}));
-        progress.push(read());
+      const positions=[];
+      for(let i=1;i<=150;i++){
+        el.dispatchEvent(new PointerEvent('pointermove',{pointerId:id,isPrimary:true,clientX:startX-i*10,bubbles:true,cancelable:true}));
+        positions.push(read());
       }
-      const atFarEnd=read();
-      for(let step=189;step>=0;step--){
-        element.dispatchEvent(new PointerEvent('pointermove',{pointerId:id,isPrimary:true,clientX:startX-step*12,bubbles:true,cancelable:true}));
-        progress.push(read());
+      const atEnd=read();
+      for(let i=149;i>=0;i--){
+        el.dispatchEvent(new PointerEvent('pointermove',{pointerId:id,isPrimary:true,clientX:startX-i*10,bubbles:true,cancelable:true}));
+        positions.push(read());
       }
-      const moved=progress.filter((value,index)=>index>0&&Math.abs(value-progress[index-1])>1).length;
-      return {moved,count:progress.length,atFarEnd,returned:read()};
+      const min=Math.min(...positions),max=Math.max(...positions);
+      return {atEnd,returnToStart:read(),min,max};
     },x);
-    assert.ok(gesture.moved>=gesture.count-4,'Dragging stopped or became unresponsive: '+JSON.stringify(gesture));
-    assert.ok(Math.abs(gesture.returned-held.x)<1.5,'Returning to drag origin should not jump: '+JSON.stringify({held,gesture}));
+    assert.ok(gesture.atEnd<=-held.max+.5 && Math.abs(gesture.returnToStart)<1.5,'Dragging must stop at real edges without wrapping: '+JSON.stringify({held,gesture}));
     await page.mouse.up();
     await page.waitForTimeout(1350);
-    const beforeResume=await readGallery();
+    const autoplayBefore=await readGallery();
     await page.waitForTimeout(350);
-    const afterResume=await readGallery();
-    assert.ok(Math.abs(afterResume.x-beforeResume.x)>1,'Slow automatic scrolling should resume after pointer release');
+    const autoplayAfter=await readGallery();
+    assert.ok(autoplayAfter.x<autoplayBefore.x-1,'Autoplay must move left from the first card');
+    // Confirm the endpoint reverses animation, never restarts from the beginning.
+    await galleryViewport.evaluate(el=>{
+      const track=el.firstElementChild;
+      const rect=el.getBoundingClientRect();
+      const id=999;
+      el.dispatchEvent(new PointerEvent('pointerdown',{pointerId:id,isPrimary:true,button:0,clientX:rect.left+rect.width/2,bubbles:true,cancelable:true}));
+      el.dispatchEvent(new PointerEvent('pointermove',{pointerId:id,isPrimary:true,clientX:rect.left-1200,bubbles:true,cancelable:true}));
+      el.dispatchEvent(new PointerEvent('pointerup',{pointerId:id,isPrimary:true,bubbles:true}));
+    });
+    await page.waitForTimeout(1350);
+    const returnBefore=await readGallery();
+    await page.waitForTimeout(350);
+    const returnAfter=await readGallery();
+    assert.ok(returnAfter.x>returnBefore.x+1,'Autoplay must reverse toward the first card after the last card');
     await page.emulateMedia({reducedMotion:'reduce'});
     const staticStart=await readGallery();
     await page.waitForTimeout(200);
     const staticEnd=await readGallery();
-    assert.ok(Math.abs(staticEnd.x-staticStart.x)<1,'Reduced-motion setting should pause autoplay');
+    assert.ok(Math.abs(staticEnd.x-staticStart.x)<1,'Reduced-motion should pause autoplay');
     await page.locator('.pont-menu-pick').first().click();
     assert.equal(await page.locator('#qty-0').inputValue(),'1');
     for(const index of [1,2,3])await page.locator('#qty-'+index).fill('1');
