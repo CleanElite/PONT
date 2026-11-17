@@ -504,6 +504,11 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   color: #fbfdf8;
 }
 
+/* Delicate gold separators only between selectable dishes, not above the first row. */
+.pont-menu-course-rows > .pont-menu-dish + .pont-menu-dish {
+  border-top: 1px solid rgba(232, 191, 113, .7);
+}
+
 #order.pont-menu-view .pont-menu-dish-name { min-width: 0; margin: 0; color: inherit; font: 700 clamp(12px, 3.5cqw, 30px)/1.1 var(--serif-menu); overflow-wrap: anywhere; }
 .pont-menu-dish-price { font: 700 clamp(10px, 3.07cqw, 25px)/1.08 var(--serif-menu); white-space: nowrap; }
 .pont-menu-dish[data-sold-out] .pont-menu-dish-price { color: #ffc6b3; }
