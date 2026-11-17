@@ -74,9 +74,9 @@ async function auditCheckout(browser){
     const marker=sequence.querySelector('.pont-dish-gallery__cycle-start');
     const photo=card.firstElementChild.getBoundingClientRect();
     const caption=card.querySelector('.pont-dish-gallery__name').getBoundingClientRect();
-    return {viewport:viewport.clientWidth,card:card.getBoundingClientRect().width,gap:parseFloat(getComputedStyle(sequence).columnGap),marker:marker.getBoundingClientRect().width,photoWidth:photo.width,photoHeight:photo.height,captionBelow:caption.top>=photo.bottom-1};
+    return {viewport:viewport.clientWidth,card:card.getBoundingClientRect().width,gap:parseFloat(getComputedStyle(sequence).columnGap),marker:marker?.getBoundingClientRect().width||0,markers:marker?1:0,photoWidth:photo.width,photoHeight:photo.height,captionBelow:caption.top>=photo.bottom-1};
    });
-   assert.ok(Math.abs(gallerySize.viewport-4*gallerySize.card-4*gallerySize.gap-gallerySize.marker)<2 && Math.abs(gallerySize.photoWidth-gallerySize.photoHeight)<1 && gallerySize.captionBelow,JSON.stringify(gallerySize));
+   assert.ok(Math.abs(gallerySize.viewport-4*gallerySize.card-(gallerySize.markers?4:3)*gallerySize.gap-gallerySize.marker)<2 && Math.abs(gallerySize.photoWidth-gallerySize.photoHeight)<1 && gallerySize.captionBelow,JSON.stringify(gallerySize));
    if(width===393&&!menuPath.includes('/test/')){
     const galleryViewport=gallery.locator('.pont-dish-gallery__viewport');
     const box=await galleryViewport.boundingBox();
@@ -84,7 +84,7 @@ async function auditCheckout(browser){
       const track=element.firstElementChild;
       const copies=track.querySelectorAll('.pont-dish-gallery__sequence');
       const transform=track.style.transform;
-      const x=Number(transform.match(/translate3d\\(([-\\d.]+)px/)?.[1]);
+      const x=Number(transform.split('translate3d(')[1]?.split('px')[0]);
       const w=copies[1].getBoundingClientRect().left-copies[0].getBoundingClientRect().left;
       return {x,w,dragging:element.closest('#pontDishGallery').hasAttribute('data-dragging'),copies:copies.length};
     });
@@ -103,7 +103,7 @@ async function auditCheckout(browser){
     const gesture=await galleryViewport.evaluate((element,startX)=>{
       const track=element.firstElementChild;
       const id=Number(element.dataset.qaPointerId);
-      const read=()=>Number(track.style.transform.match(/translate3d\\(([-\\d.]+)px/)?.[1]);
+      const read=()=>Number(track.style.transform.split('translate3d(')[1]?.split('px')[0]);
       const progress=[];
       for(let step=1;step<=190;step++){
         element.dispatchEvent(new PointerEvent('pointermove',{pointerId:id,isPrimary:true,clientX:startX-step*12,bubbles:true,cancelable:true}));
