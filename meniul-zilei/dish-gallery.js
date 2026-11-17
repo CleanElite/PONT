@@ -17,43 +17,67 @@
     ['musaca de cartofi', 'pont-dish-musaca.webp']
   ]);
   const pixelsPerSecond = 14;
-  let animation = null;
+  // The content is triplicated: one cycle on either side of the displayed cycle.
+  // This permits long continuous drags in either direction without a hard edge.
   let cycleWidth = 0;
+  let offset = 0;
+  let frameId = 0;
+  let lastFrameTime = 0;
   let resumeTimer = 0;
   let drag = null;
 
-  const position = () => ((animation?.currentTime ?? 0) * pixelsPerSecond / 1000) % cycleWidth;
+  const normalize = value => cycleWidth ? ((value % cycleWidth) + cycleWidth) % cycleWidth : 0;
   const hasKeyboardFocus = () => gallery.contains(document.activeElement) && document.activeElement.matches(':focus-visible');
 
-  function syncPlayback() {
-    if (!animation) return;
-    const canPlay = menu.open && !checkout.open && !document.hidden &&
-      !reducedMotion.matches && !hasKeyboardFocus() && !drag && !resumeTimer;
-    if (canPlay) animation.play();
-    else animation.pause();
+  function paint() {
+    if (!cycleWidth) return;
+    // The middle sequence is always the visible starting point.
+    track.style.transform = `translate3d(${-cycleWidth - normalize(offset)}px, 0, 0)`;
   }
 
-  function seek(pixels) {
-    const wrapped = ((pixels % cycleWidth) + cycleWidth) % cycleWidth;
-    if (animation.playState !== 'paused') animation.pause();
-    animation.currentTime = wrapped * 1000 / pixelsPerSecond;
+  function canAutoPlay() {
+    return cycleWidth > 0 && menu.open && !checkout.open && !document.hidden &&
+      !reducedMotion.matches && !hasKeyboardFocus() && !drag && !resumeTimer;
+  }
+
+  function tick(now) {
+    frameId = 0;
+    if (!canAutoPlay()) {
+      lastFrameTime = 0;
+      return;
+    }
+    if (lastFrameTime) {
+      // The cap prevents an unexpected jump after a suspended background frame.
+      offset += Math.min(now - lastFrameTime, 64) * pixelsPerSecond / 1000;
+      paint();
+    }
+    lastFrameTime = now;
+    frameId = requestAnimationFrame(tick);
+  }
+
+  function syncPlayback() {
+    if (!canAutoPlay()) {
+      if (frameId) cancelAnimationFrame(frameId);
+      frameId = 0;
+      lastFrameTime = 0;
+      return;
+    }
+    if (!frameId) {
+      lastFrameTime = 0;
+      frameId = requestAnimationFrame(tick);
+    }
   }
 
   function measureLoop() {
     const first = track.firstElementChild;
-    const copy = first?.nextElementSibling;
-    if (!copy || !viewport.clientWidth) return;
-    const width = copy.getBoundingClientRect().left - first.getBoundingClientRect().left;
-    if (width <= 0 || width === cycleWidth) return;
-
-    const progress = cycleWidth ? position() / cycleWidth : 0;
-    animation?.cancel();
+    const next = first?.nextElementSibling;
+    if (!next || !viewport.clientWidth) return;
+    const width = next.getBoundingClientRect().left - first.getBoundingClientRect().left;
+    if (width <= 0 || Math.abs(width - cycleWidth) < .5) return;
+    const progress = cycleWidth ? normalize(offset) / cycleWidth : 0;
     cycleWidth = width;
-    animation = track.animate([
-      { transform: 'translate3d(0, 0, 0)' },
-      { transform: `translate3d(${-cycleWidth}px, 0, 0)` }
-    ], { duration: cycleWidth * 1000 / pixelsPerSecond, iterations: Infinity, easing: 'linear' });
-    seek(progress * cycleWidth);
+    offset = progress * width;
+    paint();
     syncPlayback();
   }
 
@@ -67,25 +91,33 @@
   }
 
   function moveByCard(direction) {
-    if (!animation) return;
+    if (!cycleWidth) return;
     const card = track.querySelector('.pont-dish-gallery__item');
     if (!card) return;
     const gap = parseFloat(getComputedStyle(card.parentElement).gap) || 0;
-    seek(position() + direction * (card.getBoundingClientRect().width + gap));
+    offset += direction * (card.getBoundingClientRect().width + gap);
+    paint();
     resumeAfterInteraction();
   }
 
   viewport.addEventListener('pointerdown', event => {
-    if (!animation || !event.isPrimary || event.button !== 0) return;
-    drag = { id: event.pointerId, x: event.clientX, offset: position() };
+    if (!cycleWidth || !event.isPrimary || (event.pointerType === 'mouse' && event.button !== 0)) return;
+    clearTimeout(resumeTimer);
+    resumeTimer = 0;
+    drag = { id: event.pointerId, x: event.clientX };
     gallery.dataset.dragging = '';
     syncPlayback();
     viewport.setPointerCapture(event.pointerId);
   });
 
   viewport.addEventListener('pointermove', event => {
-    if (drag?.id === event.pointerId) seek(drag.offset + drag.x - event.clientX);
-  });
+    if (drag?.id !== event.pointerId) return;
+    // Incremental movement avoids accumulated touch offsets and wrap-around jumps.
+    offset -= event.clientX - drag.x;
+    drag.x = event.clientX;
+    paint();
+    if (event.cancelable) event.preventDefault();
+  }, { passive: false });
 
   function endDrag(event) {
     if (drag?.id !== event.pointerId) return;
@@ -100,7 +132,7 @@
 
   arrows.forEach(arrow => arrow.addEventListener('click', () => moveByCard(Number(arrow.dataset.galleryStep))));
   viewport.addEventListener('keydown', event => {
-    if (!animation || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) return;
+    if (!cycleWidth || (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight')) return;
     event.preventDefault();
     moveByCard(event.key === 'ArrowLeft' ? -1 : 1);
   });
@@ -193,9 +225,12 @@
     resumeTimer = 0;
     drag = null;
     delete gallery.dataset.dragging;
-    animation?.cancel();
-    animation = null;
+    if (frameId) cancelAnimationFrame(frameId);
+    frameId = 0;
+    lastFrameTime = 0;
     cycleWidth = 0;
+    offset = 0;
+    track.style.transform = '';
     track.replaceChildren();
 
     const [first, second] = Object.keys(labelByCourse).map(category =>
@@ -216,10 +251,13 @@
     sequence.append(makeCycleStartMarker(), ...cards.map((dish, index) => makeDishCard(dish, index < 4)));
     track.append(sequence);
     if (loops) {
-      const copy = sequence.cloneNode(true);
-      copy.setAttribute('aria-hidden', 'true');
-      copy.querySelectorAll('img').forEach(image => { image.loading = 'lazy'; });
-      track.append(copy);
+      const before = sequence.cloneNode(true);
+      const after = sequence.cloneNode(true);
+      for (const copy of [before, after]) {
+        copy.setAttribute('aria-hidden', 'true');
+        copy.querySelectorAll('img').forEach(image => { image.loading = 'lazy'; });
+      }
+      track.replaceChildren(before, sequence, after);
     }
     measureLoop();
   };
