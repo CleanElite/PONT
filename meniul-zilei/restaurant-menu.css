@@ -497,12 +497,32 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
 
 .pont-menu-dish {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto auto;
+  /* Full-width dish name, then a separate price + quantity row: no collisions on mobile. */
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "dish-name dish-name" "dish-price dish-quantity";
   align-items: center;
-  column-gap: clamp(5px, 1.95cqw, 16px);
-  min-height: clamp(29px, 7.45cqw, 60px);
-  padding-block: clamp(2px, .42cqw, 4px);
+  column-gap: clamp(8px, 2cqw, 16px);
+  row-gap: clamp(5px, 1.25cqw, 10px);
+  min-width: 0;
+  padding-block: clamp(8px, 1.65cqw, 14px);
   color: #fbfdf8;
+}
+#order.pont-menu-view .pont-menu-dish > .pont-menu-dish-name {
+  grid-area: dish-name;
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding-right: 0;
+}
+#order.pont-menu-view .pont-menu-dish > .pont-menu-dish-price {
+  grid-area: dish-price;
+  justify-self: start;
+  max-width: 100%;
+}
+#order.pont-menu-view .pont-menu-dish > .pont-menu-stepper {
+  grid-area: dish-quantity;
+  justify-self: end;
+  flex-shrink: 0;
 }
 
 /* Delicate gold separators only between selectable dishes, not above the first row. */
