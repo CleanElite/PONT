@@ -13,6 +13,7 @@ html:has(.pont-checkout-screen[open]) {
 }
 
 #pontCheckoutOverlay {
+  animation: none;
   position: fixed;
   inset: 0;
   box-sizing: border-box;
@@ -322,7 +323,7 @@ html:has(.pont-checkout-screen[open]) {
 .pont-checkout-screen #send .pont-whatsapp-label { font-size: clamp(11px, 3.23cqw, 23px); text-wrap: balance; }
 .pont-checkout-screen .pont-send-total { display: grid; gap: 3px; }
 .pont-checkout-screen .pont-send-total small { color: inherit; font-size: clamp(9px, 2.55cqw, 16px); white-space: nowrap; }
-.pont-checkout-screen .pont-send-total strong { font: 700 clamp(15px, 3.95cqw, 27px)/1.1 Georgia, 'Times New Roman', serif; white-space: nowrap; }
+.pont-checkout-screen #total { font: 700 clamp(15px, 3.95cqw, 27px)/1.1 Georgia, 'Times New Roman', serif; white-space: nowrap; }
 
 .pont-checkout-status {
   position: absolute;
@@ -350,6 +351,7 @@ html:has(.pont-checkout-screen[open]) {
 }
 
 .pont-checkout-screen .pont-checkout-sheet {
+  animation: none;
   width: min(90vw, 440px);
   max-width: none;
   max-height: 76svh;
