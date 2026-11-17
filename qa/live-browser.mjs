@@ -65,11 +65,12 @@ async function auditCheckout(browser){
    const checkout=page.locator('#pontCheckoutOverlay[open]');
    const layout=()=>checkout.evaluate(element=>{
     const send=element.querySelector('#send').getBoundingClientRect();
+    const frame=element.querySelector('.pont-checkout-frame').getBoundingClientRect();
     const consent=element.querySelector('.pont-checkout-consent').getBoundingClientRect();
-    return {sendTop:send.top,sendBottom:send.bottom,consentBottom:consent.bottom,height:innerHeight,scroll:element.scrollHeight-element.clientHeight,top:element.scrollTop};
+    return {sendTop:send.top,sendBottom:send.bottom,consentBottom:consent.bottom,height:innerHeight,scroll:element.scrollHeight-element.clientHeight,top:element.scrollTop,width:element.clientWidth,viewportWidth:innerWidth,frameCenter:frame.left+frame.width/2};
    });
    const initial=await layout();
-   assert.ok(initial.sendBottom<=initial.height+1 && initial.consentBottom<=initial.sendTop+1 && initial.scroll<=1 && initial.top===0,JSON.stringify(initial));
+   assert.ok(initial.sendBottom<=initial.height+1 && initial.consentBottom<=initial.sendTop+1 && initial.scroll<=1 && initial.top===0 && Math.abs(initial.width-initial.viewportWidth)<=1 && Math.abs(initial.frameCenter-initial.viewportWidth/2)<=1,JSON.stringify(initial));
    assert.match(await page.locator('#total').innerText(),/60,00/);
    assert.match(await page.locator('#breakdown').innerText(),/2× meniuri complete/);
    await page.mouse.wheel(0,500);
