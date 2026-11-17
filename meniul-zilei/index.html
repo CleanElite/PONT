@@ -542,7 +542,20 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-menu.css?v=20261117-13">
+<link rel="stylesheet" href="./restaurant-menu.css?v=20261117-14">
+<style id="pont-restaurant-header-clean-20261117">
+/* Header-only safeguard: old cached background art contains a bright diagonal streak. */
+#order.pont-menu-view .pont-menu-header {
+  background-image: none !important;
+  background-color: #032324 !important;
+  background: linear-gradient(157deg, #011718, #032525 44%, #021b1e 82%, #032324) !important;
+}
+#order.pont-menu-view .pont-menu-header::before,
+#order.pont-menu-view .pont-menu-header::after {
+  content: none !important;
+  display: none !important;
+}
+</style>
 <link rel="stylesheet" href="./order-details.css?v=20261117-4">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
 <style>.pont-menu-price-tag{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;width:max-content;max-width:100%;padding:2px 7px;border:1px solid #eacb8580;border-radius:999px;background:#eacb85;color:#221605;font:750 10px/1.35 system-ui,sans-serif;white-space:nowrap;box-shadow:0 2px 6px #0003}</style>
