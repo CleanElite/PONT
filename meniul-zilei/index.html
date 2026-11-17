@@ -542,7 +542,7 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-menu.css?v=20261117-10">
+<link rel="stylesheet" href="./restaurant-menu.css?v=20261117-11">
 <link rel="stylesheet" href="./order-details.css?v=20261117-4">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
 <style>.pont-menu-price-tag{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;width:max-content;max-width:100%;padding:2px 7px;border:1px solid #eacb8580;border-radius:999px;background:#eacb85;color:#221605;font:750 10px/1.35 system-ui,sans-serif;white-space:nowrap;box-shadow:0 2px 6px #0003}</style>
@@ -907,7 +907,8 @@ function openOrder(m,trigger){
     if(!title||!identity||!identity.clientWidth)return;
     title.style.removeProperty('font-size');
     title.style.removeProperty('letter-spacing');
-    const maxWidth=Math.max(1,identity.clientWidth-6);
+    const titleLine=title.closest('.pont-menu-title-line');
+    const maxWidth=Math.max(1,(titleLine?.clientWidth||identity.clientWidth)-16);
     const style=getComputedStyle(title);
     const baseSize=parseFloat(style.fontSize)||30;
     const weight=style.fontWeight;
@@ -920,9 +921,10 @@ function openOrder(m,trigger){
     const width=ctx.measureText(text).width;
     const desired=Math.min(baseSize,baseSize*maxWidth/Math.max(width,1));
     title.style.fontSize=Math.max(11,desired-.5)+'px';
-    // Exceptionally long names can exceed the available width even at 11px.
+    // Measure actual browser layout too (font metrics can differ from canvas).
     if(title.scrollWidth>maxWidth){
-      title.style.fontSize=Math.max(8,11*maxWidth/Math.max(title.scrollWidth,1)-.25)+'px';
+      const current=parseFloat(getComputedStyle(title).fontSize)||desired;
+      title.style.fontSize=Math.max(8,current*maxWidth/Math.max(title.scrollWidth,1)-.5)+'px';
     }
   }
   window.pontResizeRestaurantTitle=pontFitRestaurantTitle;
