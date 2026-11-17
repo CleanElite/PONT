@@ -64,6 +64,32 @@ async function auditCheckout(browser){
    await page.goto(fixture+menuPath+'?restaurant=checkout-fixture');
    const gallery=page.locator('#pontDishGallery');
    await gallery.waitFor({state:'visible'});
+   if(!menuPath.includes('/test/')){
+    const hero=page.locator('.pont-menu-header');
+    const city=page.locator('.pont-menu-city');
+    const crest=page.locator('.pont-menu-crest');
+    assert.equal(await crest.count(),1,'Premium crest is missing');
+    assert.ok(await city.isVisible(),'Centered restaurant location is missing');
+    const title=page.locator('#orderTitle');
+    const checkTitle=()=>title.evaluate(el=>({
+      text:el.textContent,
+      width:el.getBoundingClientRect().width,
+      scroll:el.scrollWidth,
+      height:el.getBoundingClientRect().height,
+      font:parseFloat(getComputedStyle(el).fontSize),
+      line:parseFloat(getComputedStyle(el).lineHeight),
+      whiteSpace:getComputedStyle(el).whiteSpace,
+      center:el.getBoundingClientRect().left+el.getBoundingClientRect().width/2,
+      parentCenter:el.closest('.pont-menu-identity').getBoundingClientRect().left+el.closest('.pont-menu-identity').getBoundingClientRect().width/2
+    }));
+    for(const name of ['Aromas','Bucătăria pentru toți','Restaurantul cu o denumire foarte lungă de test']){
+      await title.evaluate((el,label)=>{el.textContent=label;window.pontResizeRestaurantTitle?.()},name);
+      const info=await checkTitle();
+      assert.ok(info.whiteSpace==='nowrap'&&info.scroll<=info.width+2&&info.height<info.line*1.2&&Math.abs(info.center-info.parentCenter)<4,'Single-line centered name fit failed '+JSON.stringify(info));
+    }
+    await title.evaluate(el=>{el.textContent='Aromas';window.pontResizeRestaurantTitle?.()});
+    assert.ok((await hero.boundingBox()).height>85,'Header must retain premium centered composition');
+   }
    const group=gallery.locator('.pont-dish-gallery__sequence:not([aria-hidden])');
    assert.deepEqual(await group.locator('.pont-dish-gallery__course').allTextContents(),['Felul 1','Felul 1','Felul 2','Felul 2']);
    const gallerySize=await gallery.evaluate(element=>{
