@@ -11,10 +11,10 @@
   const sprite = new URL('../admin-icons.svg?v=1#fork-knife', scriptUrl);
   const labelByCourse = { first: 'Felul 1', second: 'Felul 2' };
   const referencePhotos = new Map([
-    ['ciorba de burta', 'pont-dish-ciorba-burta.webp'],
-    ['supa de pui cu taitei', 'pont-dish-supa-taitei.webp'],
-    ['snitel de pui cu piure', 'pont-dish-snitel-piure.webp'],
-    ['musaca de cartofi', 'pont-dish-musaca.webp']
+    ['ciorba de burta', 'pont-dish-ciorba-burta-20261117.jpg'],
+    ['supa de pui cu taitei', 'pont-dish-supa-taitei-20261117.jpg'],
+    ['snitel de pui cu piure', 'pont-dish-snitel-piure-20261117.jpg'],
+    ['musaca de cartofi', 'pont-dish-musaca-20261117.jpg']
   ]);
   // The carousel is finite: the autoplay gently reverses at each real end.
   const pixelsPerSecond = 14;
