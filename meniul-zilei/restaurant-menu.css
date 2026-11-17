@@ -479,6 +479,15 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   fill: currentColor;
 }
 
+/* Reset the old absolute title placement; the icon and title must flow together. */
+#order.pont-menu-view .pont-menu-course-heading:not(.pont-menu-course-heading--dessert) .pont-menu-course-title {
+  position:static;
+  inset:auto;
+  transform:none;
+  margin:0;
+  text-align:left;
+  pointer-events:auto;
+}
 /* Center the icon and heading as one compact group, leaving the chevron at right. */
 #order.pont-menu-view .pont-menu-course-heading:not(.pont-menu-course-heading--dessert) { position:relative;justify-content:center; }
 #order.pont-menu-view .pont-menu-course-heading:not(.pont-menu-course-heading--dessert) .pont-menu-course-name {
@@ -501,16 +510,6 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
 }
 #order.pont-menu-view .pont-menu-course--second[open] .pont-menu-course-chevron {
   transform:translateY(-50%) rotate(180deg);
-}
-.pont-menu-course-title {
-  position:absolute;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-  margin:0;
-  text-align:center;
-  white-space:nowrap;
-  pointer-events:none;
 }
 .pont-menu-course-title { display: block; font: 700 clamp(16px, 4.35cqw, 36px)/1.06 var(--serif-menu); white-space: nowrap; }
 .pont-menu-course-subtitle { display: block; margin-top: 3px; color: var(--gold-menu); font: 700 clamp(7px, 2.14cqw, 17px)/1.12 var(--serif-menu); }
