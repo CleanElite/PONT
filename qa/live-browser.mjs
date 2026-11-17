@@ -21,10 +21,14 @@ await mkdir('qa-results',{recursive:true});
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
 async function auditCheckout(browser){
  const fixture='https://pont-checkout.test';
- const restaurant={id:'checkout-fixture',name:'Restaurant de test',phone:'0700000000',menu_price:30,accepts_card:true,offers_delivery:true};
+ const restaurant={id:'checkout-fixture',name:'Aromas',phone:'0700000000',menu_price:30,accepts_card:true,offers_delivery:true};
  const menu={id:'checkout-fixture',restaurant_id:restaurant.id,price:30,dish_selection:[
-  {id:'first',name:'Ciorbă de legume',category:'first',price:12},
-  {id:'second',name:'Pui cu orez',category:'second',price:22}
+  {id:'first',name:'Ciorbă de burtă',category:'first',price:23},
+  {id:'second',name:'Șnițel de pui cu piure',category:'second',price:29},
+  {id:'soup',name:'Supă de pui cu tăiței',category:'first',price:17},
+  {id:'musaca',name:'Musaca de cartofi',category:'second',price:27},
+  {id:'grill',name:'Pui la grătar',category:'second',price:26},
+  {id:'desert',name:'Papanași cu smântână și dulceață',category:'dessert',price:0}
  ]};
  const results=[];
  for(const [width,height,menuPath] of [
@@ -59,6 +63,47 @@ async function auditCheckout(browser){
   });
   try{
    await page.goto(fixture+menuPath+'?restaurant=checkout-fixture');
+   const gallery=page.locator('#pontDishGallery');
+   await gallery.waitFor({state:'visible'});
+   const group=gallery.locator('.pont-dish-gallery__sequence:not([aria-hidden])');
+   assert.deepEqual(await group.locator('.pont-dish-gallery__course').allTextContents(),['Felul 1','Felul 1','Felul 2','Felul 2','Felul 2']);
+   const gallerySize=await gallery.evaluate(element=>{
+    const viewport=element.querySelector('.pont-dish-gallery__viewport');
+    const track=viewport.firstElementChild;
+    const card=track.querySelector('.pont-dish-gallery__item');
+    const photo=card.firstElementChild.getBoundingClientRect();
+    const caption=card.querySelector('.pont-dish-gallery__name').getBoundingClientRect();
+    return {viewport:viewport.clientWidth,card:card.getBoundingClientRect().width,gap:parseFloat(getComputedStyle(track).columnGap),photoWidth:photo.width,photoHeight:photo.height,captionBelow:caption.top>=photo.bottom-1};
+   });
+   assert.ok(Math.abs(gallerySize.viewport-4*gallerySize.card-3*gallerySize.gap)<2 && Math.abs(gallerySize.photoWidth-gallerySize.photoHeight)<1 && gallerySize.captionBelow,JSON.stringify(gallerySize));
+   if(width===393&&!menuPath.includes('/test/')){
+    const galleryViewport=gallery.locator('.pont-dish-gallery__viewport');
+    const box=await galleryViewport.boundingBox();
+    const cdp=await context.newCDPSession(page);
+    const trackTime=()=>galleryViewport.evaluate(element=>element.firstElementChild.getAnimations()[0].currentTime);
+    const touch=(type,x,y)=>cdp.send('Input.dispatchTouchEvent',{type,touchPoints:type==='touchEnd'?[]:[{x,y}]});
+    await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.currentTime>250);
+    const x=box.x+box.width/2;
+    const y=box.y+box.height/2;
+    await touch('touchStart',x,y);
+    await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.playState==='paused');
+    const held=await trackTime();
+    await touch('touchMove',x-40,y);
+    assert.ok(await trackTime()>held+2000,'Dragging left moves the current slide forward');
+    const left=await trackTime();
+    await touch('touchMove',x-18,y);
+    assert.ok(await trackTime()<left-1000,'The same held touch can drag right');
+    await touch('touchEnd',x-18,y);
+    await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.playState==='running');
+    await page.emulateMedia({reducedMotion:'reduce'});
+    await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.playState==='paused');
+    await galleryViewport.evaluate(element=>{element.firstElementChild.getAnimations()[0].currentTime=0});
+    await page.locator('.pont-menu-pick').first().click();
+    assert.equal(await page.locator('#qty-0').inputValue(),'1');
+    for(const index of [1,2,3])await page.locator('#qty-'+index).fill('1');
+    await page.screenshot({path:'qa-results/menu-reference-mobile.png'});
+    for(const index of [2,3])await page.locator('#qty-'+index).fill('0');
+   }
    await page.locator('#qty-0').fill('2');
    await page.locator('#qty-1').fill('2');
    await page.locator('#openCheckout').click();
