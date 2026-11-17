@@ -192,38 +192,62 @@ dishLightboxStyle.textContent = `
 `;
 const dishLibraryLayoutStyle = document.createElement('style');
 dishLibraryLayoutStyle.textContent = `
-/* Saved dish rows: title left, photograph above a framed price on the right. */
-#pontDishList .pont-library-row {
-  display:grid!important;
-  grid-template-columns:minmax(0,1fr) auto;
-  grid-template-areas:"summary media" "availability actions";
-  gap:12px 12px;
-  align-items:center;
+/* Compact, independent layout; do not inherit legacy .pont-dish-line positioning. */
+#pontDishList .pont-library-row-v2{
+  box-sizing:border-box;display:grid!important;width:100%;min-width:0;
+  grid-template-columns:minmax(0,1fr) 112px!important;
+  grid-template-rows:auto auto!important;
+  grid-template-areas:"summary media" "availability actions"!important;
+  align-items:center!important;gap:10px 12px!important;
+  padding:12px 0!important;margin:0!important;
+  border-bottom:1px solid rgba(76,187,183,.42);
+  background:transparent;min-height:0!important;
 }
-#pontDishList .pont-library-row > .pont-dish-summary{
-  grid-area:summary;display:block;min-width:0;align-self:start;
+#pontDishList .pont-library-row-v2 > .pont-dish-summary{
+  grid-area:summary!important;grid-column:1!important;grid-row:1!important;
+  display:block!important;min-width:0!important;width:auto!important;
+  align-self:center!important;margin:0!important;padding:0!important;
 }
-#pontDishList .pont-library-row .pont-dish-summary .name{display:block;min-width:0;overflow-wrap:anywhere}
-#pontDishList .pont-library-row > .pont-dish-side{
-  grid-area:media;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:7px;min-width:92px;max-width:130px;justify-self:end;
+#pontDishList .pont-library-row-v2 .pont-dish-summary .name{
+  display:block!important;min-width:0!important;width:auto!important;overflow-wrap:break-word;
 }
-#pontDishList .pont-library-row .pont-dish-image-open{width:74px;height:74px;overflow:hidden;border:1px solid #b99758;border-radius:12px;box-shadow:0 0 0 2px #e2bd6a22;background:#10282a}
-#pontDishList .pont-library-row .pont-dish-image-open img{width:100%;height:100%;object-fit:cover;border-radius:11px}
-#pontDishList .pont-library-row .pont-dish-side .pont-dish-price{
-  display:block;box-sizing:border-box;white-space:nowrap;text-align:center;
-  margin:0;padding:7px 10px;border:1px solid #d7b575;border-radius:11px;
-  background:linear-gradient(155deg,rgba(122,88,38,.45),rgba(30,35,28,.85));
-  color:#ffe3a5;box-shadow:inset 0 1px 0 #ffe9ae30,0 0 9px #edc06b24;
-  font-size:clamp(12px,3.5vw,16px);font-weight:750;line-height:1.1;
+#pontDishList .pont-library-row-v2 > .pont-dish-side{
+  grid-area:media!important;grid-column:2!important;grid-row:1!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+  justify-content:center!important;gap:6px!important;width:112px!important;
+  min-width:0!important;max-width:112px!important;justify-self:end!important;
+  align-self:center!important;margin:0!important;padding:0!important;
 }
-#pontDishList .pont-library-row > .pont-availability{grid-area:availability;justify-self:start;min-width:0}
-#pontDishList .pont-library-row > .admin-row-actions{grid-area:actions;justify-self:end;align-self:center}
+#pontDishList .pont-library-row-v2 .pont-dish-image-open{
+  width:66px!important;height:66px!important;flex:none!important;overflow:hidden;
+  border:1px solid #b99758;border-radius:11px;
+  box-shadow:0 0 0 2px #e2bd6a22;background:#10282a;
+}
+#pontDishList .pont-library-row-v2 .pont-dish-image-open img{
+  display:block;width:100%;height:100%;object-fit:cover;border-radius:10px;
+}
+#pontDishList .pont-library-row-v2 .pont-dish-side .pont-dish-price{
+  display:block!important;box-sizing:border-box!important;white-space:nowrap;
+  width:auto!important;max-width:112px!important;text-align:center!important;
+  margin:0!important;padding:6px 8px!important;
+  border:1px solid #d7b575!important;border-radius:10px!important;
+  background:linear-gradient(155deg,rgba(122,88,38,.45),rgba(30,35,28,.85))!important;
+  color:#ffe3a5!important;box-shadow:inset 0 1px 0 #ffe9ae30,0 0 9px #edc06b24;
+  font-size:13px!important;font-weight:750!important;line-height:1.15!important;
+}
+#pontDishList .pont-library-row-v2 > .pont-availability{
+  grid-area:availability!important;grid-column:1!important;grid-row:2!important;
+  justify-self:start!important;min-width:0!important;margin:0!important;
+}
+#pontDishList .pont-library-row-v2 > .admin-row-actions{
+  grid-area:actions!important;grid-column:2!important;grid-row:2!important;
+  justify-self:end!important;align-self:center!important;margin:0!important;
+}
 @media(max-width:420px){
-  #pontDishList .pont-library-row{column-gap:8px;row-gap:10px}
-  #pontDishList .pont-library-row > .pont-dish-side{min-width:88px}
-  #pontDishList .pont-library-row .pont-dish-image-open{width:68px;height:68px}
-  #pontDishList .pont-library-row .pont-dish-side .pont-dish-price{padding:7px 8px;font-size:12px}
+ #pontDishList .pont-library-row-v2{grid-template-columns:minmax(0,1fr) 100px!important;gap:9px 8px!important}
+ #pontDishList .pont-library-row-v2 > .pont-dish-side{width:100px!important;max-width:100px!important}
+ #pontDishList .pont-library-row-v2 .pont-dish-image-open{width:60px!important;height:60px!important}
+ #pontDishList .pont-library-row-v2 .pont-dish-side .pont-dish-price{font-size:12px!important;padding:6px!important}
 }
 `;
 document.head.append(dishLibraryLayoutStyle);
@@ -392,7 +416,7 @@ function library() {
   $('pontDishListTitle').textContent = groups.find(([key]) => key === category)[1] + ' · ' + count;
   $('pontDishList').innerHTML = list.length ? list.map(dish => {
     const photo = photoUrl(dish);
-    return '<div class="pont-dish-line pont-library-row"><div class="pont-dish-summary">' +
+    return '<div class="pont-library-row pont-library-row-v2"><div class="pont-dish-summary">' +
       '<span class="name"><strong>' + esc(dish.name) + '</strong>' +
       (dish.description ? '<small>' + esc(dish.description) + '</small>' : '') + '</span></div>' +
       '<div class="pont-dish-side">' +
