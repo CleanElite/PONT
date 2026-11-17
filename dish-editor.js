@@ -190,6 +190,43 @@ dishLightboxStyle.textContent = `
 @media(max-width:600px){.pont-dish-lightbox{width:96vw;max-width:96vw;border-radius:13px}.pont-dish-lightbox-inner{padding:5px}
  .pont-dish-lightbox-inner img{max-height:calc(94dvh - 10px)}.pont-dish-lightbox-close{top:10px;right:10px}}
 `;
+const dishLibraryLayoutStyle = document.createElement('style');
+dishLibraryLayoutStyle.textContent = `
+/* Saved dish rows: title left, photograph above a framed price on the right. */
+#pontDishList .pont-library-row {
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-areas:"summary media" "availability actions";
+  gap:12px 12px;
+  align-items:center;
+}
+#pontDishList .pont-library-row > .pont-dish-summary{
+  grid-area:summary;display:block;min-width:0;align-self:start;
+}
+#pontDishList .pont-library-row .pont-dish-summary .name{display:block;min-width:0;overflow-wrap:anywhere}
+#pontDishList .pont-library-row > .pont-dish-side{
+  grid-area:media;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:7px;min-width:92px;max-width:130px;justify-self:end;
+}
+#pontDishList .pont-library-row .pont-dish-image-open{width:74px;height:74px;overflow:hidden;border:1px solid #b99758;border-radius:12px;box-shadow:0 0 0 2px #e2bd6a22;background:#10282a}
+#pontDishList .pont-library-row .pont-dish-image-open img{width:100%;height:100%;object-fit:cover;border-radius:11px}
+#pontDishList .pont-library-row .pont-dish-side .pont-dish-price{
+  display:block;box-sizing:border-box;white-space:nowrap;text-align:center;
+  margin:0;padding:7px 10px;border:1px solid #d7b575;border-radius:11px;
+  background:linear-gradient(155deg,rgba(122,88,38,.45),rgba(30,35,28,.85));
+  color:#ffe3a5;box-shadow:inset 0 1px 0 #ffe9ae30,0 0 9px #edc06b24;
+  font-size:clamp(12px,3.5vw,16px);font-weight:750;line-height:1.1;
+}
+#pontDishList .pont-library-row > .pont-availability{grid-area:availability;justify-self:start;min-width:0}
+#pontDishList .pont-library-row > .admin-row-actions{grid-area:actions;justify-self:end;align-self:center}
+@media(max-width:420px){
+  #pontDishList .pont-library-row{column-gap:8px;row-gap:10px}
+  #pontDishList .pont-library-row > .pont-dish-side{min-width:88px}
+  #pontDishList .pont-library-row .pont-dish-image-open{width:68px;height:68px}
+  #pontDishList .pont-library-row .pont-dish-side .pont-dish-price{padding:7px 8px;font-size:12px}
+}
+`;
+document.head.append(dishLibraryLayoutStyle);
 document.head.append(dishLightboxStyle);
 const closeDishLightbox = () => { if (dishLightbox.open) dishLightbox.close(); };
 dishLightbox.querySelector('.pont-dish-lightbox-close').addEventListener('click', closeDishLightbox);
@@ -356,10 +393,11 @@ function library() {
   $('pontDishList').innerHTML = list.length ? list.map(dish => {
     const photo = photoUrl(dish);
     return '<div class="pont-dish-line pont-library-row"><div class="pont-dish-summary">' +
-      (photo ? '<button type="button" class="pont-dish-image-open" data-view-dish="' + esc(dish.id) + '" aria-label="Mărește fotografia: ' + esc(dish.name) + '" title="Mărește fotografia"><img loading="lazy" alt="" src="' + esc(photo) + '"></button>' : '') +
       '<span class="name"><strong>' + esc(dish.name) + '</strong>' +
       (dish.description ? '<small>' + esc(dish.description) + '</small>' : '') + '</span></div>' +
-      '<span class="pont-dish-price">' + (dish.category === 'dessert' ? 'Inclus' : priceRO.format(dish.price) + ' lei') + '</span>' +
+      '<div class="pont-dish-side">' +
+      (photo ? '<button type="button" class="pont-dish-image-open" data-view-dish="' + esc(dish.id) + '" aria-label="Mărește fotografia: ' + esc(dish.name) + '" title="Mărește fotografia"><img loading="lazy" alt="" src="' + esc(photo) + '"></button>' : '') +
+      '<span class="pont-dish-price">' + (dish.category === 'dessert' ? 'Inclus' : priceRO.format(dish.price) + ' lei') + '</span></div>' +
       '<div class="pont-availability" role="group" aria-label="Disponibilitate ' + esc(dish.name) + '">' +
       '<button type="button" class="pont-availability-btn available' + (dish.available !== false ? ' is-selected' : '') + '" data-availability="' + esc(dish.id) + '" data-available="true" aria-pressed="' + String(dish.available !== false) + '">Disponibil</button>' +
       '<button type="button" class="pont-availability-btn sold-out' + (dish.available === false ? ' is-selected' : '') + '" data-availability="' + esc(dish.id) + '" data-available="false" aria-pressed="' + String(dish.available === false) + '">Epuizat</button></div>' +
