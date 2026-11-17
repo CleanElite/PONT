@@ -1,0 +1,398 @@
+/* Full-screen checkout based on the supplied PONT order reference. */
+.pont-checkout-screen,
+.pont-checkout-sheet {
+  color-scheme: dark;
+  color: #faf7f2;
+  font: 500 1rem/1.25 system-ui, -apple-system, sans-serif;
+}
+
+html:has(.pont-checkout-screen[open]) {
+  overflow: hidden;
+  overscroll-behavior: none;
+  background: #050c14;
+}
+
+.pont-checkout-screen {
+  position: fixed;
+  inset: 0;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: none;
+  height: 100vh;
+  height: 100svh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: #050c14;
+  overflow: clip;
+  overscroll-behavior: none;
+}
+
+.pont-checkout-screen::backdrop { background: #050c14; }
+.pont-checkout-screen [hidden] { display: none !important; }
+.pont-checkout-frame {
+  --inset: clamp(13px, 4.9cqw, 40px);
+  --gutter-y: clamp(5px, 1.45svh, 15px);
+  --control: clamp(35px, 5.5svh, 53px);
+  --caption: clamp(13px, 3.22cqw, 21px);
+  --symbol: clamp(15px, 4.4cqw, 27px);
+  --rim: #8796a7;
+  --gold: #f3cd81;
+  --field: linear-gradient(150deg, #263443, #111b26 57%, #15202c);
+  --gold-button: linear-gradient(166deg, #ffe6a7, #e9c074 27%, #c58c33 64%, #f4cb77 91%, #ffe5a4);
+  container-type: inline-size;
+  position: relative;
+  display: grid;
+  grid-template-rows: clamp(66px, 16.7svh, 172px) minmax(0, 1fr) auto;
+  width: min(100%, 680px, 69svh);
+  height: 100%;
+  margin-inline: auto;
+  box-sizing: border-box;
+  padding: env(safe-area-inset-top) 0 max(12px, env(safe-area-inset-bottom));
+  background:
+    url("../assets/pont-order-header.webp") center top / 100% auto no-repeat,
+    url("../assets/pont-order-footer.webp") center bottom / 100% auto no-repeat,
+    linear-gradient(155deg, #0d1d30, #050c14 38%, #050c14 72%, #0c1623);
+}
+
+.pont-checkout-header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 0;
+  margin: 0;
+  padding: clamp(12px, 4.4cqw, 29px) 48px 0;
+}
+
+.pont-checkout-screen button,
+.pont-checkout-screen input,
+.pont-checkout-screen select,
+.pont-checkout-screen textarea { box-sizing: border-box; font-family: inherit; }
+
+.pont-checkout-screen button { cursor: pointer; }
+.pont-checkout-screen :is(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid #ffdf9d;
+  outline-offset: 2px;
+}
+
+.pont-checkout-kicker {
+  color: #fff;
+  font-size: clamp(8px, 2.35cqw, 15px);
+  font-weight: 650;
+  letter-spacing: .28em;
+  white-space: nowrap;
+}
+
+.pont-checkout-header h3 {
+  margin: clamp(9px, 3.35cqw, 22px) 0 0;
+  color: #f6d792;
+  font: 700 clamp(23px, 6.65cqw, 44px)/1.04 Georgia, 'Times New Roman', serif;
+  white-space: nowrap;
+  background: linear-gradient(#fffdf8 14%, #f4cf81 93%);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.pont-checkout-round {
+  position: absolute;
+  top: clamp(8px, 3.2cqw, 23px);
+  display: grid;
+  place-items: center;
+  width: clamp(44px, 9.1cqw, 54px);
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid #aeb4babb;
+  border-radius: 50%;
+  background: linear-gradient(140deg, #25323f, #090e16 60%);
+  box-shadow: inset 0 1px 2px #edf6ff42;
+  color: #fff9ed;
+}
+
+#backCheckout { left: var(--inset); }
+#closeCheckout { right: var(--inset); }
+.pont-checkout-round span { font: 400 clamp(26px, 6.3cqw, 37px)/1 system-ui; }
+.pont-checkout-screen .pont-checkout-round svg { width: 55%; height: 55%; color: inherit; }
+
+.pont-checkout-fields {
+  display: grid;
+  grid-template-rows: auto var(--field-block) var(--field-block) var(--field-block) auto auto minmax(0, 1fr);
+  align-content: start;
+  gap: var(--gutter-y);
+  min-height: 0;
+  padding-inline: var(--inset);
+  --field-block: calc(var(--control) + var(--symbol) + 4px);
+}
+
+.pont-checkout-screen .pont-checkout-symbol {
+  display: block;
+  flex: 0 0 var(--symbol);
+  width: var(--symbol);
+  height: var(--symbol);
+  color: var(--gold);
+}
+
+.pont-checkout-caption {
+  display: flex;
+  align-items: center;
+  gap: clamp(6px, 2.1cqw, 16px);
+  min-width: 0;
+  margin: 0 0 4px;
+  font-size: var(--caption);
+  font-weight: 680;
+}
+
+.pont-checkout-caption .required { color: var(--gold); }
+.pont-checkout-receive .pont-checkout-caption {
+  margin-bottom: clamp(4px, 1.65cqw, 13px);
+  font-size: clamp(14px, 3.45cqw, 24px);
+}
+
+.pont-checkout-methods {
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+  min-height: var(--control);
+  border: 1px solid var(--rim);
+  border-radius: 999px;
+  background: linear-gradient(160deg, #141e2a, #080e16 72%);
+}
+
+.pont-checkout-methods button {
+  display: flex;
+  flex: 1 1 0;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(5px, 2cqw, 14px);
+  min-width: 0;
+  padding: 3px 5px;
+  border: 1px solid transparent;
+  border-radius: inherit;
+  background: transparent;
+  color: #fff7ea;
+  font-size: clamp(11px, 3.25cqw, 22px);
+  font-weight: 730;
+}
+
+.pont-checkout-methods .selected {
+  border-color: #ffdc90;
+  background: var(--gold-button);
+  box-shadow: inset 0 1px 4px #fff2c9af;
+  color: #171006;
+}
+
+.pont-checkout-methods .selected svg { color: inherit; }
+.pont-checkout-methods button:focus-visible { outline-offset: -3px; }
+.pont-checkout-name { grid-row: 2; }
+.pont-checkout-contact { grid-row: 3; display: grid; grid-template-columns: 1.31fr 1fr; gap: clamp(8px, 2.6cqw, 17px); }
+.pont-checkout-address { grid-row: 4; }
+.pont-checkout-field { min-width: 0; }
+
+.pont-checkout-screen .pont-checkout-field :is(input, select),
+.pont-checkout-sheet textarea {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: var(--control);
+  margin: 0;
+  padding: 0 clamp(8px, 3.4cqw, 21px);
+  border: 1px solid var(--rim);
+  border-radius: clamp(9px, 2.8cqw, 19px);
+  background: var(--field);
+  box-shadow: inset 0 1px 5px #d8e4f022;
+  color: #f5f7fa;
+  font-size: clamp(16px, 3.35cqw, 22px);
+}
+
+.pont-checkout-screen input::placeholder,
+.pont-checkout-screen textarea::placeholder { color: #b7c4d1; opacity: 1; }
+.pont-checkout-screen input[aria-invalid="true"] { border-color: #ff967b; }
+.pont-checkout-payment { position: relative; }
+.pont-checkout-payment select {
+  appearance: none;
+  padding-inline-end: 30px !important;
+  font-weight: 700;
+  opacity: 1;
+  -webkit-text-fill-color: #f5f7fa;
+}
+
+.pont-checkout-payment-arrow {
+  position: absolute;
+  bottom: calc((var(--control) - var(--symbol)) / 2);
+  right: clamp(8px, 2.7cqw, 18px);
+  pointer-events: none;
+}
+
+.pont-checkout-option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(8px, 3cqw, 19px);
+  padding: 3px clamp(10px, 3.55cqw, 22px);
+  min-width: 0;
+  border: 1px solid #c3ab7d;
+  border-radius: clamp(10px, 2.6cqw, 18px);
+  background: linear-gradient(159deg, #292721, #101821 35%, #090f17 78%);
+  box-shadow: inset 0 1px 4px #ffdfa227;
+  color: #fffaf2;
+  text-align: start;
+  font-size: var(--caption);
+}
+
+.pont-checkout-option small { font-size: .87em; }
+.pont-checkout-chevron-right { transform: rotate(180deg); }
+#openCheckoutNotes { grid-row: 5; min-height: var(--control); }
+#openCheckoutRecap { grid-row: 6; min-height: calc(var(--control) + clamp(8px, 3.35cqw, 21px)); background: linear-gradient(154deg, #56402a, #1c1b20 46%, #11151d 89%); border-color: #dbaf6a; }
+.pont-checkout-option .pont-summary-pieces { display: flex; flex-wrap: wrap; gap: 1px 7px; margin-top: 3px; color: #fcf6ea; font-size: .91em; }
+
+.pont-checkout-consent {
+  grid-row: 7;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  align-self: center;
+  gap: clamp(8px, 2.65cqw, 18px);
+  padding-inline: clamp(2px, 1.1cqw, 6px);
+  color: #fbf7f0;
+  font-size: clamp(11px, 2.65cqw, 17px);
+  line-height: 1.27;
+  cursor: pointer;
+}
+
+.pont-checkout-consent input {
+  appearance: none;
+  display: grid;
+  place-items: center;
+  width: clamp(21px, 5.1cqw, 34px);
+  height: clamp(21px, 5.1cqw, 34px);
+  margin: 0;
+  border: 1.5px solid #dabc83;
+  border-radius: 6px;
+  background: #101d2c;
+  color: #15100a;
+  cursor: pointer;
+}
+
+.pont-checkout-consent input:checked { background: #f2cc84; }
+.pont-checkout-consent input:checked::after { content: ""; width: 52%; height: 28%; border: solid currentColor; border-width: 0 0 2px 2px; transform: rotate(-45deg) translate(1px, -1px); }
+.pont-checkout-screen a { color: #f4cc7d; text-decoration: underline; text-underline-offset: 2px; }
+
+.pont-checkout-footer {
+  position: relative;
+  margin: var(--gutter-y) max(8px, calc(var(--inset) - 5px)) clamp(19px, 5.3svh, 66px);
+  padding: 0;
+}
+
+.pont-checkout-screen #send {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  justify-items: center;
+  gap: 0;
+  width: 100%;
+  min-height: clamp(46px, 9.1svh, 89px);
+  padding: 3px clamp(6px, 1.65cqw, 14px);
+  border: 1px solid #ffe2a0;
+  border-radius: 999px;
+  background: linear-gradient(156deg, #e6b353, #ffe4a5 36%, #d9a244 71%, #efce86);
+  box-shadow: inset 0 1px 4px #fff5d7, 0 2px 10px #d5953b36;
+  color: #170f06;
+  font-weight: 800;
+}
+
+.pont-checkout-screen #send:disabled { color: #352919; opacity: 1; cursor: default; }
+.pont-checkout-screen #send .pont-whatsapp-icon { display: block; width: clamp(25px, 6.1cqw, 44px); height: auto; margin-inline: clamp(3px, 2cqw, 13px); }
+.pont-checkout-screen #send .pont-whatsapp-label,
+.pont-checkout-screen .pont-send-total {
+  min-width: 0;
+  padding-inline: clamp(4px, 1.7cqw, 12px);
+  border-inline-start: 1px solid #64431e7a;
+  line-height: 1.12;
+  text-align: center;
+}
+
+.pont-checkout-screen #send .pont-whatsapp-label { font-size: clamp(11px, 3.23cqw, 23px); }
+.pont-checkout-screen #send .pont-whatsapp-label { text-wrap: balance; }
+.pont-checkout-screen .pont-send-total { display: grid; gap: 3px; }
+.pont-checkout-screen .pont-send-total small { font-size: clamp(9px, 2.55cqw, 16px); white-space: nowrap; }
+.pont-checkout-screen .pont-send-total strong { font: 700 clamp(15px, 3.95cqw, 27px)/1.1 Georgia, 'Times New Roman', serif; white-space: nowrap; }
+
+.pont-checkout-status {
+  position: absolute;
+  top: calc(100% + 3px);
+  inset-inline: 6px;
+  min-height: 0;
+  font-size: clamp(10px, 2.4cqw, 14px);
+  line-height: 1.15;
+  text-align: center;
+  color: #e6d1aa;
+}
+
+.pont-checkout-status p { margin: 0; }
+.pont-checkout-status #phoneError { color: #ffbc9d !important; }
+.pont-checkout-status:has(#orderMsg:not(:empty)) :is(#pontSendHint, #phoneError),
+.pont-checkout-status:has(#phoneError:not([hidden])) #pontSendHint { display: none; }
+.pont-checkout-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  clip-path: inset(50%);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.pont-checkout-sheet {
+  width: min(90vw, 440px);
+  max-height: 76svh;
+  box-sizing: border-box;
+  padding: 16px;
+  border: 1px solid #d9b67e;
+  border-radius: 18px;
+  background: linear-gradient(155deg, #182736, #080e16 66%);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.pont-checkout-sheet::backdrop { background: #02050cc9; }
+.pont-checkout-sheet h3 { margin: 0 0 12px; font: 700 22px/1.2 Georgia, 'Times New Roman', serif; color: #f4d59c; }
+.pont-checkout-sheet textarea { --field: #172435; --rim: #8796a7; min-height: 74px; padding: 9px 11px; resize: none; }
+.pont-checkout-sheet button { display: block; margin: 13px 0 0 auto; padding: 8px 18px; border: 1px solid #ffdb96; border-radius: 999px; background: #e4bf78; color: #161009; font-weight: 750; }
+.pont-checkout-sheet :is(ul, p) { margin: 0 0 9px; }
+.pont-checkout-sheet ul { padding: 0; list-style: none; }
+.pont-checkout-sheet li { display: flex; gap: 8px; padding-block: 7px; border-bottom: 1px solid #a0acb634; overflow-wrap: anywhere; }
+.pont-checkout-sheet .pont-recap-dish-quantity { flex: none; color: #f1ca81; }
+.pont-checkout-sheet p, .pont-checkout-sheet a { font-size: .88rem; }
+
+@media (max-height: 600px) {
+  .pont-checkout-frame { --control: 32px; --gutter-y: 6px; grid-template-rows: clamp(62px, 15svh, 89px) minmax(0, 1fr) auto; }
+  .pont-checkout-footer { margin-bottom: max(24px, 4.4svh); }
+}
+
+@media (max-height: 515px) {
+  .pont-checkout-frame { --control: 29px; --gutter-y: 4px; --symbol: 15px; padding-bottom: env(safe-area-inset-bottom); }
+  .pont-checkout-header { padding-top: 9px; }
+  .pont-checkout-header h3 { margin-top: 7px; }
+  .pont-checkout-round { top: 7px; width: 35px; }
+  .pont-checkout-screen #send { min-height: 41px; }
+}
+
+@media (orientation: landscape) and (max-height: 510px) {
+  .pont-checkout-frame { width: min(100%, 860px); --inset: clamp(15px, 3.5cqw, 30px); --caption: 14px; }
+  .pont-checkout-header h3 { font-size: 26px; }
+  .pont-checkout-frame { background-size: 100% min(145px, 31svh), 100% min(58px, 14svh), auto; }
+  .pont-checkout-fields { grid-template-columns: 1fr 1fr; grid-template-rows: auto var(--field-block) var(--field-block) var(--field-block); column-gap: 14px; }
+  .pont-checkout-receive { grid-area: 1 / 1; }
+  .pont-checkout-name { grid-area: 2 / 1; }
+  .pont-checkout-contact { grid-area: 3 / 1; }
+  .pont-checkout-address { grid-area: 4 / 1; }
+  #openCheckoutNotes { grid-area: 2 / 2; }
+  #openCheckoutRecap { grid-area: 3 / 2; }
+  .pont-checkout-consent { grid-area: 4 / 2; font-size: 11px; }
+  .pont-checkout-methods button, .pont-checkout-receive .pont-checkout-caption { font-size: 13px; }
+  .pont-checkout-screen .pont-checkout-field :is(input, select) { font-size: 16px; }
+  .pont-checkout-screen #send .pont-whatsapp-label { font-size: 16px; }
+}

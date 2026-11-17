@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { mkdir, writeFile } from 'node:fs/promises';
 const ORIGIN='https://pont.city';
@@ -18,6 +19,99 @@ const sizes=[
 ];
 await mkdir('qa-results',{recursive:true});
 const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+async function auditCheckout(browser){
+ const fixture='https://pont-checkout.test';
+ const restaurant={id:'checkout-fixture',name:'Restaurant de test',phone:'0700000000',menu_price:30,accepts_card:true,offers_delivery:true};
+ const menu={id:'checkout-fixture',restaurant_id:restaurant.id,price:30,dish_selection:[
+  {id:'first',name:'Ciorbă de legume',category:'first',price:12},
+  {id:'second',name:'Pui cu orez',category:'second',price:22}
+ ]};
+ const results=[];
+ for(const [width,height,menuPath] of [
+  [320,480,'/meniul-zilei/'],[390,585,'/meniul-zilei/'],[393,664,'/meniul-zilei/'],
+  [667,375,'/meniul-zilei/'],[1200,800,'/meniul-zilei/'],[393,664,'/test/meniul-zilei/']
+ ]){
+  const context=await browser.newContext({viewport:{width,height},isMobile:width<600,hasTouch:true,locale:'ro-RO',serviceWorkers:'block'});
+  const page=await context.newPage();
+  page.setDefaultTimeout(6000);
+  const errors=[];
+  page.on('pageerror',error=>errors.push(error.message));
+  let requestBody,whatsappText;
+  await page.route('**/*',async route=>{
+   const url=new URL(route.request().url());
+   if(url.hostname==='wa.me'){
+    whatsappText=url.searchParams.get('text');
+    return route.fulfill({contentType:'text/html',body:'WhatsApp test interceptat'});
+   }
+   if(url.origin!==fixture)return route.abort();
+   if(url.pathname.endsWith('/super-admin/config.js'))return route.fulfill({contentType:'text/javascript',body:"window.PONT_CONFIG={url:location.origin+'/mock',anonKey:'fixture'}"});
+   if(url.pathname.startsWith('/mock/rest/v1/')){
+    const endpoint=url.pathname.slice('/mock/rest/v1/'.length);
+    const values={menus:[menu],restaurants:[restaurant]};
+    if(endpoint==='rpc/pont_finalize_whatsapp_order_private'){
+     requestBody=route.request().postDataJSON();
+     return route.fulfill({json:'PONT 42'});
+    }
+    return route.fulfill({json:values[endpoint]||[]});
+   }
+   const local=url.pathname.slice(1)+(url.pathname.endsWith('/')?'index.html':'');
+   try{return await route.fulfill({path:local})}catch{return route.fulfill({status:204})}
+  });
+  try{
+   await page.goto(fixture+menuPath+'?restaurant=checkout-fixture');
+   await page.locator('#qty-0').fill('2');
+   await page.locator('#qty-1').fill('2');
+   await page.locator('#openCheckout').click();
+   const checkout=page.locator('#pontCheckoutOverlay[open]');
+   const layout=()=>checkout.evaluate(element=>{
+    const send=element.querySelector('#send').getBoundingClientRect();
+    const consent=element.querySelector('.pont-checkout-consent').getBoundingClientRect();
+    return {sendTop:send.top,sendBottom:send.bottom,consentBottom:consent.bottom,height:innerHeight,scroll:element.scrollHeight-element.clientHeight,top:element.scrollTop};
+   });
+   const initial=await layout();
+   assert.ok(initial.sendBottom<=initial.height+1 && initial.consentBottom<=initial.sendTop+1 && initial.scroll<=1 && initial.top===0,JSON.stringify(initial));
+   assert.match(await page.locator('#total').innerText(),/60,00/);
+   assert.match(await page.locator('#breakdown').innerText(),/2× meniuri complete/);
+   await page.mouse.wheel(0,500);
+   await page.locator('#openCheckoutRecap').click();
+   assert.equal(await page.locator('#pontDetailedOrder li').count(),2);
+   await page.locator('#pontCheckoutRecap button').click();
+   assert.deepEqual(await layout(),initial);
+   if(width>=390&&width<420&&height>=580){
+    await page.screenshot({path:'qa-results/checkout-'+width+'x'+height+(menuPath.includes('/test/')?'-test':'')+'.png'});
+    await page.locator('#openCheckoutNotes').click();
+    await page.locator('#orderNotes').fill('Fără ceapă');
+    await page.locator('#pontCheckoutNotes button').click();
+    await page.getByRole('button',{name:'Ridicare personală',exact:true}).click();
+    assert.equal(await page.locator('#address').isVisible(),false);
+    await page.getByRole('button',{name:'Livrare',exact:true}).click();
+    await page.locator('[name=full_name]').fill('Client Test');
+    await page.locator('[name=phone]').fill('07');
+    assert.equal(await page.locator('#phoneError').isVisible(),true);
+    await page.locator('[name=phone]').fill('0700000001');
+    await page.locator('[name=address]').fill('Strada de test 2');
+    await page.locator('[name=payment]').selectOption('Card');
+    await page.locator('[name=data_transfer_notice]').check();
+    await page.locator('#backCheckout').click();
+    await page.locator('#openCheckout').click();
+    assert.deepEqual(await layout(),initial);
+    await page.locator('#send').click();
+    await page.waitForURL('https://wa.me/**');
+    assert.equal(requestBody.p_menus,2);
+    assert.doesNotMatch(JSON.stringify(requestBody),/Client Test|0700000001|Strada de test|Fără ceapă/);
+    assert.match(whatsappText,/Observații: Fără ceapă/);
+    assert.match(whatsappText,/Metoda de plată: Card/);
+   }
+   assert.deepEqual(errors,[]);
+   results.push({width,height,menuPath,status:'OK'});
+  }catch(error){
+   results.push({width,height,menuPath,status:'PROBLEMĂ',error:error.message});
+  }finally{await context.close();}
+ }
+ return results;
+}
+const checkoutResults=await auditCheckout(browser);
+console.log('CHECKOUT_QA',JSON.stringify(checkoutResults));
 const report={generated_at:new Date().toISOString(),origin:ORIGIN,viewports:sizes.map(({name,width,height})=>({name,width,height})),checks:[]};
 for(const viewport of sizes){
  const context=await browser.newContext({viewport:{width:viewport.width,height:viewport.height},isMobile:viewport.isMobile,deviceScaleFactor:1,ignoreHTTPSErrors:false,locale:'ro-RO',serviceWorkers:'block'});
@@ -65,7 +159,7 @@ for(const viewport of sizes){
 }
 const context=await browser.newContext({viewport:{width:390,height:844},serviceWorkers:'block'});
 const page=await context.newPage();
-report.extra={url_checks:[],redirect_checks:[],link_checks:[],events:null,menu:null,login:null,whatsapp_sent:false,admin_data_mutated:false};
+report.extra={checkout:checkoutResults,url_checks:[],redirect_checks:[],link_checks:[],events:null,menu:null,login:null,whatsapp_sent:false,admin_data_mutated:false};
 try{
  await page.goto(ORIGIN+'/iesire-in-oras/',{waitUntil:'domcontentloaded',timeout:30000});
  await page.waitForTimeout(4500);
@@ -127,3 +221,5 @@ await browser.close();
 await writeFile('qa-results/report.json',JSON.stringify(report,null,2));
 const successful=report.checks.filter(x=>x.status==='OK').length;
 console.log('QA_SUMMARY',JSON.stringify({checks:report.checks.length,successful,failed:report.checks.filter(x=>x.status==='PROBLEMĂ').length,untested:report.checks.filter(x=>x.status==='NETESTAT').length,extra:report.extra}));
+
+if(checkoutResults.some(result=>result.status!=='OK'))process.exitCode=1;

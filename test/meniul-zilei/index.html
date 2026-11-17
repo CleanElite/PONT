@@ -536,6 +536,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
 }
 </style>
 <link rel="stylesheet" href="./restaurant-page.css?v=whatsapp-text-icon-fit-20261112">
+<link rel="stylesheet" href="../../meniul-zilei/order-details.css?v=20261117-1">
 <link rel="stylesheet" href="../pont-navigation.css?v=2">
 <style>.pont-menu-price-tag{display:inline-flex;align-items:center;justify-content:center;align-self:flex-start;width:max-content;max-width:100%;padding:2px 7px;border:1px solid #eacb8580;border-radius:999px;background:#eacb85;color:#221605;font:750 10px/1.35 system-ui,sans-serif;white-space:nowrap;box-shadow:0 2px 6px #0003}</style>
 <style>
@@ -551,27 +552,77 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
 <form id="checkout">
 <section class="order-menu-preview" aria-label="Meniul restaurantului"><span class="pont-menu-icon" aria-hidden="true">♨</span><div id="menuPreview"></div><p id="combo-price"></p></section><section class="order-selection"><div class="order-contact"><a id="callNow" class="call-now" hidden><svg aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#phone"></use></svg><span>Sună acum și comandă</span></a></div><div id="choices"></div><div id="pontSelectionSummary" class="pont-selection-summary" role="status" aria-live="polite"><svg class="pont-summary-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h3l3 13h11l3-10H6M9 20h.01M18 20h.01"/></svg><strong>Rezumat selecție</strong><p id="pontSelectionText">Nu ai selectat încă preparate.</p></div></section>
 <div class="pont-checkout-launch"><button type="button" id="openCheckout" aria-haspopup="dialog" aria-controls="pontCheckoutOverlay"><svg class="pont-whatsapp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.4 7.9L3 21l1.5-4.6A9 9 0 1 1 21 11.5Z"/><path d="M8.3 7.5c1-1 1.5.3 2.1 1.6.2.5-.4.8-.7 1.2.7 1.6 1.9 2.7 3.5 3.2.3-.3.7-1.1 1.2-1 1.1.4 2.5 1 1.9 2-1.5 2.5-5 .1-6.2-1.1-1.4-1.3-3.1-4.4-1.8-5.9Z"/></svg>Trimite comanda pe WhatsApp <span aria-hidden="true">›</span></button><p id="pontCheckoutLaunchHint" role="status" hidden></p></div>
-<div id="pontCheckoutOverlay" class="pont-checkout-overlay" hidden>
-<div class="pont-checkout-backdrop" id="pontCheckoutBackdrop" aria-hidden="true"></div>
-<section class="pont-checkout-panel" role="dialog" aria-modal="true" aria-labelledby="pontCheckoutTitle" tabindex="-1">
-<div class="pont-checkout-top"><span class="pont-checkout-kicker">FINALIZARE COMANDĂ</span><h3 id="pontCheckoutTitle">Detalii comandă</h3><button type="button" id="closeCheckout" aria-label="Închide detaliile comenzii">×</button></div>
-<section class="pont-order-details"><div class="pont-details-head" hidden><h3>Detalii comandă</h3></div><div class="fulfillment"><span class="field-heading"><svg class="pont-checkout-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>Cum primești comanda?</span><div class="fulfillment-options"><button type="button" data-method="Livrare, dacă restaurantul confirmă" class="selected" aria-pressed="true"><svg class="pont-checkout-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>Livrare</button><button type="button" data-method="Ridicare" aria-pressed="false"><svg class="pont-checkout-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg>Ridicare personală</button></div><select name="method" aria-label="Modalitate de primire" class="visually-hidden-select"><option>Livrare, dacă restaurantul confirmă</option><option>Ridicare</option></select></div>
-<label class="pont-customer-name"><span class="pont-field-caption"><svg class="pont-checkout-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4.5 21v-2a7.5 7.5 0 0 1 15 0v2"/></svg>Nume și prenume</span><input name="full_name" type="text" autocomplete="name" required minlength="3" maxlength="140" placeholder="Nume și prenume"></label>
-<div class="pont-contact-payment"><label class="pont-phone-field"><span class="pont-field-caption"><svg class="pont-checkout-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.7-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.1 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7l.5 2.8a2 2 0 0 1-.6 1.8L7 10a16 16 0 0 0 7 7l1.7-1.9a2 2 0 0 1 1.8-.6l2.8.5a2 2 0 0 1 1.7 1.9Z"/></svg>Număr de telefon</span><input name="phone" type="tel" autocomplete="tel" inputmode="tel" required maxlength="24" placeholder="07XX XXX XXX" aria-describedby="phoneError"><small id="phoneError" class="phone-error" role="alert" hidden>Introdu un număr valid: 07XXXXXXXX sau +407XXXXXXXX.</small></label><label class="pont-payment-field"><span class="pont-field-caption"><svg class="pont-checkout-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>Plată</span><select name="payment"></select></label></div>
-<label id="address" hidden><span class="pont-field-caption"><svg class="pont-checkout-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Adresă de livrare</span><input name="address" autocomplete="street-address" maxlength="150" placeholder="Stradă, număr, bloc, etaj, apartament"><small class="address-hint" hidden>Completează strada și numărul, iar dacă este cazul: bloc, etaj și apartament.</small></label>
-<details class="pont-order-notes"><summary><svg class="pont-checkout-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 4.7-1 11.6-11.7a2.2 2.2 0 0 0-3.1-3.1L5.5 16 4 20ZM15.5 6.5l3 3"/></svg><span>Observații <small>(opțional)</small></span><span class="pont-note-arrow" aria-hidden="true">›</span></summary><label for="orderNotes">Observații<textarea id="orderNotes" name="notes" rows="2" maxlength="250" placeholder="Ex.: fără ceapă"></textarea></label></details>
-<details class="pont-checkout-summary pont-order-recap" aria-label="Rezumatul comenzii">
- <summary class="pont-order-recap-toggle">
-  <span class="pont-order-recap-heading">Rezumatul comenzii</span>
-  <span class="pont-order-recap-arrow" aria-hidden="true">⌄</span>
-  <span id="breakdown" class="pont-order-recap-counts" aria-live="polite"></span>
- </summary>
- <div id="pontDetailedOrder" class="pont-order-recap-details" aria-label="Preparate și cantități"></div>
-</details>
-<label class="pont-loyalty-consent pont-data-transfer"><input type="checkbox" name="data_transfer_notice" value="yes" required><span>Am înțeles că numele, telefonul și adresa sunt folosite pentru mesajul WhatsApp către restaurant, iar PONT înregistrează doar restaurantul, preparatele, cantitățile și referința solicitării. <a href="../confidentialitate.html?from=checkout" target="_blank" rel="noopener" data-checkout-privacy>Confidențialitate</a>.</span></label>
-<p id="orderMsg" role="status"></p>
-<div class="order-footer"><button id="send"><svg class="pont-whatsapp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.4 7.9L3 21l1.5-4.6A9 9 0 1 1 21 11.5Z"/><path d="M8.3 7.5c1-1 1.5.3 2.1 1.6.2.5-.4.8-.7 1.2.7 1.6 1.9 2.7 3.5 3.2.3-.3.7-1.1 1.2-1 1.1.4 2.5 1 1.9 2-1.5 2.5-5 .1-6.2-1.1-1.4-1.3-3.1-4.4-1.8-5.9Z"/></svg><span class="pont-whatsapp-label">Trimite comanda pe WhatsApp</span><span class="pont-send-total"><small>Total comandă</small><strong id="total"></strong></span></button><p id="pontSendHint" class="pont-send-hint" role="status" aria-live="polite" hidden></p></div><p class="pont-restaurant-info-link-wrap"><a id="pontRestaurantInfoLink" href="../informatii-restaurant/" target="_blank" rel="noopener">Informații despre restaurant și meniu</a></p></section></section></div>
-</form></dialog><dialog id="orderConfirmationNotice" class="pont-order-confirm-dialog" aria-labelledby="orderConfirmationTitle"><div class="pont-order-confirm-symbol" aria-hidden="true">!</div><h3 id="orderConfirmationTitle">Confirmarea comenzii</h3><p><strong>Comanda trebuie confirmată de restaurant pe WhatsApp.</strong></p><p>Solicitarea este înregistrată când continui către WhatsApp. Restaurantul confirmă separat dacă poate pregăti comanda. Dacă nu primești un răspuns, contactează-l telefonic.</p><div class="pont-order-confirm-actions"><button type="button" id="orderNoticeCancel">Înapoi</button><button type="button" id="orderNoticeContinue">Am înțeles · Continuă</button></div></dialog>
+</form></dialog>
+<dialog id="pontCheckoutOverlay" class="pont-checkout-screen" aria-labelledby="pontCheckoutTitle">
+  <div class="pont-checkout-frame">
+    <header class="pont-checkout-header">
+      <button id="backCheckout" class="pont-checkout-round" type="button" aria-label="Înapoi la meniu"><svg class="pont-checkout-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#caret-left"></use></svg></button>
+      <span class="pont-checkout-kicker">FINALIZARE COMANDĂ</span>
+      <h3 id="pontCheckoutTitle" tabindex="-1" autofocus>Detalii comandă</h3>
+      <button id="closeCheckout" class="pont-checkout-round" type="button" aria-label="Închide detaliile comenzii"><span aria-hidden="true">×</span></button>
+    </header>
+    <section class="pont-checkout-fields" aria-label="Datele comenzii">
+      <div class="pont-checkout-receive">
+        <p class="pont-checkout-caption" id="pontReceiveHeading"><svg class="pont-checkout-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>Cum primești comanda?</p>
+        <div class="pont-checkout-methods" role="group" aria-labelledby="pontReceiveHeading">
+          <button type="button" data-method="Livrare, dacă restaurantul confirmă" class="selected" aria-pressed="true"><svg class="pont-checkout-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v11H3zM14 10h4l3 3v4h-7"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/></svg>Livrare</button>
+          <button type="button" data-method="Ridicare" aria-pressed="false"><svg class="pont-checkout-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8h14l1 13H4L5 8Z"/><path d="M9 10V7a3 3 0 0 1 6 0v3"/></svg>Ridicare personală</button>
+        </div>
+        <select name="method" form="checkout" aria-label="Modalitate de primire" hidden><option>Livrare, dacă restaurantul confirmă</option><option>Ridicare</option></select>
+      </div>
+      <label class="pont-checkout-field pont-checkout-name">
+        <span class="pont-checkout-caption"><svg class="pont-checkout-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4.5 21v-2a7.5 7.5 0 0 1 15 0v2"/></svg><span>Nume și prenume <span class="required" aria-hidden="true">*</span></span></span>
+        <input name="full_name" form="checkout" type="text" autocomplete="name" required minlength="3" maxlength="140" placeholder="Nume și prenume" enterkeyhint="done">
+      </label>
+      <div class="pont-checkout-contact">
+        <label class="pont-checkout-field">
+          <span class="pont-checkout-caption"><svg class="pont-checkout-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.7-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2 4.1 2 2 0 0 1 4 2h3a2 2 0 0 1 2 1.7l.5 2.8a2 2 0 0 1-.6 1.8L7 10a16 16 0 0 0 7 7l1.7-1.9a2 2 0 0 1 1.8-.6l2.8.5a2 2 0 0 1 1.7 1.9Z"/></svg><span>Număr de telefon <span class="required" aria-hidden="true">*</span></span></span>
+          <input name="phone" form="checkout" type="tel" autocomplete="tel" inputmode="tel" required maxlength="24" placeholder="07XX XXX XXX" aria-describedby="phoneError" enterkeyhint="done">
+        </label>
+        <label class="pont-checkout-field pont-checkout-payment">
+          <span class="pont-checkout-caption"><svg class="pont-checkout-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M6 15h4"/></svg>Plată</span>
+          <select name="payment" form="checkout" aria-describedby="cardPaymentNote"></select>
+          <svg class="pont-checkout-symbol pont-checkout-payment-arrow" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#caret-down"></use></svg>
+          <span id="cardPaymentNote" class="pont-checkout-visually-hidden" hidden>Restaurantul nu percepe plata cu cardul.</span>
+        </label>
+      </div>
+      <label id="address" class="pont-checkout-field pont-checkout-address" hidden>
+        <span class="pont-checkout-caption"><svg class="pont-checkout-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 5-8 12-8 12S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg><span>Adresă de livrare <span class="required" aria-hidden="true">*</span></span></span>
+        <input name="address" form="checkout" autocomplete="street-address" maxlength="150" placeholder="Stradă, număr, bloc, etaj, apartament" enterkeyhint="done">
+      </label>
+      <button id="openCheckoutNotes" class="pont-checkout-option" type="button" aria-haspopup="dialog" aria-controls="pontCheckoutNotes">
+        <svg class="pont-checkout-symbol" viewBox="0 0 24 24" aria-hidden="true" focusable="false" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m4 20 4.7-1 11.6-11.7a2.2 2.2 0 0 0-3.1-3.1L5.5 16 4 20ZM15.5 6.5l3 3"/></svg><span><strong>Observații</strong> <small>(opțional)</small></span><svg class="pont-checkout-symbol pont-checkout-chevron-right" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#caret-left"></use></svg>
+      </button>
+      <button id="openCheckoutRecap" class="pont-checkout-option" type="button" aria-haspopup="dialog" aria-controls="pontCheckoutRecap">
+        <svg class="pont-checkout-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#list-bullets"></use></svg><span><strong>Rezumatul comenzii</strong><span id="breakdown" aria-live="polite"></span></span><svg class="pont-checkout-symbol" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=1#caret-down"></use></svg>
+      </button>
+      <label class="pont-checkout-consent">
+        <input type="checkbox" name="data_transfer_notice" form="checkout" value="yes" required>
+        <span>Am înțeles că datele comenzii sunt trimise restaurantului prin WhatsApp. <a href="../confidentialitate.html?from=checkout" target="_blank" rel="noopener" data-checkout-privacy>Confidențialitate</a></span>
+      </label>
+    </section>
+    <footer class="pont-checkout-footer">
+      <button id="send" type="submit" form="checkout"><svg class="pont-whatsapp-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a9 9 0 0 1-13.4 7.9L3 21l1.5-4.6A9 9 0 1 1 21 11.5Z"/><path d="M8.3 7.5c1-1 1.5.3 2.1 1.6.2.5-.4.8-.7 1.2.7 1.6 1.9 2.7 3.5 3.2.3-.3.7-1.1 1.2-1 1.1.4 2.5 1 1.9 2-1.5 2.5-5 .1-6.2-1.1-1.4-1.3-3.1-4.4-1.8-5.9Z"/></svg><span class="pont-whatsapp-label">Trimite comanda pe WhatsApp</span><span class="pont-send-total"><small>Total comandă</small><strong id="total"></strong></span></button>
+      <div class="pont-checkout-status">
+        <p id="orderMsg" role="status"></p>
+        <p id="phoneError" role="alert" hidden>Introdu un număr valid: 07XXXXXXXX sau +407XXXXXXXX.</p>
+        <p id="pontSendHint" role="status" hidden></p>
+      </div>
+    </footer>
+  </div>
+  <dialog id="pontCheckoutNotes" class="pont-checkout-sheet" aria-labelledby="pontNotesHeading">
+    <h3 id="pontNotesHeading">Observații (opțional)</h3>
+    <textarea id="orderNotes" name="notes" form="checkout" aria-labelledby="pontNotesHeading" rows="3" maxlength="250" placeholder="Ex.: fără ceapă" autofocus></textarea>
+    <button type="button" data-close-checkout-sheet>Gata</button>
+  </dialog>
+  <dialog id="pontCheckoutRecap" class="pont-checkout-sheet" aria-labelledby="pontRecapHeading">
+    <h3 id="pontRecapHeading" tabindex="-1" autofocus>Rezumatul comenzii</h3>
+    <div id="pontDetailedOrder" aria-label="Preparate și cantități"></div>
+    <p id="pontDeliveryNotice" hidden>Livrarea se confirmă separat de restaurant.</p>
+    <a id="pontRestaurantInfoLink" href="../informatii-restaurant/" target="_blank" rel="noopener">Informații despre restaurant și meniu</a>
+    <button type="button" data-close-checkout-sheet>Închide</button>
+  </dialog>
+</dialog><dialog id="orderConfirmationNotice" class="pont-order-confirm-dialog" aria-labelledby="orderConfirmationTitle"><div class="pont-order-confirm-symbol" aria-hidden="true">!</div><h3 id="orderConfirmationTitle">Confirmarea comenzii</h3><p><strong>Comanda trebuie confirmată de restaurant pe WhatsApp.</strong></p><p>Solicitarea este înregistrată când continui către WhatsApp. Restaurantul confirmă separat dacă poate pregăti comanda. Dacă nu primești un răspuns, contactează-l telefonic.</p><div class="pont-order-confirm-actions"><button type="button" id="orderNoticeCancel">Înapoi</button><button type="button" id="orderNoticeContinue">Am înțeles · Continuă</button></div></dialog>
 <script src="../super-admin/config.js"></script><script>
 const $=s=>document.querySelector(s), day=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest'}).format(new Date()), lei=n=>new Intl.NumberFormat('ro-RO',{style:'currency',currency:'RON'}).format(n);
 const read=(k,f)=>JSON.parse(localStorage.getItem(k)??JSON.stringify(f)), write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
@@ -700,12 +751,8 @@ function update(){
   $('#pontDetailedOrder').innerHTML=dishTotals.size
     ? '<ul class="pont-recap-dish-list">'+[...dishTotals].map(([name,count])=>'<li><span class="pont-recap-dish-quantity">'+count+' ×</span><span>'+esc(name)+'</span></li>').join('')+'</ul>'
     : '<p class="pont-summary-empty">Nu ai selectat încă preparate.</p>';
-  const bottomNotes=[
-    ...(delivery?['Livrarea se confirmă separat']:[]),
-    ...(!hasMinimumMenu()?['Min. '+(current?.min_full_menus||1)+' meniu complet']:[])
-  ];
-  $('#breakdown').innerHTML='<div class="pont-summary-pieces">'+(summaryParts.length?summaryParts.map(part=>'<span class="pont-summary-piece">'+esc(part)+'</span>').join(''):'<span class="pont-summary-empty">Nu ai selectat încă preparate.</span>')+'</div>'+
-    (bottomNotes.length?'<div class="pont-summary-notes">'+bottomNotes.map(note=>esc(note)).join(' · ')+'</div>':'');
+  $('#breakdown').innerHTML='<span class="pont-summary-pieces">'+(summaryParts.length?summaryParts.map(part=>'<span class="pont-summary-piece">'+esc(part)+'</span>').join(''):'<span class="pont-summary-empty">Nu ai selectat încă preparate.</span>')+'</span>';
+  $('#pontDeliveryNotice').hidden=!delivery;
   const hourRange='';
   const launchBlocked=!orderOpen(current)?'Meniul zilei este indisponibil.':
     !current?.phone?'Restaurantul nu are un număr WhatsApp configurat.':
@@ -722,7 +769,7 @@ function update(){
   $('#send').disabled=Boolean(launchBlocked||personalBlocked);
   const hint=$('#pontSendHint');hint.hidden=!(launchBlocked||personalBlocked);hint.textContent=launchBlocked||personalBlocked;
   $('#send').setAttribute('aria-describedby',launchBlocked||personalBlocked?'pontSendHint':'');
-  form.querySelectorAll('[data-method]').forEach(b=>{const active=b.dataset.method===form.elements.method.value;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active))});
+  checkoutLayer.querySelectorAll('[data-method]').forEach(b=>{const active=b.dataset.method===form.elements.method.value;b.classList.toggle('selected',active);b.setAttribute('aria-pressed',String(active))});
 }
 let returnFocus;
 const pontMetricsVisited=new Set();
@@ -805,10 +852,10 @@ function openOrder(m,trigger){
         '<button type="button" class="secondary" data-step="1" '+(d.available===false?'disabled':'')+' aria-label="Adaugă '+esc(d.name)+'">+</button></div></div>';
     }).join('')+'</div>'+(cat==='first'?'</section>':'</details>');
   }).join('');
-  const deliveryButton=form.querySelector('[data-method^="Livrare"]');
+  const deliveryButton=checkoutLayer.querySelector('[data-method^="Livrare"]');
    if(deliveryButton){deliveryButton.hidden=m.delivery===false;deliveryButton.disabled=m.delivery===false}
    form.elements.method.value=m.delivery===false?'Ridicare':'Livrare, dacă restaurantul confirmă';
-   form.elements.payment.innerHTML='<option value="Cash">Cash</option>'+(m.card?'<option value="Card">Card</option>':'');form.elements.payment.disabled=!m.card;let note=document.querySelector('#cardPaymentNote');if(!note){note=document.createElement('small');note.id='cardPaymentNote';form.elements.payment.closest('label').after(note)}note.hidden=!!m.card;note.textContent='Restaurantul nu percepe plata cu cardul.';
+   form.elements.payment.innerHTML='<option value="Cash">Cash</option>'+(m.card?'<option value="Card">Card</option>':'');form.elements.payment.disabled=!m.card;$('#cardPaymentNote').hidden=!!m.card;
   const minimum = m.min_full_menus || 1;
   $('#pontOrderMinimum').textContent = 'Minim ' + minimum + (minimum === 1 ? ' meniu' : ' meniuri');
   $('#pontOrderHours').closest('.pont-order-hours').style.setProperty('display','none','important');
@@ -860,39 +907,33 @@ checkoutPrivacyLink?.addEventListener('click',event=>{
  const opened=window.open(checkoutPrivacyLink.href,'_blank');
  if(opened){event.preventDefault();}
 });
-let checkoutPreviousFocus=null;
+const checkoutLayer=$('#pontCheckoutOverlay');
 function openCheckoutPanel(){
- if($('#openCheckout').disabled)return;
- checkoutPreviousFocus=document.activeElement;
- $('#pontCheckoutOverlay').hidden=false;
- $('#order').classList.add('pont-checkout-active');
- $('#pontCheckoutOverlay').querySelector('.pont-checkout-panel').focus({preventScroll:true});
+ if($('#openCheckout').disabled || checkoutLayer.open)return;
+ checkoutLayer.showModal();
 }
 function closeCheckoutPanel(restoreFocus=true){
- const layer=$('#pontCheckoutOverlay');
- if(layer.hidden)return;
- layer.hidden=true;
- $('#order').classList.remove('pont-checkout-active');
- if(restoreFocus) (checkoutPreviousFocus?.isConnected?checkoutPreviousFocus:$('#openCheckout')).focus({preventScroll:true});
+ if(!checkoutLayer.open)return;
+ checkoutLayer.querySelectorAll('.pont-checkout-sheet[open]').forEach(sheet=>sheet.close());
+ checkoutLayer.close();
+ if(restoreFocus)$('#openCheckout').focus({preventScroll:true});
 }
 $('#openCheckout').addEventListener('click',openCheckoutPanel);
+$('#backCheckout').addEventListener('click',()=>closeCheckoutPanel());
 $('#closeCheckout').addEventListener('click',()=>closeCheckoutPanel());
-$('#pontCheckoutBackdrop').addEventListener('click',()=>closeCheckoutPanel());
-$('#pontCheckoutOverlay').addEventListener('keydown',event=>{
- if(event.key==='Escape'){event.preventDefault();event.stopPropagation();closeCheckoutPanel();return}
- if(event.key!=='Tab')return;
- const focusables=[...$('#pontCheckoutOverlay').querySelectorAll('button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),summary')].filter(el=>el.getClientRects().length>0);
- if(!focusables.length)return;
- const first=focusables[0],last=focusables[focusables.length-1];
- if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}
- else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus()}
+checkoutLayer.addEventListener('cancel',event=>{event.preventDefault();closeCheckoutPanel()});
+checkoutLayer.querySelectorAll('.pont-checkout-option[aria-controls]').forEach(button=>{
+ const sheet=document.getElementById(button.getAttribute('aria-controls'));
+ button.addEventListener('click',()=>sheet.showModal());
+ sheet.querySelector('[data-close-checkout-sheet]').addEventListener('click',()=>sheet.close());
 });
+checkoutLayer.addEventListener('input',update);
 $('#close').onclick=()=>returnToRestaurants();
 window.addEventListener('popstate',routeRestaurantFromURL);
 $('#callNow').addEventListener('click',()=>{if(current&&$('#callNow').href)trackPontMetric('call_click',current)});
-$('#order').addEventListener('close',()=>{document.body.classList.remove('pont-restaurant-page');returnFocus?.focus()});
-$('#order').addEventListener('cancel',e=>{e.preventDefault();if(!$('#pontCheckoutOverlay').hidden)closeCheckoutPanel();else returnToRestaurants()});
-form.oninput=update;form.elements.phone.addEventListener('blur',()=>{phoneTouched=true;update()});form.querySelectorAll('[data-method]').forEach(b=>b.addEventListener('click',()=>{if(b.disabled)return;form.elements.method.value=b.dataset.method;update()}));
+$('#order').addEventListener('close',()=>{if(!$('#order').open)closeCheckoutPanel(false);document.body.classList.remove('pont-restaurant-page');returnFocus?.focus()});
+$('#order').addEventListener('cancel',e=>{e.preventDefault();if(checkoutLayer.open)closeCheckoutPanel();else returnToRestaurants()});
+form.oninput=update;form.elements.phone.addEventListener('blur',()=>{phoneTouched=true;update()});checkoutLayer.querySelectorAll('[data-method]').forEach(b=>b.addEventListener('click',()=>{if(b.disabled)return;form.elements.method.value=b.dataset.method;update()}));
 $('#choices').onclick=e=>{
 const pick=e.target.closest('[data-pick]');
 if(pick){const field=form.querySelector('#qty-'+pick.dataset.pick);if(field&&!field.disabled){field.value=pick.checked?'1':'0';update()}return;}
@@ -907,7 +948,7 @@ const cleanWhatsAppPhone=raw=>{let digits=String(raw||'').replace(/[^0-9]/g,'');
 let submittingOrder=false,orderNoticeAccepted=false;
 $('#orderNoticeCancel').onclick=()=>$('#orderConfirmationNotice').close();
 $('#orderNoticeContinue').onclick=()=>{orderNoticeAccepted=true;$('#orderConfirmationNotice').close();form.requestSubmit()};
-form.onsubmit=async e=>{e.preventDefault();if(submittingOrder)return;if($('#pontCheckoutOverlay').hidden){openCheckoutPanel();return;}if(!form.reportValidity()){const target=form.querySelector(':invalid');if(target){target.scrollIntoView({behavior:'smooth',block:'center'});target.focus({preventScroll:true})}return}if(!current?.phone){$('#orderMsg').textContent='Acest restaurant nu a activat comenzile online.';return}if(!orderOpen(current)){$('#orderMsg').textContent='Meniul zilei este indisponibil.';return}if(!hasMinimumMenu()){$('#orderMsg').textContent='Comanda minimă este de '+(current?.min_full_menus||1)+' meniu complet.';return}const details=Object.fromEntries(new FormData(form));details.payment=current?.card?(details.payment||'Cash'):'Cash';details.full_name=String(details.full_name||'').trim();details.phone=String(details.phone||'').trim();details.address=String(details.address||'').trim();if(current.delivery===false)details.method='Ridicare';if(details.full_name.length<3||!validCustomerPhone(details.phone)||(details.method!=='Ridicare'&&!details.address)){$('#orderMsg').textContent='Completează numele, telefonul și adresa pentru livrare.';return}if(details.method==='Ridicare')details.address='';
+form.onsubmit=async e=>{e.preventDefault();if(submittingOrder)return;if(!checkoutLayer.open){openCheckoutPanel();return;}if(!form.reportValidity()){const target=[...form.elements].find(field=>field.willValidate&&!field.validity.valid);target?.focus({preventScroll:true});return}if(!current?.phone){$('#orderMsg').textContent='Acest restaurant nu a activat comenzile online.';return}if(!orderOpen(current)){$('#orderMsg').textContent='Meniul zilei este indisponibil.';return}if(!hasMinimumMenu()){$('#orderMsg').textContent='Comanda minimă este de '+(current?.min_full_menus||1)+' meniu complet.';return}const details=Object.fromEntries(new FormData(form));details.payment=current?.card?(details.payment||'Cash'):'Cash';details.full_name=String(details.full_name||'').trim();details.phone=String(details.phone||'').trim();details.address=String(details.address||'').trim();if(current.delivery===false)details.method='Ridicare';if(details.full_name.length<3||!validCustomerPhone(details.phone)||(details.method!=='Ridicare'&&!details.address)){$('#orderMsg').textContent='Completează numele, telefonul și adresa pentru livrare.';return}if(details.method==='Ridicare')details.address='';
 // The button itself initiates the WhatsApp order; no extra confirmation dialog.
 orderNoticeAccepted=true;
 submittingOrder=true;$('#send').disabled=true;
@@ -938,7 +979,8 @@ if(waPhone){
   }
   const id=await response.json();
   if(typeof id!=='string'||!/^PONT [0-9]{2,12}$/.test(id))throw Error('Referința comenzii nu a fost confirmată. Reîncearcă.');
-  const msg=[id,'',...items.map((item,i)=>(i+1)+'. '+item.qty+'x '+itemName(item)),'','• Nume: '+details.full_name,'• Număr telefon: '+details.phone,'• Adresă: '+(details.method==='Ridicare'?'Ridicare de la restaurant':details.address),'• Metoda de plată: '+details.payment,'• Total: '+lei(subtotal(items))].join('\n');
+  const notes=String(details.notes||'').trim();
+  const msg=[id,'',...items.map((item,i)=>(i+1)+'. '+item.qty+'x '+itemName(item)),'','• Nume: '+details.full_name,'• Număr telefon: '+details.phone,'• Adresă: '+(details.method==='Ridicare'?'Ridicare de la restaurant':details.address),'• Metoda de plată: '+details.payment,...(notes?['• Observații: '+notes]:[]),'• Total: '+lei(subtotal(items))].join('\n');
   const url='https://wa.me/'+waPhone+'?text='+encodeURIComponent(msg);
   $('#orderMsg').textContent='Solicitarea '+id+' a fost inițiată. Trimite mesajul în WhatsApp și așteaptă acceptarea restaurantului.';
   window.location.href=url;
