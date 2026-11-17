@@ -707,3 +707,19 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
   .pont-menu-selection { column-gap: 5px; }
   .pont-menu-selection > svg { width: 1.22em; height: 1.22em; }
 }
+
+/* Selected dish: pulse only the name text, never the row or its background. */
+@keyframes pont-dish-name-neon-pulse {
+  0%,100% {color:#eafffa;text-shadow:0 0 2px rgba(105,255,236,.45),0 0 5px rgba(77,245,223,.28);}
+  50% {color:#9cfff1;text-shadow:0 0 5px rgba(145,255,243,.95),0 0 12px rgba(66,255,229,.78),0 0 21px rgba(36,225,207,.48);}
+}
+#order.pont-menu-view .pont-menu-dish.pont-dish-name-active > .pont-menu-dish-name {
+  animation:pont-dish-name-neon-pulse 2.1s ease-in-out infinite;
+}
+@media(prefers-reduced-motion:reduce){
+  #order.pont-menu-view .pont-menu-dish.pont-dish-name-active > .pont-menu-dish-name {
+    animation:none;
+    color:#a6fff0;
+    text-shadow:0 0 6px rgba(74,245,222,.5);
+  }
+}
