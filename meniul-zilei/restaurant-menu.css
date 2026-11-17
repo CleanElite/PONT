@@ -330,7 +330,7 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
   color: #b99a62;
 }
 
-.pont-dish-gallery__photo img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; pointer-events: none; }
+.pont-dish-gallery__photo img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; object-position: center; pointer-events: none; }
 .pont-dish-gallery__photo svg { width: 34%; height: 34%; fill: currentColor; }
 .pont-dish-gallery__name {
   display: grid;
