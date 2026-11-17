@@ -542,7 +542,7 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
   }
 }
 </style>
-<link rel="stylesheet" href="./restaurant-menu.css?v=20261117-28">
+<link rel="stylesheet" href="./restaurant-menu.css?v=20261118-01">
 <style id="pont-restaurant-header-clean-20261117">
 /* Header-only safeguard: old cached background art contains a bright diagonal streak. */
 #order.pont-menu-view .pont-menu-header {
@@ -880,7 +880,7 @@ function openOrder(m,trigger){
     const dishes=optionDishes.filter(dish=>dish.category===category);
     const first=category==='first';
     if(!dishes.length)return first&&dessertHeader?'<section class="pont-menu-course pont-menu-course--dessert-only">'+dessertHeader+'</section>':'';
-    const courseName='<span class="pont-menu-course-name"><svg class="pont-menu-course-symbol" aria-hidden="true"><use href="../admin-icons.svg?v=1#'+symbol+'"></use></svg><span><strong class="pont-menu-course-title">'+title+'</strong><small class="pont-menu-course-subtitle">'+subtitle+'</small></span></span>';
+    const courseName='<span class="pont-menu-course-name"><svg class="pont-menu-course-symbol" aria-hidden="true"><use href="../admin-icons.svg?v=1#'+symbol+'"></use></svg><span><strong class="pont-menu-course-title">'+title+'</strong></span></span>';
     const heading=first
       ? '<div class="pont-menu-course-heading'+(dessertHeader?' pont-menu-course-heading--dessert':'')+'">'+courseName+dessertHeader+'</div>'
       : '<summary class="pont-menu-course-heading">'+courseName+'<svg class="pont-menu-course-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=1#caret-down"></use></svg></summary>';
