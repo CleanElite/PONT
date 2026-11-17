@@ -497,7 +497,7 @@ summary.pont-menu-course-heading::-webkit-details-marker { display: none; }
 
 .pont-menu-dish {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   align-items: center;
   column-gap: clamp(5px, 1.95cqw, 16px);
   min-height: clamp(29px, 7.45cqw, 60px);
