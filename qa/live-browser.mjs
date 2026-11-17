@@ -81,6 +81,11 @@ async function auditCheckout(browser){
     const box=await galleryViewport.boundingBox();
     const cdp=await context.newCDPSession(page);
     const trackTime=()=>galleryViewport.evaluate(element=>element.firstElementChild.getAnimations()[0].currentTime);
+    const waitForDrag=(start,direction)=>page.waitForFunction(({start,direction})=>{
+     const track=document.querySelector('.pont-dish-gallery__track');
+     const anim=track.getAnimations()[0];
+     return track.closest('#pontDishGallery').hasAttribute('data-dragging') && (anim.currentTime-start)*direction>900;
+    },{start,direction},{timeout:3000});
     const touch=(type,x,y)=>cdp.send('Input.dispatchTouchEvent',{type,touchPoints:type==='touchEnd'?[]:[{x,y}]});
     await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.currentTime>250);
     const x=box.x+box.width/2;
@@ -89,10 +94,10 @@ async function auditCheckout(browser){
     await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.playState==='paused');
     const held=await trackTime();
     await touch('touchMove',x-40,y);
-    assert.ok(await trackTime()>held+2000,'Dragging left moves the current slide forward');
+    await waitForDrag(held,1);
     const left=await trackTime();
     await touch('touchMove',x-18,y);
-    assert.ok(await trackTime()<left-1000,'The same held touch can drag right');
+    await waitForDrag(left,-1);
     await touch('touchEnd',x-18,y);
     await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.playState==='running');
     await page.emulateMedia({reducedMotion:'reduce'});

@@ -35,7 +35,7 @@
 
   function seek(pixels) {
     const wrapped = ((pixels % cycleWidth) + cycleWidth) % cycleWidth;
-    animation.pause();
+    if (animation.playState !== 'paused') animation.pause();
     animation.currentTime = wrapped * 1000 / pixelsPerSecond;
   }
 
