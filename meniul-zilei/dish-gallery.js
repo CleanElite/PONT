@@ -68,9 +68,14 @@
 
   function moveByCard(direction) {
     if (!animation) return;
-    const card = track.querySelector('.pont-dish-gallery__item');
-    const width = cycleWidth / card.parentElement.childElementCount;
-    seek(position() + direction * width);
+    const slots = [...track.firstElementChild.children];
+    const firstLeft = slots[0].getBoundingClientRect().left;
+    const starts = slots.map(slot => slot.getBoundingClientRect().left - firstLeft);
+    starts.push(cycleWidth);
+    const offset = position();
+    const nearest = starts.reduce((best, start, index) =>
+      Math.abs(start - offset) < Math.abs(starts[best] - offset) ? index : best, 0);
+    seek(starts[(nearest + direction + slots.length) % slots.length]);
     resumeAfterInteraction();
   }
 
@@ -125,10 +130,24 @@
     delete image.dataset.referencePhoto;
   }, true);
 
-  function makeDishCard(dish, eager) {
+  function makeDishCard(dish, eager, startsCourse) {
+    const slot = document.createElement('div');
+    slot.className = 'pont-dish-gallery__slot';
+    slot.setAttribute('role', 'listitem');
+
+    if (startsCourse) {
+      slot.dataset.courseStart = dish.category;
+      const marker = document.createElement('span');
+      marker.className = 'pont-dish-gallery__course-marker';
+      marker.setAttribute('aria-hidden', 'true');
+      const label = document.createElement('span');
+      label.textContent = labelByCourse[dish.category];
+      marker.append(label);
+      slot.append(marker);
+    }
+
     const card = document.createElement('div');
     card.className = 'pont-dish-gallery__item';
-    card.setAttribute('role', 'listitem');
     card.toggleAttribute('data-sold-out', !dish.available);
 
     const photo = document.createElement('div');
@@ -168,7 +187,8 @@
     course.className = 'pont-dish-gallery__course';
     course.textContent = labelByCourse[dish.category] + (dish.available ? '' : ' · Epuizat');
     card.append(photo, name, course);
-    return card;
+    slot.append(card);
+    return slot;
   }
 
   window.pontRenderDishGallery = dishes => {
@@ -184,7 +204,7 @@
     const [first, second] = Object.keys(labelByCourse).map(category =>
       dishes.filter(dish => dish.category === category && dish.name.trim())
     );
-    const cards = [...first.slice(0, 2), ...second.slice(0, 2), ...first.slice(2), ...second.slice(2)];
+    const cards = [...first, ...second];
     const loops = cards.length >= 4;
     gallery.hidden = !cards.length;
     gallery.toggleAttribute('data-loop', loops);
@@ -195,7 +215,7 @@
     const sequence = document.createElement('div');
     sequence.className = 'pont-dish-gallery__sequence';
     sequence.setAttribute('role', 'list');
-    sequence.append(...cards.map((dish, index) => makeDishCard(dish, index < 4)));
+    sequence.append(...cards.map((dish, index) => makeDishCard(dish, index < 4, index === 0 || index === first.length)));
     track.append(sequence);
     if (loops) {
       const copy = sequence.cloneNode(true);

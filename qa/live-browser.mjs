@@ -34,6 +34,11 @@ async function auditCheckout(browser){
   [320,480,'/meniul-zilei/'],[390,585,'/meniul-zilei/'],[393,664,'/meniul-zilei/'],
   [667,375,'/meniul-zilei/'],[1200,800,'/meniul-zilei/'],[393,664,'/test/meniul-zilei/']
  ]){
+  const extraStarters=menuPath.startsWith('/test/')?[
+   {id:'extra-soup',name:'Supă cremă de legume',category:'first',price:16},
+   {id:'extra-starter',name:'Ciorbă de cartofi',category:'first',price:17}
+  ]:[];
+  const dailyMenu={...menu,dish_selection:[...menu.dish_selection,...extraStarters]};
   const context=await browser.newContext({viewport:{width,height},isMobile:width<600,hasTouch:true,locale:'ro-RO',serviceWorkers:'block'});
   const page=await context.newPage();
   page.setDefaultTimeout(6000);
@@ -50,7 +55,7 @@ async function auditCheckout(browser){
    if(url.pathname.endsWith('/super-admin/config.js'))return route.fulfill({contentType:'text/javascript',body:"window.PONT_CONFIG={url:location.origin+'/mock',anonKey:'fixture'}"});
    if(url.pathname.startsWith('/mock/rest/v1/')){
     const endpoint=url.pathname.slice('/mock/rest/v1/'.length);
-    const values={menus:[menu],restaurants:[restaurant]};
+    const values={menus:[dailyMenu],restaurants:[restaurant]};
     if(endpoint==='rpc/pont_finalize_whatsapp_order_private'){
      requestBody=route.request().postDataJSON();
      return route.fulfill({json:'PONT 42'});
@@ -65,13 +70,13 @@ async function auditCheckout(browser){
    const gallery=page.locator('#pontDishGallery');
    await gallery.waitFor({state:'visible'});
    const group=gallery.locator('.pont-dish-gallery__sequence:not([aria-hidden])');
-   assert.deepEqual(await group.locator('.pont-dish-gallery__course').allTextContents(),['Felul 1','Felul 1','Felul 2','Felul 2']);
+   assert.deepEqual(await group.locator('.pont-dish-gallery__course').allTextContents(),['Felul 1','Felul 1',...extraStarters.map(()=> 'Felul 1'),'Felul 2','Felul 2']);
    const gallerySize=await gallery.evaluate(element=>{
     const viewport=element.querySelector('.pont-dish-gallery__viewport');
     const track=viewport.firstElementChild;
     const sequence=track.firstElementChild;
     const copy=sequence.nextElementSibling;
-    const card=sequence.firstElementChild;
+    const card=sequence.querySelector('.pont-dish-gallery__item');
     const photo=card.firstElementChild.getBoundingClientRect();
     const caption=card.querySelector('.pont-dish-gallery__name').getBoundingClientRect();
     const markersFit=[sequence,copy].every(list=>{
@@ -79,10 +84,30 @@ async function auditCheckout(browser){
      const start=parseFloat(line.insetInlineStart);
      return line.content==='""' && start>=0 && start+parseFloat(line.inlineSize)<=parseFloat(getComputedStyle(list).paddingInlineStart);
     });
-    return {viewport:viewport.clientWidth,card:card.getBoundingClientRect().width,gap:parseFloat(getComputedStyle(sequence).columnGap),photoWidth:photo.width,photoHeight:photo.height,captionBelow:caption.top>=photo.bottom-1,markersFit,seam:copy.firstElementChild.getBoundingClientRect().left-sequence.lastElementChild.getBoundingClientRect().right};
+    const courseMarkersFit=[sequence,copy].every(list=>{
+     const first=list.querySelector('[data-course-start="first"]');
+     const second=list.querySelector('[data-course-start="second"]');
+     const topMarker=first.querySelector('.pont-dish-gallery__course-marker');
+     const sideMarker=second.querySelector('.pont-dish-gallery__course-marker');
+     const top=topMarker.getBoundingClientRect();
+     const side=sideMarker.getBoundingClientRect();
+     return list.querySelectorAll('[data-course-start]').length===2 && first===list.firstElementChild &&
+      topMarker.textContent==='Felul 1' && sideMarker.textContent==='Felul 2' &&
+      getComputedStyle(topMarker.firstElementChild).writingMode==='horizontal-tb' &&
+      getComputedStyle(sideMarker.firstElementChild).writingMode==='vertical-rl' &&
+      top.top>=list.getBoundingClientRect().top-1 && top.bottom<first.getBoundingClientRect().top &&
+      side.left>=second.previousElementSibling.getBoundingClientRect().right &&
+      side.right<second.querySelector('.pont-dish-gallery__item').getBoundingClientRect().left;
+    });
+    return {
+     viewport:viewport.clientWidth,fourCards:sequence.children[3].getBoundingClientRect().right-sequence.getBoundingClientRect().left,
+     gap:parseFloat(getComputedStyle(sequence).columnGap),photoWidth:photo.width,photoHeight:photo.height,
+     captionBelow:caption.top>=photo.bottom-1,markersFit,courseMarkersFit,
+     seam:copy.firstElementChild.getBoundingClientRect().left-sequence.lastElementChild.getBoundingClientRect().right
+    };
    });
-   assert.ok(Math.abs(gallerySize.viewport-4*(gallerySize.card+gallerySize.gap))<2 && Math.abs(gallerySize.photoWidth-gallerySize.photoHeight)<1 && gallerySize.captionBelow,JSON.stringify(gallerySize));
-   assert.ok(gallerySize.markersFit && Math.abs(gallerySize.seam-gallerySize.gap)<1,JSON.stringify(gallerySize));
+   assert.ok(Math.abs(gallerySize.viewport-gallerySize.fourCards)<2 && Math.abs(gallerySize.photoWidth-gallerySize.photoHeight)<1 && gallerySize.captionBelow,JSON.stringify(gallerySize));
+   assert.ok(gallerySize.markersFit && gallerySize.courseMarkersFit && Math.abs(gallerySize.seam-gallerySize.gap)<1,JSON.stringify(gallerySize));
    if(width===393&&!menuPath.includes('/test/')){
     const galleryViewport=gallery.locator('.pont-dish-gallery__viewport');
     const box=await galleryViewport.boundingBox();
@@ -110,6 +135,12 @@ async function auditCheckout(browser){
     await page.emulateMedia({reducedMotion:'reduce'});
     await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.playState==='paused');
     await galleryViewport.evaluate(element=>{element.firstElementChild.getAnimations()[0].currentTime=0});
+    const positions=()=>group.locator('.pont-dish-gallery__slot').evaluateAll(slots=>slots.map(slot=>slot.getBoundingClientRect().left));
+    const [firstPosition]=await positions();
+    for(const index of [1,2,3,0]){
+     await galleryViewport.press('ArrowRight');
+     assert.ok(Math.abs((await positions())[index]-firstPosition)<1);
+    }
     await page.locator('.pont-menu-pick').first().click();
     assert.equal(await page.locator('#qty-0').inputValue(),'1');
     for(const index of [1,2,3])await page.locator('#qty-'+index).fill('1');
