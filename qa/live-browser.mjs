@@ -69,39 +69,67 @@ async function auditCheckout(browser){
    const gallerySize=await gallery.evaluate(element=>{
     const viewport=element.querySelector('.pont-dish-gallery__viewport');
     const track=viewport.firstElementChild;
-    const card=track.querySelector('.pont-dish-gallery__item');
+    const sequence=track.querySelector('.pont-dish-gallery__sequence:not([aria-hidden])');
+    const card=sequence.querySelector('.pont-dish-gallery__item');
+    const marker=sequence.querySelector('.pont-dish-gallery__cycle-start');
     const photo=card.firstElementChild.getBoundingClientRect();
     const caption=card.querySelector('.pont-dish-gallery__name').getBoundingClientRect();
-    return {viewport:viewport.clientWidth,card:card.getBoundingClientRect().width,gap:parseFloat(getComputedStyle(track).columnGap),photoWidth:photo.width,photoHeight:photo.height,captionBelow:caption.top>=photo.bottom-1};
+    return {viewport:viewport.clientWidth,card:card.getBoundingClientRect().width,gap:parseFloat(getComputedStyle(sequence).columnGap),marker:marker.getBoundingClientRect().width,photoWidth:photo.width,photoHeight:photo.height,captionBelow:caption.top>=photo.bottom-1};
    });
-   assert.ok(Math.abs(gallerySize.viewport-4*gallerySize.card-3*gallerySize.gap)<2 && Math.abs(gallerySize.photoWidth-gallerySize.photoHeight)<1 && gallerySize.captionBelow,JSON.stringify(gallerySize));
+   assert.ok(Math.abs(gallerySize.viewport-4*gallerySize.card-4*gallerySize.gap-gallerySize.marker)<2 && Math.abs(gallerySize.photoWidth-gallerySize.photoHeight)<1 && gallerySize.captionBelow,JSON.stringify(gallerySize));
    if(width===393&&!menuPath.includes('/test/')){
     const galleryViewport=gallery.locator('.pont-dish-gallery__viewport');
     const box=await galleryViewport.boundingBox();
-    const cdp=await context.newCDPSession(page);
-    const trackTime=()=>galleryViewport.evaluate(element=>element.firstElementChild.getAnimations()[0].currentTime);
-    const waitForDrag=(start,direction)=>page.waitForFunction(({start,direction})=>{
-     const track=document.querySelector('.pont-dish-gallery__track');
-     const anim=track.getAnimations()[0];
-     return track.closest('#pontDishGallery').hasAttribute('data-dragging') && (anim.currentTime-start)*direction>900;
-    },{start,direction},{timeout:3000});
-    const touch=(type,x,y)=>cdp.send('Input.dispatchTouchEvent',{type,touchPoints:type==='touchEnd'?[]:[{x,y}]});
-    await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.currentTime>250);
-    const x=box.x+box.width/2;
-    const y=box.y+box.height/2;
-    await touch('touchStart',x,y);
-    await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.playState==='paused');
-    const held=await trackTime();
-    await touch('touchMove',x-40,y);
-    await waitForDrag(held,1);
-    const left=await trackTime();
-    await touch('touchMove',x-18,y);
-    await waitForDrag(left,-1);
-    await touch('touchEnd',x-18,y);
-    await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.playState==='running');
+    const readGallery=()=>galleryViewport.evaluate(element=>{
+      const track=element.firstElementChild;
+      const copies=track.querySelectorAll('.pont-dish-gallery__sequence');
+      const transform=track.style.transform;
+      const x=Number(transform.match(/translate3d\\(([-\\d.]+)px/)?.[1]);
+      const w=copies[1].getBoundingClientRect().left-copies[0].getBoundingClientRect().left;
+      return {x,w,dragging:element.closest('#pontDishGallery').hasAttribute('data-dragging'),copies:copies.length};
+    });
+    await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').style.transform.includes('translate3d'));
+    const x=box.x+box.width/2,y=box.y+box.height/2;
+    await galleryViewport.evaluate(el=>el.addEventListener('pointerdown',e=>{el.dataset.qaPointerId=String(e.pointerId)}, {once:true}));
+    await page.mouse.move(x,y);
+    await page.mouse.down();
+    const held=await readGallery();
+    assert.ok(held.dragging&&held.copies===3&&held.w>100,JSON.stringify(held));
+    await page.waitForTimeout(160);
+    const heldStill=await readGallery();
+    assert.ok(Math.abs(heldStill.x-held.x)<1.5,'Autoplay must pause during the held pointer gesture');
+    // Simulate an uninterrupted pointer hold crossing >4 complete loops in each
+    // direction. There must be movement at every step and no hard carousel end.
+    const gesture=await galleryViewport.evaluate((element,startX)=>{
+      const track=element.firstElementChild;
+      const id=Number(element.dataset.qaPointerId);
+      const read=()=>Number(track.style.transform.match(/translate3d\\(([-\\d.]+)px/)?.[1]);
+      const progress=[];
+      for(let step=1;step<=190;step++){
+        element.dispatchEvent(new PointerEvent('pointermove',{pointerId:id,isPrimary:true,clientX:startX-step*12,bubbles:true,cancelable:true}));
+        progress.push(read());
+      }
+      const atFarEnd=read();
+      for(let step=189;step>=0;step--){
+        element.dispatchEvent(new PointerEvent('pointermove',{pointerId:id,isPrimary:true,clientX:startX-step*12,bubbles:true,cancelable:true}));
+        progress.push(read());
+      }
+      const moved=progress.filter((value,index)=>index>0&&Math.abs(value-progress[index-1])>1).length;
+      return {moved,count:progress.length,atFarEnd,returned:read()};
+    },x);
+    assert.ok(gesture.moved>=gesture.count-4,'Dragging stopped or became unresponsive: '+JSON.stringify(gesture));
+    assert.ok(Math.abs(gesture.returned-held.x)<1.5,'Returning to drag origin should not jump: '+JSON.stringify({held,gesture}));
+    await page.mouse.up();
+    await page.waitForTimeout(1350);
+    const beforeResume=await readGallery();
+    await page.waitForTimeout(350);
+    const afterResume=await readGallery();
+    assert.ok(Math.abs(afterResume.x-beforeResume.x)>1,'Slow automatic scrolling should resume after pointer release');
     await page.emulateMedia({reducedMotion:'reduce'});
-    await page.waitForFunction(()=>document.querySelector('.pont-dish-gallery__track').getAnimations()[0]?.playState==='paused');
-    await galleryViewport.evaluate(element=>{element.firstElementChild.getAnimations()[0].currentTime=0});
+    const staticStart=await readGallery();
+    await page.waitForTimeout(200);
+    const staticEnd=await readGallery();
+    assert.ok(Math.abs(staticEnd.x-staticStart.x)<1,'Reduced-motion setting should pause autoplay');
     await page.locator('.pont-menu-pick').first().click();
     assert.equal(await page.locator('#qty-0').inputValue(),'1');
     for(const index of [1,2,3])await page.locator('#qty-'+index).fill('1');
