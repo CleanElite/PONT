@@ -165,6 +165,41 @@ availabilityStyle.textContent = `
 @media(max-width:560px){.pont-availability {width:100%;}.pont-availability-btn{flex:1;}}
 `;
 catalog.prepend(availabilityStyle);
+// Read-only high-resolution viewer for saved dish thumbnails.
+const dishLightbox = document.createElement('dialog');
+dishLightbox.className = 'pont-dish-lightbox';
+dishLightbox.setAttribute('aria-label', 'Fotografie preparat mărită');
+dishLightbox.innerHTML = '<div class="pont-dish-lightbox-inner"><button type="button" class="pont-dish-lightbox-close" aria-label="Închide fotografia" title="Închide">×</button><img alt=""></div>';
+document.body.append(dishLightbox);
+const dishLightboxStyle = document.createElement('style');
+dishLightboxStyle.textContent = `
+.pont-dish-lightbox {
+  width:min(94vw,920px);max-width:94vw;max-height:94dvh;
+  margin:auto;padding:0;border:1px solid #d4b775;border-radius:18px;
+  background:#071f20;box-shadow:0 22px 90px #000b;overflow:hidden;
+}
+.pont-dish-lightbox::backdrop{background:rgba(0,9,11,.86);backdrop-filter:blur(7px)}
+.pont-dish-lightbox-inner{position:relative;display:grid;place-items:center;padding:10px;min-height:120px}
+.pont-dish-lightbox-inner img{display:block;max-width:100%;max-height:calc(94dvh - 20px);width:auto;height:auto;object-fit:contain;border-radius:12px}
+.pont-dish-lightbox-close{position:absolute;z-index:2;top:12px;right:12px;width:36px;height:36px;
+  display:grid;place-items:center;padding:0;border:1px solid #edcb82;border-radius:50%;
+  background:rgba(3,27,29,.95);color:#fff4d8;font:26px/1 system-ui;cursor:pointer;box-shadow:0 2px 12px #0008}
+.pont-dish-lightbox-close:focus-visible,.pont-dish-image-open:focus-visible{outline:2px solid #ffe1a0;outline-offset:3px}
+.pont-dish-image-open{display:inline-flex;align-items:center;justify-content:center;flex:none;background:transparent;border:0;padding:0;cursor:zoom-in;border-radius:10px}
+.pont-dish-image-open img{display:block}
+@media(max-width:600px){.pont-dish-lightbox{width:96vw;max-width:96vw;border-radius:13px}.pont-dish-lightbox-inner{padding:5px}
+ .pont-dish-lightbox-inner img{max-height:calc(94dvh - 10px)}.pont-dish-lightbox-close{top:10px;right:10px}}
+`;
+document.head.append(dishLightboxStyle);
+const closeDishLightbox = () => { if (dishLightbox.open) dishLightbox.close(); };
+dishLightbox.querySelector('.pont-dish-lightbox-close').addEventListener('click', closeDishLightbox);
+dishLightbox.addEventListener('click', e => { if (e.target === dishLightbox) closeDishLightbox(); });
+const showDishLightbox = (src, name) => {
+  const img = dishLightbox.querySelector('img');
+  img.src = src;
+  img.alt = name || 'Fotografie preparat';
+  if (!dishLightbox.open) dishLightbox.showModal();
+};
 const dishEditor = catalog.querySelector('.admin-dish-editor');
 const dishFormMessage = $('pontDishMessage');
 let dishListMessage = dishFormMessage;
@@ -321,7 +356,7 @@ function library() {
   $('pontDishList').innerHTML = list.length ? list.map(dish => {
     const photo = photoUrl(dish);
     return '<div class="pont-dish-line pont-library-row"><div class="pont-dish-summary">' +
-      (photo ? '<img loading="lazy" alt="" src="' + esc(photo) + '">' : '') +
+      (photo ? '<button type="button" class="pont-dish-image-open" data-view-dish="' + esc(dish.id) + '" aria-label="Mărește fotografia: ' + esc(dish.name) + '" title="Mărește fotografia"><img loading="lazy" alt="" src="' + esc(photo) + '"></button>' : '') +
       '<span class="name"><strong>' + esc(dish.name) + '</strong>' +
       (dish.description ? '<small>' + esc(dish.description) + '</small>' : '') + '</span></div>' +
       '<span class="pont-dish-price">' + (dish.category === 'dessert' ? 'Inclus' : priceRO.format(dish.price) + ' lei') + '</span>' +
@@ -909,6 +944,13 @@ $('pontDishForm').onsubmit = async event => {
   }
 };
 $('pontDishList').onclick = async event => {
+  const zoom = event.target.closest('[data-view-dish]');
+  if (zoom) {
+    const item = dishes.find(d => d.id === zoom.dataset.viewDish);
+    const src = item && photoUrl(item);
+    if (src) showDishLightbox(src, item.name);
+    return;
+  }
   const toggle = event.target.closest('[data-availability]');
   if (toggle) {
     const item = dishes.find(d => d.id === toggle.dataset.availability);
