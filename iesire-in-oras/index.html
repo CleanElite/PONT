@@ -237,6 +237,71 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   border-radius:0!important;
   box-shadow:none!important;
 }
+</style><style id="pont-promoted-artwork-integrated-20261117">
+/* Full-bleed editorial banners: artwork and copy occupy one continuous surface. */
+#eventList .pont-promoted-edge-to-edge > .event-card {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  background:#071e24;
+  padding-inline:clamp(18px,5vw,72px)!important;
+}
+#eventList .pont-promoted-edge-to-edge > .event-card .pont-event-poster-fill {
+  display:none!important;
+}
+#eventList .pont-promoted-edge-to-edge > .event-card .pont-event-poster-fit.menu-card-photo {
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  object-fit:cover!important;
+  object-position:center!important;
+  opacity:1;
+}
+#eventList .pont-promoted-edge-to-edge > .event-card::after {
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:1;
+  background:linear-gradient(90deg,rgba(3,19,23,.97) 0%,rgba(3,21,25,.93) 24%,rgba(3,21,25,.65) 43%,rgba(3,21,25,.10) 72%,rgba(3,21,25,.04) 100%);
+  pointer-events:none;
+}
+#eventList .pont-promoted-edge-to-edge > .event-card .menu-card-copy {
+  position:relative;
+  z-index:2;
+  width:min(52%,500px);
+  min-width:0;
+  max-width:none;
+  gap:clamp(3px,.6vw,8px);
+  align-items:flex-start;
+  justify-content:center;
+  text-align:left;
+  text-shadow:0 2px 10px rgba(0,0,0,.45);
+}
+#eventList .pont-promoted-edge-to-edge > .event-card .pont-city-sponsored-label {
+  margin-bottom:2px;
+  font-size:clamp(9px,1vw,11px);
+  letter-spacing:.09em;
+  text-transform:uppercase;
+  color:#f4d79a;
+}
+#eventList .pont-promoted-edge-to-edge > .event-card .menu-card-name {
+  max-width:100%;
+  font-size:clamp(19px,3vw,32px);
+  line-height:1.08;
+  overflow-wrap:anywhere;
+}
+#eventList .pont-promoted-edge-to-edge > .event-card .event-card-meta {
+  display:flex;
+  gap:clamp(4px,.8vw,12px);
+  align-items:center;
+  flex-wrap:wrap;
+}
+@media(max-width:520px) {
+ #eventList .pont-promoted-edge-to-edge > .event-card {padding-inline:clamp(12px,4vw,20px)!important}
+ #eventList .pont-promoted-edge-to-edge > .event-card .menu-card-copy {width:57%;gap:3px}
+ #eventList .pont-promoted-edge-to-edge > .event-card .menu-card-name {font-size:clamp(16px,4.4vw,21px)}
+ #eventList .pont-promoted-edge-to-edge > .event-card::after {background:linear-gradient(90deg,#04171cf7 0%,#04171ce8 31%,#04171c9e 53%,#04171c0d 86%)}
+}
 </style></head>
 <body class="lunch menu-showcase">
 <a class="pont-skip-content" href="#pontMainContent">Sari la conținut</a>
@@ -332,13 +397,18 @@ function renderEvents(events){
   if(isFixed)outer.classList.add('pont-promoted-position');
   if(isPromoted)outer.classList.add('pont-promoted-edge-to-edge');
   const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
-  const hasPoster=!!(event.poster_url&&/^https:\/\//i.test(event.poster_url));
+  const promotedArtwork={
+   'a9c43028-e400-4058-9a99-bc23f134a118':'../assets/pont-event-game-night.svg',
+   '470b12b0-7d74-4dd8-982b-385a34fa4ce9':'../assets/pont-event-stand-up.svg'
+  };
+  const posterSource=(isPromoted&&promotedArtwork[event.id])||event.poster_url;
+  const hasPoster=!!(posterSource&&(/^(https:\/\/|\.\.\/assets\/)/i.test(posterSource)));
   if(!hasPoster)button.classList.add('event-card-no-photo');
   const img=hasPoster?document.createElement('img'):null;
   const backdrop=hasPoster?document.createElement('img'):null;
   if(img){
-   img.className='menu-card-photo pont-event-poster-fit';img.src=event.poster_url;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';
-   backdrop.className='pont-event-poster-fill';backdrop.src=event.poster_url;backdrop.alt='';backdrop.setAttribute('aria-hidden','true');backdrop.loading='lazy';
+   img.className='menu-card-photo pont-event-poster-fit';img.src=posterSource;img.alt='';img.loading=i<2?'eager':'lazy';img.decoding='async';
+   backdrop.className='pont-event-poster-fill';backdrop.src=posterSource;backdrop.alt='';backdrop.setAttribute('aria-hidden','true');backdrop.loading='lazy';
    img.onerror=()=>{img.remove();backdrop.remove();button.classList.add('event-card-no-photo')};
   }
   const badge=document.createElement('span');badge.className='event-date';badge.textContent=escDate(event.event_date);
