@@ -176,95 +176,16 @@ html:has(body.pont-restaurant-page) { background: #011b1c; }
 .pont-dish-gallery__track, .pont-dish-gallery__sequence {
   display: flex;
   align-items: stretch;
+  gap: var(--gallery-gap);
   width: max-content;
 }
 
-.pont-dish-gallery__sequence {
-  --gallery-course-marker-width: clamp(18px, 5.4cqw, 26px);
-  position: relative;
-  flex: none;
-  gap: var(--gallery-gap);
-  padding-inline-start: var(--gallery-gap);
-}
-
-.pont-dish-gallery__sequence:has(> [data-course-start="first"]) {
-  padding-block-start: clamp(20px, 4.6cqw, 27px);
-}
-
-.pont-dish-gallery__sequence:has(> [data-course-start="second"]:nth-child(-n + 4)) {
-  --gallery-card-inset: calc(var(--gallery-course-marker-width) / 4);
-}
-
-.pont-dish-gallery__sequence::before {
-  position: absolute;
-  inset-block: 9%;
-  inset-inline-start: calc(var(--gallery-gap) / 2 - 1px);
-  inline-size: 2px;
-  border-radius: 999px;
-  background: var(--gold-menu);
-  content: '';
-  pointer-events: none;
-}
-
-.pont-dish-gallery__slot {
-  position: relative;
-  display: flex;
-  flex: none;
-}
-
-.pont-dish-gallery__course-marker {
-  position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  padding: 2px 5px;
-  border: 1px solid #a38853;
-  border-radius: 999px;
-  background: linear-gradient(155deg, #263928, #092424 72%);
-  color: #ffe4a1;
-  font: 700 clamp(9px, 2.55cqw, 13px)/1 var(--serif-menu);
-  white-space: nowrap;
-  pointer-events: none;
-}
-
-.pont-dish-gallery__course-marker::after {
-  inline-size: 4px;
-  block-size: 4px;
-  flex: none;
-  border-block-start: 1px solid currentColor;
-  border-inline-end: 1px solid currentColor;
-  transform: rotate(45deg);
-  content: '';
-}
-
-.pont-dish-gallery__slot[data-course-start="first"] > .pont-dish-gallery__course-marker {
-  inset-block-end: calc(100% + 4px);
-  inset-inline-start: 0;
-}
-
-.pont-dish-gallery__slot[data-course-start="second"] {
-  padding-inline-start: var(--gallery-course-marker-width);
-}
-
-.pont-dish-gallery__slot[data-course-start="second"] > .pont-dish-gallery__course-marker {
-  inset-block-start: 50%;
-  inset-inline-start: 0;
-  inline-size: calc(var(--gallery-course-marker-width) - 4px);
-  flex-direction: column;
-  padding: 5px 0;
-  transform: translateY(-50%);
-}
-
-.pont-dish-gallery__slot[data-course-start="second"] > .pont-dish-gallery__course-marker > span {
-  writing-mode: vertical-rl;
-}
-
+.pont-dish-gallery__sequence { flex: none; }
 .pont-dish-gallery__item {
   flex: 0 0 auto;
   display: grid;
   grid-template-rows: auto 1fr auto;
-  width: calc(25cqw - var(--gallery-gap) - var(--gallery-card-inset, 0px));
+  width: calc((100cqw - 3 * var(--gallery-gap)) / 4);
   min-width: 0;
   overflow: hidden;
   border: 1px solid #dcb46b;
