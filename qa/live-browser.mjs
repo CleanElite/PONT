@@ -130,14 +130,12 @@ async function auditCheckout(browser){
     const autoplayAfter=await readGallery();
     assert.ok(autoplayAfter.x<autoplayBefore.x-1,'Autoplay must move left from the first card');
     // Confirm the endpoint reverses animation, never restarts from the beginning.
-    await galleryViewport.evaluate(el=>{
-      const track=el.firstElementChild;
-      const rect=el.getBoundingClientRect();
-      const id=999;
-      el.dispatchEvent(new PointerEvent('pointerdown',{pointerId:id,isPrimary:true,button:0,clientX:rect.left+rect.width/2,bubbles:true,cancelable:true}));
-      el.dispatchEvent(new PointerEvent('pointermove',{pointerId:id,isPrimary:true,clientX:rect.left-1200,bubbles:true,cancelable:true}));
-      el.dispatchEvent(new PointerEvent('pointerup',{pointerId:id,isPrimary:true,bubbles:true}));
-    });
+    const forwardArrow=gallery.locator('[data-gallery-step="1"]');
+    for(let i=0;i<25;i++){
+      if(await forwardArrow.isDisabled())break;
+      await forwardArrow.click();
+    }
+    assert.ok(await forwardArrow.isDisabled(),'End arrow must disable at final dish');
     await page.waitForTimeout(1350);
     const returnBefore=await readGallery();
     await page.waitForTimeout(350);
