@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PONT Slobozia | Meniul zilei și ieșire în oraș</title>
+<link rel="stylesheet" href="../pont-selection.css?v=7">
+<style>
+  body { margin: 0; background: #021115; }
+  main.entry { width: 100%; height: 100vh; height: 100dvh; display: grid; grid-template-columns: max-content; place-content: center; padding: 0; background: transparent; }
+  .scene { position: relative; width: min(100vw, 177.777778vh); width: min(100vw, 177.777778dvh); aspect-ratio: 16 / 9; }
+  .scene img { display: block; width: 100%; height: 100%; pointer-events: none; }
+  .scene a { position: absolute; border-radius: 999px; }
+  .scene a:focus-visible { outline: 3px solid white; outline-offset: -3px; }
+  .city { left: 4%; top: 4%; width: 14%; height: 9%; }
+  .home { left: 35%; top: 1%; width: 30%; height: 17%; }
+  .admin { left: 80.6%; top: 6%; width: 16.2%; height: 6%; }
+  .sponsor { left: 1.6%; top: 19.4%; width: 96.8%; height: 7%; }
+  .lunch { left: 13.6%; top: 35%; width: 26.4%; height: 38.5%; }
+  .evening { left: 59%; top: 35%; width: 27.8%; height: 38.5%; }
+</style>
+</head>
+<body>
+<main class="entry" aria-label="PONT Slobozia">
+  <nav class="scene" aria-label="Selecție PONT">
+    <img src="./selectie.jpg" width="1536" height="864" alt="" fetchpriority="high">
+    <a class="city" href="./" aria-label="Orașul selectat: Slobozia"></a>
+    <a class="home" href="./" aria-label="PONT Slobozia — Acasă"></a>
+    <a class="admin" href="../login/" aria-label="Administrator"></a>
+    <a class="sponsor" href="https://glovoapp.com/ro/ro/slobozia" aria-label="Comandă prin Glovo în Slobozia"></a>
+    <a class="lunch" href="../meniul-zilei/" aria-label="Meniul zilei — Vezi ofertele"></a>
+    <a class="evening" href="../iesire-in-oras/" aria-label="Ieșire în oraș — Descoperă locațiile"></a>
+  </nav>
+</main>
+<div class="pont-pull-indicator" aria-hidden="true"></div>
+<script defer src="../pont-selection-refresh.js?v=4"></script>
+</body>
+</html>
