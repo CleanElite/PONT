@@ -558,9 +558,12 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
   flex-wrap: nowrap;
 }
 #eventSubmitForm .pont-date-inline > .pont-date-part {
-  flex: 1 1 auto !important;
-  min-inline-size: 0 !important;
+  flex: 1 1 0 !important;
+  min-inline-size: 44px !important;
   padding-inline: clamp(3px, 1.2vw, 8px) !important;
+}
+@media (min-width:381px) and (max-width:600px) {
+  #eventSubmitForm { grid-template-columns: minmax(138px, 1.12fr) minmax(0, 1fr); }
 }
 </style>
 </head>
