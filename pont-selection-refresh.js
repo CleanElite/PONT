@@ -43,17 +43,23 @@
     if (!gesture.pulling) {
       if (Math.max(Math.abs(distance), sideways) < dragStart) return;
       suppressClick = true;
-      if (distance < dragStart || distance <= sideways) {
+      if (distance <= sideways) {
         resetGesture();
         return;
       }
+      if (distance < -dragStart) {
+        gesture.pulling = true;
+        entry.setPointerCapture(event.pointerId);
+        entry.classList.add('is-pulling');
+      } else if (distance < dragStart) return;
 
       gesture.pulling = true;
       entry.setPointerCapture(event.pointerId);
       entry.classList.add('is-pulling');
     }
 
-    entry.style.setProperty('--pull-offset', `${Math.min(20, Math.max(0, distance) / 4)}px`);
+    const elastic = distance >= 0 ? Math.min(17, distance * .19) : Math.max(-11, distance * .10);
+    entry.style.setProperty('--pull-offset', `${elastic}px`);
     const progress = distance > sideways
       ? Math.min(1, Math.max(0, (distance - dragStart) / (refreshDistance - dragStart)))
       : 0;
