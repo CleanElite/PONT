@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ro">
-<head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow" data-pont-environment="test"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="PONT"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/png" sizes="192x192" href="./pont-192.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"><link rel="manifest" href="./manifest.webmanifest?v=iosfix-20261109-2">
+<head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow" data-pont-environment="test"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="PONT"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/png" sizes="192x192" href="./pont-192.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"><link rel="manifest" href="./manifest.webmanifest?v=iosfix-20261109-2"><script src="../install.js?v=optional-controls-20261118" defer></script>
 <link rel="preload" as="image" href="./assets/pont-intro-c3.jpg">
 <link rel="preload" as="image" href="./assets/pont-intro-clean.jpg?v=clean-opaque-944f208">
 <link rel="preload" as="image" href="./assets/pont-intro-logo-c4.png">
@@ -83,7 +83,7 @@
 @media(prefers-reduced-motion:reduce){.pont-intro{display:none!important}}
 </style>
 <link rel="stylesheet" href="./pont-navigation.css?v=2">
-<link rel="stylesheet" href="../pont-selection.css?v=6">
+<link rel="stylesheet" href="../pont-selection.css?v=7">
 </head>
 <body class="entry-page">
 <div class="entry">
@@ -128,6 +128,15 @@
         </div>
       </a>
     </nav>
+    <div class="entry-install">
+      <button id="install-pont" class="entry-install-button" type="button" aria-haspopup="dialog">Descarcă aplicația</button>
+      <svg class="entry-install-location" width="16" height="18" viewBox="0 0 18 20" fill="none" aria-hidden="true">
+        <path d="M9 11.6C7.8 10.1 5 7.5 5 5.1a4 4 0 1 1 8 0c0 2.4-2.8 5-4 6.5Z" stroke="currentColor" stroke-width="1.15"/>
+        <circle cx="9" cy="5.1" r="1.15" stroke="currentColor" stroke-width="1"/>
+        <path class="entry-install-drop" d="M9 12.9c-.5.7-1 1.3-1 1.9a1 1 0 1 0 2 0c0-.6-.5-1.2-1-1.9Z" fill="currentColor"/>
+        <ellipse class="entry-install-ripple" cx="9" cy="18" rx="5.4" ry="1.3" stroke="currentColor" stroke-width=".8"/>
+      </svg>
+    </div>
   </main>
 <div class="pont-intro" id="pont-intro" hidden>
   <div class="pont-intro__art" aria-hidden="true">
@@ -148,6 +157,13 @@
   </svg>
 </div>
 </div>
+<dialog id="install-help" aria-labelledby="install-help-title">
+  <h2 id="install-help-title">Instalează PONT</h2>
+  <p></p>
+  <form method="dialog">
+    <button type="submit">Am înțeles</button>
+  </form>
+</dialog>
 <script>
 (() => {
   try {

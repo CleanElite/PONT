@@ -143,6 +143,97 @@ html, .entry-page {
   gap: var(--group-gap);
 }
 
+.entry-install {
+  display: grid;
+  width: max-content;
+  justify-self: center;
+  justify-items: center;
+}
+
+.entry-install:has(> [hidden]) { display: none; }
+
+.entry-install-button {
+  position: relative;
+  isolation: isolate;
+  min-height: 44px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: #d4ebed;
+  font: 600 .7rem/1 system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.entry-install-button::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: 9px 0;
+  border: 1px solid #91c9ce55;
+  border-radius: inherit;
+  background: #0a1c22;
+  pointer-events: none;
+}
+
+.entry-install-button:hover { color: #fff; }
+.entry-install-button:focus-visible { outline: 2px solid var(--ice); }
+
+.entry-install-location {
+  display: block;
+  margin-top: -8px;
+  color: #a0d4d9;
+  pointer-events: none;
+}
+
+.entry-install-ripple { opacity: .55; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .entry-install-drop { animation: entry-install-drop 3.6s ease-in infinite; }
+  .entry-install-ripple {
+    transform-origin: 9px 18px;
+    animation: entry-install-ripple 3.6s ease-out infinite;
+  }
+}
+
+@keyframes entry-install-drop {
+  0%, 12% { transform: translateY(-1px); opacity: .75; }
+  30% { transform: translateY(2px); opacity: .75; }
+  34%, 88% { transform: translateY(2px); opacity: 0; }
+  100% { transform: translateY(-1px); opacity: .75; }
+}
+
+@keyframes entry-install-ripple {
+  0%, 28% { transform: scale(.65); opacity: .25; }
+  32% { transform: scale(.65); opacity: .7; }
+  64%, 100% { transform: scale(1); opacity: .25; }
+}
+
+#install-help {
+  width: min(360px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 20px;
+  border: 1px solid #91c9ce65;
+  border-radius: 16px;
+  background: #0a1c22;
+  color: var(--text);
+  font: .875rem/1.4 system-ui, sans-serif;
+}
+
+#install-help::backdrop { background: #03090bc4; }
+#install-help h2 { margin: 0; font: 600 1.05rem system-ui, sans-serif; }
+#install-help form { display: flex; justify-content: end; }
+#install-help button {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid #91c9ce65;
+  border-radius: 9px;
+  background: #123138;
+  color: var(--text);
+  font: 600 .8rem system-ui, sans-serif;
+  cursor: pointer;
+}
+
 .entry-heading { text-align: center; }
 
 .entry-heading h1 {
@@ -354,4 +445,25 @@ html, .entry-page {
 @media (max-width: 549px) and (max-height: 430px) {
   .entry { padding-block-end: max(8px, env(safe-area-inset-bottom)); }
   .choice-card { height: clamp(82px, 21dvh, 102px); }
+}
+
+@media (max-height: 690px) {
+  .entry:has(.entry-install-button:not([hidden])) {
+    padding-block-end: max(8px, env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 549px) and (min-height: 431px) and (max-height: 620px) {
+  .entry:has(.entry-install-button:not([hidden])) { --group-gap: 10px; }
+  .entry:has(.entry-install-button:not([hidden])) .choice-card { height: clamp(86px, 19dvh, 124px); }
+}
+
+@media (max-height: 380px) {
+  .entry:has(.entry-install-button:not([hidden])) { --group-gap: 6px; }
+  .entry:has(.entry-install-button:not([hidden])) .entry-mark { width: 70px; }
+  .entry:has(.entry-install-button:not([hidden])) .entry-heading::after { display: none; }
+}
+
+@media (max-width: 549px) and (max-height: 380px) {
+  .entry:has(.entry-install-button:not([hidden])) .choice-card { height: 79px; }
 }
