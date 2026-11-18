@@ -17,16 +17,12 @@ main.entry {--header-inset:clamp(18px,4vw,72px);--city-offset:clamp(40px,4.2vw,7
 .login {justify-self:end;padding:4px 14px;border:1px solid #ceeaec9e;border-radius:20px}
 /* Follow the antenna as the centered background is cropped to cover the viewport. */
 .ticker {position:absolute;z-index:2;inset-inline:18.5%;--band-height:clamp(30px,4dvh,34px);top:max(var(--mast-h),calc(50% - max(18dvh,10.125vw) - var(--band-height) - var(--band-height) - 6px));height:var(--band-height);display:flex;align-items:center;overflow:hidden;white-space:nowrap;background:#031317df;border-block:1px solid #beaa6f82;font-size:clamp(12px,.86vw,14px);line-height:1.25}
-/* Fixed end caps sit above the travelling lettering. */
-.ticker::before,.ticker::after {
-  content:""; position:absolute; z-index:1; inset-block:0;
-  width:clamp(22px,2.5vw,46px); pointer-events:none;
-  background:
-    radial-gradient(ellipse 1.5px 46% at 5px 50%,#c9fbffda,transparent),
-    linear-gradient(90deg,#020b0f 0 4px,#031317fa 7px,#031317cd 31%,#03131766 62%,transparent);
+.ticker {
+  --edge-fade:clamp(28px,3vw,54px);
+  --edge-mask:linear-gradient(90deg,transparent,#0006 calc(var(--edge-fade) * .45),#000 var(--edge-fade),#000 calc(100% - var(--edge-fade)),#0006 calc(100% - var(--edge-fade) * .45),transparent);
+  -webkit-mask-image:var(--edge-mask);
+  mask-image:var(--edge-mask);
 }
-.ticker::before {left:0}
-.ticker::after {right:0;transform:scaleX(-1)}
 .track,.sequence {display:flex;width:max-content;flex:none}
 .track {animation:roll 74s linear infinite}
 .sequence>span {display:flex;align-items:center;gap:14px;padding-inline:28px}
