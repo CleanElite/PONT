@@ -15,9 +15,11 @@ jobs:
           node-version: '22'
       - name: Install real-browser test dependencies
         run: |
-          npm install --no-save --no-package-lock playwright@1.58.2
-          npx playwright install chromium --with-deps
-      - name: Run read-only QA against public PONT
+          npm install --no-save --no-package-lock --fetch-retries=1 --fetch-timeout=25000 playwright@1.58.2
+          google-chrome --version
+      - name: Inspect local PONT layouts
+        env:
+          PONT_QA_BROWSER: chrome
         run: node qa/layout-audit.mjs
       - name: Upload QA report and screenshots
         if: always()

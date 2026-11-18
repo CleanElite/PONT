@@ -451,15 +451,16 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
   </section>
 <style>
 /* PONT · compact integrated Glovo promotion, still edge-to-edge */
+html:has(> body.lunch.menu-showcase){container-type:inline-size}
 .pont-sponsor{
   display:block;
   text-decoration:none;
   cursor:pointer;
   -webkit-tap-highlight-color:transparent;
   position:relative;
-  width:100vw;width:100dvw;
+  width:100vw;width:100cqw;
   margin:clamp(12px,2vw,18px) 0 clamp(19px,3vw,27px) calc(50% - 50vw);
-  margin-left:calc(50% - 50dvw);
+  margin-left:calc(50% - 50cqw);
   overflow:hidden;
   isolation:isolate;
   background:#071f24;
@@ -481,7 +482,7 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
   height:100%;display:flex;align-items:center;width:max-content;
   animation:pont-sponsor-marquee 38s linear infinite;will-change:transform;
 }
-.pont-sponsor__group{flex:none;display:flex;align-items:center;justify-content:space-around;min-width:100dvw;height:100%}
+.pont-sponsor__group{flex:none;display:flex;align-items:center;justify-content:space-around;min-width:100cqw;height:100%}
 .pont-sponsor__item{display:inline-flex;flex:none;align-items:center;gap:10px;padding:0 25px;white-space:nowrap}
 .pont-sponsor__wordmark{font:850 italic 22px/1 system-ui,-apple-system,sans-serif;letter-spacing:-.085em;color:#ffe36b;text-shadow:0 1px 0 rgba(0,0,0,.2),0 0 18px rgba(255,227,107,.1)}
 .pont-sponsor__period{color:#96e1d0}
