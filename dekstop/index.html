@@ -13,7 +13,7 @@ main.entry {--band-height:clamp(30px,4dvh,34px);--band-top:max(var(--mast-h),cal
 .mast a {display:inline-flex;align-items:center;gap:6px;width:max-content}
 .mast .city {margin-inline-start:var(--city-offset)}
 .mast svg {width:14px;height:14px}
-.mast .brand {position:absolute;left:50%;--logo-top:clamp(8px,2dvh,20px);top:var(--logo-top);transform:translateX(-50%)}
+.mast .brand {position:absolute;left:50%;--logo-top:clamp(14px,calc(2dvh + 6px),26px);top:var(--logo-top);transform:translateX(-50%)}
 .brand img {display:block;width:clamp(148px,11.4vw,178px);height:auto;max-height:calc(var(--band-top) - var(--logo-top) - 4px);object-fit:contain}
 .login {grid-column:3;justify-self:end;padding:4px 14px;border:1px solid #ceeaec9e;border-radius:20px}
 /* Follow the antenna as the centered background is cropped to cover the viewport. */
