@@ -109,6 +109,11 @@ for(const width of [320,390,768,1440]){
       }
      }
     }
+    for(const part of document.querySelectorAll('#eventForm .pont-date-part,#eventSubmitForm .pont-date-part')){
+     if(!all.includes(part))continue;
+     const r=part.getBoundingClientRect();
+     if(r.width<43.9||r.height<43.9)issues.push(['date-target',name(part),part.textContent,Math.round(r.width),Math.round(r.height)]);
+    }
     const pairs=[];
     for(const selector of ['.pont-settings-switch-controls','.pont-ar-module-switch','.pont-password-actions','.pont-date-inline','.dashboard-actions','.pont-dish-actions','.pont-event-form-actions']){
      for(const row of document.querySelectorAll(selector)){
