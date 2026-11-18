@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="ro">
-<head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow" data-pont-environment="test"><script>if(navigator.standalone===true)document.documentElement.classList.add("pont-ios-standalone");</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="PONT"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/png" sizes="192x192" href="./pont-192.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"><link rel="manifest" href="./manifest.webmanifest?v=iosfix-20261109-2"><script src="./install.js?v=ios-android-20261113" defer></script>
+<head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow" data-pont-environment="test"><script>if(navigator.standalone===true)document.documentElement.classList.add("pont-ios-standalone");</script><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#000000"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="PONT"><title>PONT Slobozia | Meniul zilei și restaurante</title><link rel="icon" type="image/png" sizes="192x192" href="./pont-192.png"><link rel="apple-touch-icon" href="../apple-touch-icon.png"><link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png"><link rel="manifest" href="./manifest.webmanifest?v=iosfix-20261109-2">
 <link rel="preload" as="image" href="./assets/pont-intro-c3.jpg">
 <link rel="preload" as="image" href="./assets/pont-intro-clean.jpg?v=clean-opaque-944f208">
 <link rel="preload" as="image" href="./assets/pont-intro-logo-c4.png">
@@ -291,7 +291,7 @@ html.pont-intro-active{overflow:hidden}
   html.pont-ios-standalone .choice{flex:0 0 auto!important}
 }
 </style>
-<style>@media(max-width:520px){.choice,.choice-card,.choice-card.night{inline-size:100%;max-inline-size:100%}.choice-card,.choice-card.night{aspect-ratio:auto}}</style></head>
+<style>@media(max-width:520px){.choice,.choice-card,.choice-card.night{inline-size:100%;max-inline-size:100%}.choice-card,.choice-card.night{aspect-ratio:auto}}</style><link rel="stylesheet" href="../pont-selection.css?v=1"></head>
 <link rel="stylesheet" href="./pont-navigation.css?v=2"><body class="entry-page">
 <div class="entry">
   <svg class="entry-orbits" viewBox="0 0 1024 1536" preserveAspectRatio="none" aria-hidden="true">
@@ -338,18 +338,6 @@ html.pont-intro-active{overflow:hidden}
       </a>
     </nav>
   </main>
-  <footer class="entry-footer">
-    <button type="button" class="install-button" id="install-pont">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg>
-      Descarcă aplicația PONT
-    </button>
-    <p>Două feluri de a te bucura de oraș</p>
-    <span class="entry-pin" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M19 10c0 5-7 11-7 11S5 15 5 10a7 7 0 1 1 14 0Z"/><circle cx="12" cy="10" r="2.2"/></svg></span>
-  </footer>
-  <dialog id="install-help" aria-labelledby="install-title">
-    <h2 id="install-title">Instalează PONT</h2><p></p>
-    <form method="dialog"><button class="install-button">Am înțeles</button></form>
-  </dialog>
 <div class="pont-intro" id="pont-intro" hidden>
   <div class="pont-intro__art" aria-hidden="true">
     <img src="./assets/pont-intro-c3.jpg" alt="" width="865" height="1536" fetchpriority="high">
@@ -371,6 +359,12 @@ html.pont-intro-active{overflow:hidden}
 </div>
 <script>
 (() => {
+  try {
+    if (sessionStorage.getItem('pont-selection-refresh') === '1') {
+      sessionStorage.removeItem('pont-selection-refresh');
+      return;
+    }
+  } catch {}
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   if (motion.matches) return;
 
@@ -504,5 +498,5 @@ html.pont-intro-active{overflow:hidden}
   Promise.all([image.decode(), logo.decode().catch(() => {})]).then(ready, finish);
 })();
 </script>
-<script type="module" src="./pont-privacy-consent.js?v=consent-audit-20261113-v4"></script><script defer src="./pont-navigation-history.js?v=stack-v2-20261113"></script><script src="../pont-date-display.js?v=dmy-20261116" defer></script></body>
+<script type="module" src="./pont-privacy-consent.js?v=consent-audit-20261113-v4"></script><script defer src="./pont-navigation-history.js?v=stack-v2-20261113"></script><script src="../pont-date-display.js?v=dmy-20261116" defer></script><div class="pont-pull-status" role="status"></div><script src="../pont-selection-refresh.js?v=1" defer></script></body>
 </html>

@@ -1,0 +1,91 @@
+html, body.entry-page { height: 100%; overflow: hidden; overscroll-behavior: none; }
+.entry-page .entry {
+  --edge: clamp(14px, 5vw, 34px);
+  --gap: clamp(7px, 2dvh, 22px);
+  --clearance: max(48px, calc(env(safe-area-inset-top) + 44px), env(safe-area-inset-bottom));
+  box-sizing: border-box;
+  height: 100dvh;
+  min-height: 0;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: var(--gap);
+  padding: var(--clearance) var(--edge);
+  overflow: hidden;
+  touch-action: pinch-zoom;
+}
+.entry-page :is(.entry-header, .entry-content) { width: min(100%, 680px); margin: 0; padding: 0; }
+.entry-page .entry-header .entry-mark { width: clamp(90px, min(34vw, 22dvh), 205px); }
+.entry-page .entry-content { display: grid; gap: var(--gap); }
+.entry-page .entry-heading { padding: 0; }
+.entry-page .entry-heading h1 { font-size: clamp(18px, min(6.3vw, 4.4dvh), 42px); }
+.entry-page .entry-heading::after { margin-top: clamp(4px, 1.25dvh, 13px); }
+.entry-page .choice { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(7px, 1.5dvh, 16px); }
+.entry-page .choice-card {
+  box-sizing: border-box;
+  height: clamp(86px, 20dvh, 185px);
+  min-height: 0;
+  padding: 0 clamp(14px, 4vw, 33px);
+  border-radius: clamp(16px, 5vw, 30px);
+  aspect-ratio: auto;
+}
+.entry-page .choice-copy { display: grid; gap: clamp(3px, .8dvh, 8px); width: 58%; }
+.entry-page .choice-index { gap: 6px; font-size: clamp(9px, 1.35dvh, 12px); }
+.entry-page .choice-title { margin: 0; font-size: clamp(18px, min(5.4vw, 3.95dvh), 35px); }
+.entry-page .choice-caption {
+  max-width: 24ch;
+  margin: 0;
+  font-size: clamp(11px, min(3.2vw, 1.85dvh), 16px);
+  line-height: 1.22;
+}
+.entry-page .choice-icon { width: 21px; height: 21px; }
+.entry-page .choice-action {
+  position: absolute;
+  top: 50%;
+  right: clamp(10px, 3vw, 24px);
+  width: clamp(26px, 6vw, 38px);
+  height: clamp(26px, 6vw, 38px);
+  translate: 0 -50%;
+  background: #071c23d9;
+}
+.entry-page .entry-header .pont-admin-entry {
+  top: max(3px, env(safe-area-inset-top));
+  right: var(--edge);
+  justify-content: center;
+  min-width: 116px;
+  height: 44px;
+  padding: 0 13px;
+  border: 0;
+  background: none;
+  font-size: 11px;
+}
+.entry-page .pont-admin-entry::before {
+  content: "";
+  position: absolute;
+  inset: 8px 0;
+  z-index: -1;
+  border: 1px solid #75b8c573;
+  border-radius: 999px;
+  background: #030c10d9;
+}
+@media (max-height: 520px) and (min-width: 560px) {
+  .entry-page .choice { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .entry-page .choice-card { height: clamp(88px, 32dvh, 145px); }
+}
+.pont-pull-status {
+  position: fixed;
+  z-index: 10;
+  top: max(44px, calc(env(safe-area-inset-top) + 44px));
+  left: 50%;
+  translate: -50% 0;
+  width: max-content;
+  max-width: calc(100% - 24px);
+  padding: 8px 15px;
+  border: 1px solid #75b8c5;
+  border-radius: 999px;
+  background: #09242a;
+  color: #f4fdff;
+  font: 600 12px system-ui, sans-serif;
+  pointer-events: none;
+}
+.pont-pull-status:empty { visibility: hidden; }
