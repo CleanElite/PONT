@@ -23,8 +23,19 @@
   banner.hidden=true;
   document.body.append(banner);
   const reveal=()=>{if(!['yes','no'].includes(get()))banner.hidden=false};
-  if(landing){if(document.documentElement.classList.contains('pont-intro-active'))window.addEventListener('pont:introfinished',reveal,{once:true});else reveal()}
-  else reveal();
+  if(landing){
+   // Intro is controlled by the landing page. Avoid revealing under the curtain.
+   const intro=document.getElementById('pont-intro');
+   const introFinished=()=>!document.documentElement.classList.contains('pont-intro-active')&&(!intro||intro.hidden);
+   if(introFinished())reveal();
+   else{
+    window.addEventListener('pont:introfinished',reveal,{once:true});
+    // Also recover if the intro ends without dispatching the event.
+    const observer=new MutationObserver(()=>{if(introFinished()){observer.disconnect();reveal()}});
+    observer.observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+    if(intro)observer.observe(intro,{attributes:true,attributeFilter:['hidden']});
+   }
+  }else reveal();
   const footer=document.querySelector('footer');
   // The public restaurant listings use their existing legal-document links in the footer;
   // avoid adding extra GDPR / cookie-settings controls to those primary screens.
