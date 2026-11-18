@@ -283,22 +283,22 @@ html, .entry-page {
 
 .entry-page .pont-global-consent button { flex: 1 1 120px; }
 
+@property --pull-progress {
+  syntax: "<percentage>";
+  inherits: true;
+  initial-value: 0%;
+}
+
 .pont-pull-indicator {
   position: fixed;
   z-index: 10;
-  top: max(8px, calc(env(safe-area-inset-top) + 4px));
+  top: max(19px, calc(env(safe-area-inset-top) + 15px));
   left: 50%;
   translate: -50% 0;
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
+  width: 22px;
+  height: 22px;
   visibility: hidden;
   color: #93e6ee;
-  border: 1px solid #7bc5cb45;
-  border-radius: 50%;
-  background: #0a252b;
-  box-shadow: 0 3px 12px #0005;
   pointer-events: none;
 }
 
@@ -306,11 +306,11 @@ html, .entry-page {
 
 .pont-pull-indicator::before {
   content: "";
-  width: 22px;
-  height: 22px;
+  position: absolute;
+  inset: 0;
   border-radius: 50%;
-  background: conic-gradient(currentColor var(--pull-progress, 0%), #41636b 0);
-  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+  background: conic-gradient(currentColor var(--pull-progress, 0%), #93e6ee26 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 2px), #000 calc(100% - 1.5px));
 }
 
 .pont-pull-indicator:is([data-state="ready"], [data-state="refreshing"]) { color: var(--ice); }
@@ -318,6 +318,10 @@ html, .entry-page {
 .pont-pull-indicator[data-state="refreshing"]::before { --pull-progress: 72%; }
 
 @media (prefers-reduced-motion: no-preference) {
+  .pont-pull-indicator:is([data-state="pulling"], [data-state="ready"]) {
+    transition: --pull-progress 75ms ease-out;
+  }
+
   .pont-pull-indicator[data-state="refreshing"]::before {
     animation: pont-pull-spin .75s linear infinite;
   }

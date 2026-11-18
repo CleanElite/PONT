@@ -54,7 +54,9 @@
     }
 
     entry.style.setProperty('--pull-offset', `${Math.min(20, Math.max(0, distance) / 4)}px`);
-    const progress = distance > sideways ? Math.min(1, distance / refreshDistance) : 0;
+    const progress = distance > sideways
+      ? Math.min(1, Math.max(0, (distance - dragStart) / (refreshDistance - dragStart)))
+      : 0;
     indicator.style.setProperty('--pull-progress', `${progress * 100}%`);
     indicator.dataset.state = canRefresh(event) ? 'ready' : 'pulling';
   });
