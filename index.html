@@ -309,6 +309,34 @@ html.pont-intro-active{overflow:hidden}
  .entry-heading{padding:clamp(10px,1.7svh,18px) 0!important}
  .entry-footer{margin-top:clamp(9px,1.8svh,16px)!important;padding-bottom:max(13px,env(safe-area-inset-bottom))!important}
 }
+</style><style id="pont-landing-slim-buttons-20261118">
+/* Compact visual pills with centered contents and generous invisible touch targets. */
+.entry .pont-admin-entry{
+ box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;
+ justify-content:center!important;gap:7px!important;width:max-content!important;
+ min-width:0!important;min-height:30px!important;height:30px!important;
+ padding:0 13px!important;border:1px solid #8ccbd28c!important;
+ border-radius:999px!important;line-height:1!important;
+ font-size:clamp(10px,2.6vw,12px)!important;font-weight:550!important;
+ letter-spacing:.015em!important;white-space:nowrap!important;
+}
+.entry .pont-admin-entry svg{width:13px!important;height:13px!important;flex:none!important}
+.entry-footer .install-button{
+ box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;
+ justify-content:center!important;gap:7px!important;width:max-content!important;
+ min-height:30px!important;height:30px!important;padding:0 15px!important;
+ border-radius:999px!important;font-size:clamp(10px,2.6vw,12px)!important;
+ line-height:1!important;letter-spacing:.015em!important;white-space:nowrap!important;
+}
+.entry-footer .install-button svg{width:13px!important;height:13px!important;flex:none!important}
+.entry .pont-admin-entry,.entry-footer .install-button{position:relative;touch-action:manipulation}
+.entry .pont-admin-entry::after,.entry-footer .install-button::after{
+ content:"";position:absolute;inset:-7px -3px;z-index:1;border-radius:999px;
+}
+@media(max-width:350px){
+ .entry .pont-admin-entry{padding-inline:10px!important;font-size:10px!important}
+ .entry-footer .install-button{padding-inline:12px!important;font-size:10px!important}
+}
 </style></head>
 <link rel="stylesheet" href="./pont-navigation.css?v=2"><body class="entry-page">
 <a class="pont-skip-content" href="#pontMainContent">Sari la conținut</a>
