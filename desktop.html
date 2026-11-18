@@ -13,11 +13,20 @@
 *{box-sizing:border-box}
 html,body{margin:0;width:100%;min-height:100%;background:#041419;overflow:hidden}
 main{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:#041419}
-main::before{content:"";position:absolute;inset:0;background:url("./assets/pont-desktop-background.png") center center/cover no-repeat;filter:blur(5px) brightness(.78) saturate(.82);transform:scale(1.035)}
+main::before{content:"";position:absolute;inset:0;background:url("./assets/pont-desktop-header-final.png") center center/cover no-repeat}
+.desktop-hotspot{position:absolute;z-index:2;display:block;top:5%;height:10%;border-radius:100px;cursor:pointer;text-decoration:none}
+.desktop-hotspot:focus-visible{outline:3px solid #90f1f8;outline-offset:3px;background:#79cfe91c}
+.desktop-hotspot.city{left:3.8%;width:18%}
+.desktop-hotspot.admin{right:3%;width:20%}
+.desktop-hotspot:hover{background:rgba(160,235,244,.07)}
+@media(prefers-reduced-motion:reduce){.desktop-hotspot{transition:none}}
 @media(max-width:1199px){main{display:none}}
 </style>
 </head>
 <body>
-<main aria-label="Fundal PONT Desktop"></main>
+<main aria-label="PONT Slobozia Desktop">
+  <a class="desktop-hotspot city" href="./" aria-label="Slobozia — pagina principală"></a>
+  <a class="desktop-hotspot admin" href="./login/" aria-label="Administrator — autentificare"></a>
+</main>
 </body>
 </html>
