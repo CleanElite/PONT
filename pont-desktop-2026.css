@@ -1,0 +1,55 @@
+/* PONT Desktop 2026 — presentation only. No behavior, state, or mobile/tablet rules. */
+@media screen and (min-width:1200px) {
+  :root{--pont-desk-line:rgba(119,224,219,.23);--pont-desk-glow:rgba(44,217,221,.10)}
+  body{background-color:#031115}
+  /* Selection: cinematic, spacious desktop composition */
+  body.entry-page .entry{min-height:100svh;display:flex;flex-direction:column;background:radial-gradient(ellipse 72% 55% at 50% 36%,#0b3037 0%,#06171d 52%,#02080b 100%)}
+  body.entry-page .entry-header,body.entry-page .entry-content,body.entry-page .entry-footer{width:min(1100px,calc(100% - 120px))}
+  body.entry-page .entry-header{padding-top:32px;min-height:175px}
+  body.entry-page .entry-header .entry-mark{width:clamp(180px,17vw,235px)}
+  body.entry-page .pont-admin-entry{top:36px;right:max(52px,calc((100vw - 1280px)/2));padding:8px 18px;font-size:13px;gap:9px;letter-spacing:.03em}
+  body.entry-page .entry-content{flex:1;display:flex;flex-direction:column;justify-content:center}
+  body.entry-page .entry-heading{padding:10px 0 34px}
+  body.entry-page .entry-heading h1{font-size:clamp(36px,3.4vw,54px);line-height:1.12}
+  body.entry-page .entry-heading::after{width:260px;margin-top:22px}
+  body.entry-page .choice{grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
+  body.entry-page .choice-card,body.entry-page .choice-card.night{aspect-ratio:1.65;min-height:285px;max-height:380px;border-radius:30px;padding:32px 34px;box-shadow:inset 0 -1px 18px #42ddeb32,0 18px 45px #0006;transition:transform .35s ease,box-shadow .35s ease,border-color .35s ease}
+  body.entry-page .choice-card:hover{transform:translateY(-5px);box-shadow:inset 0 -1px 22px #42ddeb4a,0 24px 60px #0009}
+  body.entry-page .choice-copy{width:65%}
+  body.entry-page .choice-title{font-size:clamp(26px,2.6vw,36px)}
+  body.entry-page .choice-index{font-size:12px}
+  body.entry-page .choice-caption{font-size:clamp(12px,1.15vw,15px)}
+  body.entry-page .entry-footer{margin-top:24px;padding-bottom:36px;gap:12px}
+  body.entry-page .entry-footer .install-button{font-size:13px;padding:9px 25px;min-height:38px}
+  body.entry-page .entry-footer p{font-size:11px;letter-spacing:.26em}
+  body.entry-page .entry-pin{width:320px}
+  body.entry-page .pont-intro__art img{object-fit:contain;max-width:100%}
+  /* Public discovery: readable content width, orderly cards and visual hierarchy */
+  body.lunch .menu-header{width:min(1380px,calc(100% - 100px));margin-inline:auto}
+  body.lunch .menu-main{width:min(1320px,calc(100% - 100px));max-width:1320px;margin-inline:auto}
+  body.lunch .menu-heading{margin-block:30px 24px}
+  body.lunch #list{grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+  body.lunch #eventList{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+  body.lunch #list .restaurant,body.lunch #eventList .event-card{border-radius:22px;transition:transform .25s ease,box-shadow .25s ease}
+  body.lunch #list .restaurant:hover,body.lunch #eventList .event-card:hover{transform:translateY(-3px);box-shadow:0 22px 48px #0005}
+  body.lunch .pont-sponsor{border-radius:18px}
+  /* Admin: widen work area, organize navigation and information without touching actions */
+  body.pont-admin main{width:min(1500px,calc(100% - 96px));max-width:1500px;padding:32px 24px 90px;margin-inline:auto}
+  body.pont-admin .admin-topbar{max-width:1500px;margin-inline:auto}
+  body.pont-admin .admin-hero{margin-block:22px 24px}
+  body.pont-admin .admin-nav{gap:12px}
+  body.pont-admin .pont-admin-grouped-nav,body.pont-admin .pont-restaurant-grouped-nav{gap:16px!important}
+  body.pont-admin .pont-nav-cluster,body.pont-admin .pont-restaurant-nav-group{border:1px solid var(--pont-desk-line);border-radius:20px;background:linear-gradient(150deg,rgba(24,76,79,.40),rgba(3,22,27,.55));padding:18px}
+  body.pont-admin .card{border-radius:20px}
+  body.pont-admin input,body.pont-admin select,body.pont-admin textarea{max-width:100%}
+  body.pont-admin table{width:100%}
+  /* Detailed pages and leaderboard */
+  body.pont-admin-neon .surface{max-width:1480px;margin-inline:auto}
+  body.pont-admin-neon .table-outer{overflow-x:auto}
+  /* Avoid overriding dialogs, overlays, hidden state or app scripts. */
+}
+@media screen and (min-width:1600px){
+ body.entry-page .entry-header,body.entry-page .entry-content,body.entry-page .entry-footer{width:min(1200px,calc(100% - 180px))}
+ body.entry-page .choice-card,body.entry-page .choice-card.night{max-height:410px}
+ body.lunch .menu-main{width:min(1420px,calc(100% - 140px));max-width:1420px}
+}
