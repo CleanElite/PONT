@@ -20,7 +20,7 @@ jobs:
       - name: Inspect local PONT layouts
         env:
           PONT_QA_BROWSER: chrome
-        run: node qa/layout-audit.mjs
+        run: node qa/layout-audit.mjs --card-payment
       - name: Upload QA report and screenshots
         if: always()
         uses: actions/upload-artifact@v4

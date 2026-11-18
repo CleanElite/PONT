@@ -474,7 +474,7 @@
   .pont-admin #pontDailyTabs button { font-size: 12px; }
 }
 
-.pont-admin :is(#pontDailyDishes input[type='checkbox'], #acceptsCard, #restaurantAcceptsCard) {
+.pont-admin :is(#pontDailyDishes input[type='checkbox'], #restaurantAcceptsCard) {
   appearance: none;
   display: inline-grid;
   align-items: center;
@@ -488,15 +488,15 @@
   background: #17473a;
   cursor: pointer;
 }
-.pont-admin :is(#pontDailyDishes input[type='checkbox'], #acceptsCard, #restaurantAcceptsCard)::before {
+.pont-admin :is(#pontDailyDishes input[type='checkbox'], #restaurantAcceptsCard)::before {
   content: '';
   width: 16px;
   height: 16px;
   border-radius: 50%;
   background: #e9fff4;
 }
-.pont-admin :is(#pontDailyDishes input[type='checkbox'], #acceptsCard, #restaurantAcceptsCard):checked { background: #38c894; border-color: #94ffd4; }
-.pont-admin :is(#pontDailyDishes input[type='checkbox'], #acceptsCard, #restaurantAcceptsCard):checked::before { justify-self: end; }
+.pont-admin :is(#pontDailyDishes input[type='checkbox'], #restaurantAcceptsCard):checked { background: #38c894; border-color: #94ffd4; }
+.pont-admin :is(#pontDailyDishes input[type='checkbox'], #restaurantAcceptsCard):checked::before { justify-self: end; }
 .pont-dish-recap { margin: 8px 0; padding: 10px 13px; border: 1px solid var(--admin-line); border-radius: 12px; }
 .pont-dish-recap div { padding: 4px 0; }
 

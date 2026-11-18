@@ -1,3 +1,4 @@
+import assert from 'node:assert/strict';
 import { chromium } from 'playwright';
 import { existsSync, readFileSync } from 'node:fs';
 import { mkdir, readdir, writeFile } from 'node:fs/promises';
@@ -35,14 +36,18 @@ function query(rows) {
 export function createClient(){return{
  auth:{getUser:identity,getSession:identity,signOut:async()=>({error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},
  from:name=>query(tables[name]||[]),
- rpc:name=>query(({is_super_admin:role==='super_admin',my_restaurant_access:[{restaurant_id:restaurant.id}],pont_has_active_city_subscription:true})[name]??[]),
+ rpc:(name,args)=>{
+  if(name==='set_my_restaurant_accepts_card')(window.cardPaymentSaves ||= []).push(args);
+  return query(({is_super_admin:role==='super_admin',my_restaurant_access:[{restaurant_id:restaurant.id}],pont_has_active_city_subscription:true})[name]??[]);
+ },
  channel:()=>({on(){return this},subscribe(){return this}}),
  removeChannel(){},
  functions:{invoke:async()=>({data:[],error:null})}
 }}
 `;
 
-const paths = (await readdir(root,{recursive:true})).filter(file=>/\.html$/.test(file)&&!/^node_modules|^backend|^qa\//.test(file)).sort();
+const cardPaymentOnly = process.argv.includes('--card-payment');
+const paths = cardPaymentOnly ? ['admin-v2/index.html', 'test/admin-v2/index.html'] : (await readdir(root,{recursive:true})).filter(file=>/\.html$/.test(file)&&!/^node_modules|^backend|^qa\//.test(file)).sort();
 const mime = {'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.svg':'image/svg+xml','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.webp':'image/webp','.json':'application/json'};
 await mkdir('qa-results/layout',{recursive:true});
 const browser = await chromium.launch({channel:process.env.PONT_QA_BROWSER||undefined,args:['--no-sandbox']});
@@ -132,6 +137,34 @@ for(const width of [320,390,768,1440]){
    await page.goto(origin+path,{waitUntil:'load',timeout:7500});
    if(/(?:^|\/)super-admin\/index/.test(file)||/\/admin-v2\//.test('/'+file))await page.locator('#app:not([hidden])').waitFor({timeout:2500}).catch(()=>{});
    await page.locator('#pontGlobalPrivacyBanner .pont-consent-no').click({timeout:250}).catch(()=>{});
+   if(cardPaymentOnly){
+    await page.locator('#showContact').click({timeout:3000});
+    const delivery=page.locator('#offersDelivery');
+    const card=page.locator('#acceptsCard');
+    assert.ok(await delivery.isChecked() && await card.isChecked());
+    const readStyle=locator=>locator.evaluate(input=>{
+     const style=getComputedStyle(input);
+     const bounds=input.getBoundingClientRect();
+     return {appearance:style.appearance,accent:style.accentColor,width:bounds.width,height:bounds.height,role:input.getAttribute('role')};
+    });
+    const deliveryStyle=await readStyle(delivery);
+    const cardStyle=await readStyle(card);
+    assert.equal(cardStyle.appearance,'auto');
+    assert.equal(cardStyle.role,null);
+    assert.deepEqual(cardStyle,deliveryStyle);
+    for(const checked of [false,true]){
+     await card.setChecked(checked);
+     if(file.startsWith('test/'))await page.locator('#saveCardSettings').click();
+     const save=await page.waitForFunction(value=>window.cardPaymentSaves?.at(-1)?.p_accepts_card===value,checked,{timeout:2000});
+     await save.dispose();
+     assert.equal(await card.isChecked(),checked);
+     assert.equal(await delivery.isChecked(),true);
+    }
+    await measure('card-checkbox');
+    console.log('CARD_CHECKBOX',JSON.stringify({file,width,appearance:cardStyle.appearance,accent:cardStyle.accent,save:[false,true]}));
+    page.off('pageerror',onError);
+    continue;
+   }
    await measure('initial');
    if(await page.locator('#reset').first().isVisible()&&await page.locator('#recoveryDialog').count()){
     await page.locator('#reset').first().click({timeout:1000});
@@ -202,3 +235,5 @@ await writeFile('qa-results/layout-audit.json',JSON.stringify(measures,null,2));
 for(const entry of measures)if(entry.error||entry.errors?.length||entry.issues?.length||entry.pairs?.length||entry.scrollWidth>entry.viewport+3)
  console.log('LAYOUT',JSON.stringify(entry));
 console.log('LAYOUT_TOTAL',JSON.stringify({screens:measures.length,pages:paths.length,states:Object.fromEntries([...new Set(measures.map(r=>r.state))].filter(Boolean).map(key=>[key,measures.filter(r=>r.state===key).length])),issues:measures.reduce((n,r)=>n+(r.issues?.length||0),0),errors:measures.filter(r=>r.error).length}));
+
+if(cardPaymentOnly && measures.some(row=>row.error || row.errors?.length || row.issues?.length))process.exitCode=1;
