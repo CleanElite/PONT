@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ro">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#031015">
+<title>PONT Slobozia — Descoperă orașul</title>
+<meta name="description" content="Descoperă meniul zilei și cele mai interesante locuri în care poți ieși în Slobozia.">
+<link rel="canonical" href="https://pont.city/">
+<script>if(!window.matchMedia('(min-width:1200px)').matches)window.location.replace('./');</script>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#020b0f;font-family:system-ui,-apple-system,Arial,sans-serif}
+main{display:grid;place-items:center;width:100vw;height:100vh;height:100dvh;overflow:hidden}
+.pont-desktop-stage{position:relative;width:min(100vw,177.77778vh);width:min(100vw,177.77778dvh);aspect-ratio:16/9;max-height:100vh;max-height:100dvh;overflow:hidden;background:#031015 url('./assets/pont-desktop-selection-final.jpg') center/100% 100% no-repeat;box-shadow:0 0 70px #0009}
+.pont-desktop-stage a{position:absolute;display:block;cursor:pointer;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.pont-desktop-stage a:focus-visible{outline:3px solid #8de8f4;outline-offset:-3px;border-radius:12px;background:#6fd4dc1c}
+.pont-desktop-stage .menu{left:0;top:27%;width:50%;height:73%;z-index:1}
+.pont-desktop-stage .evening{left:50%;top:27%;width:50%;height:73%;z-index:1}
+.pont-desktop-stage .glovo{left:2%;top:18.8%;width:96%;height:8%;z-index:3;border-radius:100px}
+.pont-desktop-stage .admin{left:80%;top:4%;width:18%;height:9.5%;z-index:3;border-radius:100px}
+.pont-desktop-stage .menu::after,.pont-desktop-stage .evening::after{content:"";position:absolute;inset:0;opacity:0;background:linear-gradient(90deg,#8eeaf90c,#ffffff12);transition:opacity .25s;pointer-events:none}
+.pont-desktop-stage .menu:hover::after,.pont-desktop-stage .evening:hover::after{opacity:1}
+.pont-desktop-stage .glovo::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(105deg,transparent 30%,#ffffff17 50%,transparent 70%);background-size:220% 100%;animation:pont-glovo-shimmer 10s ease-in-out infinite;pointer-events:none}
+@keyframes pont-glovo-shimmer{0%,75%,100%{background-position:200% 0}85%{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){.pont-desktop-stage .glovo::after{animation:none}.pont-desktop-stage .menu::after,.pont-desktop-stage .evening::after{transition:none}}
+</style>
+</head>
+<body>
+<main>
+  <div class="pont-desktop-stage" role="navigation" aria-label="Alege secțiunea PONT">
+    <a class="menu" href="./meniul-zilei/" aria-label="Meniul zilei — vezi ofertele restaurantelor"></a>
+    <a class="evening" href="./iesire-in-oras/" aria-label="Ieșire în oraș — descoperă locațiile"></a>
+    <a class="glovo" href="https://glovoapp.com/ro/ro/slobozia" rel="noopener noreferrer" aria-label="Glovo — comandă din restaurantele tale preferate"></a>
+    <a class="admin" href="./admin-v2/" aria-label="Administrator — autentificare"></a>
+  </div>
+</main>
+</body>
+</html>
