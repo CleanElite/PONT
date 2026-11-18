@@ -538,7 +538,32 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
  #eventList .event-tile > .event-card .event-date {font-size:9px!important}
  #eventList .event-tile > .event-card .event-category {font-size:9px!important;padding:1px 4px}
 }
-</style></head>
+</style><style>
+#eventSubmitForm > label:has(> input:not([type="checkbox"])) {
+  display: grid;
+  align-self: stretch;
+  align-content: end;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+#eventSubmitForm :is(input[type="time"], .pont-date-inline > .pont-date-part) {
+  box-sizing: border-box;
+  min-block-size: 44px !important;
+}
+#eventSubmitForm input[type="time"] { color-scheme: dark; }
+#eventSubmitForm .pont-date-inline {
+  margin: 0;
+  gap: 3px;
+  flex-wrap: nowrap;
+}
+#eventSubmitForm .pont-date-inline > .pont-date-part {
+  flex: 1 1 auto !important;
+  min-inline-size: 0 !important;
+  padding-inline: clamp(3px, 1.2vw, 8px) !important;
+}
+</style>
+</head>
 <body class="lunch menu-showcase">
 <a class="pont-skip-content" href="#pontMainContent">Sari la conținut</a>
 <div class="menu-art" aria-hidden="true"></div>
@@ -573,7 +598,7 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
     <label>Ora de începere<input type="time" name="start_time" required></label>
     <label>Localitate<input name="locality" required maxlength="80" placeholder="Slobozia, Amara, Grivița…"></label>
     <label>Locație<input name="venue" required maxlength="120" placeholder="Numele localului"></label>
-    <label>Telefon pentru rezervări<input name="contact_phone" required maxlength="32" inputmode="tel" autocomplete="tel"></label>
+    <label class="full">Telefon pentru rezervări<input name="contact_phone" required maxlength="32" inputmode="tel" autocomplete="tel"></label>
     <details class="full pont-public-event-optional"><summary>Afiș și descriere (opționale)</summary><div><label>Link afiș<input type="url" name="poster_url" maxlength="700" placeholder="https://..."></label><label>Descrierea evenimentului<textarea name="description" maxlength="1200" placeholder="Program, artiști, informații despre rezervare…"></textarea></label></div></details>
     <label class="full pont-guest-organizer pont-event-consent"><input type="checkbox" name="consent" required> <span>Sunt de acord cu transmiterea datelor către PONT prin WhatsApp și cu stocarea lor pentru analizarea solicitării. <a href="../confidentialitate.html">Politica de confidențialitate</a>.</span></label>
     <button type="submit" class="full" id="eventSubmitButton">Trimite spre aprobare pe WhatsApp</button>

@@ -84,6 +84,31 @@ html:has(> body.lunch.menu-showcase){container-type:inline-size}
 .event-demo-label{position:absolute;z-index:3;top:clamp(43px,6vw,65px);right:clamp(8px,1.9vw,20px);padding:4px 7px;border:1px solid #eacf8677;border-radius:6px;background:#031b20de;color:#fce6b2;font:750 clamp(8px,1.55vw,11px)/1.15 system-ui;letter-spacing:.04em}
 @media(max-width:520px){.event-demo-label{top:42px}}
 </style>
+<style>
+#eventSubmitForm > label:has(> input:not([type="checkbox"])) {
+  display: grid;
+  align-self: stretch;
+  align-content: end;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+#eventSubmitForm :is(input[type="time"], .pont-date-inline > .pont-date-part) {
+  box-sizing: border-box;
+  min-block-size: 44px !important;
+}
+#eventSubmitForm input[type="time"] { color-scheme: dark; }
+#eventSubmitForm .pont-date-inline {
+  margin: 0;
+  gap: 3px;
+  flex-wrap: nowrap;
+}
+#eventSubmitForm .pont-date-inline > .pont-date-part {
+  flex: 1 1 auto !important;
+  min-inline-size: 0 !important;
+  padding-inline: clamp(3px, 1.2vw, 8px) !important;
+}
+</style>
 </head>
 <body class="lunch menu-showcase">
 <div class="menu-art" aria-hidden="true"></div>

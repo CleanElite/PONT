@@ -14,7 +14,7 @@ const dishes = [
  ['dessert','Papanași cu smântână și dulceață',0]
 ].map(([category,name,price],i)=>({id:'dish-'+i,category,name,price,restaurant_id:restaurant.id}));
 const day = new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest'}).format(new Date());
-const menu = {id:'layout-menu',restaurant_id:restaurant.id,price:39,service_date:day,date:day,title:'Meniul zilei',dish_selection:dishes,published:true};
+const menu = {id:restaurant.id,restaurant_id:restaurant.id,price:39,service_date:day,date:day,title:'Meniul zilei',dish_selection:dishes,published:true};
 const event = {id:'layout-event',restaurant_id:restaurant.id,restaurant_name:restaurant.name,title:'Seară de muzică și gastronomie tradițională',description:'O seară de test pentru textele lungi și butoanele afișate lângă evenimente.',event_date:day,start_time:'19:00',status:'approved',published:true,locality:'Slobozia',venue:'Restaurant de test',contact_phone:'0700000000',created_at:day+'T09:00:00Z'};
 const fixture = String.raw`
 const restaurant=${JSON.stringify(restaurant)};
@@ -72,11 +72,14 @@ for(const width of [320,390,768,1440]){
    const layout=await page.evaluate(()=>{
     const options='button,input,select,textarea,summary,a[class],label,h1,h2,h3,.card,.panel,[role=tab]';
     const controls='button,input,select,textarea,summary,a[class],[role=tab]';
-    const ignore='[aria-hidden=true],.pont-dish-gallery__track,[hidden],.pont-skip-link,.pont-skip-content,.skip-link';
+    const ignore='[aria-hidden=true],.pont-dish-gallery__track,.pont-date-native,[hidden],.pont-skip-link,.pont-skip-content,.skip-link';
     const modal=document.querySelector('dialog[open]:modal');
     const viewport=document.documentElement.clientWidth;
     const all=[...document.querySelectorAll(options)].filter(el=>{
      const r=el.getBoundingClientRect();
+     const closedDisclosure=el.closest('details:not([open])');
+     if(closedDisclosure&&!closedDisclosure.querySelector(':scope > summary')?.contains(el))return false;
+     if(!el.checkVisibility({opacityProperty:true,visibilityProperty:true}))return false;
      return (!modal||modal.contains(el))&&r.width>2&&r.height>2&&getComputedStyle(el).visibility==='visible'&&!el.closest(ignore);
     });
     const name=el=>el.id?'#'+el.id:el.tagName.toLowerCase()+'.'+[...el.classList].slice(0,3).join('.');
@@ -99,6 +102,7 @@ for(const width of [320,390,768,1440]){
      const r=el.getBoundingClientRect();
      for(const other of candidates.slice(index+1)){
       if(el.contains(other)||other.contains(el))continue;
+      if(el.parentElement===other.parentElement&&el.parentElement.matches('.pont-password-field'))continue;
       const q=other.getBoundingClientRect();
       if(Math.min(r.right,q.right)-Math.max(r.left,q.left)>4&&Math.min(r.bottom,q.bottom)-Math.max(r.top,q.top)>4){
        if(r.width>12&&r.height>12&&q.width>12&&q.height>12)issues.push(['overlap',name(el),name(other)]);
@@ -134,6 +138,19 @@ for(const width of [320,390,768,1440]){
     const optional=page.locator('#eventSubmitForm details > summary').first();
     if(await optional.isVisible())await optional.click({timeout:1000});
     await measure('event-form');
+   }
+   const cityOptional=page.locator('#eventForm details > summary').first();
+   if(await cityOptional.isVisible()){
+    await cityOptional.click({timeout:1000});
+    await measure('admin-event-form');
+   }
+   const eventCard=page.locator('#eventList .event-card').first();
+   if(await eventCard.isVisible()){
+    await eventCard.click({timeout:1000});
+    if(await page.locator('#eventDetails[open]').isVisible()){
+     await measure('event-details');
+     await page.locator('.event-dialog-close').click({timeout:1000});
+    }
    }
    if(await page.getByRole('button',{name:'Intră în dashboard',exact:true}).isVisible()){
     await page.getByRole('button',{name:'Intră în dashboard',exact:true}).click({timeout:1000});
