@@ -15,7 +15,7 @@ main.entry {display:grid;--mast-h:clamp(48px,7dvh,58px);--ticker-h:clamp(24px,3.
 .brand img {display:block;width:clamp(90px,6.8vw,106px);height:auto}
 .login {justify-self:end;padding:4px 14px;border:1px solid #ceeaec9e;border-radius:20px}
 /* Follow the antenna as the centered background is cropped to cover the viewport. */
-.ticker {position:absolute;z-index:2;inset-inline:0;--band-height:clamp(30px,4dvh,34px);top:max(var(--mast-h),calc(50% - max(18dvh,10.125vw) - var(--band-height)));height:var(--band-height);display:flex;align-items:center;overflow:hidden;white-space:nowrap;background:#031317df;border-block:1px solid #beaa6f82;font-size:clamp(12px,.86vw,14px);line-height:1.25}
+.ticker {position:absolute;z-index:2;inset-inline:0;--band-height:clamp(30px,4dvh,34px);top:max(var(--mast-h),calc(50% - max(18dvh,10.125vw) - var(--band-height) - var(--band-height) - 6px));height:var(--band-height);display:flex;align-items:center;overflow:hidden;white-space:nowrap;background:#031317df;border-block:1px solid #beaa6f82;font-size:clamp(12px,.86vw,14px);line-height:1.25}
 .track,.sequence {display:flex;width:max-content;flex:none}
 .track {animation:roll 74s linear infinite}
 .sequence>span {display:flex;align-items:center;gap:14px;padding-inline:28px}
