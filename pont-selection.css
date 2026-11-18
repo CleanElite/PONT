@@ -259,6 +259,7 @@ html, .entry-page {
   color: #dce8e9;
   font-size: clamp(.75rem, 3.35vw, 1rem);
   line-height: 1.25;
+  text-wrap: balance;
 }
 
 .choice-action {
