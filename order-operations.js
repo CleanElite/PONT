@@ -412,8 +412,21 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
        minLabel.setAttribute('aria-label', 'Comandă minimă');
        minCard.append(minLabel);
      }
+     // One compact row: price and minimum order, with one shared Save action.
+     minCard.classList.add('pont-price-min-combined');
+     if(priceCard){
+       const priceTitle=priceCard.querySelector('h3');
+       if(priceTitle)priceTitle.textContent='Preț meniu';
+       const priceRow=priceCard.querySelector('.pont-settings-price-row');
+       if(priceRow){
+         const oldPriceButton=$('saveRestaurantMenuPrice');
+         if(oldPriceButton)oldPriceButton.hidden=true;
+         priceRow.classList.add('pont-price-field-only');
+       }
+       minCard.prepend(priceCard);
+     }
      minCard.append($('pontOpSave'), $('pontOpStatus'));
-     if (priceCard) priceCard.after(minCard);
+     if(priceCard) settings.after(minCard);
      else settings.after(minCard);
    } else {
      settingsHost.append(settings);
@@ -490,8 +503,17 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
    $('pontOpSave').addEventListener('click',async()=>{
      const button=$('pontOpSave');button.disabled=true;
      try{
+       // Validate both fields before writing either setting.
+       const priceInput=$('restaurantMenuPrice');
+       const price=priceInput?.valueAsNumber;
+       if(isRestaurantAdmin && (!Number.isFinite(price)||price<=0||price>10000||Math.abs(Math.round(price*100)-price*100)>0.00001))throw Error('Introdu un preț valid, mai mare decât 0, cu maximum două zecimale.');
+       readOrderSettings();
+       if(isRestaurantAdmin){
+         if(typeof window.pontSaveRestaurantMenuPrice!=='function')throw Error('Salvarea prețului nu este disponibilă.');
+         await window.pontSaveRestaurantMenuPrice();
+       }
        await saveOrderSettings(activeRestaurant);
-       $('pontOpStatus').textContent='Comanda minimă a fost salvată.';
+       $('pontOpStatus').textContent=isRestaurantAdmin?'Prețul și comanda minimă au fost salvate.':'Comanda minimă a fost salvată.';
      }catch(e){$('pontOpStatus').textContent=e.message}
      finally{button.disabled=false}
    });
