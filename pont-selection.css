@@ -283,26 +283,49 @@ html, .entry-page {
 
 .entry-page .pont-global-consent button { flex: 1 1 120px; }
 
-.pont-pull-status {
+.pont-pull-indicator {
   position: fixed;
   z-index: 10;
-  top: max(52px, calc(env(safe-area-inset-top) + 48px));
+  top: max(8px, calc(env(safe-area-inset-top) + 4px));
   left: 50%;
   translate: -50% 0;
-  width: max-content;
-  max-width: calc(100% - 30px);
-  padding: 8px 14px;
-  border: 1px solid #88c9cd99;
-  border-radius: 999px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  visibility: hidden;
+  color: #93e6ee;
+  border: 1px solid #7bc5cb45;
+  border-radius: 50%;
   background: #0a252b;
-  color: #f4fdff;
-  box-shadow: 0 5px 18px #0005;
-  font: 600 .75rem/1.3 system-ui, sans-serif;
-  text-align: center;
+  box-shadow: 0 3px 12px #0005;
   pointer-events: none;
 }
 
-.pont-pull-status:empty { opacity: 0; }
+.pont-pull-indicator[data-state] { visibility: visible; }
+
+.pont-pull-indicator::before {
+  content: "";
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: conic-gradient(currentColor var(--pull-progress, 0%), #41636b 0);
+  mask: radial-gradient(farthest-side, transparent calc(100% - 3px), #000 calc(100% - 2px));
+}
+
+.pont-pull-indicator:is([data-state="ready"], [data-state="refreshing"]) { color: var(--ice); }
+
+.pont-pull-indicator[data-state="refreshing"]::before { --pull-progress: 72%; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .pont-pull-indicator[data-state="refreshing"]::before {
+    animation: pont-pull-spin .75s linear infinite;
+  }
+}
+
+@keyframes pont-pull-spin {
+  to { transform: rotate(1turn); }
+}
 
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .choice-card { transition: border-color .2s ease; }

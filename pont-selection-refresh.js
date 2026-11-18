@@ -1,20 +1,17 @@
 (() => {
   const entry = document.querySelector('.entry');
-  const status = document.querySelector('.pont-pull-status');
+  const indicator = document.querySelector('.pont-pull-indicator');
   const dragStart = 12;
   const refreshDistance = 80;
   let gesture;
   let suppressClick = false;
 
-  function showStatus(message) {
-    if (status.textContent !== message) status.textContent = message;
-  }
-
   function resetGesture() {
     gesture = undefined;
     entry.classList.remove('is-pulling');
     entry.style.removeProperty('--pull-offset');
-    showStatus('');
+    delete indicator.dataset.state;
+    indicator.style.removeProperty('--pull-progress');
   }
 
   function canRefresh(event) {
@@ -57,7 +54,9 @@
     }
 
     entry.style.setProperty('--pull-offset', `${Math.min(20, Math.max(0, distance) / 4)}px`);
-    showStatus(canRefresh(event) ? 'Eliberează pentru reîmprospătare' : 'Trage în jos pentru reîmprospătare');
+    const progress = distance > sideways ? Math.min(1, distance / refreshDistance) : 0;
+    indicator.style.setProperty('--pull-progress', `${progress * 100}%`);
+    indicator.dataset.state = canRefresh(event) ? 'ready' : 'pulling';
   });
 
   entry.addEventListener('pointerup', event => {
@@ -65,7 +64,7 @@
     const refresh = gesture.pulling && canRefresh(event);
     resetGesture();
     if (!refresh) return;
-    showStatus('Se reîmprospătează…');
+    indicator.dataset.state = 'refreshing';
     try { sessionStorage.setItem('pont-selection-refresh', '1'); } catch {}
     location.reload();
   });
