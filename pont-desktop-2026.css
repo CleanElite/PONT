@@ -53,3 +53,156 @@
  body.entry-page .choice-card,body.entry-page .choice-card.night{max-height:410px}
  body.lunch .menu-main{width:min(1420px,calc(100% - 140px));max-width:1420px}
 }
+
+/* DESKTOP HOMEPAGE REBUILD — editorial web landing, not enlarged mobile cards. */
+@media screen and (min-width:1200px) {
+ html:has(body.entry-page){overflow:hidden}
+ body.entry-page{margin:0;height:100vh;height:100dvh;overflow:hidden;background:#f5f3ec;color:#1c2728}
+ body.entry-page .entry{
+  box-sizing:border-box!important;height:100vh!important;height:100dvh!important;min-height:0!important;
+  display:grid!important;grid-template-rows:82px minmax(0,1fr) 68px!important;
+  width:100%!important;overflow:hidden!important;
+  background:#f5f3ec!important;color:#1b2b2c!important;isolation:isolate;
+ }
+ body.entry-page .entry-orbits,body.entry-page .pont-intro{display:none!important}
+ body.entry-page .entry-header{
+  box-sizing:border-box!important;position:relative!important;display:flex!important;flex-direction:row!important;
+  justify-content:space-between!important;align-items:center!important;
+  width:100%!important;max-width:none!important;min-height:0!important;height:82px!important;
+  margin:0!important;padding:0 clamp(42px,5vw,110px)!important;
+  border-bottom:1px solid #d6dbd6!important;background:#f5f3ec!important;
+ }
+ body.entry-page .entry-header>a:first-child{display:none!important}
+ body.entry-page .entry-city{
+  display:block!important;margin:0!important;color:#304d4c!important;
+  font:600 12px/1.2 system-ui,sans-serif!important;letter-spacing:.2em!important;text-indent:0!important;
+ }
+ body.entry-page .entry-city::before,body.entry-page .entry-city::after{display:none!important}
+ body.entry-page .entry-city::before{content:none!important}
+ body.entry-page .entry-city::after{content:none!important}
+ body.entry-page .entry-header::before{
+  content:"PONT.";position:static;display:block;order:-1;
+  color:#112a2b;font:800 29px/1 system-ui,sans-serif;letter-spacing:-.08em;
+ }
+ body.entry-page .entry-header .pont-admin-entry{
+  position:static!important;order:3!important;display:inline-flex!important;align-items:center!important;
+  min-height:0!important;height:auto!important;padding:10px 0!important;
+  border:0!important;border-radius:0!important;box-shadow:none!important;background:transparent!important;
+  color:#213b3b!important;font:600 12px/1 system-ui,sans-serif!important;letter-spacing:.04em!important;
+  gap:9px!important;
+ }
+ body.entry-page .entry-header .pont-admin-entry svg{width:15px!important;height:15px!important}
+ body.entry-page .entry-content{
+  box-sizing:border-box!important;display:grid!important;grid-template-columns:minmax(330px,39%) minmax(0,1fr)!important;
+  grid-template-rows:minmax(0,1fr)!important;gap:0!important;align-items:stretch!important;
+  width:100%!important;max-width:none!important;min-height:0!important;max-height:none!important;
+  margin:0!important;padding:0!important;overflow:hidden!important;
+ }
+ body.entry-page .entry-heading{
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;justify-content:center!important;
+  min-height:0!important;padding:clamp(26px,5vw,90px) clamp(42px,5vw,110px)!important;
+  text-align:left!important;background:#f5f3ec!important;
+ }
+ body.entry-page .entry-heading::before{
+  content:"DESCOPERĂ SLOBOZIA";display:block;color:#477673;
+  font:700 11px/1.3 system-ui,sans-serif;letter-spacing:.28em;margin-bottom:clamp(20px,4vh,42px)
+ }
+ body.entry-page .entry-heading h1{
+  margin:0!important;color:#152f30!important;
+  font:400 clamp(38px,3.75vw,72px)/1.05 Georgia,serif!important;
+  letter-spacing:-.055em!important;max-width:600px!important;
+ }
+ body.entry-page .entry-heading h1 span{display:block!important;color:inherit!important;font-size:inherit!important}
+ body.entry-page .entry-heading h1 span+span{margin-top:clamp(10px,2vh,24px)!important;color:#59726e!important}
+ body.entry-page .entry-heading::after{
+  content:"Alege experiența potrivită pentru momentul tău.";display:block!important;
+  width:auto!important;height:auto!important;margin:clamp(25px,5vh,50px) 0 0!important;
+  background:none!important;box-shadow:none!important;
+  color:#5e6d68!important;font:400 clamp(13px,1.1vw,16px)/1.6 system-ui,sans-serif!important;
+ }
+ body.entry-page .choice{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:minmax(0,1fr)!important;gap:0!important;
+  width:100%!important;height:100%!important;min-height:0!important;margin:0!important;
+ }
+ body.entry-page .choice-card,body.entry-page .choice-card.night{
+  position:relative!important;display:flex!important;align-items:stretch!important;justify-content:flex-end!important;
+  box-sizing:border-box!important;width:100%!important;height:100%!important;max-height:none!important;
+  min-height:0!important;aspect-ratio:auto!important;margin:0!important;padding:0!important;
+  border:0!important;border-left:1px solid rgba(255,255,255,.3)!important;border-radius:0!important;
+  background:#243b3a!important;box-shadow:none!important;transform:none!important;
+  overflow:hidden!important;
+ }
+ body.entry-page .choice-card::before,body.entry-page .choice-card.night::before{
+  content:""!important;position:absolute!important;inset:0!important;z-index:1!important;
+  background:linear-gradient(180deg,rgba(2,15,17,.05) 20%,rgba(2,15,17,.16) 45%,rgba(2,15,17,.88) 100%)!important;
+ }
+ body.entry-page .choice-card::after,body.entry-page .choice-card.night::after{display:none!important}
+ body.entry-page .choice-photo{
+  position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;
+  object-fit:cover!important;object-position:center!important;filter:saturate(.86) brightness(.85)!important;
+  transform:scale(1.005)!important;transition:transform .55s ease,filter .55s ease!important;
+ }
+ body.entry-page .choice-card:hover .choice-photo{transform:scale(1.045)!important;filter:saturate(1) brightness(.94)!important}
+ body.entry-page .choice-copy{
+  position:relative!important;z-index:2!important;display:flex!important;flex-direction:column!important;
+  justify-content:flex-end!important;align-items:flex-start!important;
+  box-sizing:border-box!important;width:100%!important;min-width:0!important;height:100%!important;
+  padding:clamp(28px,3.1vw,65px)!important;color:#fff!important;
+ }
+ body.entry-page .choice-index{
+  display:block!important;margin:0 0 16px!important;padding:0!important;
+  color:#cce5df!important;font:600 11px/1.2 system-ui,sans-serif!important;
+  letter-spacing:.22em!important;background:none!important;border:0!important;
+ }
+ body.entry-page .choice-icon{display:none!important}
+ body.entry-page .choice-title{
+  display:block!important;min-height:0!important;margin:0 0 14px!important;
+  color:#fff!important;font:400 clamp(28px,2.5vw,48px)/1.05 Georgia,serif!important;
+  letter-spacing:-.035em!important;text-align:left!important;
+ }
+ body.entry-page .choice-caption{
+  display:block!important;min-height:0!important;margin:0!important;
+  color:#e2e9e7!important;font:400 clamp(12px,1vw,15px)/1.55 system-ui,sans-serif!important;
+  text-align:left!important;max-width:300px!important;
+ }
+ body.entry-page .choice-action{
+  display:flex!important;position:static!important;margin-top:22px!important;
+  width:44px!important;height:44px!important;align-items:center!important;justify-content:center!important;
+  border:1px solid #ffffff80!important;border-radius:50%!important;background:transparent!important;color:#fff!important;
+  transform:none!important;
+ }
+ body.entry-page .choice-action svg{width:20px!important;height:20px!important}
+ body.entry-page .entry-footer{
+  box-sizing:border-box!important;display:flex!important;flex-direction:row!important;
+  justify-content:space-between!important;align-items:center!important;
+  width:100%!important;max-width:none!important;height:68px!important;min-height:0!important;
+  margin:0!important;padding:0 clamp(42px,5vw,110px)!important;
+  background:#f5f3ec!important;border-top:1px solid #d6dbd6!important;
+ }
+ body.entry-page .entry-footer .install-button{
+  display:inline-flex!important;align-items:center!important;gap:9px!important;
+  min-height:0!important;padding:0!important;border:0!important;border-radius:0!important;
+  background:none!important;box-shadow:none!important;color:#214e4a!important;
+  font:600 12px/1.2 system-ui,sans-serif!important;letter-spacing:.03em!important;
+ }
+ body.entry-page .entry-footer .install-button svg{width:17px!important;height:17px!important}
+ body.entry-page .entry-footer p{
+  margin:0!important;color:#697a75!important;font:500 11px/1.3 system-ui,sans-serif!important;
+  letter-spacing:.08em!important;
+ }
+ body.entry-page .entry-pin{display:none!important}
+ body.entry-page .choice-card:focus-visible,body.entry-page .pont-admin-entry:focus-visible,
+ body.entry-page .install-button:focus-visible{outline:3px solid #24a6a1!important;outline-offset:-3px!important}
+}
+@media screen and (min-width:1200px) and (max-height:720px){
+ body.entry-page .entry{grid-template-rows:66px minmax(0,1fr) 54px!important}
+ body.entry-page .entry-header{height:66px!important}
+ body.entry-page .entry-footer{height:54px!important}
+ body.entry-page .entry-heading{padding-block:22px!important}
+ body.entry-page .entry-heading::before{margin-bottom:16px}
+ body.entry-page .entry-heading::after{margin-top:18px!important}
+ body.entry-page .choice-copy{padding:24px!important}
+ body.entry-page .choice-index{margin-bottom:10px!important}
+ body.entry-page .choice-action{margin-top:14px!important;width:36px!important;height:36px!important}
+}
