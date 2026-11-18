@@ -340,3 +340,26 @@
  .pont-desktop-sponsor__track{animation:none!important;transform:translateX(-50%)}
  body.entry-page .choice-card.day,body.entry-page .choice-card.night{animation:none!important}
 }
+
+/* Desktop header refinement: centered editorial PONT wordmark. */
+@media screen and (min-width:1200px){
+ body.entry-page .entry-header{display:grid!important;grid-template-columns:1fr auto 1fr!important;justify-items:stretch!important;align-items:center!important}
+ body.entry-page .entry-header::before{
+  content:"PONT"!important;grid-column:2!important;grid-row:1!important;justify-self:center!important;
+  order:initial!important;position:relative!important;z-index:2!important;
+  color:#f8f4e9!important;font:600 clamp(35px,3.25vw,53px)/1 Georgia,'Times New Roman',serif!important;
+  letter-spacing:.16em!important;text-indent:.16em!important;
+  text-shadow:0 1px 0 #d8c492,0 3px 14px rgba(210,176,98,.38),0 0 32px rgba(94,211,203,.15)!important;
+ }
+ body.entry-page .entry-header .entry-city{
+  grid-column:1!important;grid-row:1!important;justify-self:start!important;
+  color:#e1d7b7!important;letter-spacing:.2em!important;
+ }
+ body.entry-page .entry-header .pont-admin-entry{
+  grid-column:3!important;grid-row:1!important;justify-self:end!important;
+  padding:10px 17px!important;border:1px solid rgba(222,198,138,.62)!important;
+  border-radius:999px!important;background:rgba(2,16,19,.3)!important;
+  color:#f4ead1!important;transition:background .2s,border-color .2s!important;
+ }
+ body.entry-page .entry-header .pont-admin-entry:hover{background:rgba(219,181,98,.15)!important;border-color:#f3d99b!important}
+}
