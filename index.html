@@ -391,6 +391,8 @@ html.pont-intro-active{overflow:hidden}
 </div>
 <script>
 (() => {
+  // Desktop is a conventional website: skip the intro entirely.
+  if (matchMedia('screen and (min-width:1200px)').matches) return;
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   if (motion.matches) return;
 
