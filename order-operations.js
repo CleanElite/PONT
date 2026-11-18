@@ -371,7 +371,7 @@ export function initPontOperations({db,getRestaurants,isRestaurantAdmin=false}){
  <label id="pontOpRestaurantWrap">Restaurant<select id="pontOpRestaurant"></select></label>
  
  <div class="pont-op-grid"><label>Comandă minimă<span class="pont-op-min-row"><input id="pontOpMin" type="number" min="1" max="20" step="1" value="1" required><span>meniu</span></span></label></div>
- ${superAdminSettings ? '' : '<button type="button" id="pontOpSave" class="' + (settingsHost ? 'primary' : 'pont-op-button') + '">' + (settingsHost ? 'Salvează setările comenzilor' : 'Salvează comanda minimă') + '</button>'}<p id="pontOpStatus" role="status"></p></details>
+ ${superAdminSettings ? '' : '<button type="button" id="pontOpSave" class="' + (settingsHost ? 'primary' : 'pont-op-button') + '">' + (settingsHost ? 'Salvează' : 'Salvează comanda minimă') + '</button>'}<p id="pontOpStatus" role="status"></p></details>
  <details id="pontWeekPanel"><summary><span class="pont-week-header-icon" aria-hidden="true"><svg class="pont-neon-icon" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=2#calendar-check"></use></svg></span><span class="pont-week-header-text">Planifică meniul pe toată săptămâna</span></summary>
  <label id="pontOpWeekRestaurantWrap" hidden><span class="pont-week-restaurant-label">Restaurant</span><select id="pontOpWeekRestaurant"></select></label>
  <div class="pont-op-week-nav">
