@@ -271,7 +271,7 @@
  font:600 clamp(10px,2.6vw,12px)/1.2 system-ui!important;
  white-space:nowrap!important;
 }
-#auctions .pont-auction-period-save>label>#auctionMonth{
+#auctions .pont-auction-period-save>label>#auctionMonth:not(.pont-date-native){
  display:block!important;
  box-sizing:border-box!important;
  width:100%!important;
@@ -307,7 +307,7 @@
 }
 @media(max-width:355px){
  #auctions .auction-save-bar.pont-auction-period-save{grid-template-columns:minmax(0, 1.65fr) minmax(0,1fr)!important;padding:6px!important;gap:5px!important}
- #auctions .pont-auction-period-save>label>#auctionMonth{font-size:11px!important;padding-inline:2px!important}
+ #auctions .pont-auction-period-save>label>#auctionMonth:not(.pont-date-native){font-size:11px!important;padding-inline:2px!important}
  #auctions .pont-auction-period-save>#saveAuctionPayments{font-size:11px!important;padding-inline:2px!important}
 }
 </style><style id="pont-auction-bids-style">
@@ -335,7 +335,9 @@
  background:linear-gradient(130deg,#123b37,#0a2c2d)!important;
 }
 #auctions .pont-auction-period-save>label{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:5px!important;min-width:0!important;width:100%!important;margin:0!important;padding:0!important;font:600 clamp(10px,2.8vw,12px)/1.25 system-ui!important;color:#cce5dd!important}
-#auctions .pont-auction-period-save>label>input{display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:42px!important;height:42px!important;margin:0!important;padding:7px clamp(3px,1.4vw,9px)!important;border-radius:10px!important;border:1px solid #7da99fa8!important;background:#092b29!important;color:#fff!important;color-scheme:dark!important;font:600 clamp(11px,2.7vw,13px)/1.2 system-ui!important}
+#auctions .pont-auction-period-save>label>input:not(.pont-date-native){display:block!important;width:100%!important;max-width:100%!important;min-width:0!important;min-height:42px!important;height:42px!important;margin:0!important;padding:7px clamp(3px,1.4vw,9px)!important;border-radius:10px!important;border:1px solid #7da99fa8!important;background:#092b29!important;color:#fff!important;color-scheme:dark!important;font:600 clamp(11px,2.7vw,13px)/1.2 system-ui!important}
+#auctions .pont-auction-period-save .pont-date-inline{margin:0;gap:4px;flex-wrap:nowrap}
+#auctions .pont-auction-period-save .pont-date-part{flex:1 1 auto!important;min-width:0!important;min-height:42px!important;height:42px!important;padding-inline:clamp(3px,1vw,8px)!important}
 #auctions .pont-auction-period-save>#saveAuctionPayments{display:flex!important;align-items:center!important;justify-content:center!important;min-width:0!important;max-width:100%!important;width:100%!important;min-height:42px!important;height:42px!important;margin:0!important;padding:6px 4px!important;border-radius:10px!important;white-space:normal!important;overflow-wrap:break-word!important;text-align:center!important;font:700 clamp(10px,2.65vw,13px)/1.15 system-ui!important}
 #auctions #auctionCount[hidden],#auctions #auctionSaveHint[hidden]{display:none!important}
 </style><style id="pont-grouped-nav-style">
