@@ -178,9 +178,12 @@ for(const width of [320,390,768,1440]){
      const quantity=page.locator('#qty-0');
      if(await quantity.isVisible()){
       await quantity.fill('1');
-      await page.locator('#qty-1').fill('1');
-      await page.locator('#openCheckout').click({timeout:1200}).catch(()=>{});
-      if(await page.locator('#pontCheckoutOverlay[open]').count())await measure('checkout');
+      await page.locator('#qty-2').fill('1');
+      await page.locator('#openCheckout').click({timeout:2500});
+      await page.locator('#pontCheckoutOverlay[open]').waitFor({timeout:2000});
+      await measure('checkout');
+      await page.locator('#openCheckoutRecap').click({timeout:1200});
+      await measure('checkout-recap');
      }
     }
    }
@@ -193,4 +196,4 @@ await browser.close();
 await writeFile('qa-results/layout-audit.json',JSON.stringify(measures,null,2));
 for(const entry of measures)if(entry.error||entry.errors?.length||entry.issues?.length||entry.pairs?.length||entry.scrollWidth>entry.viewport+3)
  console.log('LAYOUT',JSON.stringify(entry));
-console.log('LAYOUT_TOTAL',JSON.stringify({screens:measures.length,pages:paths.length,issues:measures.reduce((n,r)=>n+(r.issues?.length||0),0),errors:measures.filter(r=>r.error).length}));
+console.log('LAYOUT_TOTAL',JSON.stringify({screens:measures.length,pages:paths.length,states:Object.fromEntries([...new Set(measures.map(r=>r.state))].filter(Boolean).map(key=>[key,measures.filter(r=>r.state===key).length])),issues:measures.reduce((n,r)=>n+(r.issues?.length||0),0),errors:measures.filter(r=>r.error).length}));
