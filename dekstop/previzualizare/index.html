@@ -43,7 +43,7 @@ main.entry {--band-height:clamp(30px,4dvh,34px);--band-top:max(var(--mast-h),cal
 .divider {position:absolute;top:calc(var(--mast-h) + var(--ticker-h));left:0;width:100%;height:calc(100% - var(--mast-h) - var(--ticker-h));pointer-events:none}
 .divider path {fill:none;stroke:url(#edge);vector-effect:non-scaling-stroke}
 /* Match the photograph's cover crop and color treatment during playback. */
-.cinematic-intro { position:absolute; inset:0; z-index:-1; pointer-events:none; background:url("./previzualizare/first.jpg") center/cover; }
+.cinematic-intro { position:absolute; inset:0; z-index:-1; pointer-events:none; background:url("./previzualizare/first.jpg?v=spirala2") center/cover; }
 .cinematic-intro video { display:block; width:100%; height:100%; object-fit:cover; }
 .cinematic-intro::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,#00101455,transparent 33%,#00101433); }
 @media(prefers-reduced-motion:reduce){.cinematic-intro{display:none}}
@@ -61,7 +61,7 @@ main.entry {--band-height:clamp(30px,4dvh,34px);--band-top:max(var(--mast-h),cal
   video.addEventListener('ended', finish, { once:true });
   video.addEventListener('error', finish, { once:true });
   video.muted = true;
-  video.src = './previzualizare/scene.mp4';
+  video.src = './previzualizare/scene.mp4?v=spirala2';
   layer.hidden = false;
   video.play().catch(finish);
 })();
