@@ -151,7 +151,7 @@ for(const width of [320,390,768,1440]){
     const cardStyle=await readStyle(card);
     assert.equal(cardStyle.appearance,'auto');
     assert.equal(cardStyle.role,null);
-    assert.deepEqual(cardStyle,deliveryStyle);
+    assert.deepEqual(cardStyle,deliveryStyle,JSON.stringify({cardStyle,deliveryStyle}));
     for(const checked of [false,true]){
      await card.setChecked(checked);
      if(file.startsWith('test/'))await page.locator('#saveCardSettings').click();
