@@ -1065,3 +1065,33 @@ body.pont-admin-neon--promotion dialog .primary-bid {
     max-width:100%;
   }
 }
+
+
+@media (max-width: 520px) {
+  body.pont-admin.pont-admin-neon #app #pontTodayMenu .pont-today-header h3 {
+    flex: 1 1 100px !important;
+    min-inline-size: 0 !important;
+  }
+  body.pont-admin.pont-admin--restaurant.pont-admin-neon #app #pontTodayMenu .pont-today-header h3 .pont-today-toggle,
+  body.pont-admin.pont-admin--platform.pont-admin-neon #app #pontTodayMenu .pont-today-header h3 .pont-today-toggle {
+    box-sizing: border-box;
+    max-inline-size: 100%;
+    min-inline-size: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere;
+    text-align: start;
+  }
+  body.pont-admin.pont-admin--platform.pont-admin-neon #app .pont-dashboard-modules > .pont-hero-dashboard {
+    flex: 1 1 0 !important;
+    max-inline-size: none !important;
+    min-inline-size: 0 !important;
+    height: auto !important;
+    padding-inline: 5px !important;
+    white-space: normal !important;
+    text-align: center;
+  }
+  body.pont-admin.pont-admin--platform.pont-admin-neon #app .pont-dashboard-modules > .pont-hero-dashboard .pont-neon-icon {
+    flex: 0 1 14px;
+    min-inline-size: 0;
+  }
+}

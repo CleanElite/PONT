@@ -17,7 +17,8 @@
 body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
 .event-heading h1{font-size:clamp(32px,7.8vw,76px)}
 .event-heading p{font-size:clamp(13px,2.8vw,24px);max-width:780px;margin-inline:auto}
-.pont-sponsor{display:grid;place-items:center;position:relative;isolation:isolate;overflow:hidden;width:100vw;width:100dvw;margin:clamp(12px,2vw,18px) 0 clamp(19px,3vw,27px) calc(50% - 50vw);margin-left:calc(50% - 50dvw);min-height:clamp(74px,8.8vw,96px);padding:12px clamp(12px,4vw,30px);border:0;border-top:1px solid #d7b6788c;border-bottom:1px solid #d7b67875;background:radial-gradient(ellipse at 50% 135%,#b89a4e48 0,transparent 49%),radial-gradient(ellipse at 14% 10%,#4059787d 0,transparent 32%),radial-gradient(ellipse at 86% 15%,#54396587 0,transparent 35%),linear-gradient(105deg,#071921,#102733 46%,#12192d 100%);box-shadow:inset 0 0 24px #0006,0 12px 26px #0003}
+html:has(> body.lunch.menu-showcase){container-type:inline-size}
+.pont-sponsor{display:grid;place-items:center;position:relative;isolation:isolate;overflow:hidden;width:100vw;width:100cqw;margin:clamp(12px,2vw,18px) 0 clamp(19px,3vw,27px) calc(50% - 50vw);margin-left:calc(50% - 50cqw);min-height:clamp(74px,8.8vw,96px);padding:12px clamp(12px,4vw,30px);border:0;border-top:1px solid #d7b6788c;border-bottom:1px solid #d7b67875;background:radial-gradient(ellipse at 50% 135%,#b89a4e48 0,transparent 49%),radial-gradient(ellipse at 14% 10%,#4059787d 0,transparent 32%),radial-gradient(ellipse at 86% 15%,#54396587 0,transparent 35%),linear-gradient(105deg,#071921,#102733 46%,#12192d 100%);box-shadow:inset 0 0 24px #0006,0 12px 26px #0003}
 .pont-sponsor::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.72;background-image:radial-gradient(circle at 6% 26%,#e9d0a4 0 1px,transparent 1.8px),radial-gradient(circle at 21% 72%,#d2c08a 0 1px,transparent 1.8px),radial-gradient(circle at 41% 18%,#e1d0a9 0 .9px,transparent 1.7px),radial-gradient(circle at 64% 82%,#e9d0a4 0 1px,transparent 1.8px),radial-gradient(circle at 79% 26%,#d2c08a 0 1px,transparent 1.8px),radial-gradient(circle at 95% 68%,#e1d0a9 0 .9px,transparent 1.7px)}
 .pont-sponsor::after{content:"";position:absolute;z-index:-1;top:-120%;bottom:-120%;left:-30%;width:24%;transform:rotate(19deg);background:linear-gradient(90deg,transparent,#e6d7b212,transparent);animation:pont-evening-light 14s ease-in-out infinite;pointer-events:none}
 .pont-sponsor__inner{display:grid;justify-items:center;align-content:center;gap:4px;text-align:center;max-width:100%}
@@ -81,7 +82,39 @@ body.lunch.menu-showcase{min-height:100dvh;overflow-x:hidden}
 .event-submit-form label{grid-column:1/-1}
 }
 .event-demo-label{position:absolute;z-index:3;top:clamp(43px,6vw,65px);right:clamp(8px,1.9vw,20px);padding:4px 7px;border:1px solid #eacf8677;border-radius:6px;background:#031b20de;color:#fce6b2;font:750 clamp(8px,1.55vw,11px)/1.15 system-ui;letter-spacing:.04em}
-@media(max-width:520px){.event-demo-label{top:42px}}
+@media(max-width:520px){
+ #eventList{grid-template-columns:minmax(0,1fr)}
+ #eventList .event-card{min-height:154px}
+ #eventList .event-card .menu-card-copy{max-width:56%}
+ #eventList .event-card .menu-card-name{overflow-wrap:anywhere}
+ .event-date,.event-demo-label{max-width:40%;white-space:normal;text-align:right}
+ .event-demo-label{top:42px}
+}
+</style>
+<style>
+#eventSubmitForm > label:has(> input:not([type="checkbox"])) {
+  display: grid;
+  align-self: stretch;
+  align-content: end;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+}
+#eventSubmitForm :is(input[type="time"], .pont-date-inline > .pont-date-part) {
+  box-sizing: border-box;
+  min-block-size: 44px !important;
+}
+#eventSubmitForm input[type="time"] { color-scheme: dark; }
+#eventSubmitForm .pont-date-inline {
+  margin: 0;
+  gap: 3px;
+  flex-wrap: nowrap;
+}
+#eventSubmitForm .pont-date-inline > .pont-date-part {
+  flex: 1 1 auto !important;
+  min-inline-size: 0 !important;
+  padding-inline: clamp(3px, 1.2vw, 8px) !important;
+}
 </style>
 </head>
 <body class="lunch menu-showcase">
