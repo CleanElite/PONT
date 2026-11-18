@@ -16,7 +16,7 @@ main.entry {--header-inset:clamp(18px,4vw,72px);--city-offset:clamp(40px,4.2vw,7
 .brand img {display:block;width:clamp(122px,9.3vw,145px);height:auto;max-height:calc(var(--mast-h) - 2px);object-fit:contain}
 .login {justify-self:end;padding:4px 14px;border:1px solid #ceeaec9e;border-radius:20px}
 /* Follow the antenna as the centered background is cropped to cover the viewport. */
-.ticker {position:absolute;z-index:2;inset-inline:calc(var(--header-inset) + var(--city-offset) + var(--city-width, 72px));--band-height:clamp(30px,4dvh,34px);top:max(var(--mast-h),calc(50% - max(18dvh,10.125vw) - var(--band-height) - var(--band-height) - 6px));height:var(--band-height);display:flex;align-items:center;overflow:hidden;white-space:nowrap;background:#031317df;border-block:1px solid #beaa6f82;font-size:clamp(12px,.86vw,14px);line-height:1.25}
+.ticker {position:absolute;z-index:2;inset-inline:18.5%;--band-height:clamp(30px,4dvh,34px);top:max(var(--mast-h),calc(50% - max(18dvh,10.125vw) - var(--band-height) - var(--band-height) - 6px));height:var(--band-height);display:flex;align-items:center;overflow:hidden;white-space:nowrap;background:#031317df;border-block:1px solid #beaa6f82;font-size:clamp(12px,.86vw,14px);line-height:1.25}
 .track,.sequence {display:flex;width:max-content;flex:none}
 .track {animation:roll 74s linear infinite}
 .sequence>span {display:flex;align-items:center;gap:14px;padding-inline:28px}
@@ -54,15 +54,4 @@ main.entry {--header-inset:clamp(18px,4vw,72px);--city-offset:clamp(40px,4.2vw,7
 </main>
 <div class="pont-pull-indicator" aria-hidden="true"></div>
 <script defer src="../pont-selection-refresh.js?v=4"></script>
-<script>
-(() => {
-  const city = document.querySelector('.mast .city');
-  const ticker = document.querySelector('.ticker');
-  function alignTicker() {
-    ticker.style.setProperty('--city-width', city.getBoundingClientRect().width + 'px');
-  }
-  alignTicker();
-  new ResizeObserver(alignTicker).observe(city);
-})();
-</script>
 </body></html>
