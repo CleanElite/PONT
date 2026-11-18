@@ -1,0 +1,27 @@
+name: Import approved PONT desktop artwork
+on:
+  push:
+    paths:
+      - '.github/workflows/import-pont-desktop-artwork.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import-artwork:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Download approved desktop image
+        run: |
+          curl -fLsS --retry 3 'https://at.adobe.com/oJ1kyNESG0lvbPle' -o assets/pont-desktop-selection-final.jpg
+          file assets/pont-desktop-selection-final.jpg
+          test "$(head -c 2 assets/pont-desktop-selection-final.jpg | od -An -tx1 | tr -d ' \n')" = "ffd8"
+          test "$(stat -c%s assets/pont-desktop-selection-final.jpg)" -gt 100000
+      - name: Commit image asset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/pont-desktop-selection-final.jpg
+          git diff --cached --quiet || (git commit -m "Import exact approved desktop landing image" && git push)
