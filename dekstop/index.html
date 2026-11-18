@@ -41,14 +41,27 @@ main.entry {--band-height:clamp(30px,4dvh,34px);--band-top:max(var(--mast-h),cal
 .divider {position:absolute;top:calc(var(--mast-h) + var(--ticker-h));left:0;width:100%;height:calc(100% - var(--mast-h) - var(--ticker-h));pointer-events:none}
 .divider path {fill:none;stroke:url(#edge);vector-effect:non-scaling-stroke}
 /* Match the photograph's cover crop and color treatment during playback. */
-.cinematic-intro { position:absolute; inset:0; z-index:-1; pointer-events:none; background:url("./previzualizare/first.jpg?v=spirala2") center/cover; }
+.cinematic-intro { position:absolute; inset:0; z-index:-1; pointer-events:none; background:url("./previzualizare/first.jpg?v=toast3") center/cover; }
 .cinematic-intro video { display:block; width:100%; height:100%; object-fit:cover; }
 .cinematic-intro::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,#00101455,transparent 33%,#00101433); }
 @media(prefers-reduced-motion:reduce){.cinematic-intro{display:none}}
+
+.scene-detail { position:absolute; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; }
+.candle-halo,.candle-reflection { transform-box:fill-box; transform-origin:50% 78%; animation:candle-drift 1.87s ease-in-out infinite alternate; }
+.candle-reflection { animation-duration:2.17s; animation-delay:-.28s }
+@keyframes candle-drift {
+  0% {opacity:.29;transform:translate(-1px,1px) scale(.88,.94)}
+  28% {opacity:.72;transform:translate(1px,-1px) scale(1.06,1.11)}
+  52% {opacity:.44;transform:translate(-.5px,0) scale(.96,1.02)}
+  78% {opacity:.83;transform:translate(1.5px,-2px) scale(1.08,1.15)}
+  100% {opacity:.51;transform:translate(.2px,-.3px) scale(.97,1.04)}
+}
+@media(prefers-reduced-motion:reduce){.candle-halo,.candle-reflection{animation:none;opacity:.32}}
 </style>
 </head>
 <body>
 <main class="entry" aria-label="PONT Slobozia">
+<svg class="scene-detail" viewBox="0 0 1536 864" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="./previzualizare/companion.png" x="1129" y="410" width="151" height="395"/></svg>
 <div class="cinematic-intro" aria-hidden="true" hidden><video muted playsinline disablepictureinpicture></video></div>
 <script>
 (() => {
@@ -59,11 +72,16 @@ main.entry {--band-height:clamp(30px,4dvh,34px);--band-top:max(var(--mast-h),cal
   video.addEventListener('ended', finish, { once:true });
   video.addEventListener('error', finish, { once:true });
   video.muted = true;
-  video.src = './previzualizare/scene.mp4?v=spirala2';
+  video.src = './previzualizare/scene.mp4?v=toast3';
   layer.hidden = false;
   video.play().catch(finish);
 })();
 </script>
+<svg class="scene-detail" viewBox="0 0 1536 864" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+<defs><radialGradient id="candleGlow"><stop stop-color="#fff7b9" stop-opacity=".94"/><stop offset=".28" stop-color="#ffcb68" stop-opacity=".66"/><stop offset=".72" stop-color="#ff9a38" stop-opacity=".26"/><stop offset="1" stop-color="#ff8625" stop-opacity="0"/></radialGradient></defs>
+<g class="candle-halo"><ellipse cx="1392" cy="687" rx="48" ry="55" fill="url(#candleGlow)"/><path d="M1392 698 Q1385 694 1390 684 Q1395 677 1392 672 Q1403 688 1396 696Z" fill="url(#candleGlow)"/></g>
+<ellipse class="candle-reflection" cx="1393" cy="790" rx="29" ry="23" fill="url(#candleGlow)"/>
+</svg>
 <header class="mast">
 <a class="city" href="./" aria-label="Orașul selectat: Slobozia"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Slobozia</a>
 <a class="brand" href="./"><img src="../assets/pont-intro-logo-c4.png" alt="PONT — Acasă"></a>
