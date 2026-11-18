@@ -160,6 +160,7 @@ for(const width of [320,390,768,1440]){
      assert.equal(await card.isChecked(),checked);
      assert.equal(await delivery.isChecked(),true);
     }
+    await page.evaluate(()=>window.scrollTo({top:0,behavior:'instant'}));
     await measure('card-checkbox');
     console.log('CARD_CHECKBOX',JSON.stringify({file,width,appearance:cardStyle.appearance,accent:cardStyle.accent,save:[false,true]}));
     page.off('pageerror',onError);
