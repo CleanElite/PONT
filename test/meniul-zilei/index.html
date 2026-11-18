@@ -649,7 +649,7 @@ html:has(> body.lunch.menu-showcase){container-type:inline-size}
     <button type="button" data-close-checkout-sheet>Închide</button>
   </dialog>
 </dialog><dialog id="orderConfirmationNotice" class="pont-order-confirm-dialog" aria-labelledby="orderConfirmationTitle"><div class="pont-order-confirm-symbol" aria-hidden="true">!</div><h3 id="orderConfirmationTitle">Confirmarea comenzii</h3><p><strong>Comanda trebuie confirmată de restaurant pe WhatsApp.</strong></p><p>Solicitarea este înregistrată când continui către WhatsApp. Restaurantul confirmă separat dacă poate pregăti comanda. Dacă nu primești un răspuns, contactează-l telefonic.</p><div class="pont-order-confirm-actions"><button type="button" id="orderNoticeCancel">Înapoi</button><button type="button" id="orderNoticeContinue">Am înțeles · Continuă</button></div></dialog>
-<script src="../../meniul-zilei/dish-gallery.js?v=20261117-5"></script><script src="../super-admin/config.js"></script><script>
+<script src="../../meniul-zilei/restaurant-title.js"></script><script src="../../meniul-zilei/dish-gallery.js?v=20261117-5"></script><script src="../super-admin/config.js"></script><script>
 const $=s=>document.querySelector(s), day=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest'}).format(new Date()), lei=n=>new Intl.NumberFormat('ro-RO',{style:'currency',currency:'RON'}).format(n);
 const read=(k,f)=>JSON.parse(localStorage.getItem(k)??JSON.stringify(f)), write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -894,6 +894,7 @@ function openOrder(m,trigger){
   $('.pont-menu-identity').classList.toggle('pont-menu-identity--long',m.name.length>26);
   $('#orderMsg').textContent='';
   $('#order').showModal();update();
+  window.pontResizeRestaurantTitle();
 }
 let pontRestaurantRoutePushed=false;
 function enterRestaurant(id,trigger=null,changeUrl=true){

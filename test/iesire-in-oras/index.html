@@ -82,7 +82,14 @@ html:has(> body.lunch.menu-showcase){container-type:inline-size}
 .event-submit-form label{grid-column:1/-1}
 }
 .event-demo-label{position:absolute;z-index:3;top:clamp(43px,6vw,65px);right:clamp(8px,1.9vw,20px);padding:4px 7px;border:1px solid #eacf8677;border-radius:6px;background:#031b20de;color:#fce6b2;font:750 clamp(8px,1.55vw,11px)/1.15 system-ui;letter-spacing:.04em}
-@media(max-width:520px){.event-demo-label{top:42px}}
+@media(max-width:520px){
+ #eventList{grid-template-columns:minmax(0,1fr)}
+ #eventList .event-card{min-height:154px}
+ #eventList .event-card .menu-card-copy{max-width:56%}
+ #eventList .event-card .menu-card-name{overflow-wrap:anywhere}
+ .event-date,.event-demo-label{max-width:40%;white-space:normal;text-align:right}
+ .event-demo-label{top:42px}
+}
 </style>
 <style>
 #eventSubmitForm > label:has(> input:not([type="checkbox"])) {

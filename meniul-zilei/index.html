@@ -669,7 +669,7 @@ html:has(> body.lunch.menu-showcase){container-type:inline-size}
     <button type="button" data-close-checkout-sheet>Închide</button>
   </dialog>
 </dialog><dialog id="orderConfirmationNotice" class="pont-order-confirm-dialog" aria-labelledby="orderConfirmationTitle"><div class="pont-order-confirm-symbol" aria-hidden="true">!</div><h3 id="orderConfirmationTitle">Confirmarea comenzii</h3><p><strong>Comanda trebuie confirmată de restaurant pe WhatsApp.</strong></p><p>Solicitarea este înregistrată când continui către WhatsApp. Restaurantul confirmă separat dacă poate pregăti comanda. Dacă nu primești un răspuns, contactează-l telefonic.</p><div class="pont-order-confirm-actions"><button type="button" id="orderNoticeCancel">Înapoi</button><button type="button" id="orderNoticeContinue">Am înțeles · Continuă</button></div></dialog>
-<script src="./dish-gallery.js?v=20261117-10"></script><script src="../super-admin/config.js"></script><script>
+<script src="./restaurant-title.js"></script><script src="./dish-gallery.js?v=20261117-10"></script><script src="../super-admin/config.js"></script><script>
 const $=s=>document.querySelector(s), day=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Europe/Bucharest'}).format(new Date()), lei=n=>new Intl.NumberFormat('ro-RO',{style:'currency',currency:'RON'}).format(n);
 const read=(k,f)=>JSON.parse(localStorage.getItem(k)??JSON.stringify(f)), write=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -914,49 +914,10 @@ function openOrder(m,trigger){
   const minimum = m.min_full_menus || 1;
   $('#pontOrderMinimum').textContent = 'Minim ' + minimum + (minimum === 1 ? ' meniu' : ' meniuri');
   $('#send').querySelector('.pont-whatsapp-label').textContent=m.phone?'Trimite comanda pe WhatsApp':isMenuPreview?'Comenzile sunt dezactivate în previzualizare':'WhatsApp indisponibil — lipsește numărul';$('#send').disabled=!m.phone;const callPhone=normalizeCallPhone(m.phone);$('#callNow').hidden=!callPhone;if(callPhone){$('#callNow').href='tel:'+callPhone;}else{$('#callNow').removeAttribute('href');}
-  // Measure the rendered heading instead of guessing from character count:
-  // every restaurant name stays on ONE line at 320px, 390px and desktop widths.
-  function pontFitRestaurantTitle(){
-    const title=document.getElementById('orderTitle');
-    const identity=title?.closest('.pont-menu-identity');
-    if(!title||!identity||!identity.clientWidth)return;
-    title.style.removeProperty('font-size');
-    title.style.removeProperty('letter-spacing');
-    const titleLine=title.closest('.pont-menu-title-line');
-    const maxWidth=Math.max(1,Math.floor(titleLine?.getBoundingClientRect().width||identity.getBoundingClientRect().width)-8);
-    const style=getComputedStyle(title);
-    const baseSize=parseFloat(style.fontSize)||30;
-    const weight=style.fontWeight;
-    const family=style.fontFamily;
-    const text=title.textContent||'';
-    const canvas=pontFitRestaurantTitle.canvas||(pontFitRestaurantTitle.canvas=document.createElement('canvas'));
-    const ctx=canvas.getContext('2d');
-    if(!ctx)return;
-    ctx.font=weight+' '+baseSize+'px '+family;
-    const width=ctx.measureText(text).width;
-    const desired=Math.min(baseSize,baseSize*maxWidth/Math.max(width,1));
-    title.style.fontSize=Math.max(8,desired-.75)+'px';
-    // Account for real glyph widths, including fonts loaded after opening.
-    for(let i=0;i<3 && title.scrollWidth>maxWidth;i++){
-      const current=parseFloat(getComputedStyle(title).fontSize)||desired;
-      title.style.fontSize=Math.max(6,current*maxWidth/Math.max(title.scrollWidth,1)-.75)+'px';
-    }
-  }
-  window.pontResizeRestaurantTitle=pontFitRestaurantTitle;
-  requestAnimationFrame(()=>pontFitRestaurantTitle());
-  document.fonts?.ready.then(()=>requestAnimationFrame(pontFitRestaurantTitle)).catch(()=>{});
-
   $('#orderMsg').textContent='';
   $('#order').showModal();update();
-  pontFitRestaurantTitle();
+  window.pontResizeRestaurantTitle();
 }
-new ResizeObserver(()=>{
- const title=document.getElementById('orderTitle');
- if(title && document.getElementById('order')?.open){
-   // Debounced to avoid layout feedback loops.
-   requestAnimationFrame(()=>window.pontResizeRestaurantTitle?.());
- }
-}).observe(document.querySelector('.pont-menu-header'));
 let pontRestaurantRoutePushed=false;
 function enterRestaurant(id,trigger=null,changeUrl=true){
  const m=menus().find(x=>x.id===id);
