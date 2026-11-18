@@ -11,20 +11,23 @@
 <style>
 :root{color-scheme:dark}
 *{box-sizing:border-box}
-html,body{margin:0;width:100%;min-height:100%;background:#041419;overflow:hidden}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#041419}
 main{position:relative;width:100vw;height:100vh;height:100dvh;overflow:hidden;background:#041419}
-main::before{content:"";position:absolute;inset:0;background:url("./assets/pont-desktop-header-final.png") center center/cover no-repeat}
-.desktop-hotspot{position:absolute;z-index:2;display:block;top:5%;height:10%;border-radius:100px;cursor:pointer;text-decoration:none}
+main::before{content:"";position:absolute;inset:-12px;background:url("./assets/pont-desktop-background.png") center center/cover no-repeat;filter:blur(5px) brightness(.78) saturate(.82);transform:scale(1.02)}
+/* Header artwork is drawn at its original image aspect ratio, never stretched by cover. */
+.desktop-header{position:absolute;top:0;left:0;width:100%;height:clamp(128px,13.4vw,218px);overflow:hidden;z-index:1;pointer-events:none}
+.desktop-header::before{content:"";position:absolute;inset:0;background:url("./assets/pont-desktop-header-final.png") top center/100% auto no-repeat;-webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 76%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0%,#000 76%,transparent 100%)}
+.desktop-hotspot{position:absolute;z-index:2;display:block;top:clamp(25px,3.4vw,57px);height:clamp(39px,4.25vw,70px);border-radius:100px;cursor:pointer;text-decoration:none}
 .desktop-hotspot:focus-visible{outline:3px solid #90f1f8;outline-offset:3px;background:#79cfe91c}
 .desktop-hotspot.city{left:3.8%;width:18%}
 .desktop-hotspot.admin{right:3%;width:20%}
 .desktop-hotspot:hover{background:rgba(160,235,244,.07)}
-@media(prefers-reduced-motion:reduce){.desktop-hotspot{transition:none}}
 @media(max-width:1199px){main{display:none}}
 </style>
 </head>
 <body>
 <main aria-label="PONT Slobozia Desktop">
+  <div class="desktop-header" aria-hidden="true"></div>
   <a class="desktop-hotspot city" href="./" aria-label="Slobozia — pagina principală"></a>
   <a class="desktop-hotspot admin" href="./login/" aria-label="Administrator — autentificare"></a>
 </main>
