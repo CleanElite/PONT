@@ -11,6 +11,8 @@ html,body {margin:0;overflow:hidden;background:#031317;color:#fff;font-family:sy
 main.entry {--band-height:clamp(30px,4dvh,34px);--band-top:max(var(--mast-h),calc(50% - max(18dvh,10.125vw) - var(--band-height) - var(--band-height) - 6px));--side-inset:18.5%;display:grid;--mast-h:clamp(56px,7.6dvh,66px);--ticker-h:clamp(24px,3.4dvh,28px);grid-template:var(--mast-h) var(--ticker-h) minmax(0,1fr) / minmax(0,1fr);align-content:stretch;justify-items:stretch;gap:0;width:100%;height:100vh;height:100dvh;padding:0;background:linear-gradient(180deg,#00101455,transparent 33%,#00101433),url("../assets/pont-desktop-background.png") center center/cover no-repeat}
 .mast {display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding-inline:var(--side-inset);text-shadow:0 1px 4px #001018;font-size:13px;font-weight:600}
 .mast a {display:inline-flex;align-items:center;gap:6px;width:max-content}
+.mast .city {translate:5px 10px}
+.mast .login {translate:-5px 10px}
 .mast svg {width:14px;height:14px}
 .mast .brand {position:absolute;left:50%;--logo-top:clamp(34px,calc(2dvh + 26px),46px);top:var(--logo-top);transform:translateX(-50%)}
 .brand img {display:block;width:clamp(148px,11.4vw,178px);height:auto;max-height:calc(var(--band-top) - var(--logo-top) - 4px);object-fit:contain}
