@@ -1,6 +1,7 @@
 /* PONT public-site consent: two equally accessible choices, prior opt-in for persistent visit identification. */
 (()=>{'use strict';
  const KEY='pont_analytics_consent_v1',VISITOR='pont_analytics_visitor_v1';
+ const landing=location.pathname==='/'||/\/index\.html$/.test(location.pathname);
  function get(){try{return localStorage.getItem(KEY)}catch(_){return null}}
  function choose(yes){
   try{localStorage.setItem(KEY,yes?'yes':'no');if(!yes){localStorage.removeItem(VISITOR);for(let i=sessionStorage.length-1;i>=0;i--){const k=sessionStorage.key(i);if(k?.startsWith('pont_visit_'))sessionStorage.removeItem(k)}}}
@@ -19,8 +20,13 @@
   banner.innerHTML='<p><strong>Confidențialitatea ta contează.</strong> PONT folosește stocarea necesară funcționării site-ului. Cu acordul tău, poate salva un identificator aleatoriu pentru statistici privind vizitele repetate. Refuzul nu limitează utilizarea platformei. <a href="'+new URL('cookies.html',import.meta.url).href+'">Detalii cookie</a> · <a href="'+new URL('confidentialitate.html',import.meta.url).href+'">GDPR</a></p><div><button class="pont-consent-no" type="button">Refuză</button><button class="pont-consent-yes" type="button">Acceptă toate</button></div>';
   banner.querySelector('.pont-consent-no').addEventListener('click',()=>choose(false));
   banner.querySelector('.pont-consent-yes').addEventListener('click',()=>choose(true));
-  banner.hidden=['yes','no'].includes(get());
+  banner.hidden=true;
   document.body.append(banner);
+  const showWhenReady=()=>{if(!['yes','no'].includes(get()))banner.hidden=false};
+  if(landing){
+   if(document.documentElement.classList.contains('pont-intro-active'))window.addEventListener('pont:introfinished',showWhenReady,{once:true});
+   else showWhenReady();
+  }else showWhenReady();
   const footer=document.querySelector('footer');
   // The public restaurant listings use their existing legal-document links in the footer;
   // avoid adding extra GDPR / cookie-settings controls to those primary screens.
@@ -36,7 +42,7 @@
   const toggle=document.createElement('button');toggle.type='button';toggle.textContent='Preferințe cookie';toggle.dataset.pontCookieSettings='true';
   toggle.style.cssText='display:inline-flex;align-items:center;justify-content:center;min-height:44px;background:none;color:inherit;border:0;text-decoration:underline;cursor:pointer;padding:9px 12px;font:inherit';
   toggle.addEventListener('click',()=>{banner.hidden=false});
-  if(!isMainListing)(footer?.querySelector('nav')||footer||document.body).append(toggle);
+  if(!isMainListing&&!landing)(footer?.querySelector('nav')||footer||document.body).append(toggle);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
 })();
