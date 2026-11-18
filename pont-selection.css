@@ -233,7 +233,7 @@ html, .entry-page {
   text-transform: uppercase;
 }
 
-.choice-icon, .choice-action {
+.choice-icon {
   display: grid;
   place-items: center;
   border: 1px solid #a5edf4a6;
@@ -261,17 +261,6 @@ html, .entry-page {
   line-height: 1.25;
   text-wrap: balance;
 }
-
-.choice-action {
-  position: absolute;
-  top: 50%;
-  right: clamp(9px, 3vw, 24px);
-  width: clamp(27px, 7.25vw, 38px);
-  height: clamp(27px, 7.25vw, 38px);
-  translate: 0 -50%;
-}
-
-.choice-action svg { width: 55%; height: 55%; }
 
 .entry-page .pont-global-consent {
   inset-inline: max(12px, env(safe-area-inset-left), env(safe-area-inset-right));
