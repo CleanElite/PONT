@@ -1,0 +1,25 @@
+name: Import new PONT desktop background
+on:
+  push:
+    paths:
+      - '.github/workflows/import-pont-desktop-background.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  import-background:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download exact approved background
+        run: |
+          curl -fLsS --retry 3 'https://at.adobe.com/UOlTGfrEIllOuHDn' -o assets/pont-desktop-background.png
+          file assets/pont-desktop-background.png
+          test "$(head -c 8 assets/pont-desktop-background.png | od -An -tx1 | tr -d ' \n')" = "89504e470d0a1a0a"
+          test "$(stat -c%s assets/pont-desktop-background.png)" -gt 100000
+      - name: Commit background
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/pont-desktop-background.png
+          git diff --cached --quiet || (git commit -m "Add approved PONT desktop photographic background" && git push)
