@@ -6,10 +6,12 @@ body.pont-admin-neon.pont-admin-login{
 }
 body.pont-admin-neon.pont-admin-login::before,body.pont-admin-neon.pont-admin-login::after{content:none!important}
 @media (min-aspect-ratio:16/9){
- body.pont-admin-neon.pont-admin-login::before{
-  content:""!important;position:fixed;inset:-72px;z-index:-1;pointer-events:none;
-  background:var(--scene) center/cover no-repeat!important;
-  filter:blur(18px) brightness(.77);opacity:1;
+ body.pont-admin-neon.pont-admin-login{
+  background:
+   radial-gradient(ellipse at 0% 78%,rgba(138,89,39,.19),transparent 26%),
+   linear-gradient(150deg,transparent 9%,rgba(196,152,82,.24) 9.04%,transparent 9.13%),
+   linear-gradient(330deg,transparent 9%,rgba(196,152,82,.2) 9.04%,transparent 9.13%),
+   linear-gradient(118deg,#061416,#103136 46%,#041518 100%)!important;
  }
  body.pont-admin-neon.pont-admin-login>#loginScene{
   mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent);
