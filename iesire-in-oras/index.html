@@ -1107,13 +1107,61 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
  body.pont-events-page #eventList:not(.pont-events-loading){gap:clamp(16px,1.4vw,24px)!important;grid-auto-flow:row!important}
  body.pont-events-page #eventList>.event-tile.pont-x13-featured+.event-tile:not(.pont-x13-featured){grid-column:1/span 4!important}
  body.pont-events-page #eventList>.event-empty{grid-column:1/-1}
- body.pont-events-page #eventList>.event-tile:not(.pont-x13-featured)>.event-card{height:clamp(175px,12.7vw,220px)!important;min-height:175px!important}
- body.pont-events-page #eventList>.event-tile.pont-x13-featured>.event-card{height:clamp(205px,14.9vw,265px)!important;min-height:205px!important}
- body.pont-events-page #eventList .event-card .menu-card-copy{padding-left:clamp(48px,5.5vw,85px)!important;width:71%!important;max-width:71%!important}
- body.pont-events-page #eventList .event-card .menu-card-copy::before{content:'♫';position:absolute;top:0;left:0;display:grid;place-items:center;width:clamp(36px,3.8vw,60px);aspect-ratio:1;border:1px solid #e7b147;border-radius:50%;color:#ffca5a;background:#091015;font:32px Georgia}
+ /* Both card sizes expand with their content and stretch to the tallest sibling. */
+ body.pont-events-page #eventList>.event-tile{
+  --card-height:clamp(175px,12.7vw,220px);
+  --card-inset:clamp(14px,1.12vw,20px);
+  --icon-size:clamp(29px,2.2vw,38px);
+  --title-size:clamp(19px,1.46vw,26px);
+  --copy-width:76%;
+ }
+ body.pont-events-page #eventList>.event-tile.pont-x13-featured{
+  --card-height:clamp(205px,14.9vw,265px);
+  --card-inset:clamp(18px,1.55vw,28px);
+  --icon-size:clamp(38px,3vw,52px);
+  --title-size:clamp(24px,1.95vw,34px);
+  --copy-width:70%;
+ }
+ body.pont-events-page #eventList>.event-tile.event-tile>.event-card{
+  display:grid!important;grid-template-columns:minmax(0,var(--copy-width)) minmax(0,1fr)!important;
+  align-items:center!important;align-self:stretch!important;
+  height:auto!important;min-height:var(--card-height)!important;max-height:none!important;
+  padding:var(--card-inset)!important;aspect-ratio:auto!important;
+ }
+ body.pont-events-page #eventList>.event-tile>.event-card.event-card-no-photo{grid-template-columns:minmax(0,1fr)!important}
+ body.pont-events-page #eventList>.event-tile>.event-card .menu-card-copy{
+  grid-column:1;display:grid!important;grid-template-columns:var(--icon-size) minmax(0,1fr);
+  grid-template-areas:"icon title" "info info" "meta meta" "action action";
+  align-items:center!important;align-content:center;justify-items:start;
+  width:100%!important;max-width:none!important;height:auto!important;min-width:0;
+  margin:0!important;padding:0!important;gap:7px 10px!important;text-align:left!important;
+ }
+ body.pont-events-page #eventList>.event-tile.pont-x13-featured>.event-card .menu-card-copy{
+  grid-template-areas:"icon title" ". info" ". meta" ". action";
+ }
+ body.pont-events-page #eventList .event-card .menu-card-copy::before{
+  content:'♫';grid-area:icon;display:grid;place-items:center;box-sizing:border-box;
+  width:var(--icon-size);height:var(--icon-size);border:1px solid #d4a044;border-radius:50%;
+  background:#091015;color:#ffca5a;font:calc(var(--icon-size)*.55)/1 Georgia,serif;
+ }
  body.pont-events-page #eventList .pont-x13-featured .menu-card-copy::before{content:'☆'}
- body.pont-events-page #eventList .event-card .menu-card-name{order:-1}
- .city-details{display:inline-block;padding:7px 20px;margin-top:3px;border:1px solid #efb747;border-radius:99px;background:#090d0d;color:white;box-shadow:0 0 10px #e8a32f66;font:650 14px/1.2 system-ui}
+ body.pont-events-page #eventList>.event-tile .event-card .menu-card-name{
+  grid-area:title;margin:0!important;max-width:100%!important;min-width:0;
+  font-size:var(--title-size)!important;line-height:1.15!important;white-space:normal!important;
+  overflow-wrap:anywhere;overflow:visible!important;-webkit-line-clamp:unset!important;
+ }
+ body.pont-events-page #eventList .event-card :is(.pont-event-standard-eyebrow,.pont-event-premium-eyebrow){
+  grid-area:info;position:static!important;min-width:0;flex-wrap:wrap!important;
+ }
+ body.pont-events-page #eventList>.event-tile .event-card .event-card-meta{
+  grid-area:meta;align-items:flex-start!important;text-align:left!important;gap:3px!important;
+ }
+ body.pont-events-page #eventList>.event-tile .event-card .menu-card-location{
+  text-align:left!important;font-size:clamp(13px,.94vw,16px)!important;line-height:1.3!important;
+ }
+ .city-details{grid-area:action;display:inline-block;box-sizing:border-box;max-width:100%;
+  padding:6px 16px;margin-top:2px;border:1px solid #efb747;border-radius:99px;background:#090d0d;
+  color:white;box-shadow:0 0 10px #e8a32f66;font:650 14px/1.25 system-ui}
  body.pont-events-page #eventList .event-card .pont-event-poster-fit.menu-card-photo{object-fit:cover!important;object-position:center!important}
 }
 @media(prefers-reduced-motion:reduce){.city-track{animation:none}}
