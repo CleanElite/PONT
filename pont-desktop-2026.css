@@ -598,3 +598,49 @@
   width:100%!important;text-align:center!important;
  }
 }
+
+/* X13 precise center: fixed geometric center, compact original wordmark. */
+@media screen and (min-width:1200px){
+ body.lunch.menu-showcase>.menu-header{
+  position:relative!important;display:block!important;
+  width:100%!important;max-width:none!important;
+  height:88px!important;min-height:88px!important;
+  margin:0!important;padding:0!important;
+ }
+ body.lunch.menu-showcase>.menu-header .menu-back{
+  position:absolute!important;top:17px!important;left:max(32px,calc((100% - 1720px)/2))!important;
+  margin:0!important;z-index:3!important;
+ }
+ body.lunch.menu-showcase>.menu-header .menu-lockup{
+  position:absolute!important;top:5px!important;left:50%!important;
+  right:auto!important;bottom:auto!important;
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:128px!important;height:76px!important;min-width:0!important;
+  padding:0!important;margin:0!important;
+  transform:translateX(-50%)!important;transform-origin:center!important;
+ }
+ body.lunch.menu-showcase>.menu-header .menu-wordmark{
+  display:block!important;flex:none!important;
+  width:128px!important;height:76px!important;
+  max-width:128px!important;min-width:0!important;
+  background-position:50% 50%!important;background-size:contain!important;
+ }
+ body.lunch.menu-showcase>.menu-main>.menu-heading{
+  position:relative!important;left:auto!important;right:auto!important;
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;
+  width:100%!important;max-width:none!important;
+  margin:0 auto 10px!important;padding:0!important;
+  transform:none!important;text-align:center!important;
+ }
+ body.lunch.menu-showcase>.menu-main>.menu-heading h1{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  gap:12px!important;width:100%!important;
+  margin:0 auto!important;padding:0!important;
+  text-align:center!important;font-size:clamp(33px,2.8vw,45px)!important;
+ }
+ body.lunch.menu-showcase>.menu-main>.menu-heading p{
+  display:block!important;width:100%!important;
+  margin:5px auto 0!important;text-align:center!important;
+ }
+}
