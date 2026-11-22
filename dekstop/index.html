@@ -14,12 +14,24 @@ main.entry{display:grid;grid-template:clamp(70px,15.5dvh,136px) clamp(40px,9.6dv
 .brand img{display:block;width:clamp(140px,min(16vw,34dvh),285px);height:auto;mix-blend-mode:screen}
 .login,.cta{border:1px solid #e7b86d;border-radius:999px;background:#060a0bda;font-weight:650;color:white}
 .login{position:absolute;right:4.5%;padding:.6em 1.35em;font-size:clamp(14px,1.15vw,19px)}
-.mast::after,.ticker::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#73532c22,#ffda8a 18%,#a56d28 31%,#fff3c2 72%,#94652c55);box-shadow:0 0 7px #ffb44c90;z-index:2}
-.ticker{display:flex;align-items:center;overflow:hidden;white-space:nowrap;font-size:clamp(14px,1.2vw,20px)}
+.mast::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#73532c22,#ffda8a 18%,#a56d28 31%,#fff3c2 72%,#94652c55);box-shadow:0 0 7px #ffb44c90;z-index:2}
+.ticker {
+  display:flex;align-items:center;overflow:hidden;white-space:nowrap;
+  color:#f3eadb;font-size:clamp(14px,1.2vw,20px);
+  background:radial-gradient(ellipse at 52% 125%,#70522b35,transparent 58%),
+    linear-gradient(180deg,#172329,#081218 24%,#081116 75%,#232324);
+}
+.ticker::after {
+  content:"";position:absolute;inset:auto 0 0;height:1px;pointer-events:none;
+  background:linear-gradient(90deg,#715635,#e1b572 18%,#77623f 42%,#ffdda2 68%,#72583a);
+  box-shadow:0 -1px 6px #e4ae583b;
+}
+.ticker-window {display:block;width:100%;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
 .track,.sequence,.sequence>span{display:flex;align-items:center;flex:none;width:max-content}
 .track{animation:roll 74s linear infinite}
-.sequence>span{gap:1em;padding-inline:2vw}
-.sequence b{font-size:1.5em;color:#ffd052;border-right:1px solid #ad813d;padding-right:.75em}
+.sequence>span{gap:1.15em;padding-inline:2.2vw}
+.sequence>span::after{content:"";width:5px;height:5px;margin-left:1.6vw;transform:rotate(45deg);background:#dbb775;box-shadow:0 0 6px #d6a25254}
+.sequence b{font-size:1.48em;color:#ffd05d;font-weight:750;letter-spacing:-.04em;padding-right:.8em;border-right:1px solid #94744588}
 @keyframes roll{to{transform:translateX(-50%)}}
 .options{position:relative;isolation:isolate;overflow:hidden;background:#040e14}
 .evening-photo,.lunch-photo,.spine{position:absolute;inset:0;pointer-events:none}
@@ -46,7 +58,7 @@ main.entry{display:grid;grid-template:clamp(70px,15.5dvh,136px) clamp(40px,9.6dv
 <a class="brand" href="./"><img src="../assets/pont-intro-logo-c4.png" alt="PONT — Acasă"></a>
 <a class="login" href="../login/">Administrator</a>
 </header>
-<a class="ticker" href="https://glovoapp.com/ro/ro/slobozia" aria-label="Comandă prin Glovo în Slobozia"><span class="track" aria-hidden="true"><span class="sequence"><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span></span><span class="sequence"><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span></span></span></a>
+<a class="ticker" href="https://glovoapp.com/ro/ro/slobozia" aria-label="Comandă prin Glovo în Slobozia"><span class="ticker-window"><span class="track" aria-hidden="true"><span class="sequence"><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span></span><span class="sequence"><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span></span></span></span></a>
 <nav class="options" aria-label="Alege o secțiune">
 <div class="evening-photo" aria-hidden="true"></div><div class="lunch-photo" aria-hidden="true"></div>
 <svg class="spine" aria-hidden="true" viewBox="0 0 1000 1000" preserveAspectRatio="none">
