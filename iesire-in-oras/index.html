@@ -1159,6 +1159,16 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
   padding:6px 16px;margin-top:2px;border:1px solid #efb747;border-radius:99px;background:#090d0d;
   color:white;box-shadow:0 0 10px #e8a32f66;font:650 14px/1.25 system-ui}
  body.pont-events-page #eventList .event-card .pont-event-poster-fit.menu-card-photo{object-fit:cover!important;object-position:center!important}
+ body.pont-events-page #eventList>.pont-promoted-edge-to-edge>.event-card .pont-event-poster-fit.menu-card-photo{
+  inset:0!important;width:100%!important;opacity:1;
+  -webkit-mask-image:none;mask-image:none;
+ }
+ body.pont-events-page #eventList>.event-tile.pont-promoted-edge-to-edge>.event-card::after{
+  background:linear-gradient(90deg,#010d10d6 0%,#010d10ba 22%,#010d106b 37%,#010d101a 49%,transparent 58%)!important;
+ }
+ body.pont-events-page #eventList>.pont-promoted-edge-to-edge .menu-card-copy{
+  text-shadow:0 1px 4px #000;
+ }
 }
 @media(prefers-reduced-motion:reduce){.city-track{animation:none}}
 </style>
