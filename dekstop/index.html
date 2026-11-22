@@ -41,8 +41,23 @@ main.entry{display:grid;grid-template:clamp(70px,15.5dvh,136px) clamp(40px,9.6dv
 .lunch-photo::before{left:0;width:61%;background:linear-gradient(90deg,transparent 27%,#030e1375 60%,#030e13 96%),url("./lunch-scene.jpg") left center/cover}
 .evening-photo::before{right:0;width:65%;background:linear-gradient(90deg,#030e13 2%,#030e13a0 33%,transparent 75%),url("./evening-scene.jpg") right center/cover}
 .spine{width:100%;height:100%;overflow:visible}
-.option{position:absolute;top:9%;width:25%;transform:translateX(-50%);display:grid;justify-items:center;align-content:start;gap:clamp(6px,1.3dvh,15px);text-align:center;color:white;text-shadow:0 2px 8px #000}
-.lunch{left:37%}.evening{left:65.5%}
+.option{position:absolute;inset:0;cursor:pointer}
+.option.lunch{clip-path:url(#lunch-edge);z-index:2}
+.option.evening{z-index:1}
+.option-copy{position:absolute;top:9%;width:25%;transform:translateX(-50%);display:grid;justify-items:center;align-content:start;gap:clamp(6px,1.3dvh,15px);text-align:center;color:white;text-shadow:0 2px 8px #000}
+.lunch .option-copy{left:37%}.evening .option-copy{left:65.5%}
+.options:has(.lunch:is(:hover,:focus-visible)) .lunch-photo::before,
+.options:has(.evening:is(:hover,:focus-visible)) .evening-photo::before{filter:brightness(1.18) saturate(1.12);transform:scale(1.018)}
+.option:is(:hover,:focus-visible) .cta{border-color:#ffe1a0;box-shadow:0 0 8px #ffcf77,0 0 26px #eba74780}
+.option:focus-visible .cta{outline:2px solid #fff4cd;outline-offset:4px}
+@media(prefers-reduced-motion:no-preference){
+.lunch-photo::before,.evening-photo::before{transition:filter .22s ease,transform .32s ease}
+.cta{transition:box-shadow .22s,border-color .22s,background .22s}
+}
+@media(prefers-reduced-motion:reduce){
+.options:has(.option:is(:hover,:focus-visible)) .lunch-photo::before,
+.options:has(.option:is(:hover,:focus-visible)) .evening-photo::before{transform:none}
+}
 .option svg{width:clamp(35px,min(4.2vw,8dvh),72px);height:auto;color:#fff2cf;filter:drop-shadow(0 1px 3px #d58a36)}
 .option strong{font:400 clamp(24px,min(3.1vw,7dvh),60px)/1.05 Georgia,serif}
 .option strong::after{content:"";display:block;width:80%;height:2px;margin:clamp(6px,1.6dvh,16px) auto 0;background:linear-gradient(90deg,transparent,#da9a3b,#fff2bd,#da9a3b,transparent)}
@@ -67,8 +82,8 @@ main.entry{display:grid;grid-template:clamp(70px,15.5dvh,136px) clamp(40px,9.6dv
 <linearGradient id="shine" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#ffbe65"/><stop offset=".22" stop-color="#fff6d9"/><stop offset=".37" stop-color="#4fc9ff"/><stop offset=".54" stop-color="#ffefc8"/><stop offset=".73" stop-color="#ffad4c"/><stop offset=".90" stop-color="#59caff"/><stop offset="1" stop-color="#0870a0"/></linearGradient>
 <path id="seam" d="M610 0 C525 95 479 284 510 495 S499 910 360 1000" fill="none" vector-effect="non-scaling-stroke"/>
 </defs><g stroke="url(#shine)"><use href="#seam" stroke-width="12" opacity=".5" style="filter:blur(6px)"/><use href="#seam" stroke-width="4"/><use href="#seam" stroke="white" stroke-opacity=".8" stroke-width="1"/></g></svg>
-<a class="option lunch" href="../meniul-zilei/"><svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M8 19a6 6 0 1 1 2-11 7 7 0 0 1 12 0 6 6 0 1 1 2 11v8H8zM8 23h16"/></svg><strong>Meniul zilei</strong><span class="caption">Vezi ofertele din restaurantele din Slobozia</span><span class="cta">Vezi meniul zilei</span></a>
-<a class="option evening" href="../iesire-in-oras/"><svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><g transform="rotate(18 10 16)"><path d="M6 5h8v9a4 4 0 0 1-8 0zM6 11h8M10 18v9m-4 0h8"/></g><g transform="rotate(-18 22 16)"><path d="M18 5h8v9a4 4 0 0 1-8 0zM18 11h8M22 18v9m-4 0h8"/></g></svg><strong>Ieșire în oraș</strong><span class="caption">Descoperă restaurante, baruri și evenimente</span><span class="cta">Vezi locațiile</span></a>
+<a class="option lunch" href="../meniul-zilei/"><span class="option-copy"><svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M8 19a6 6 0 1 1 2-11 7 7 0 0 1 12 0 6 6 0 1 1 2 11v8H8zM8 23h16"/></svg><strong>Meniul zilei</strong><span class="caption">Vezi ofertele din restaurantele din Slobozia</span><span class="cta">Vezi meniul zilei</span></span></a>
+<a class="option evening" href="../iesire-in-oras/"><span class="option-copy"><svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><g transform="rotate(18 10 16)"><path d="M6 5h8v9a4 4 0 0 1-8 0zM6 11h8M10 18v9m-4 0h8"/></g><g transform="rotate(-18 22 16)"><path d="M18 5h8v9a4 4 0 0 1-8 0zM18 11h8M22 18v9m-4 0h8"/></g></svg><strong>Ieșire în oraș</strong><span class="caption">Descoperă restaurante, baruri și evenimente</span><span class="cta">Vezi locațiile</span></span></a>
 </nav>
 </main>
 <div class="pont-pull-indicator" aria-hidden="true"></div>
