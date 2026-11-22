@@ -9,7 +9,7 @@ body.pont-admin-neon.pont-admin-login::before,body.pont-admin-neon.pont-admin-lo
  body.pont-admin-neon.pont-admin-login::before{
   content:""!important;position:fixed;inset:-72px;z-index:-1;pointer-events:none;
   background:var(--scene) center/cover no-repeat!important;
-  filter:blur(36px) brightness(.77);opacity:1;
+  filter:blur(18px) brightness(.77);opacity:1;
  }
  body.pont-admin-neon.pont-admin-login>#loginScene{
   mask-image:linear-gradient(to right,transparent,#000 3%,#000 97%,transparent);
