@@ -846,13 +846,17 @@ function renderEvents(events){
   const p=document.createElement('p');p.textContent='Momentan nu sunt evenimente anunțate. Revino pentru noi experiențe din Slobozia și împrejurimi.';
   empty.append(h,p);list.append(empty);return;
  }
- for(const [i,event] of events.entries()){
+ const featuredEvents=events.filter(event=>activePromotions.some(p=>(p.service_type==='pinned_event'||p.service_type==='exclusive_banner')&&p.event_id===event.id));
+ const orderedEvents=[...featuredEvents,...events.filter(event=>!featuredEvents.includes(event))];
+ list.classList.toggle('pont-one-featured',featuredEvents.length===1);
+ for(const [i,event] of orderedEvents.entries()){
   const outer=document.createElement('div');outer.className='event-tile menu-tile';
   const promotedSlot=activePromotions.find(p=>p.service_type==='pinned_event'&&p.event_id===event.id);
   const isFixed=Boolean(promotedSlot);
   const isPromoted=isFixed||activePromotions.some(p=>p.service_type==='exclusive_banner'&&p.event_id===event.id);
   if(isFixed)outer.classList.add('pont-promoted-position');
   if(isPromoted)outer.classList.add('pont-promoted-edge-to-edge');
+  if(isPromoted&&featuredEvents.indexOf(event)<2)outer.classList.add('pont-x13-featured');
   const button=document.createElement('button');button.type='button';button.className='event-card menu-card';
   const promotedArtwork={
    'a9c43028-e400-4058-9a99-bc23f134a118':'../assets/pont-game-night-landscape.jpg?v=20261117-1',
@@ -1042,6 +1046,106 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
  body.pont-events-page #eventList .event-card{height:205px!important;min-height:205px!important;padding:16px!important}
  body.pont-events-page #eventList>.event-tile:nth-child(-n+2) .event-card{height:240px!important;min-height:240px!important;padding:20px!important}
  body.pont-events-page #eventList .event-card .menu-card-copy{width:64%!important;max-width:64%!important}
+}
+</style>
+
+<style id="pont-x13-reference-grid-fix-20261122">
+@media screen and (min-width:1200px){
+ body.pont-events-page #eventList:not(.pont-events-loading){
+  display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:24px!important;align-items:stretch!important;justify-content:center!important;
+ }
+ body.pont-events-page #eventList>.event-tile,
+ body.pont-events-page #eventList>.event-tile.pont-promoted-edge-to-edge,
+ body.pont-events-page #eventList>.event-tile.pont-promoted-position{
+  box-sizing:border-box!important;grid-column:span 4!important;
+  width:100%!important;max-width:100%!important;min-width:0!important;
+  margin:0!important;justify-self:stretch!important;
+ }
+ body.pont-events-page #eventList>.event-tile.pont-x13-featured{
+  grid-column:span 6!important;
+ }
+ body.pont-events-page #eventList.pont-one-featured>.event-tile.pont-x13-featured:first-child{
+  grid-column:4 / span 6!important;
+ }
+ body.pont-events-page #eventList>.event-tile:nth-child(-n+2):not(.pont-x13-featured){
+  grid-column:span 4!important;
+ }
+ body.pont-events-page #eventList .event-card,
+ body.pont-events-page #eventList>.event-tile.pont-promoted-edge-to-edge>.event-card,
+ body.pont-events-page #eventList>.event-tile.pont-promoted-position>.event-card{
+  box-sizing:border-box!important;position:relative!important;
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;
+  width:100%!important;max-width:100%!important;
+  height:215px!important;min-height:215px!important;
+  margin:0!important;padding:20px 22px!important;
+  border:1.5px solid #efb642!important;border-radius:20px!important;
+  background:#010e11!important;
+  box-shadow:0 0 9px #e8ad3d70,0 0 18px #d7a43a36!important;
+  overflow:hidden!important;isolation:isolate!important;
+ }
+ body.pont-events-page #eventList>.event-tile.pont-x13-featured>.event-card{
+  height:260px!important;min-height:260px!important;padding:24px 28px!important;
+  border:2px solid #ffcd63!important;
+  box-shadow:0 0 0 1px #ffe59b80,0 0 16px #ffb52cba,0 0 32px #ffab3275!important;
+ }
+ body.pont-events-page #eventList>.event-tile.pont-x13-featured>.event-card::before{
+  content:""!important;position:absolute!important;inset:0!important;z-index:3!important;
+  pointer-events:none!important;border-radius:inherit!important;
+  background:radial-gradient(ellipse 24% 13% at 4% 100%,#ffca6cbb,transparent 90%),
+   radial-gradient(ellipse 24% 13% at 91% 0%,#ffd37799,transparent 90%)!important;
+  box-shadow:inset 0 0 13px #ffc65b88!important;
+ }
+ body.pont-events-page #eventList .event-card .pont-event-poster-fill{
+  display:block!important;position:absolute!important;inset:0 0 0 auto!important;
+  width:75%!important;height:100%!important;object-fit:cover!important;
+  max-width:none!important;opacity:.88!important;z-index:0!important;
+ }
+ body.pont-events-page #eventList .event-card .pont-event-poster-fit.menu-card-photo{
+  display:block!important;position:absolute!important;inset:0 0 0 auto!important;
+  width:75%!important;height:100%!important;object-fit:contain!important;
+  object-position:center right!important;max-width:none!important;z-index:0!important;
+ }
+ body.pont-events-page #eventList .event-card::after,
+ body.pont-events-page #eventList>.event-tile.pont-promoted-edge-to-edge>.event-card::after{
+  content:""!important;position:absolute!important;inset:0!important;z-index:1!important;
+  pointer-events:none!important;
+  background:linear-gradient(90deg,#010d10 0%,#010d10 25%,#010d10f2 40%,#010d10b0 56%,#010d1010 92%)!important;
+ }
+ body.pont-events-page #eventList .event-card .menu-card-copy,
+ body.pont-events-page #eventList>.event-tile.pont-promoted-edge-to-edge .menu-card-copy{
+  box-sizing:border-box!important;position:relative!important;z-index:2!important;
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  justify-content:center!important;width:61%!important;max-width:61%!important;
+  min-width:0!important;margin:0!important;padding:0!important;gap:8px!important;
+  text-align:left!important;
+ }
+ body.pont-events-page #eventList .event-card .menu-card-name{
+  display:block!important;max-width:100%!important;
+  color:#fff8ee!important;font:600 clamp(19px,1.5vw,28px)/1.12 Georgia,serif!important;
+  white-space:normal!important;overflow-wrap:anywhere!important;
+ }
+ body.pont-events-page #eventList>.event-tile.pont-x13-featured .menu-card-name{
+  font-size:clamp(26px,2.1vw,36px)!important;
+ }
+ body.pont-events-page #eventList .event-card .event-card-meta{
+  display:flex!important;flex-direction:column!important;align-items:flex-start!important;
+  gap:4px!important;max-width:100%!important;min-width:0!important;
+ }
+ body.pont-events-page #eventList .event-card .menu-card-location{
+  max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important;
+  font-size:clamp(12px,.9vw,15px)!important;line-height:1.3!important;
+ }
+ body.pont-events-page #eventList .event-card.event-card-no-photo .menu-card-copy{
+  width:100%!important;max-width:100%!important;align-items:center!important;text-align:center!important;
+ }
+ body.pont-events-page #eventList .event-card.event-card-no-photo .event-card-meta{align-items:center!important}
+ body.pont-events-page #eventList .event-card.event-card-no-photo::after{display:none!important}
+}
+@media screen and (min-width:1200px) and (max-width:1399px){
+ body.pont-events-page #eventList:not(.pont-events-loading){gap:17px!important}
+ body.pont-events-page #eventList .event-card{height:205px!important;min-height:205px!important;padding:16px!important}
+ body.pont-events-page #eventList>.event-tile.pont-x13-featured>.event-card{height:240px!important;min-height:240px!important}
 }
 </style>
 </body></html>
