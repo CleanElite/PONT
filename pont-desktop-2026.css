@@ -560,3 +560,41 @@
  body.lunch.menu-showcase #list .menu-tile:nth-child(-n+2) .menu-card-copy{width:65%!important}
  body.lunch.menu-showcase #list .menu-card-action{min-width:120px!important}
 }
+
+/* X13 header alignment fix: independent centered logo and title, no overlap. */
+@media screen and (min-width:1200px){
+ body.lunch.menu-showcase>.menu-header{
+  box-sizing:border-box!important;
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
+  align-items:start!important;justify-items:stretch!important;
+  height:105px!important;min-height:105px!important;
+  padding:12px 0 0!important;margin-inline:auto!important;
+ }
+ body.lunch.menu-showcase>.menu-header .menu-back{
+  grid-column:1!important;grid-row:1!important;justify-self:start!important;
+  align-self:start!important;margin:10px 0 0!important;
+ }
+ body.lunch.menu-showcase>.menu-header .menu-lockup{
+  grid-column:2!important;grid-row:1!important;justify-self:center!important;
+  align-self:start!important;display:grid!important;place-items:center!important;
+  width:180px!important;height:88px!important;max-width:none!important;
+  margin:0!important;padding:0!important;transform:none!important;
+ }
+ body.lunch.menu-showcase>.menu-header .menu-wordmark{
+  display:block!important;width:180px!important;height:78px!important;
+  background-position:center center!important;background-size:contain!important;
+ }
+ body.lunch.menu-showcase>.menu-main>.menu-heading{
+  box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:center!important;
+  width:100%!important;margin:0 0 12px!important;padding:0 0 8px!important;
+  text-align:center!important;
+ }
+ body.lunch.menu-showcase>.menu-main>.menu-heading h1{
+  display:flex!important;align-items:center!important;justify-content:center!important;
+  width:100%!important;text-align:center!important;margin:0!important;
+ }
+ body.lunch.menu-showcase>.menu-main>.menu-heading p{
+  width:100%!important;text-align:center!important;
+ }
+}
