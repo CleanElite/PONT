@@ -794,6 +794,7 @@ function renderEvents(events){
   const promotedSlot=activePromotions.find(p=>p.service_type==='pinned_event'&&p.event_id===event.id);
   const isFixed=Boolean(promotedSlot);
   const isPromoted=Boolean(event.testPromoted)||isFixed||activePromotions.some(p=>p.service_type==='exclusive_banner'&&p.event_id===event.id);
+  if(i===2 && featuredEvents.length===3 && orderedEvents.length>3)outer.classList.add('city-scroll-cue');
   if(isFixed)outer.classList.add('pont-promoted-position');
   if(isPromoted)outer.classList.add('pont-promoted-edge-to-edge');
   if(isPromoted){
@@ -1176,6 +1177,17 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
  body.pont-events-page #eventList>.event-tile:not(.pont-promoted-edge-to-edge)>.event-card::after{
   background:linear-gradient(90deg,#010d10ef 0%,#010d10da 23%,#010d1099 39%,#010d1038 55%,transparent 69%)!important;
  }
+ body.pont-events-page #eventList>.event-tile.city-scroll-cue{
+  position:relative;overflow:visible!important;
+ }
+ #eventList>.city-scroll-cue::before,#eventList>.city-scroll-cue::after{
+  content:"";position:absolute;top:50%;width:26px;height:34px;
+  transform:translate(-50%,-50%);pointer-events:none;
+  background:linear-gradient(180deg,#b9873c66,#ffd58a 78%);
+  clip-path:polygon(44% 0,56% 0,56% 76%,92% 48%,100% 55%,50% 100%,0 55%,8% 48%,44% 76%);
+ }
+ #eventList>.city-scroll-cue::before{left:-25%}
+ #eventList>.city-scroll-cue::after{left:125%}
 }
 @media(prefers-reduced-motion:reduce){.city-track{animation:none}}
 </style>
