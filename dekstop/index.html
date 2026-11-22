@@ -11,13 +11,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:#020c11;color:#fff;fon
 main.entry{display:grid;grid-template:clamp(70px,15.5dvh,136px) clamp(36px,8.4dvh,68px) minmax(0,1fr)/minmax(0,1fr);align-content:stretch;justify-items:stretch;gap:0;width:100%;height:100vh;height:100dvh;padding:0;background:#020c11}
 .mast,.ticker{position:relative;background:#020d12}
 .mast{display:grid;place-items:center;isolation:isolate;overflow:hidden}
-.mast::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:
-    radial-gradient(ellipse at 7% 105%,#e7b87540,transparent 24%),
-    radial-gradient(ellipse at 28% 0%,#6ac8eb32,transparent 31%),
-    radial-gradient(ellipse at 70% 110%,#76c1da36,transparent 30%),
-    radial-gradient(ellipse at 90% -8%,#e4bb7d38,transparent 26%);
-}
+.mast-ribbons{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
 .mast .brand,.mast .login{isolation:isolate}
 .mast .brand{position:relative;display:block}
 .mast .brand img{display:block;width:clamp(140px,min(16vw,34dvh),285px);height:auto;mix-blend-mode:screen}
@@ -85,6 +79,18 @@ main.entry{display:grid;grid-template:clamp(70px,15.5dvh,136px) clamp(36px,8.4dv
 <body>
 <main class="entry" aria-label="PONT Slobozia">
 <header class="mast">
+<svg class="mast-ribbons" viewBox="0 0 1536 112" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="ribbon-feather" x="-10%" y="-70%" width="120%" height="240%"><feGaussianBlur stdDeviation="5"/></filter>
+    <mask id="header-ribbons" maskUnits="userSpaceOnUse" x="0" y="0" width="1536" height="112">
+      <g fill="none" stroke="white" stroke-width="54" filter="url(#ribbon-feather)">
+        <path d="M0 103 C148 102 224 106 328 78 S471 36 555 30"/>
+        <path d="M978 30 C1061 36 1109 55 1181 75 S1324 103 1536 106"/>
+      </g>
+    </mask>
+  </defs>
+  <image href="./header-ribbons.webp" width="1536" height="112" mask="url(#header-ribbons)"/>
+</svg>
 <a class="brand" href="./"><img src="../assets/pont-intro-logo-c4.png" alt="PONT — Acasă" width="260" height="108"></a>
 <a class="login" href="../login/"><svg viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"><circle cx="10" cy="6" r="3"/><path d="M3.5 16.5c.3-3.2 2.7-5 6.5-5s6.2 1.8 6.5 5"/></svg>Administrator</a>
 </header>
