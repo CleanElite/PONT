@@ -7,17 +7,17 @@
 <link rel="stylesheet" href="../pont-selection.css?v=7">
 <style>
 * {box-sizing:border-box}
-html,body {margin:0;overflow:hidden;background:#031317;color:#fff;font-family:system-ui,sans-serif}
-main.entry {--band-height:clamp(30px,4dvh,34px);--band-top:max(var(--mast-h),calc(50% - max(18dvh,10.125vw) - var(--band-height) - var(--band-height) - 6px));--side-inset:18.5%;display:grid;--mast-h:clamp(56px,7.6dvh,66px);--ticker-h:clamp(24px,3.4dvh,28px);grid-template:var(--mast-h) var(--ticker-h) minmax(0,1fr) / minmax(0,1fr);align-content:stretch;justify-items:stretch;gap:0;width:100%;height:100vh;height:100dvh;padding:0;background:linear-gradient(180deg,#00101455,transparent 33%,#00101433),url("../assets/pont-desktop-background.png") center center/cover no-repeat}
-.mast {display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding-inline:var(--side-inset);text-shadow:0 1px 4px #001018;font-size:13px;font-weight:600}
-.mast a {display:inline-flex;align-items:center;gap:6px;width:max-content}
-.mast .city {translate:5px 10px}
-.mast .login {translate:-5px 10px}
-.mast svg {width:14px;height:14px}
-.mast .brand {position:absolute;left:50%;--logo-top:clamp(34px,calc(2dvh + 26px),46px);top:var(--logo-top);transform:translateX(-50%)}
-.brand img {display:block;width:clamp(148px,11.4vw,178px);height:auto;max-height:calc(var(--band-top) - var(--logo-top) - 4px);object-fit:contain}
-.login {grid-column:3;justify-self:end;padding:4px 14px;border:1px solid #ceeaec9e;border-radius:20px}
-/* Follow the antenna as the centered background is cropped to cover the viewport. */
+html,body {margin:0;height:100%;overflow:hidden;background:#061419;color:#eef5f4;font-family:system-ui,sans-serif}
+main.entry {
+  --side-inset:18.5%; --band-height:clamp(30px,4dvh,34px);
+  --mast-h:clamp(62px,8dvh,82px); --band-top:var(--mast-h);
+  display:grid; grid-template:var(--mast-h) var(--band-height) minmax(0,1fr) / minmax(0,1fr);
+  width:100%;height:100vh;height:100dvh;align-content:stretch;justify-items:stretch;gap:0;padding:0;background:#061419;
+}
+.mast {margin-inline:var(--side-inset);display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
+.brand {grid-column:2}
+.brand img {display:block;width:clamp(98px,8vw,130px);height:auto}
+.login {grid-column:3;justify-self:end;border:1px solid #527178;border-radius:24px;padding:7px 15px;font-size:13px}
 .ticker {position:absolute;z-index:2;inset-inline:var(--side-inset);top:var(--band-top);height:var(--band-height);display:flex;align-items:center;overflow:hidden;white-space:nowrap;background:#031317df;border-block:1px solid #beaa6f82;font-size:clamp(12px,.86vw,14px);line-height:1.25}
 .ticker {
   --edge-fade:clamp(28px,3vw,54px);
@@ -30,69 +30,23 @@ main.entry {--band-height:clamp(30px,4dvh,34px);--band-top:max(var(--mast-h),cal
 .sequence>span {display:flex;align-items:center;gap:14px;padding-inline:28px}
 .sequence b {color:#ffc739;font-size:14px}
 @keyframes roll {to{transform:translateX(-50%)}}
-.options {grid-row:3;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-self:center;justify-self:center;width:84%;position:relative;z-index:1}
-.option {display:grid;justify-items:center;align-content:center;gap:clamp(7px,1.05dvh,11px);justify-self:center;padding:12px 20px;text-align:center;position:relative;isolation:isolate;text-shadow:0 2px 6px #000}
-.option::before {content:"";position:absolute;z-index:-1;inset:-24% -30%;background:radial-gradient(ellipse,#001015e3 8%,#00101594 44%,transparent 72%);pointer-events:none}
-.option svg {width:clamp(34px,2.65vw,42px);height:auto;filter:drop-shadow(0 1px 3px #000)}
-.option strong {font:italic 400 clamp(30px,2.45vw,40px)/1.12 Georgia,serif}
-.cta {margin-top:3px;border:1px solid #d7f2f3b5;border-radius:24px;background:#051519ba;display:grid;place-items:center;width:clamp(154px,11vw,175px);min-height:clamp(36px,4.7dvh,40px);padding:6px 12px;font-size:14px;font-weight:600;line-height:16px}
-.option:hover .cta,.option:focus-visible .cta {background:#12353c;border-color:#e5ffff}
-@media(prefers-reduced-motion:reduce){.track{animation:none}}
-.divider {position:absolute;top:calc(var(--mast-h) + var(--ticker-h));left:0;width:100%;height:calc(100% - var(--mast-h) - var(--ticker-h));pointer-events:none}
-.divider path {fill:none;stroke:url(#edge);vector-effect:non-scaling-stroke}
-/* Match the photograph's cover crop and color treatment during playback. */
-.cinematic-intro { position:absolute; inset:0; z-index:-1; pointer-events:none; background:url("./previzualizare/first.jpg?v=toast3") center/cover; }
-.cinematic-intro video { display:block; width:100%; height:100%; object-fit:cover; }
-.cinematic-intro::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,#00101455,transparent 33%,#00101433); }
-@media(prefers-reduced-motion:reduce){.cinematic-intro{display:none}}
 
-.scene-detail { position:absolute; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none; }
-.candle-halo,.candle-reflection { transform-box:fill-box; transform-origin:50% 78%; animation:candle-drift 1.87s ease-in-out infinite alternate; }
-.candle-reflection { animation-duration:2.17s; animation-delay:-.28s }
-@keyframes candle-drift {
-  0% {opacity:.29;transform:translate(-1px,1px) scale(.88,.94)}
-  28% {opacity:.72;transform:translate(1px,-1px) scale(1.06,1.11)}
-  52% {opacity:.44;transform:translate(-.5px,0) scale(.96,1.02)}
-  78% {opacity:.83;transform:translate(1.5px,-2px) scale(1.08,1.15)}
-  100% {opacity:.51;transform:translate(.2px,-.3px) scale(.97,1.04)}
-}
-@media(prefers-reduced-motion:reduce){.candle-halo,.candle-reflection{animation:none;opacity:.32}}
+.options {grid-row:3;align-self:center;margin-inline:var(--side-inset);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2vw,36px)}
+.option {display:grid;align-content:center;justify-items:center;gap:12px;padding:18px 12px;min-width:0;height:clamp(125px,29dvh,260px);border:1px solid #334e54;border-radius:20px;background:#0b2026;text-align:center}
+.option svg {width:32px;height:32px;color:#bfe3e4}
+.option strong {font:400 clamp(24px,2.5vw,40px)/1.12 Georgia,serif}
+.cta {color:#c5d8d9;font-size:14px}
+.option:hover,.option:focus-visible,.login:hover {border-color:#9acbd0;background:#112a30}
+@media(prefers-reduced-motion:reduce){.track{animation:none}}
 </style>
 </head>
 <body>
 <main class="entry" aria-label="PONT Slobozia">
-<svg class="scene-detail" viewBox="0 0 1536 864" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false"><image href="./previzualizare/companion.png" x="1253" y="410" width="151" height="395"/></svg>
-<div class="cinematic-intro" aria-hidden="true" hidden><video muted playsinline disablepictureinpicture></video></div>
-<script>
-(() => {
-  const layer = document.querySelector('.cinematic-intro');
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const video = layer.querySelector('video');
-  const finish = () => { layer.hidden = true; };
-  video.addEventListener('ended', finish, { once:true });
-  video.addEventListener('error', finish, { once:true });
-  video.muted = true;
-  video.src = './previzualizare/scene.mp4?v=toast4';
-  layer.hidden = false;
-  video.play().catch(finish);
-})();
-</script>
-<svg class="scene-detail" viewBox="0 0 1536 864" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
-<defs><radialGradient id="candleGlow"><stop stop-color="#fff7b9" stop-opacity=".94"/><stop offset=".28" stop-color="#ffcb68" stop-opacity=".66"/><stop offset=".72" stop-color="#ff9a38" stop-opacity=".26"/><stop offset="1" stop-color="#ff8625" stop-opacity="0"/></radialGradient></defs>
-<g class="candle-halo"><ellipse cx="1392" cy="687" rx="48" ry="55" fill="url(#candleGlow)"/><path d="M1392 698 Q1385 694 1390 684 Q1395 677 1392 672 Q1403 688 1396 696Z" fill="url(#candleGlow)"/></g>
-<ellipse class="candle-reflection" cx="1393" cy="790" rx="29" ry="23" fill="url(#candleGlow)"/>
-</svg>
 <header class="mast">
-<a class="city" href="./" aria-label="Orașul selectat: Slobozia"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>Slobozia</a>
 <a class="brand" href="./"><img src="../assets/pont-intro-logo-c4.png" alt="PONT — Acasă"></a>
 <a class="login" href="../login/">Administrator</a>
 </header>
 <a class="ticker" href="https://glovoapp.com/ro/ro/slobozia" aria-label="Comandă prin Glovo în Slobozia"><span class="track" aria-hidden="true"><span class="sequence"><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span></span><span class="sequence"><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span></span></span></a>
-<svg class="divider" viewBox="0 0 1000 600" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-<defs><linearGradient id="edge" x1="0" y1="1" x2="0" y2="0" gradientUnits="objectBoundingBox"><stop stop-color="#a1f3ff" stop-opacity="0"/><stop offset=".17" stop-color="#acf6ff"/><stop offset=".5" stop-color="#eefeff" stop-opacity=".86"/><stop offset=".84" stop-color="#b2efff"/><stop offset="1" stop-color="#abf1ff" stop-opacity="0"/></linearGradient></defs>
-<path d="M278 600 C519 517 481 182 701 0" stroke-width="7" opacity=".15" style="filter:blur(3px)"/>
-<path d="M278 600 C519 517 481 182 701 0" stroke-width="1.4"/>
-</svg>
 <nav class="options" aria-label="Alege o secțiune">
 <a class="option" href="../meniul-zilei/"><svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M8 19a6 6 0 1 1 2-11 7 7 0 0 1 12 0 6 6 0 1 1 2 11v8H8zM8 23h16"/></svg><strong>Meniul zilei</strong><span class="cta">Vezi ofertele</span></a>
 <a class="option" href="../iesire-in-oras/"><svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><g transform="rotate(18 10 16)"><path d="M6 5h8v9a4 4 0 0 1-8 0zM6 11h8M10 18v9m-4 0h8"/></g><g transform="rotate(-18 22 16)"><path d="M18 5h8v9a4 4 0 0 1-8 0zM18 11h8M22 18v9m-4 0h8"/></g></svg><strong>Ieșire în oraș</strong><span class="cta">Descoperă locațiile</span></a>
