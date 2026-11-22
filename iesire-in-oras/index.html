@@ -1111,14 +1111,12 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
  body.pont-events-page #eventList>.event-tile{
   --card-height:clamp(175px,12.7vw,220px);
   --card-inset:clamp(14px,1.12vw,20px);
-  --icon-size:clamp(29px,2.2vw,38px);
   --title-size:clamp(19px,1.46vw,26px);
   --copy-width:76%;
  }
  body.pont-events-page #eventList>.event-tile.pont-x13-featured{
   --card-height:clamp(205px,14.9vw,265px);
   --card-inset:clamp(18px,1.55vw,28px);
-  --icon-size:clamp(38px,3vw,52px);
   --title-size:clamp(24px,1.95vw,34px);
   --copy-width:70%;
  }
@@ -1130,21 +1128,19 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
  }
  body.pont-events-page #eventList>.event-tile>.event-card.event-card-no-photo{grid-template-columns:minmax(0,1fr)!important}
  body.pont-events-page #eventList>.event-tile>.event-card .menu-card-copy{
-  grid-column:1;display:grid!important;grid-template-columns:var(--icon-size) minmax(0,1fr);
-  grid-template-areas:"icon title" "info info" "meta meta" "action action";
+  grid-column:1;display:grid!important;grid-template-columns:minmax(0,1fr);
+  grid-template-areas:"title" "info" "meta" "action";
   align-items:center!important;align-content:center;justify-items:start;
   width:100%!important;max-width:none!important;height:auto!important;min-width:0;
   margin:0!important;padding:0!important;gap:7px 10px!important;text-align:left!important;
  }
- body.pont-events-page #eventList>.event-tile.pont-x13-featured>.event-card .menu-card-copy{
-  grid-template-areas:"icon title" ". info" ". meta" ". action";
+ body.pont-events-page #eventList .pont-event-premium-eyebrow > :is(.event-date,.pont-city-sponsored-label){
+  align-self:center!important;
  }
- body.pont-events-page #eventList .event-card .menu-card-copy::before{
-  content:'♫';grid-area:icon;display:grid;place-items:center;box-sizing:border-box;
-  width:var(--icon-size);height:var(--icon-size);border:1px solid #d4a044;border-radius:50%;
-  background:#091015;color:#ffca5a;font:calc(var(--icon-size)*.55)/1 Georgia,serif;
+ body.pont-events-page #eventList .pont-event-premium-eyebrow .event-date{
+  align-items:center;justify-content:center;text-align:center;
  }
- body.pont-events-page #eventList .pont-x13-featured .menu-card-copy::before{content:'☆'}
+ body.pont-events-page #eventList .pont-event-premium-eyebrow .event-date::before{content:none}
  body.pont-events-page #eventList>.event-tile .event-card .menu-card-name{
   grid-area:title;margin:0!important;max-width:100%!important;min-width:0;
   font-size:var(--title-size)!important;line-height:1.15!important;white-space:normal!important;
