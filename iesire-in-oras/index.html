@@ -773,7 +773,10 @@ function refreshEvents(){
   const action=document.createElement('button');action.type='button';action.textContent='Vezi evenimentul';action.onclick=()=>showDetails(bannerEvent);
   banner.append(kicker,title,action);
  }
- renderEvents([...pontVisualTestEvents.filter(e=>e.testPromoted),...sorted,...pontVisualTestEvents.filter(e=>!e.testPromoted)]);
+ const existingPromotedIds=new Set(activePromotions.filter(p=>(p.service_type==='pinned_event'||p.service_type==='exclusive_banner')&&sorted.some(e=>e.id===p.event_id)).map(p=>p.event_id));
+ const availableTestPromotions=Math.max(0,3-existingPromotedIds.size);
+ const testEvents=pontVisualTestEvents.map((event,index)=>({...event,testPromoted:index<availableTestPromotions}));
+ renderEvents([...testEvents.filter(e=>e.testPromoted),...sorted,...testEvents.filter(e=>!e.testPromoted)]);
 }
 function renderEvents(events){
  const list=$('eventList');list.classList.remove('pont-events-loading');list.replaceChildren();
