@@ -747,6 +747,16 @@ const config=window.PONT_CONFIG||{};
 const eventDialog=$('eventDetails');
 eventDialog.querySelector('.event-dialog-close').onclick=()=>eventDialog.close();
 eventDialog.addEventListener('click',e=>{if(e.target===eventDialog)eventDialog.close()});
+/* Seven clearly labeled visual QA events. Kept separate from paid promotion and production event tables. */
+const pontVisualTestEvents=[
+ {id:'pont-test-01',title:'[TEST] Seară de jazz',venue:'Aromas',event_date:'2026-12-04',start_time:'20:00',poster_url:'../assets/pont-game-night-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.',testPromoted:true},
+ {id:'pont-test-02',title:'[TEST] Concert live',venue:'Central',event_date:'2026-12-05',start_time:'21:00',poster_url:'../assets/pont-stand-up-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.',testPromoted:true},
+ {id:'pont-test-03',title:'[TEST] Seară tematică',venue:'Hambar',event_date:'2026-12-06',start_time:'19:30',poster_url:'../assets/pont-game-night-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.',testPromoted:true},
+ {id:'pont-test-04',title:'[TEST] Quiz night',venue:'Casa Verde',event_date:'2026-12-07',start_time:'19:00',poster_url:'../assets/pont-game-night-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.'},
+ {id:'pont-test-05',title:'[TEST] Stand-up comedy',venue:'Colibri',event_date:'2026-12-08',start_time:'20:00',poster_url:'../assets/pont-stand-up-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.'},
+ {id:'pont-test-06',title:'[TEST] Seară de dans',venue:'Cibus Grill',event_date:'2026-12-09',start_time:'20:30',poster_url:'../assets/pont-game-night-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.'},
+ {id:'pont-test-07',title:'[TEST] Acoustic session',venue:'Spring',event_date:'2026-12-10',start_time:'19:30',poster_url:'../assets/pont-stand-up-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.'}
+].map(e=>({...e,locality:'Slobozia',contact_phone:'',restaurant_id:null}));
 function refreshEvents(){
  const pinned=activePromotions.filter(x=>x.service_type==='pinned_event').sort((a,b)=>a.slot_number-b.slot_number).map(x=>x.event_id);
  const sorted=[...allEvents].sort((a,b)=>{
@@ -763,7 +773,7 @@ function refreshEvents(){
   const action=document.createElement('button');action.type='button';action.textContent='Vezi evenimentul';action.onclick=()=>showDetails(bannerEvent);
   banner.append(kicker,title,action);
  }
- renderEvents(sorted);
+ renderEvents([...pontVisualTestEvents.filter(e=>e.testPromoted),...sorted,...pontVisualTestEvents.filter(e=>!e.testPromoted)]);
 }
 function renderEvents(events){
  const list=$('eventList');list.classList.remove('pont-events-loading');list.replaceChildren();
@@ -773,14 +783,14 @@ function renderEvents(events){
   const p=document.createElement('p');p.textContent='Momentan nu sunt evenimente anunțate. Revino pentru noi experiențe din Slobozia și împrejurimi.';
   empty.append(h,p);list.append(empty);return;
  }
- const featuredEvents=events.filter(event=>activePromotions.some(p=>(p.service_type==='pinned_event'||p.service_type==='exclusive_banner')&&p.event_id===event.id));
+ const featuredEvents=events.filter(event=>event.testPromoted||activePromotions.some(p=>(p.service_type==='pinned_event'||p.service_type==='exclusive_banner')&&p.event_id===event.id));
  const orderedEvents=[...featuredEvents,...events.filter(event=>!featuredEvents.includes(event))];
  
  for(const [i,event] of orderedEvents.entries()){
   const outer=document.createElement('div');outer.className='event-tile menu-tile';
   const promotedSlot=activePromotions.find(p=>p.service_type==='pinned_event'&&p.event_id===event.id);
   const isFixed=Boolean(promotedSlot);
-  const isPromoted=isFixed||activePromotions.some(p=>p.service_type==='exclusive_banner'&&p.event_id===event.id);
+  const isPromoted=Boolean(event.testPromoted)||isFixed||activePromotions.some(p=>p.service_type==='exclusive_banner'&&p.event_id===event.id);
   if(isFixed)outer.classList.add('pont-promoted-position');
   if(isPromoted)outer.classList.add('pont-promoted-edge-to-edge');
   if(isPromoted){
@@ -805,14 +815,14 @@ function renderEvents(events){
   const badge=document.createElement('span');badge.className='event-date';badge.textContent=event.event_date?new Intl.DateTimeFormat('ro-RO',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(event.event_date+'T12:00:00Z')):'';
   const copy=document.createElement('span');copy.className='menu-card-copy';
   const name=document.createElement('strong');name.className='menu-card-name';name.textContent=event.title;
-  const place=document.createElement('span');place.className='menu-card-location';place.textContent=eventRestaurantName(event)+' · '+event.locality;
+  const place=document.createElement('span');place.className='menu-card-location';place.textContent=(event.testPromoted?event.venue:eventRestaurantName(event))+' · '+event.locality;
   const hour=document.createElement('span');hour.className='event-category';hour.textContent='Ora '+String(event.start_time||'').slice(0,5);
   const meta=document.createElement('span');meta.className='event-card-meta';meta.append(place,hour);
   if(isPromoted){
    const eyebrow=document.createElement('span');eyebrow.className='pont-event-premium-eyebrow';
-   const premium=document.createElement('span');premium.className='pont-city-sponsored-label';premium.textContent='PROMOVAT';
+   const premium=document.createElement('span');premium.className='pont-city-sponsored-label';premium.textContent=event.testPromoted?'TEST · PROMOVAT':'PROMOVAT';
    eyebrow.append(premium,badge);copy.append(eyebrow,name,meta);
-  }else{const eyebrow=document.createElement('span');eyebrow.className='pont-event-standard-eyebrow';eyebrow.append(badge);copy.append(eyebrow,name,meta)}if(img)button.append(backdrop,img);button.append(copy);
+  }else{const eyebrow=document.createElement('span');eyebrow.className='pont-event-standard-eyebrow';if(event.id?.startsWith('pont-test-')){const t=document.createElement('span');t.className='pont-city-sponsored-label';t.textContent='TEST';eyebrow.append(t)}eyebrow.append(badge);copy.append(eyebrow,name,meta)}if(img)button.append(backdrop,img);button.append(copy);
   const action=document.createElement('span');action.className='city-details';action.textContent='Vezi detalii　›';copy.append(action);
   button.addEventListener('click',()=>showDetails(event));outer.append(button);list.append(outer);
  }
@@ -1105,4 +1115,10 @@ body.lunch .pont-footer-simple a:focus-visible{outline:2px solid #9ff9ea!importa
 }
 @media(prefers-reduced-motion:reduce){.city-track{animation:none}}
 </style>
-</body></html>
+<style id="pont-test-event-markers-20261122">
+@media screen and (min-width:1200px){
+body.pont-events-page #eventList>.event-tile.pont-test-event.pont-promoted-edge-to-edge{grid-column:span 6!important}
+body.pont-events-page #eventList>.event-tile.pont-test-event:not(.pont-x13-featured){grid-column:span 4!important}
+body.pont-events-page #eventList .pont-test-event .pont-city-sponsored-label{color:#ffe0a2!important;font-weight:800!important;letter-spacing:.07em!important}
+}
+</style></body></html>
