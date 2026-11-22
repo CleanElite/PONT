@@ -363,3 +363,64 @@
  }
  body.entry-page .entry-header .pont-admin-entry:hover{background:rgba(219,181,98,.15)!important;border-color:#f3d99b!important}
 }
+
+/* PONT X13 — Meniul zilei: compact desktop-only discovery layout.
+   Scoped to public menu page; mobile, tablet, admin and restaurant detail remain unchanged. */
+@media screen and (min-width:1200px){
+ body.lunch.menu-showcase .menu-header{
+   width:min(1400px,calc(100% - 96px))!important;
+   min-height:64px!important;height:64px!important;
+   padding:8px 16px!important;margin:0 auto!important;
+   gap:14px!important;
+ }
+ body.lunch.menu-showcase .menu-lockup{transform:scale(.82);transform-origin:center}
+ body.lunch.menu-showcase .menu-main{
+   width:min(1400px,calc(100% - 96px))!important;
+   max-width:1400px!important;
+   padding:0 12px 48px!important;margin:0 auto!important;
+ }
+ body.lunch.menu-showcase .menu-heading{
+   margin:10px 0 12px!important;padding:0!important;
+ }
+ body.lunch.menu-showcase .menu-heading h1{
+   font-size:clamp(26px,2.2vw,36px)!important;
+   line-height:1.15!important;margin:0 0 4px!important;
+ }
+ body.lunch.menu-showcase .menu-heading p{
+   margin:0!important;font-size:13px!important;line-height:1.4!important;
+ }
+ body.lunch.menu-showcase a.pont-sponsor{
+   margin-top:8px!important;margin-bottom:14px!important;
+ }
+ body.lunch.menu-showcase #list:not(.pont-menu-loading-layout){
+   display:grid!important;
+   grid-template-columns:repeat(4,minmax(0,1fr))!important;
+   gap:16px!important;align-items:stretch!important;
+ }
+ body.lunch.menu-showcase #list .menu-tile{
+   min-width:0!important;margin:0!important;
+ }
+ body.lunch.menu-showcase #list .menu-card{
+   min-width:0!important;width:100%!important;
+   border-radius:16px!important;overflow:hidden!important;
+   transition:transform .22s ease,box-shadow .22s ease!important;
+ }
+ body.lunch.menu-showcase #list .menu-card-photo{
+   width:100%!important;object-fit:cover!important;
+ }
+ body.lunch.menu-showcase #list .menu-card-copy{
+   padding:12px 14px!important;gap:5px!important;
+ }
+ body.lunch.menu-showcase #list .menu-card-name{
+   font-size:clamp(16px,1.25vw,20px)!important;
+   line-height:1.2!important;
+ }
+ body.lunch.menu-showcase #list .menu-card-action{
+   font-size:12px!important;
+ }
+}
+@media screen and (min-width:1200px) and (max-width:1399px){
+ body.lunch.menu-showcase #list:not(.pont-menu-loading-layout){
+   grid-template-columns:repeat(3,minmax(0,1fr))!important;
+ }
+}
