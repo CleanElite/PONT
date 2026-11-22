@@ -6,37 +6,37 @@
 <title>PONT Slobozia | Meniul zilei și ieșire în oraș</title>
 <link rel="stylesheet" href="../pont-selection.css?v=7">
 <style>
-* {box-sizing:border-box}
-html,body {margin:0;height:100%;overflow:hidden;background:#061419;color:#eef5f4;font-family:system-ui,sans-serif}
-main.entry {
-  --side-inset:18.5%; --band-height:clamp(30px,4dvh,34px);
-  --mast-h:clamp(62px,8dvh,82px); --band-top:var(--mast-h);
-  display:grid; grid-template:var(--mast-h) var(--band-height) minmax(0,1fr) / minmax(0,1fr);
-  width:100%;height:100vh;height:100dvh;align-content:stretch;justify-items:stretch;gap:0;padding:0;background:#061419;
-}
-.mast {margin-inline:var(--side-inset);display:grid;grid-template-columns:1fr auto 1fr;align-items:center}
-.brand {grid-column:2}
-.brand img {display:block;width:clamp(98px,8vw,130px);height:auto}
-.login {grid-column:3;justify-self:end;border:1px solid #527178;border-radius:24px;padding:7px 15px;font-size:13px}
-.ticker {position:absolute;z-index:2;inset-inline:var(--side-inset);top:var(--band-top);height:var(--band-height);display:flex;align-items:center;overflow:hidden;white-space:nowrap;background:#031317df;border-block:1px solid #beaa6f82;font-size:clamp(12px,.86vw,14px);line-height:1.25}
-.ticker {
-  --edge-fade:clamp(28px,3vw,54px);
-  --edge-mask:linear-gradient(90deg,transparent,#0006 calc(var(--edge-fade) * .45),#000 var(--edge-fade),#000 calc(100% - var(--edge-fade)),#0006 calc(100% - var(--edge-fade) * .45),transparent);
-  -webkit-mask-image:var(--edge-mask);
-  mask-image:var(--edge-mask);
-}
-.track,.sequence {display:flex;width:max-content;flex:none}
-.track {animation:roll 74s linear infinite}
-.sequence>span {display:flex;align-items:center;gap:14px;padding-inline:28px}
-.sequence b {color:#ffc739;font-size:14px}
-@keyframes roll {to{transform:translateX(-50%)}}
-
-.options {grid-row:3;align-self:center;margin-inline:var(--side-inset);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(16px,2vw,36px)}
-.option {display:grid;align-content:center;justify-items:center;gap:12px;padding:18px 12px;min-width:0;height:clamp(125px,29dvh,260px);border:1px solid #334e54;border-radius:20px;background:#0b2026;text-align:center}
-.option svg {width:32px;height:32px;color:#bfe3e4}
-.option strong {font:400 clamp(24px,2.5vw,40px)/1.12 Georgia,serif}
-.cta {color:#c5d8d9;font-size:14px}
-.option:hover,.option:focus-visible,.login:hover {border-color:#9acbd0;background:#112a30}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:#020c11;color:#fff;font-family:system-ui,sans-serif}
+main.entry{display:grid;grid-template:clamp(70px,15.5dvh,136px) clamp(40px,9.6dvh,78px) minmax(0,1fr)/minmax(0,1fr);align-content:stretch;justify-items:stretch;gap:0;width:100%;height:100vh;height:100dvh;padding:0;background:#020c11}
+.mast,.ticker{position:relative;background:#020d12}
+.mast{display:grid;place-items:center;background:radial-gradient(ellipse at 50% 100%,#0a202b,transparent 65%),#020c11}
+.brand img{display:block;width:clamp(140px,min(16vw,34dvh),285px);height:auto;mix-blend-mode:screen}
+.login,.cta{border:1px solid #e7b86d;border-radius:999px;background:#060a0bda;font-weight:650;color:white}
+.login{position:absolute;right:4.5%;padding:.6em 1.35em;font-size:clamp(14px,1.15vw,19px)}
+.mast::after,.ticker::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#73532c22,#ffda8a 18%,#a56d28 31%,#fff3c2 72%,#94652c55);box-shadow:0 0 7px #ffb44c90;z-index:2}
+.ticker{display:flex;align-items:center;overflow:hidden;white-space:nowrap;font-size:clamp(14px,1.2vw,20px)}
+.track,.sequence,.sequence>span{display:flex;align-items:center;flex:none;width:max-content}
+.track{animation:roll 74s linear infinite}
+.sequence>span{gap:1em;padding-inline:2vw}
+.sequence b{font-size:1.5em;color:#ffd052;border-right:1px solid #ad813d;padding-right:.75em}
+@keyframes roll{to{transform:translateX(-50%)}}
+.options{position:relative;isolation:isolate;overflow:hidden;background:#040e14}
+.evening-photo,.lunch-photo,.spine{position:absolute;inset:0;pointer-events:none}
+.lunch-photo{clip-path:url(#lunch-edge)}
+.lunch-photo,.evening-photo{isolation:isolate}
+.lunch-photo::before,.evening-photo::before{content:"";position:absolute;inset-block:0;z-index:-1}
+.lunch-photo::before{left:0;width:61%;background:linear-gradient(90deg,transparent 27%,#030e1375 60%,#030e13 96%),url("./lunch-scene.jpg") left center/cover}
+.evening-photo::before{right:0;width:65%;background:linear-gradient(90deg,#030e13 2%,#030e13a0 33%,transparent 75%),url("./evening-scene.jpg") right center/cover}
+.spine{width:100%;height:100%;overflow:visible}
+.option{position:absolute;top:9%;width:25%;transform:translateX(-50%);display:grid;justify-items:center;align-content:start;gap:clamp(6px,1.3dvh,15px);text-align:center;color:white;text-shadow:0 2px 8px #000}
+.lunch{left:37%}.evening{left:65.5%}
+.option svg{width:clamp(35px,min(4.2vw,8dvh),72px);height:auto;color:#fff2cf;filter:drop-shadow(0 1px 3px #d58a36)}
+.option strong{font:400 clamp(24px,min(3.1vw,7dvh),60px)/1.05 Georgia,serif}
+.option strong::after{content:"";display:block;width:80%;height:2px;margin:clamp(6px,1.6dvh,16px) auto 0;background:linear-gradient(90deg,transparent,#da9a3b,#fff2bd,#da9a3b,transparent)}
+.caption{font-size:clamp(12px,1.03vw,20px);line-height:1.35}
+.cta{margin-top:.4em;padding:.73em 1.55em;font-size:clamp(14px,1.15vw,21px);box-shadow:0 0 5px #ffd785b3,0 0 16px #e997324d}
+.option:hover .cta,.option:focus-visible .cta,.login:hover{background:#362916}
 @media(prefers-reduced-motion:reduce){.track{animation:none}}
 </style>
 </head>
@@ -48,8 +48,15 @@ main.entry {
 </header>
 <a class="ticker" href="https://glovoapp.com/ro/ro/slobozia" aria-label="Comandă prin Glovo în Slobozia"><span class="track" aria-hidden="true"><span class="sequence"><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span></span><span class="sequence"><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span><span><b>Glovo</b> Comandă rapid din restaurantele tale preferate, direct prin Glovo!</span></span></span></a>
 <nav class="options" aria-label="Alege o secțiune">
-<a class="option" href="../meniul-zilei/"><svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M8 19a6 6 0 1 1 2-11 7 7 0 0 1 12 0 6 6 0 1 1 2 11v8H8zM8 23h16"/></svg><strong>Meniul zilei</strong><span class="cta">Vezi ofertele</span></a>
-<a class="option" href="../iesire-in-oras/"><svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><g transform="rotate(18 10 16)"><path d="M6 5h8v9a4 4 0 0 1-8 0zM6 11h8M10 18v9m-4 0h8"/></g><g transform="rotate(-18 22 16)"><path d="M18 5h8v9a4 4 0 0 1-8 0zM18 11h8M22 18v9m-4 0h8"/></g></svg><strong>Ieșire în oraș</strong><span class="cta">Descoperă locațiile</span></a>
+<div class="evening-photo" aria-hidden="true"></div><div class="lunch-photo" aria-hidden="true"></div>
+<svg class="spine" aria-hidden="true" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+<defs>
+<clipPath id="lunch-edge" clipPathUnits="objectBoundingBox"><path d="M0 0 H.61 C.525 .095 .479 .284 .51 .495 S.499 .91 .36 1 H0 Z"/></clipPath>
+<linearGradient id="shine" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#ffbe65"/><stop offset=".22" stop-color="#fff6d9"/><stop offset=".37" stop-color="#4fc9ff"/><stop offset=".54" stop-color="#ffefc8"/><stop offset=".73" stop-color="#ffad4c"/><stop offset=".90" stop-color="#59caff"/><stop offset="1" stop-color="#0870a0"/></linearGradient>
+<path id="seam" d="M610 0 C525 95 479 284 510 495 S499 910 360 1000" fill="none" vector-effect="non-scaling-stroke"/>
+</defs><g stroke="url(#shine)"><use href="#seam" stroke-width="12" opacity=".5" style="filter:blur(6px)"/><use href="#seam" stroke-width="4"/><use href="#seam" stroke="white" stroke-opacity=".8" stroke-width="1"/></g></svg>
+<a class="option lunch" href="../meniul-zilei/"><svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M8 19a6 6 0 1 1 2-11 7 7 0 0 1 12 0 6 6 0 1 1 2 11v8H8zM8 23h16"/></svg><strong>Meniul zilei</strong><span class="caption">Vezi ofertele din restaurantele din Slobozia</span><span class="cta">Vezi meniul zilei</span></a>
+<a class="option evening" href="../iesire-in-oras/"><svg aria-hidden="true" viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><g transform="rotate(18 10 16)"><path d="M6 5h8v9a4 4 0 0 1-8 0zM6 11h8M10 18v9m-4 0h8"/></g><g transform="rotate(-18 22 16)"><path d="M18 5h8v9a4 4 0 0 1-8 0zM18 11h8M22 18v9m-4 0h8"/></g></svg><strong>Ieșire în oraș</strong><span class="caption">Descoperă restaurante, baruri și evenimente</span><span class="cta">Vezi locațiile</span></a>
 </nav>
 </main>
 <div class="pont-pull-indicator" aria-hidden="true"></div>
