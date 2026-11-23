@@ -8,12 +8,6 @@ body footer .pont-footer-art .pont-art-panel>:is(a,button){position:absolute!imp
 .pont-art-panel>:focus-visible{outline:3px solid white;outline-offset:-3px;border-radius:8px}
 .pont-footer-art>small{position:absolute;clip-path:inset(50%);width:1px;height:1px;overflow:hidden}
 }
-@media(max-width:699px){
-.pont-footer-art{display:grid;justify-items:center;gap:14px;aspect-ratio:auto;padding:0 0 max(22px,env(safe-area-inset-bottom));background:#00171c}
-.pont-footer-art::before{content:'';width:100%;height:clamp(32px,10vw,67px);background:url('./assets/pont-footer-reference.jpg') center top/100% auto no-repeat}
-.pont-footer-art .pont-art-panel{position:relative;inset:auto;width:min(96%,430px);height:auto;aspect-ratio:var(--ratio);background-image:url('./assets/pont-footer-reference.jpg');background-size:var(--size);background-position:var(--pos);background-repeat:no-repeat}
-.pont-footer-art>small{position:static;clip-path:none;width:100%;height:auto;text-align:center;border-top:1px solid #b7924b;padding:14px 0;color:#f1f5ef;font:13px system-ui}
-}
 @media(max-width:1199px){
 footer.pont-footer-premium-mobile dialog.pfm-dialog[open]{position:fixed;inset:0;margin:auto;width:min(420px,calc(100% - 32px));max-height:80dvh;overflow:auto;border:1px solid #8aa992;border-radius:16px;padding:22px;background:#08282d;color:#f2f7f4;text-align:left}
 footer.pont-footer-premium-mobile dialog.pfm-dialog::backdrop{background:#001418cb}
