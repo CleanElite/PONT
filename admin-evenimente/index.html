@@ -469,11 +469,11 @@ body.pont-admin--city #citySubscriptionNotice span{
 body.pont-admin--city #myEvents[hidden],body.pont-admin--city #myRequests[hidden],body.pont-admin--city #createEvent[hidden]{display:none!important}
 body.pont-admin--city #myRequests .metrics{display:none!important}
 </style></head>
-<body class="pont-admin pont-admin--restaurant pont-admin--city pont-admin-neon"><main>
+<body id="pontLiquid" class="pont-admin pont-admin--restaurant pont-admin--city pont-admin-neon"><main>
 <header class="pont-ar-city-topbar">
  <a class="pont-ar-back" href="../" aria-label="Acasă">Înapoi</a>
  <a class="pont-ar-brand" href="../" aria-label="PONT - Acasă"><img src="../meniul-zilei/showcase/pont-wordmark.webp" alt="PONT" width="130" height="54"></a>
- <button id="logout" class="pont-ar-logout" type="button">Deconectare</button>
+ <div id="pontAuctionBellMount" hidden aria-label="Notificări plăți"></div><button id="logout" class="pont-ar-logout" type="button">Deconectare</button>
 </header>
 <div class="pont-ar-city-heading"><span class="pont-neon-emblem" aria-hidden="true"><svg class="pont-neon-icon" aria-hidden="true" focusable="false"><use href="../admin-icons.svg?v=2#chef-hat"></use></svg></span><div><p class="pont-ar-kicker">PANOU ADMINISTRATOR RESTAURANT</p><h1 id="restaurantName">Ieșire în oraș</h1></div><span class="pont-ar-city-label">Evenimente</span></div>
 <nav class="pont-ar-module-switch" aria-label="Modulele restaurantului">
@@ -1214,7 +1214,19 @@ async function start(){
  const {data:row,error:restaurantError}=await db.from('restaurants').select('id,name,enabled,menu_module_visible,access_meniul_zilei,city_module_visible,access_iesire_in_oras').eq('id',membership.restaurant_id).single();if(restaurantError)throw restaurantError;
  if(!row.enabled)throw Error('Restaurantul este suspendat.');
  if(profile.role!=='super_admin'&&!row.city_module_visible){location.replace('../module-restaurante/?notapproved=city');return;}
- restaurant=row;$('restaurantName').textContent=row.name+' · Administrarea evenimentelor';
+ restaurant=row;
+ const desktopWidth=matchMedia('(min-width:1200px)');
+ let cityBell;
+ async function syncDesktopBell(){
+   if(desktopWidth.matches && !cityBell){
+     const {initPontAuctionPaymentBell}=await import('../auction-payment-bell.js?v=topbar-20261116');
+     cityBell??=initPontAuctionPaymentBell({db,config:cfg});
+   }
+   cityBell?.setVisible(desktopWidth.matches);
+ }
+ const updateDesktopBell=()=>syncDesktopBell().catch(err=>console.warn('Notificări PONT:',err.message));
+ desktopWidth.addEventListener('change',updateDesktopBell);updateDesktopBell();
+ $('restaurantName').textContent=row.name+' · Administrarea evenimentelor';
  $('menuLink').hidden=false;
  $('menuLink').onclick=(event)=>{if(!row.menu_module_visible){event.preventDefault();location.href='../module-restaurante/?notapproved=menu';}};
  $('eventForm').elements.event_date.min=today();
@@ -1332,4 +1344,4 @@ body.pont-admin--city #eventForm .pont-event-optional-fields textarea{min-height
   body.pont-admin--city #eventForm { grid-template-columns: minmax(138px, 1.12fr) minmax(0, 1fr); }
 }
 </style>
-<link rel="stylesheet" media="screen and (min-width:1200px)" href="../pont-desktop-2026.css?v=20261118-desktop1"></body></html>
+<link rel="stylesheet" media="screen and (min-width:1200px)" href="../pont-desktop-2026.css?v=20261118-desktop1"><link rel="stylesheet" media="screen and (min-width:1200px)" href="../restaurant-liquid.css?v=1"><script defer src="../restaurant-liquid.js?v=1"></script></body></html>

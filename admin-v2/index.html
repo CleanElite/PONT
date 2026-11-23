@@ -194,7 +194,7 @@
  .pont-admin #app .pont-restaurant-premium-heading{column-gap:4px!important}
  .pont-admin #app .pont-restaurant-premium-heading .admin-hero-copy.pont-restaurant-title-card{padding:4px!important}
 }
-</style><body class="pont-admin pont-admin--restaurant pont-admin-neon">
+</style><body id="pontLiquid" class="pont-admin pont-admin--restaurant pont-admin-neon">
 <main>
 <header class="admin-topbar pont-restaurant-topbar">
   <a class="admin-back pont-nav-action" href="../" aria-label="Acasă"><span class="pont-nav-action__icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M19 12H5m0 0 6.5-6.5M5 12l6.5 6.5"/></svg></span><span class="pont-nav-action__label">Acasă</span></a>
@@ -219,7 +219,7 @@
 </nav>
  <nav class="admin-nav pont-restaurant-grouped-nav" aria-label="Secțiunile panoului">
   <div class="pont-restaurant-nav-group pont-restaurant-nav-menus" role="group" aria-label="Gestionare meniuri">
-    <button type="button" id="showAdd" data-view="add" data-hash="#adauga" aria-controls="addView" aria-pressed="true"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=2#calendar-blank"></use></svg><span>Meniul zilei</span></button>
+    <button type="button" id="showAdd" data-view="add" data-hash="#adauga" aria-controls="addView" aria-pressed="true"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=2#calendar-blank"></use></svg><span class="desk-mobile-name">Meniul zilei</span><span class="desk-plan-name" hidden>Planifică meniu</span></button><button id="deskPublish" hidden type="button" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=2#cooking-pot"></use></svg><span>Publică meniu</span></button>
     <button type="button" id="showSaved" data-view="saved" data-hash="#meniuri" aria-controls="savedView" aria-pressed="false"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=2#list-bullets"></use></svg><span>Meniuri salvate</span></button>
   </div>
   <div class="pont-restaurant-nav-group" role="group" aria-label="Gestionare preparate">
@@ -417,14 +417,21 @@
 <p id="selfPasswordFeedback" role="status" aria-live="polite"></p>
 <button type="submit" class="primary" id="selfPasswordSubmit">Schimbă parola</button>
 </form>
-</div></details></section><div id="addView"><section class="card admin-workspace"><section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section><div class="pont-day-exhausted-panel"><button type="button" class="pont-day-exhausted-button" id="toggleDailyExhausted" role="switch" aria-checked="true" data-exhausted="false" disabled>Meniu disponibil</button><span id="pontDayExhaustedNote" role="status" aria-live="polite"></span></div><h2>Planifică meniul zilei</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="false" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=2#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=2#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap" hidden></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=2#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section></div><div id="savedView" hidden><section class="card"><div id="pontMenuTemplates"></div><details class="pont-menu-archive">
+</div></details></section><div id="addView"><section class="card admin-workspace"><section id="deskPlanner" hidden aria-labelledby="deskTitle">
+ <div class="desk-toolbar"><div class="desk-title"><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=2#calendar-blank"></use></svg><div><h2 id="deskTitle">Planifică meniul zilei</h2><p>Gestionează meniurile pentru întreaga săptămână.</p></div></div>
+ <div class="desk-actions"><button id="deskModel" type="button">Salvează ca model</button><button id="deskNew" class="desk-primary" type="button">＋ Meniu nou</button></div></div>
+ <select id="deskRestaurant" aria-label="Restaurant" hidden></select>
+ <div class="desk-weekbar"><button id="deskPrev" type="button">‹　 Săptămâna anterioară</button><strong id="deskRange"></strong><button id="deskNext" type="button">Săptămâna următoare　 ›</button></div>
+ <div id="deskDays" role="group" aria-label="Zilele săptămânii"></div>
+ <section class="desk-detail"><div class="desk-detail-head"><h2 id="deskDayTitle"></h2><div class="desk-actions"><span id="deskState"></span><button id="deskEdit" type="button">Editează</button><button id="deskDelete" type="button">Șterge</button><button id="deskAvailability" type="button">Disponibilitate</button></div></div><div id="deskCourses"></div></section></section>
+ <button type="button" hidden id="deskReturn">‹ Înapoi la planificare</button><section id="pontTodayMenu" class="pont-today-menu" aria-label="Meniul publicat azi"></section><div class="pont-day-exhausted-panel"><button type="button" class="pont-day-exhausted-button" id="toggleDailyExhausted" role="switch" aria-checked="true" data-exhausted="false" disabled>Meniu disponibil</button><span id="pontDayExhaustedNote" role="status" aria-live="polite"></span></div><h2>Planifică meniul zilei</h2><button type="button" id="toggleMenuForm" class="pont-menu-toggle" aria-expanded="false" aria-controls="menuFormWrap"><span><svg class="admin-icon" aria-hidden="true"><use href="../admin-icons.svg?v=2#calendar-blank"></use></svg>Publică meniul zilei</span><svg class="admin-icon pont-toggle-chevron" aria-hidden="true"><use href="../admin-icons.svg?v=2#caret-down"></use></svg></button><div id="menuFormWrap" class="pont-menu-form-wrap" hidden></div><dialog id="menuSuccessDialog" class="pont-menu-dialog" aria-labelledby="menuSuccessTitle"><span class="pont-menu-success-icon" aria-hidden="true"><svg class="admin-icon"><use href="../admin-icons.svg?v=2#check"></use></svg></span><h3 id="menuSuccessTitle">Felicitări!</h3><p id="menuSuccessMessage"></p><button class="primary" id="menuSuccessOK" type="button">OK</button></dialog></section></div><div id="savedView" hidden><section class="card"><div id="pontMenuTemplates"></div><details class="pont-menu-archive">
   <summary>Meniuri active și programate</summary>
   <div id="menus"></div>
 </details>
 <details class="pont-menu-archive">
   <summary>Istoricul meniurilor</summary>
   <div id="menuArchive"></div>
-</details></section></div><p id="status" role="status"></p><footer class="pont-admin-legal-footer" style="text-align:center;padding:18px 12px 28px;font:500 12px/1.5 system-ui"><a href="../termeni.html?from=admin-v2#transparenta-licitatii" style="color:#9acfc6;text-decoration:underline;text-underline-offset:4px">Transparența licitațiilor</a></footer></section></main><script src="./config.js"></script><script type="module">
+</details></section></div><section id="deskPromo" hidden aria-label="Promovare"><iframe allow="payment" id="deskPromoFrame" title="Promovare restaurant"></iframe></section><p id="status" role="status"></p><footer class="pont-admin-legal-footer" style="text-align:center;padding:18px 12px 28px;font:500 12px/1.5 system-ui"><a href="../termeni.html?from=admin-v2#transparenta-licitatii" style="color:#9acfc6;text-decoration:underline;text-underline-offset:4px">Transparența licitațiilor</a></footer></section></main><script src="./config.js"></script><script type="module">
 const $=id=>document.getElementById(id),c=window.PONT_CONFIG||{};if(!c.url||!c.anonKey){$('setup').hidden=false}else start().catch(e=>{$('setup').hidden=false;$('setup').querySelector('p').textContent=e.message});
 async function start(){
 $('menuSuccessOK').onclick=()=>$('menuSuccessDialog').close();
@@ -675,6 +682,7 @@ const {initPontOperations}=await import('../order-operations.js?v=combined-price
 const pontOperations=initPontOperations({db,getRestaurants:()=>restaurants,isRestaurantAdmin:true});
 window.pontOperations=pontOperations;
 await pontOperations.refresh();
+window.dispatchEvent(new Event("pont-desktop-menu-ready"));
 collapseRestaurantMenuPlanners();
 }
 </script>
@@ -1296,4 +1304,4 @@ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exh
  .pont-admin--restaurant #app .pont-ar-module-link{min-height:36px!important;padding:7px 6px!important;font-size:12px!important}
 }
 </style><script defer src="../keyboard-dismiss.js?v=swipe-page-dismiss-20261114"></script><script src="../pont-date-display.js?v=dmy-20261116" defer></script><link rel="stylesheet" href="../admin-neon.css?v=20261118-layout">
-<link rel="stylesheet" media="screen and (min-width:1200px)" href="../pont-desktop-2026.css?v=20261118-desktop1"></body></html>
+<link rel="stylesheet" media="screen and (min-width:1200px)" href="../pont-desktop-2026.css?v=20261118-desktop1"><link rel="stylesheet" media="screen and (min-width:1200px)" href="../restaurant-liquid.css?v=1"><script defer src="../restaurant-liquid.js?v=1"></script></body></html>
