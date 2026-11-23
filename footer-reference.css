@@ -1,8 +1,18 @@
 .pont-footer-art{display:none}
 @media(max-width:1199px){
-body footer.pont-footer-premium-mobile:has(.pont-footer-art){display:block!important;box-sizing:border-box!important;width:100%!important;max-width:none!important;padding:0!important;border:0!important;border-radius:0!important;background:#00171c!important;box-shadow:none!important}
+body footer.pont-footer-premium-mobile:has(.pont-footer-art){display:block!important;box-sizing:border-box!important;width:100%!important;max-width:none!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
 body footer.pont-footer-premium-mobile:has(.pont-footer-art)::before,body footer.pont-footer-premium-mobile:has(.pont-footer-art)::after,body footer.pont-footer-premium-mobile:has(.pont-footer-art)>:is(.pfm-grid,.pfm-bottom,.pfm-desktop-original){display:none!important}
-.pont-footer-art{position:relative;display:block;width:100%;aspect-ratio:1536/865;background:url('./assets/pont-footer-reference.jpg') center/100% 100% no-repeat}
+.pont-footer-art{position:relative;display:block;width:100%;aspect-ratio:1536/865;isolation:isolate}
+.pont-footer-art::before{
+ content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
+ background:url('./assets/pont-footer-reference.jpg') center/100% 100% no-repeat;
+ --vertical-fade:linear-gradient(to bottom,transparent,#000b 6%,#000 13%,#000 79%,#0009 92%,transparent);
+ --side-fade:linear-gradient(to right,transparent,#000 2.6%,#000 97.4%,transparent);
+ -webkit-mask-image:var(--vertical-fade),var(--side-fade);
+ -webkit-mask-composite:source-in;
+ mask-image:var(--vertical-fade),var(--side-fade);
+ mask-composite:intersect;
+}
 .pont-footer-art .pont-art-panel{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:var(--h);margin:0;padding:0;border:0;background:none}
 body footer .pont-footer-art .pont-art-panel>:is(a,button){position:absolute!important;display:block!important;min-height:0!important;min-width:0!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;cursor:pointer}
 .pont-art-panel>:focus-visible{outline:3px solid white;outline-offset:-3px;border-radius:8px}
