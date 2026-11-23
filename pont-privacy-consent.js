@@ -36,6 +36,7 @@
     if(intro)observer.observe(intro,{attributes:true,attributeFilter:['hidden']});
    }
   }else reveal();
+  window.addEventListener('pont:open-cookie-settings',()=>{banner.hidden=false});
   const footer=document.querySelector('footer');
   // The public restaurant listings use their existing legal-document links in the footer;
   // avoid adding extra GDPR / cookie-settings controls to those primary screens.
