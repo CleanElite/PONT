@@ -8,7 +8,6 @@
   const art = document.createElement('div');
   art.className = 'pont-footer-art';
   const panels = [
-    ['PONT Slobozia', [0,140,419,427], '.pfm-social a', [[112,490,65,68],[197,490,65,68],[282,490,65,68]]],
     ['Informații legale', [427,164,361,345], '.pfm-column:nth-child(2) nav > *', [[437,253,344,62],[437,315,344,55],[437,370,344,58],[437,428,344,61]]],
     ['Asistență', [797,164,324,345], '.pfm-column:nth-child(3) nav > *', [[813,260,299,68],[813,342,299,67],[813,426,299,67]]],
     ['Protecția consumatorilor', [1131,242,392,278], '.pfm-authorities a', [[1144,258,365,122],[1144,400,365,106]]]

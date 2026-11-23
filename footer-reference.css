@@ -5,7 +5,13 @@ body footer.pont-footer-premium-mobile:has(.pont-footer-art)::before,body footer
 .pont-footer-art{position:relative;display:block;width:100%;aspect-ratio:1536/865;isolation:isolate}
 .pont-footer-art::before{
  content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
- background:url('./assets/pont-footer-reference.jpg') center/100% 100% no-repeat;
+ /* The supplied artwork contains three baked-in social icons. */
+ --footer-tone:#01191e;
+ background:
+ radial-gradient(ellipse 2.8% 5% at 9.39% 60.55%,var(--footer-tone) 84%,transparent 100%),
+ radial-gradient(ellipse 2.8% 5% at 14.91% 60.55%,var(--footer-tone) 84%,transparent 100%),
+ radial-gradient(ellipse 2.8% 5% at 20.51% 60.55%,var(--footer-tone) 84%,transparent 100%),
+ url('./assets/pont-footer-reference.jpg') center/100% 100% no-repeat;
  --vertical-fade:linear-gradient(to bottom,transparent,#000b 6%,#000 13%,#000 79%,#0009 92%,transparent);
  --side-fade:linear-gradient(to right,transparent,#000 2.6%,#000 97.4%,transparent);
  -webkit-mask-image:var(--vertical-fade),var(--side-fade);
