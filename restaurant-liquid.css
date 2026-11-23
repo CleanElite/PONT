@@ -116,3 +116,25 @@
  #pontLiquid#pontLiquid#pontLiquid #app>:is(#savedView,#dishLibrary,#contactView),#pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=editor] #addView,#pontLiquid#pontLiquid#pontLiquid .pont-ar-city-content{max-height:calc(100svh - clamp(72px,11svh,112px) - 66px);overflow:auto;scrollbar-width:thin;scrollbar-color:#376567 #062024}
 }
 #pontLiquid#pontLiquid#pontLiquid .admin-nav :is(button,a){flex-direction:row!important;flex:0 0 auto!important}
+
+@media screen and (min-width:1200px){
+ #pontLiquid#pontLiquid#pontLiquid #app #deskPublish{display:none!important}
+ #pontLiquid#pontLiquid#pontLiquid #app #deskPlanner .desk-title h2{font-size:clamp(23px,1.85vw,31px)!important}
+ #pontLiquid#pontLiquid#pontLiquid #app #deskPlanner .desk-title svg{width:30px!important;height:30px!important}
+ #pontLiquid#pontLiquid#pontLiquid #app #deskPlanner .desk-title p{font-size:13px}
+ #pontLiquid#pontLiquid#pontLiquid #app #deskPlanner .desk-weekbar{margin:10px 0 6px;padding:4px 10px}
+ #pontLiquid#pontLiquid#pontLiquid #app #deskPlanner button{min-height:30px;padding:4px 11px}
+ #pontLiquid#pontLiquid#pontLiquid #app #deskPlanner #deskDays button{min-height:50px;grid-template-columns:auto auto auto;gap:6px;justify-content:center;padding:5px}
+ #pontLiquid#pontLiquid#pontLiquid #app #deskPlanner .desk-detail{margin-top:9px;padding:9px 13px}
+ #pontLiquid#pontLiquid#pontLiquid #app #deskPlanner .desk-detail h2{font-size:18px}
+ #pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=inline] #addView .admin-workspace>:not(#deskPlanner):not(#menuFormWrap):not(dialog),
+ #pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=inline] #deskPlanner :is(#deskCourses,#deskModel,#deskAvailability,#deskDelete),
+ #pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=inline] #menuFormWrap .pont-daily-fields label{display:none!important}
+ #pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=inline] #menuFormWrap{margin:4px 0!important;padding:6px!important}
+ #pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=inline] #pontDailySummaryList{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+ #pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=inline] #pontDailySummaryList>div{padding:4px 0;border-top:0}
+ #pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=inline] #pontDailySummary{padding:7px 10px}
+ #pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=inline] #pontDailyDishes{margin:6px 0}
+ #pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=inline] #pontDailyBuilder .pont-dish-actions{display:flex;justify-content:flex-end;gap:8px;margin:6px 0}
+ #pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=inline] #pontDailyBuilder .pont-dish-actions button{min-height:33px;padding:5px 12px}
+}

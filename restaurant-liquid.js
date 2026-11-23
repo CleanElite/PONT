@@ -42,6 +42,7 @@
  const label = (date, options) => new Intl.DateTimeFormat('ro-RO',{timeZone:'UTC',...options}).format(dayDate(date));
  let selected=today(), start=shift(selected,-((dayDate(selected).getUTCDay()+6)%7));
  let mode='plan';
+ let inlineEditor=false, opening=false;
  const restaurant = () => $('pontOpWeekRestaurant')?.value || $('contactRestaurant')?.value;
  const forDay = d => (window.pontAllMenus?.() || []).find(m=>m.restaurant_id===restaurant() && m.service_date===d);
  function el(tag, value, cls) {
@@ -50,9 +51,10 @@
  function draw() {
    if (!desktop.matches || app.hidden) return;
    const editing=!editor.hidden;
-   const showing=mode==='plan' && !editing && !$('addView').hidden;
+   const inline=inlineEditor && editing;
+   const showing=mode==='plan' && (!editing || inline) && !$('addView').hidden;
    planner.hidden=!showing;
-   app.dataset.deskMode=editing && !$('addView').hidden ? 'editor' : mode;
+   app.dataset.deskMode=editing && !$('addView').hidden ? (inline ? 'inline' : 'editor') : mode;
    $('deskPublish').setAttribute('aria-pressed',String(app.dataset.deskMode==='editor'));
    if (!showing) return;
    const source=$('pontOpWeekRestaurant'), choose=$('deskRestaurant');
@@ -60,21 +62,26 @@
      choose.replaceChildren(...Array.from(source.options,o=>new Option(o.text,o.value)));
      choose.value=source.value;choose.hidden=choose.options.length<2;
    }
+   const locked=inline || opening;
+   for(const control of [choose,$('deskPrev'),$('deskNext')]) control.disabled=locked;
    const end=shift(start,6),menu=forDay(selected);
    $('deskRange').textContent=label(start,{day:'numeric',month:'short'})+' – '+label(end,{day:'numeric',month:'short',year:'numeric'});
    const items=[];
    for (let i=0;i<7;i++){
      const date=shift(start,i), planned=!!forDay(date), b=el('button');
-     b.type='button'; b.dataset.day=date;b.setAttribute('aria-pressed',String(date===selected));
+     b.type='button'; b.disabled=locked; b.dataset.day=date;b.setAttribute('aria-pressed',String(date===selected));
      b.setAttribute('aria-label',label(date,{weekday:'long',day:'numeric',month:'long'})+(planned?', cu meniu':', fără meniu'));
      b.append(el('strong',['Lun','Mar','Mie','Joi','Vin','Sâm','Dum'][i]),el('small',label(date,{day:'numeric',month:'short'})),el('span',planned?'✓':'○',planned?'planned':'empty'));items.push(b);
    }
    $('deskDays').replaceChildren(...items);
    $('deskDayTitle').textContent='Meniul pentru '+label(selected,{weekday:'long',day:'numeric',month:'long'});
    $('deskState').textContent=menu?(menu.published?'✓ Publicat':'Nepublicat'):'Fără meniu';
-   $('deskEdit').hidden=!menu || selected<today();
+   $('deskEdit').hidden=selected<today() || inline;
+   $('deskEdit').disabled=opening;
+   $('deskEdit').textContent=menu?.published?'Editează meniul':'Publică meniu';
+   $('deskEdit').setAttribute('aria-label',$('deskEdit').textContent+' pentru '+label(selected,{day:'numeric',month:'long'}));
    $('deskDelete').hidden=!menu || !document.querySelector('#menus [data-remove="'+CSS.escape(String(menu.id))+'"]');
-   $('deskModel').disabled=!menu;
+   $('deskModel').disabled=!menu || locked;
    $('deskAvailability').hidden=selected!==today() || !menu;
    const courses=[];
    for(const [key,title,legacy] of [['first','Felul 1','first_course'],['second','Felul 2','second_course'],['dessert','Desert','dessert']]){
@@ -95,18 +102,18 @@
  async function edit(kind) {
    const menu=forDay(selected);
    if(kind==='model' && !menu)return;
-   if(!restaurant() || !window.pontDishUI)return;
-   $('showAdd').click();mode='plan';
+   if(opening || !restaurant() || !window.pontDishUI)return;
+   $('showAdd').click();mode='plan';inlineEditor=true;opening=true;draw();
    try{
      const opened=await window.pontDishUI.open(kind==='new'?null:menu,false,{restaurant:restaurant(),date:kind==='new' && selected<today()?today():selected});
      if(opened && kind==='model')$('pontDailySaveModel')?.click();
    }catch(e){$('status').textContent=e.message}
-   draw();
+   finally{opening=false;if(editor.hidden)inlineEditor=false;draw()}
  }
  $('deskRestaurant').onchange=()=>{const source=$('pontOpWeekRestaurant');if(source){source.value=$('deskRestaurant').value;source.dispatchEvent(new Event('change',{bubbles:true}))}};
  $('deskDays').onclick=e=>{const b=e.target.closest('[data-day]');if(b){selected=b.dataset.day;draw();$('deskDays').querySelector('[aria-pressed="true"]').focus({preventScroll:true})}};
  for(const [id,offset] of [['deskPrev',-7],['deskNext',7]])$(id).onclick=()=>{start=shift(start,offset);selected=shift(selected,offset);draw()};
- $('deskNew').onclick=()=>edit('new');$('deskEdit').onclick=()=>edit('edit');$('deskModel').onclick=()=>edit('model');
+ $('deskEdit').onclick=()=>edit(forDay(selected)?'edit':'new');$('deskModel').onclick=()=>edit('model');
  $('deskPublish').onclick=()=>{if(editor.hidden)edit(forDay(selected)?'edit':'new');else $('showAdd').click()};
  $('deskAvailability').onclick=()=>{mode='availability';draw()};
  $('deskReturn').onclick=()=>{if(!editor.hidden)$('toggleMenuForm').click();mode='plan';draw()};
@@ -122,7 +129,7 @@
    e.preventDefault();mode='promotion';if(!$('deskPromoFrame').hasAttribute('src')){const target=new URL(promo.href);target.searchParams.set('layout','restaurant-desktop');$('deskPromoFrame').src=target.href};
    app.dataset.deskMode=mode;planner.hidden=true;
  });
- new MutationObserver(()=>{if(mode!=='promotion')draw()}).observe(editor,{attributes:true,attributeFilter:['hidden']});
+ new MutationObserver(()=>{if(editor.hidden && !opening)inlineEditor=false;if(mode!=='promotion')draw()}).observe(editor,{attributes:true,attributeFilter:['hidden']});
  new MutationObserver(draw).observe($('menus'),{childList:true});
  new MutationObserver(draw).observe(app,{attributes:true,attributeFilter:['hidden']});
  document.addEventListener('change',e=>{if(['pontOpWeekRestaurant','contactRestaurant'].includes(e.target.id))draw()});
