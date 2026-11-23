@@ -1312,5 +1312,25 @@ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exh
  #pontLiquid #app[data-desk-mode="inline"] #menuFormWrap #pontDailyBuilder .pont-dish-actions #pontDailyCancel{
   display:inline-flex!important;align-items:center;justify-content:center;grid-column:auto;justify-self:stretch;width:100%;min-width:0;border:1px solid #577e80;border-radius:999px;background:#103136;color:#edf6f4;
  }
+
+ #pontLiquid #app #menuFormWrap #pontDailyBuilder #pontDailySummaryList{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:10px;
+ }
+ #pontLiquid #app #menuFormWrap #pontDailyBuilder #pontDailySummaryList>.pont-daily-summary-group{
+  display:flex;flex-direction:column;align-items:stretch;gap:6px;min-width:0;
+  padding:9px 10px;border:1px solid #39676a;border-top:2px solid #a98b50;border-radius:12px;
+  background:linear-gradient(145deg,#103539,#072427)!important;
+ }
+ #pontLiquid #app #menuFormWrap #pontDailySummaryList .pont-daily-summary-group-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding-bottom:6px;border-bottom:1px solid #36595a;
+ }
+ #pontLiquid #app #pontDailySummaryList .pont-daily-summary-group-head>strong{
+  padding:0;border:0;background:transparent;box-shadow:none;color:#f7d38d;font-size:15px;
+ }
+ #pontLiquid #app #pontDailySummaryList .pont-daily-selected-list{padding:0;gap:0}
+ #pontLiquid #app #pontDailySummaryList .pont-editor-dish-row+.pont-editor-dish-row{border-top:1px solid #294a4c}
+ #pontLiquid #app #pontDailySummaryList .pont-editor-dish-name{min-width:0;overflow-wrap:anywhere}
+
 }
 </style><script defer src="../restaurant-liquid.js?v=3"></script></body></html>
