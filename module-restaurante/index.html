@@ -9,4 +9,4 @@ document.querySelectorAll('[data-module]').forEach(button=>button.onclick=async(
 document.getElementById('logout').onclick=async()=>{if(db)await db.auth.signOut();location.replace('../login/')};
 try{if(!cfg.url||!cfg.anonKey)throw Error('Conexiunea PONT nu este configurată.');const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');db=createClient(cfg.url,cfg.anonKey);await check()}catch(e){panel.hidden=false;errorEl.textContent=e.message}
 </script><script src="../pont-date-display.js?v=dmy-20261116" defer></script><link rel="stylesheet" href="../admin-neon.css?v=20261116-neon9">
-<link rel="stylesheet" media="screen and (min-width:1200px)" href="../pont-desktop-2026.css?v=20261118-desktop1"><link rel="stylesheet" media="screen and (min-width:1200px)" href="./desktop-selection.css?v=96a98196"></body></html>
+<link rel="stylesheet" media="screen and (min-width:1200px)" href="../pont-desktop-2026.css?v=20261118-desktop1"><link rel="stylesheet" media="screen and (min-width:1200px)" href="./desktop-selection.css?v=wider-framing-1"></body></html>
