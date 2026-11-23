@@ -4,16 +4,17 @@ body.restaurant-selector{
  isolation:isolate;background:#04191c!important;
 }
 body.restaurant-selector::before,body.restaurant-selector::after{
- content:""!important;position:fixed;top:0;bottom:0;width:61vw;height:100%;
+ content:""!important;position:fixed;top:auto;bottom:0;width:51vw;height:82%;
+ mask-image:var(--side-fade),linear-gradient(to bottom,transparent,#000 23%);mask-composite:intersect;
  pointer-events:none;z-index:-1;background-size:cover!important;background-repeat:no-repeat!important;
 }
 body.restaurant-selector::before{
  left:0;right:auto;background-image:url("../dekstop/lunch-scene.jpg")!important;background-position:left center!important;
- mask-image:linear-gradient(to right,#000 8%,rgba(0,0,0,.85) 36%,transparent 100%);
+ --side-fade:linear-gradient(to right,#000 8%,rgba(0,0,0,.85) 36%,transparent 100%);
 }
 body.restaurant-selector::after{
  right:0;left:auto;background-image:url("../dekstop/evening-scene.jpg")!important;background-position:right center!important;
- mask-image:linear-gradient(to left,#000 8%,rgba(0,0,0,.85) 36%,transparent 100%);
+ --side-fade:linear-gradient(to left,#000 8%,rgba(0,0,0,.85) 36%,transparent 100%);
 }
 body.restaurant-selector>main#panel{
  position:relative;container-type:inline-size;width:min(100%,177.77778svh)!important;max-width:none!important;
