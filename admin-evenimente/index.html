@@ -469,7 +469,34 @@ body.pont-admin--city #citySubscriptionNotice span{
 body.pont-admin--city #myEvents[hidden],body.pont-admin--city #myRequests[hidden],body.pont-admin--city #createEvent[hidden]{display:none!important}
 body.pont-admin--city #myRequests .metrics{display:none!important}
 </style></head>
-<body id="pontLiquid" class="pont-admin pont-admin--restaurant pont-admin--city pont-admin-neon"><main>
+<style>
+#pontLiquid[data-opening]>main{visibility:hidden!important;pointer-events:none}
+#panelOpening{display:none}
+#pontLiquid[data-opening]>#panelOpening{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;padding:20px;box-sizing:border-box;background:radial-gradient(ellipse at center,#0b3439,#021016 75%);color:#f6f4e9;font-family:system-ui,sans-serif}
+#panelOpening .opening-card{width:min(100%,390px);box-sizing:border-box;padding:30px 24px;text-align:center;border:1px solid #527c78;border-radius:22px;background:linear-gradient(0deg,#031c22 14%,#02161bea 62%,#03171b8a),var(--opening-image) center/cover,#103238;box-shadow:0 15px 55px #00111588}
+#panelOpening img{width:90px;height:auto;display:block;margin:0 auto 24px}
+#panelOpening h1{font:600 29px/1.1 Georgia,serif;margin:0 0 14px;color:#fff9ec}
+#panelOpening p{display:flex;gap:9px;align-items:center;justify-content:center;margin:0;color:#d3e5de;font:14px/1.5 system-ui}
+#panelOpening .opening-ring{width:14px;height:14px;border:2px solid #416463;border-top-color:#f3c875;border-radius:50%;animation:pontOpeningSpin .85s linear infinite}
+#panelOpening button{margin:16px auto 0;padding:6px 15px;background:#103338;color:#ffdfa5;border:1px solid #597976;border-radius:20px;cursor:pointer}
+@keyframes pontOpeningSpin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){#panelOpening .opening-ring{animation:none}}
+</style><body id="pontLiquid" class="pont-admin pont-admin--restaurant pont-admin--city pont-admin-neon" data-opening>
+<div id="panelOpening" style="--opening-image:url('../assets/choice-evening.webp')">
+ <div class="opening-card"><img src="../meniul-zilei/showcase/pont-wordmark.webp" alt="PONT" width="90" height="38"><h1>Ieșire în oraș</h1>
+ <p role="status"><span class="opening-ring" aria-hidden="true"></span>Se încarcă panoul restaurantului…</p>
+ <button type="button" hidden id="retryOpening">Reîncarcă pagina</button></div>
+</div>
+<script>
+function setPanelOpening(active){
+ document.body.toggleAttribute('data-opening',active);
+ const retry=document.getElementById('retryOpening');
+ clearTimeout(retry.openingTimer);retry.hidden=true;
+ if(active)retry.openingTimer=setTimeout(()=>{retry.hidden=false},15000);
+}
+document.getElementById('retryOpening').onclick=()=>location.reload();
+setPanelOpening(true);
+</script><main>
 <header class="pont-ar-city-topbar">
  <a class="pont-ar-back" href="../" aria-label="Acasă">Înapoi</a>
  <a class="pont-ar-brand" href="../" aria-label="PONT - Acasă"><img src="../meniul-zilei/showcase/pont-wordmark.webp" alt="PONT" width="130" height="54"></a>
@@ -973,19 +1000,21 @@ function pontConfirmCancelCredit(){
 
 async function loadCitySubscription(){
  if(!db||!restaurant)return;
- const {data:active,error:activeError}=await db.rpc('pont_has_active_city_subscription',{p_restaurant_id:restaurant.id});
- if(activeError)throw activeError;
- citySubscriptionActive=Boolean(active);
- const {data:payments,error:paymentError}=await db.from('pont_city_payment_requests')
+ const [{data:active,error:activeError},{data:payments,error:paymentError},{data:responses,error:responseError},{data:ownSlots,error:slotErr}]=await Promise.all([
+  db.rpc('pont_has_active_city_subscription',{p_restaurant_id:restaurant.id}),
+  db.from('pont_city_payment_requests')
   .select('id,status,service_type,amount,event_id,promoted_event_id,promotion_position,promotion_credit_used,requested_start_date,requested_end_date,created_at,confirmed_at,expires_at,stripe_paid_at,stripe_paid_amount,stripe_checkout_session_id,revoke_reason')
-  .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
+  .eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500),
+  db.from('pont_city_payment_responses').select('payment_id,response').eq('restaurant_id',restaurant.id),
+  db.from('pont_city_promotion_slots').select('payment_id,position,start_date,end_date,status,hold_until').limit(150)
+ ]);
+ if(activeError)throw activeError;
  if(paymentError)throw paymentError;
+ citySubscriptionActive=Boolean(active);
  const rows=payments||[],subs=rows.filter(p=>p.service_type==='subscription');
  cityPaymentRows=rows;
- const {data:responses,error:responseError}=await db.from('pont_city_payment_responses').select('payment_id,response').eq('restaurant_id',restaurant.id);
  if(responseError)console.warn('Răspunsurile pentru plăți nu au putut fi încărcate:',responseError.message);
  cityPaymentResponses=new Map((responses||[]).map(x=>[x.payment_id,x.response]));
- const {data:ownSlots,error:slotErr}=await db.from('pont_city_promotion_slots').select('payment_id,position,start_date,end_date,status,hold_until').limit(150);
  if(!slotErr)cityOwnedSlots=ownSlots||[];
  const valid=subs.find(p=>p.status==='confirmed'&&new Date(p.expires_at)>new Date());
  const stripeReceived=subs.find(p=>p.status==='pending'&&p.stripe_paid_at);
@@ -1257,7 +1286,7 @@ async function start(){
  const {data:{user:current},error:authError}=await db.auth.getUser();if(authError||!current){location.replace('../login/');return}user=current;
  const {data:profile,error:profileError}=await db.from('profiles').select('role').eq('user_id',user.id).single();if(profileError)throw profileError;
  const {data:membership,error:memberError}=await db.from('restaurant_members').select('restaurant_id').eq('user_id',user.id).eq('access_revoked',false).limit(1).maybeSingle();if(memberError)throw memberError;
- if(!membership?.restaurant_id){if(profile.role==='super_admin'){$('status').textContent='SuperAdmin: deschide un restaurant din secțiunea Restaurante.';return}throw Error('Contul nu are un restaurant atribuit.')}
+ if(!membership?.restaurant_id){if(profile.role==='super_admin'){$('status').textContent='SuperAdmin: deschide un restaurant din secțiunea Restaurante.';setPanelOpening(false);return}throw Error('Contul nu are un restaurant atribuit.')}
  const {data:row,error:restaurantError}=await db.from('restaurants').select('id,name,enabled,menu_module_visible,access_meniul_zilei,city_module_visible,access_iesire_in_oras').eq('id',membership.restaurant_id).single();if(restaurantError)throw restaurantError;
  if(!row.enabled)throw Error('Restaurantul este suspendat.');
  if(profile.role!=='super_admin'&&!row.city_module_visible){location.replace('../module-restaurante/?notapproved=city');return;}
@@ -1280,6 +1309,7 @@ async function start(){
  $('workspace').hidden=false;
  await loadCitySubscription();
  await refresh();
+ setPanelOpening(false);
 }
 async function submitCityOccurrence(v){
   const {data:similar,error:similarError}=await db.from('pont_city_events').select('id,title,start_time').eq('restaurant_id',restaurant.id).eq('event_date',v.event_date).limit(100);
@@ -1356,7 +1386,7 @@ $('cityPosterFile').addEventListener('change',async evt=>{
  finally{button.disabled=!citySubscriptionActive;evt.target.value=''}
 });
 $('logout').onclick=async()=>{if(db)await db.auth.signOut();location.replace('../login/')};
-start().catch(e=>{$('status').textContent=e.message;$('status').className='error'});
+start().catch(e=>{$('status').textContent=e.message;$('status').className='error';setPanelOpening(false)});
 // Deciziile AS sunt recitite inclusiv când AR revine în aplicație.
 async function syncCityStatus(){
  if(!db||!restaurant||document.hidden)return;
