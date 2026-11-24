@@ -35,3 +35,39 @@ footer.pont-footer-premium-mobile .pfm-close{float:right;min-width:40px;min-heig
  body footer.pont-footer-premium-mobile:has(.pont-footer-art) .pont-footer-art{max-width:1536px;margin-inline:auto}
  body footer.pont-footer-premium-mobile:has(.pont-footer-art) dialog.pfm-dialog[open]{display:block!important}
 }
+
+@media screen and (min-width:1200px){
+ body.lunch footer.pont-footer-premium-mobile:has(.pont-footer-art){
+  margin:10px auto 0!important;padding:9px 22px 5px!important;
+  background:linear-gradient(180deg,#052226,#011216)!important;
+  border-top:1px solid #847348!important;color:#e4efeb;
+ }
+ .pont-footer-premium-mobile .pont-footer-art{display:none}
+ body.lunch footer.pont-footer-premium-mobile:has(.pont-footer-art)>.pfm-grid{
+  display:grid!important;grid-template-columns:1.15fr 1fr 1fr .9fr;max-width:1080px;
+  align-items:center;gap:20px;margin:0 auto;text-align:left;font:12px/1.25 system-ui,sans-serif;
+ }
+ .pfm-grid>section{min-width:0;margin:0;padding:0}
+ .pfm-grid>section+section{padding-left:18px;border-left:1px solid #6b633c}
+ .pfm-grid .pfm-logo{height:36px;width:88px;background:url('./assets/pont-footer-reference.jpg') 8.7% 18.6%/600% auto no-repeat;font-size:0}
+ .pfm-grid .pfm-location{color:#f4d895;font-weight:650}
+ .pfm-grid .pfm-services,.pfm-grid .pfm-brand p{font:11px/1.25 system-ui;color:#c1d5d3;margin:3px 0}
+ .pfm-grid h2{font:650 13px/1.2 system-ui;margin:0 0 3px;color:#f3d69c}
+ .pfm-grid nav,.pfm-grid .pfm-authorities{display:grid;gap:2px}
+ body.lunch footer .pfm-grid .pfm-link,body.lunch footer .pfm-grid .pfm-authority{
+  box-sizing:border-box;display:flex;align-items:center;gap:6px;margin:0;padding:2px 6px;min-height:20px;width:100%;height:auto;
+  border:1px solid #355255;border-radius:5px;background:#09272c;color:#eff5f3;font:12px/1.15 system-ui;text-align:left;text-decoration:none;cursor:pointer;
+ }
+ .pfm-grid .pfm-link>span,.pfm-grid .pfm-shield,.pfm-grid i{color:#edc97e}
+ .pfm-grid i{margin-left:auto}
+ .pfm-grid .pfm-authority{justify-content:center}
+ .pfm-grid .pfm-sal img{width:auto;height:29px;max-width:100%;object-fit:contain}
+ .pfm-grid .pfm-anpc small{display:block;font:10px/1.1 system-ui}
+ body.lunch footer.pont-footer-premium-mobile:has(.pont-footer-art)>.pfm-bottom{
+  display:block!important;margin:5px auto 0;text-align:center;font:10px/1.2 system-ui;color:#c0d2cf;
+ }
+ .pfm-grid :is(a,button):focus-visible{outline:2px solid #f6d18a}
+}
+@media screen and (min-width:1200px){
+ body.lunch.menu-showcase main.menu-main:has(+footer.pont-footer-premium-mobile){padding-bottom:8px!important}
+}
