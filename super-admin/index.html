@@ -4184,7 +4184,6 @@ function pontCityRequestCard(req){
   for(const [label,status,className] of [['Aprobă','approved','primary'],['Respinge','rejected','pont-city-reject']]){
    const btn=document.createElement('button');btn.type='button';btn.className=className;btn.textContent=label;
    btn.addEventListener('click',async()=>{
-    if(status==='approved'&&req.request_type==='edit'){pontASPreviewEvent({...req.event_snapshot,...e,...req.proposed_changes,restaurant_id:req.restaurant_id});await new Promise(resolve=>$('pontASCityPreviewDialog').addEventListener('close',resolve,{once:true}));}
     const approval=await pontASConfirm({
      title:status==='approved'?'Aprobă solicitarea':'Respinge solicitarea',
      message:(pontCityRequestLabels[req.request_type]||req.request_type)+' · '+(restaurant?.name||'Restaurant')+'. '+(status==='approved'?'Decizia va fi înregistrată, iar modificarea aferentă va fi aplicată.':'Cererea va fi respinsă și motivul va fi transmis restaurantului.'),
