@@ -110,7 +110,7 @@ footer.pont-footer-premium-mobile .pfm-close{float:right;min-width:40px;min-heig
   background:url('./assets/pont-footer-reference.jpg') var(--crop-at)/var(--crop-size) no-repeat;
  }
  .pont-footer-art .pf-photo-brand{gap:2px;text-align:center;font-family:system-ui,sans-serif}
- .pont-footer-art .pf-photo-brand .pf-photo-detail{height:26px;mix-blend-mode:lighten}
+ .pont-footer-art .pf-photo-brand .pf-photo-detail{height:26px}
  .pf-photo-city{font-size:12px;line-height:14px;font-weight:650;color:#f4dfb5}
  .pf-photo-services{font-size:12px;line-height:15px;color:#faf6eb}
  .pf-photo-description{width:100%;max-width:245px;font-size:12px;line-height:15px;color:#d4e3df;text-wrap:balance}

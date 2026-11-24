@@ -77,6 +77,13 @@ faq:['Întrebări frecvente','<p><strong>Cum comand?</strong> Alegi restaurantul
   brand.className = 'pf-photo-brand';
   art.prepend(brand);
   detail(brand,[112,137,241,110],'PONT');
+  brand.firstElementChild.style.filter = 'url(#pf-clear-logo)';
+  // Key out the dark photographic backing while retaining the original mark and glow.
+  art.insertAdjacentHTML('beforeend', `<svg aria-hidden="true" focusable="false" width="0" height="0" style="position:absolute;pointer-events:none" xmlns="http://www.w3.org/2000/svg">
+    <defs><filter id="pf-clear-logo" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  .3 2.1 .6 0 -.50"/>
+    </filter></defs>
+  </svg>`);
   const source = art.parentElement.querySelector('.pfm-brand');
   for (const [selector, name] of [['.pfm-location','city'], ['.pfm-services','services'], ['p','description']]) {
     const line = document.createElement('span');
