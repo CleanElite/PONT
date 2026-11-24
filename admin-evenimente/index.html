@@ -616,7 +616,7 @@ setPanelOpening(true);
 <dialog id="eventEditDialog" class="pont-city-edit-dialog" aria-labelledby="eventEditTitle">
  <h2 id="eventEditTitle">Solicită modificarea evenimentului</h2>
  <p>Modificările intră în vigoare numai după aprobarea PONT. Evenimentul original rămâne în istoric.</p>
- <form id="eventEditForm" method="dialog">
+ <form id="eventEditForm" method="dialog"><label class="wide" id="asEditReasonWrap" hidden>Motivul editării AS<textarea id="asEditReasonText" readonly rows="3"></textarea></label>
   <label class="wide">Titlu<input name="title" minlength="5" maxlength="100" required></label>
   <label>Data<input name="event_date" type="date" required></label>
   <label>Ora<input name="start_time" type="time" required></label>
@@ -1066,7 +1066,7 @@ function arButton(text,onClick,disabled=false){
 }
 let pontEditPosterUploadSequence=0;
 let pontEditPosterUploading=false;
-function beginEventEdit(e){
+async function beginEventEdit(e){
  pontEditPosterUploadSequence++;
  pontEditPosterUploading=false;
  cityEditingEvent=e;
@@ -1079,7 +1079,9 @@ function beginEventEdit(e){
  $('eventEditPosterStatus').textContent='';
  $('submitEventEdit').disabled=false;
  $('eventEditStatus').textContent='';
+ $('asEditReasonWrap').hidden=true;$('asEditReasonText').value='';
  $('eventEditDialog').showModal();
+ db.from('pont_city_as_edit_notes').select('reason').eq('event_id',e.id).maybeSingle().then(({data,error})=>{if(cityEditingEvent?.id!==e.id||!$('eventEditDialog').open)return;if(error||data?.reason){$('asEditReasonText').value=error?'Motivul nu a putut fi încărcat.':data.reason;$('asEditReasonWrap').hidden=false;}});
  document.body.classList.add('pont-city-modal-open');
 }
 $('cancelEventEdit').onclick=()=>$('eventEditDialog').close();
