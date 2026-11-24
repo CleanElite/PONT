@@ -4180,6 +4180,7 @@ function pontCityRequestCard(req){
  if(requestBody.childElementCount)card.append(requestInfo);
  if(req.status==='pending'){
   const actions=document.createElement('div');actions.className='pont-city-actions';
+  if(req.request_type==='edit'){const preview=document.createElement('button');preview.type='button';preview.textContent='Previzualizare';preview.style.gridColumn='1 / -1';preview.style.width='100%';preview.addEventListener('click',()=>pontASPreviewEvent({...req.event_snapshot,...e,...req.proposed_changes,restaurant_id:req.restaurant_id}));actions.append(preview);}
   for(const [label,status,className] of [['Aprobă','approved','primary'],['Respinge','rejected','pont-city-reject']]){
    const btn=document.createElement('button');btn.type='button';btn.className=className;btn.textContent=label;
    btn.addEventListener('click',async()=>{
