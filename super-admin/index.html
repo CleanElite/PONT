@@ -4038,9 +4038,9 @@ function pontASPreviewEvent(e){
  dialog.showModal();
 }
 $('pontASCityPreviewClose').onclick=()=>$('pontASCityPreviewDialog').close();
-function cityRow(e,pending=false,compact=false){
+function cityRow(e,pending=false,compact=false,number=null){
  const article=document.createElement('article');article.className='pont-city-event'+(compact?' pont-city-event-compact':'');
- const name=document.createElement('strong');name.textContent=pontCityEventLabel(e);article.append(name);
+ const name=document.createElement('strong');name.textContent=(number===null?'':number+'. ')+pontCityEventLabel(e);article.append(name);
  const venue=document.createElement('p');venue.className='pont-city-meta';
  const restaurant=restaurants.find(x=>x.id===e.restaurant_id);
  venue.textContent=(restaurant?.name||e.venue||'Restaurant')+' · '+cityDate(e.event_date)+' · '+String(e.start_time||'').slice(0,5);article.append(venue);
@@ -4327,20 +4327,20 @@ async function loadCityEvents(){
    $(id).textContent=String(count);
   }
   const recent=$('cityRecent');recent.replaceChildren();
-  for(const event of events.slice(0,8))recent.append(cityRow(event));
+  events.slice(0,8).forEach((event,i)=>recent.append(cityRow(event,false,false,i+1)));
   if(!events.length){const p=document.createElement('p');p.textContent='Nu există încă evenimente înregistrate.';recent.append(p)}
   const approvedActive=events.filter(e=>e.status==='approved'&&e.event_date>=today);
   const approved=$('cityApprovedRows');approved.replaceChildren();
   $('pontCityApprovedActiveCount').textContent='('+approvedActive.length+')';
-  for(const e of approvedActive)approved.append(cityRow(e,false,true));
+  approvedActive.forEach((e,i)=>approved.append(cityRow(e,false,true,i+1)));
   if(!approvedActive.length){const p=document.createElement('p');p.textContent='Nu există evenimente active sau viitoare.';approved.append(p)}
   const historyEvents=events.filter(e=>e.status==='rejected'||e.status==='removed'||(e.status==='approved'&&e.event_date<today));
   historyEvents.sort((a,b)=>String(b.event_date||'').localeCompare(String(a.event_date||''))||String(b.created_at||'').localeCompare(String(a.created_at||'')));
   $('cityEventHistoryCount').textContent='('+historyEvents.length+')';
   const historyHost=$('cityEventHistoryRows');historyHost.replaceChildren();
-  for(const e of historyEvents){
+  for(const [i,e] of historyEvents.entries()){
    const article=document.createElement('article');article.className='pont-city-event pont-city-event-history-row';
-   const title=document.createElement('strong');title.textContent=pontCityEventLabel(e);
+   const title=document.createElement('strong');title.textContent=(i+1)+'. '+pontCityEventLabel(e);
    const meta=document.createElement('small');
    const restaurant=restaurants.find(r=>r.id===e.restaurant_id);
    const label=e.status==='removed'?'Retras':e.status==='rejected'?'Respins':'Expirat';
