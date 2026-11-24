@@ -4022,6 +4022,12 @@ $('pontASPromoForm').onsubmit=async e=>{
   $('cityModerationStatus').textContent='Promovarea a fost confirmată pe locul '+position+'.';
  }catch(error){status.textContent='Eroare: '+error.message;button.disabled=false}
 };
+function pontASPosterDownload(e){
+ const url=e?.poster_url;if(!url||!/^https:\/\//i.test(url))return null;
+ const b=document.createElement('button');b.type='button';b.textContent='Descarcă fotografia';
+ b.onclick=async()=>{b.disabled=true;b.textContent='Se descarcă…';try{const response=await fetch(url);if(!response.ok)throw Error('Fotografia nu este disponibilă.');const blob=await response.blob();if(!blob.type.startsWith('image/'))throw Error('Fișierul nu este o imagine.');const ext=({'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif','image/avif':'avif','image/heic':'heic','image/heif':'heif','image/svg+xml':'svg','image/bmp':'bmp','image/tiff':'tiff'})[blob.type]||'img';const local=URL.createObjectURL(blob);const a=document.createElement('a');a.href=local;a.download=(String(e.title||'eveniment').replace(/[^\p{L}\p{N}_-]+/gu,'-').slice(0,80)||'eveniment')+'.'+ext;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(local),60000);b.textContent='Descarcă fotografia';}catch(error){b.textContent='Deschide fotografia';b.onclick=()=>window.open(url,'_blank','noopener,noreferrer');b.title='Descărcarea directă nu este disponibilă. Deschide imaginea și salveaz-o manual.';}finally{b.disabled=false}};
+ return b;
+}
 function pontASPreviewEvent(e){
  const dialog=$('pontASCityPreviewDialog');
  const restaurant=restaurants.find(r=>r.id===e.restaurant_id);
@@ -4039,6 +4045,7 @@ function pontASPreviewEvent(e){
   front.onerror=()=>{poster.replaceChildren();poster.classList.add('pont-as-preview-no-photo')};
   poster.classList.remove('pont-as-preview-no-photo');poster.append(blur,front);
  }else poster.classList.add('pont-as-preview-no-photo');
+ const old=$('pontASPreviewDownload');if(old)old.remove();const download=pontASPosterDownload(e);if(download){download.id='pontASPreviewDownload';dialog.append(download);}
  dialog.showModal();
 }
 $('pontASCityPreviewClose').onclick=()=>$('pontASCityPreviewDialog').close();
@@ -4094,7 +4101,7 @@ function cityRow(e,pending=false,compact=false,number=null){
    });actions.append(button);
   }
   const preview=document.createElement('button');preview.type='button';preview.className='pont-city-preview-button';preview.textContent='Previzualizare';preview.onclick=()=>pontASPreviewEvent(e);
-  actions.append(preview);article.append(actions);
+  actions.append(preview);const download=pontASPosterDownload(e);if(download)actions.append(download);article.append(actions);
   // Cererile în așteptare au exclusiv acțiuni de moderare.
   // Editarea, promovarea și retragerea sunt disponibile după aprobare.
   return article;
@@ -4108,7 +4115,7 @@ function cityRow(e,pending=false,compact=false,number=null){
   promote.onclick=()=>pontASOpenPromo(e);
   const remove=document.createElement('button');remove.type='button';remove.textContent='Retrage evenimentul';remove.className='pont-city-reject';
   remove.onclick=async()=>{edit.disabled=true;promote.disabled=true;remove.disabled=true;try{await pontCityAsWithdraw(e)}catch(error){$('cityModerationStatus').textContent='Eroare: '+error.message;edit.disabled=false;promote.disabled=e.status!=='approved'||e.event_date<todayRO();remove.disabled=false}};
-  manage.append(edit,preview,promote,remove);article.append(manage);
+  manage.append(edit,preview,promote,remove);const download=pontASPosterDownload(e);if(download)manage.append(download);article.append(manage);
  }else{
   const info=document.createElement('small');info.className='pont-city-meta';info.textContent='Retras — păstrat în istoric';article.append(info);
  }
@@ -4357,7 +4364,7 @@ async function loadCityEvents(){
    if(e.description){const desc=document.createElement('p');desc.textContent=e.description;content.append(desc)}
    const place=document.createElement('p');place.textContent='Locație: '+(e.venue||'—')+' · '+(e.locality||'—');content.append(place);
    const phone=document.createElement('p');phone.textContent='Telefon: '+(e.contact_phone||'—');content.append(phone);
-   details.append(summary,content);article.append(details);historyHost.append(article);
+   details.append(summary,content);const download=pontASPosterDownload(e);if(download)content.append(download);article.append(details);historyHost.append(article);
   }
   if(!historyEvents.length){const p=document.createElement('p');p.textContent='Niciun eveniment în istoric.';historyHost.append(p)}
   $('cityPendingLabel').textContent='('+events.filter(e=>e.status==='pending').length+')';
