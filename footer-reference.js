@@ -43,3 +43,40 @@ faq:['Întrebări frecvente','<p><strong>Cum comand?</strong> Alegi restaurantul
   art.append(copyright);
   footer.insertBefore(art,groups);
 })();
+
+// Desktop uses the same photograph as the mobile artwork. Sample each detail
+// independently so wide screens can expand the composition without stretching type.
+(() => {
+  const art = document.querySelector('.pont-footer-art');
+  if (!art) return;
+  function sample(node, x, y, w, h) {
+    node.style.setProperty('--crop-size', (1536 / w * 100) + '% ' + (865 / h * 100) + '%');
+    node.style.setProperty('--crop-at', (x / (1536 - w) * 100) + '% ' + (y / (865 - h) * 100) + '%');
+    node.style.setProperty('--crop-ratio', w + '/' + h);
+  }
+  function detail(parent, rect, label) {
+    const node = document.createElement('span');
+    node.className = 'pf-photo-detail';
+    if (label) { node.setAttribute('role', 'img'); node.setAttribute('aria-label', label); }
+    else node.setAttribute('aria-hidden', 'true');
+    sample(node, ...rect);
+    parent.prepend(node);
+  }
+  const panels = art.querySelectorAll('.pont-art-panel');
+  const rows = [
+    [[450,263,321,42],[450,321,321,43],[450,377,321,44],[450,436,321,44]],
+    [[811,257,303,72],[811,339,303,72],[811,423,303,72]],
+    [[1140,255,372,130],[1141,397,370,112]]
+  ];
+  panels.forEach((panel,i) => {
+    [...panel.children].forEach((link,j) => sample(link,...rows[i][j]));
+    if (i === 0) detail(panel,[449,183,303,52]);
+    if (i === 1) detail(panel,[827,182,236,55]);
+  });
+  const brand = document.createElement('section');
+  brand.className = 'pf-photo-brand';
+  art.prepend(brand);
+  detail(brand,[42,311,361,155],'Meniul zilei · Ieșire în oraș · Evenimente. Descoperă locurile, gusturile și evenimentele care aduc orașul mai aproape de tine.');
+  detail(brand,[63,261,330,39],'Slobozia');
+  detail(brand,[112,137,241,110],'PONT');
+})();
