@@ -1691,7 +1691,7 @@ body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{
     <p id="pontCityAsPosterUploadStatus" class="wide" role="status"></p>
     <label class="wide">Link afiș (completat automat după încărcare)<input name="poster_url" type="url" maxlength="700" placeholder="https://..."></label>
     <label class="wide">Descriere<textarea name="description" maxlength="1200"></textarea></label>
-    <div class="wide pont-city-as-edit-buttons"><button id="pontCityAsEditCancel" type="button">Anulează</button><button id="pontCityAsEditSave" class="primary" type="submit">Salvează modificările</button></div>
+    <label class="wide">Motivul editării AS<textarea name="as_reason" required maxlength="1000"></textarea></label><div class="wide pont-city-as-edit-buttons"><button id="pontCityAsEditCancel" type="button">Anulează</button><button id="pontCityAsEditSave" class="primary" type="submit">Salvează modificările</button></div>
   </form>
   <p id="pontCityAsEditStatus" role="status"></p>
 </dialog>
@@ -3747,7 +3747,7 @@ function pontCityAsEdit(e){
  pontCityAsPosterUploadSequence++;
  pontCityAsPosterUploading=false;
  pontCityAsEditingEvent=e;
- const form=$('pontCityAsEditForm');
+ const form=$('pontCityAsEditForm');form.elements.as_reason.value='';
  for(const k of ['title','event_date','start_time','locality','venue','contact_phone','poster_url','description']){
   form.elements[k].value=k==='start_time'?String(e[k]||'').slice(0,5):String(e[k]||'');
  }
@@ -3790,11 +3790,12 @@ $('pontCityAsEditForm').onsubmit=async ev=>{
   const before=key==='start_time'?String(e[key]||'').slice(0,5):String(e[key]||'');
   if(value!==before)update[key]=key==='poster_url'?(value||null):value;
  }
- if(!Object.keys(update).length){$('pontCityAsEditStatus').textContent='Nu există modificări.';return}
+ if(!form.elements.as_reason.value.trim()){ $('pontCityAsEditStatus').textContent='Introdu motivul editării.';return; } if(!Object.keys(update).length){$('pontCityAsEditStatus').textContent='Nu există modificări.';return}
  const btn=$('pontCityAsEditSave');btn.disabled=true;$('pontCityAsEditStatus').textContent='Se salvează…';
  try{
   const {data,error}=await db.from('pont_city_events').update(update).eq('id',e.id).eq('status',e.status).select('id');
   if(error)throw error;if(!data?.length)throw Error('Evenimentul a fost modificat între timp.');
+  const noteResult=await db.from('pont_city_as_edit_notes').upsert({event_id:e.id,restaurant_id:e.restaurant_id,reason:form.elements.as_reason.value.trim()},{onConflict:'event_id'});if(noteResult.error)throw noteResult.error;
   $('pontCityAsEditDialog').close();await loadCityEvents();
   $('cityModerationStatus').textContent='Eveniment actualizat. Versiunea anterioară este păstrată în audit.';
  }catch(err){$('pontCityAsEditStatus').textContent='Nu s-a salvat: '+err.message}
@@ -4179,6 +4180,7 @@ function pontCityRequestCard(req){
   for(const [label,status,className] of [['Aprobă','approved','primary'],['Respinge','rejected','pont-city-reject']]){
    const btn=document.createElement('button');btn.type='button';btn.className=className;btn.textContent=label;
    btn.addEventListener('click',async()=>{
+    if(status==='approved'&&req.request_type==='edit'){pontASPreviewEvent({...req.event_snapshot,...e,...req.proposed_changes,restaurant_id:req.restaurant_id});await new Promise(resolve=>$('pontASCityPreviewDialog').addEventListener('close',resolve,{once:true}));}
     const approval=await pontASConfirm({
      title:status==='approved'?'Aprobă solicitarea':'Respinge solicitarea',
      message:(pontCityRequestLabels[req.request_type]||req.request_type)+' · '+(restaurant?.name||'Restaurant')+'. '+(status==='approved'?'Decizia va fi înregistrată, iar modificarea aferentă va fi aplicată.':'Cererea va fi respinsă și motivul va fi transmis restaurantului.'),
