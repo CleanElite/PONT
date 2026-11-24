@@ -755,16 +755,7 @@ const config=window.PONT_CONFIG||{};
 const eventDialog=$('eventDetails');
 eventDialog.querySelector('.event-dialog-close').onclick=()=>eventDialog.close();
 eventDialog.addEventListener('click',e=>{if(e.target===eventDialog)eventDialog.close()});
-/* Seven clearly labeled visual QA events. Kept separate from paid promotion and production event tables. */
-const pontVisualTestEvents=[
- {id:'pont-test-01',title:'Seară de jazz',venue:'Aromas',event_date:'2026-12-04',start_time:'20:00',poster_url:'../assets/pont-game-night-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.',testPromoted:true},
- {id:'pont-test-02',title:'Concert live',venue:'Central',event_date:'2026-12-05',start_time:'21:00',poster_url:'../assets/pont-stand-up-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.',testPromoted:true},
- {id:'pont-test-03',title:'Seară tematică',venue:'Hambar',event_date:'2026-12-06',start_time:'19:30',poster_url:'../assets/pont-game-night-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.',testPromoted:true},
- {id:'pont-test-04',title:'Quiz night',venue:'Casa Verde',event_date:'2026-12-07',start_time:'19:00',poster_url:'../assets/pont-game-night-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.'},
- {id:'pont-test-05',title:'Stand-up comedy',venue:'Colibri',event_date:'2026-12-08',start_time:'20:00',poster_url:'../assets/pont-stand-up-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.'},
- {id:'pont-test-06',title:'Seară de dans',venue:'Cibus Grill',event_date:'2026-12-09',start_time:'20:30',poster_url:'../assets/pont-game-night-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.'},
- {id:'pont-test-07',title:'Acoustic session',venue:'Spring',event_date:'2026-12-10',start_time:'19:30',poster_url:'../assets/pont-stand-up-landscape.jpg?v=20261117-1',description:'[EVENIMENT TEST] Eveniment demonstrativ. Nu există rezervări reale.'}
-].map(e=>({...e,locality:'Slobozia',contact_phone:'',restaurant_id:null}));
+
 function refreshEvents(){
  const pinned=activePromotions.filter(x=>x.service_type==='pinned_event').sort((a,b)=>a.slot_number-b.slot_number).map(x=>x.event_id);
  const sorted=[...allEvents].sort((a,b)=>{
@@ -781,10 +772,7 @@ function refreshEvents(){
   const action=document.createElement('button');action.type='button';action.textContent='Vezi evenimentul';action.onclick=()=>showDetails(bannerEvent);
   banner.append(kicker,title,action);
  }
- const existingPromotedIds=new Set(activePromotions.filter(p=>(p.service_type==='pinned_event'||p.service_type==='exclusive_banner')&&sorted.some(e=>e.id===p.event_id)).map(p=>p.event_id));
- const availableTestPromotions=Math.max(0,3-existingPromotedIds.size);
- const testEvents=pontVisualTestEvents.map((event,index)=>({...event,testPromoted:index<availableTestPromotions}));
- renderEvents([...testEvents.filter(e=>e.testPromoted),...sorted,...testEvents.filter(e=>!e.testPromoted)]);
+ renderEvents(sorted);
 }
 function renderEvents(events){
  const list=$('eventList');list.classList.remove('pont-events-loading');list.replaceChildren();
