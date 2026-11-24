@@ -513,7 +513,7 @@ body.pont-admin--city #myRequests .metrics{display:none!important}
 <details class="wide pont-event-optional-fields"><summary>Detalii opționale și linkul afișului</summary><div><label>Link afiș (completat automat după încărcare)<input name="poster_url" type="url" maxlength="700" placeholder="https://..." readonly></label><label>Detalii eveniment<textarea name="description" maxlength="1200" placeholder="Program, artiști, detalii privind rezervările"></textarea></label></div></details>
 <button class="primary wide" type="submit" id="submitEvent">Trimite spre aprobare</button></form><p id="formStatus" class="status" role="status"></p></section>
 <section class="pont-city-event-sent" id="pontCityEventSent" hidden role="status" aria-live="polite"><strong>Evenimentul a fost trimis!</strong><p>Așteaptă aprobarea PONT. Mulțumim!</p><button type="button" id="pontCityEventSentDismiss" class="primary">Am văzut</button></section>
-<section class="panel" id="myEvents"><h2>Evenimentele mele</h2><section class="metrics" aria-label="Statistici evenimente"><div class="metric"><strong id="pendingCount">0</strong><span>În așteptare</span></div><div class="metric"><strong id="approvedCount">0</strong><span>Aprobate</span></div><div class="metric"><strong id="rejectedCount">0</strong><span>Respinse</span></div></section><div class="pont-ar-approval-note" role="note"><span>Modificarea sau retragerea unui eveniment necesită aprobarea AS.</span></div><div id="events"></div></section>
+<section class="panel" id="myEvents"><h2>Evenimentele mele</h2><section class="metrics" aria-label="Statistici evenimente"><div class="metric"><strong id="pendingCount">0</strong><span>În așteptare</span></div><div class="metric"><strong id="approvedCount">0</strong><span>Aprobate</span></div><div class="metric"><strong id="rejectedCount">0</strong><span>Respinse</span></div></section><div class="pont-ar-approval-note" role="note"><span>Modificarea sau retragerea unui eveniment necesită aprobarea AS.</span></div><p id="eventListNotice" role="status"></p><div id="events"></div></section>
 <section class="panel" id="myRequests" hidden><h2>Cererile mele</h2><p>Cererile și statusul promovărilor tale.</p><div id="cityRequests"></div><section id="cityPromotionPayments" class="pont-city-request-payments" hidden><h3>Promovări prin card sau credit</h3><div id="cityPromotionPaymentList"></div></section></section></div>
 <dialog id="cityStripeConfirmDialog" class="pont-city-stripe-confirm" aria-labelledby="cityStripeConfirmTitle">
  <div class="pont-stripe-eyebrow">PONT · FINALIZARE SERVICIU</div>
@@ -565,6 +565,27 @@ body.pont-admin--city #myRequests .metrics{display:none!important}
  <p>Promovarea neaprobată va fi anulată, iar creditul va redeveni disponibil pentru o rezervare viitoare. Nu se va efectua nicio operațiune Stripe.</p>
  <div class="pont-credit-cancel-buttons"><button type="button" id="pontCreditCancelNo">Păstrează rezervarea</button><button type="button" class="primary" id="pontCreditCancelYes">Eliberează creditul</button></div>
 </dialog>
+<dialog id="renewDialog" aria-labelledby="renewTitle">
+ <h2 id="renewTitle">Reactivează anunțul</h2><p id="renewSummary"></p>
+ <form id="renewForm">
+  <label>Data nouă<input name="event_date" type="date" required></label>
+  <label>Ora începerii<input name="start_time" type="time" required></label>
+  <label hidden>Localitate<input name="locality" maxlength="80"></label><label hidden>Locație<input name="venue" maxlength="120"></label><label hidden>Telefon pentru rezervări<input name="contact_phone" type="tel" maxlength="32"></label>
+  <p>Titlul, locația, telefonul, descrierea și afișul se păstrează. Noua ediție va fi trimisă spre aprobare.</p>
+  <p id="renewStatus" role="status"></p>
+  <div><button type="button" id="renewCancel">Anulează</button><button class="primary" type="submit" id="renewSubmit">Trimite spre aprobare</button></div>
+ </form>
+</dialog>
+<style>
+#renewDialog{box-sizing:border-box;width:min(440px,92vw);max-height:88dvh;overflow:auto;margin:auto;padding:20px;border:1px solid #62968e;border-radius:17px;background:#09292e;color:#eff8f4}
+#renewDialog::backdrop{background:#001518bd}
+#renewForm{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#renewForm label,#renewForm input{min-width:0;width:100%;box-sizing:border-box}
+#renewForm>p,#renewForm>div{grid-column:1/-1;margin:0}
+#renewForm>div{display:flex;gap:8px;flex-wrap:wrap}
+#events .city-event-group{margin-block:15px;display:grid;gap:8px}
+#events .city-event-group h3{margin:0;border-bottom:1px solid #386169;padding-bottom:7px;color:#efdbaf}
+</style>
 <dialog id="eventEditDialog" class="pont-city-edit-dialog" aria-labelledby="eventEditTitle">
  <h2 id="eventEditTitle">Solicită modificarea evenimentului</h2>
  <p>Modificările intră în vigoare numai după aprobarea PONT. Evenimentul original rămâne în istoric.</p>
@@ -998,6 +1019,11 @@ $('pontCityEventSentDismiss').onclick=()=>{
  $('eventForm').hidden=!citySubscriptionActive;
  $('formStatus').textContent='';
 };
+function updateEventDay(){
+ if(renderedDay && renderedDay!==today())renderMyEvents(cityEventRows);
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)updateEventDay()});
+if(cityPage==='evenimentele-mele')setInterval(()=>{if(!document.hidden)updateEventDay()},60000);
 async function requestEventAction(event,type,reason,proposed={}){
  const {error}=await db.from('pont_city_event_requests').insert({
   event_id:event.id,restaurant_id:restaurant.id,request_type:type,
@@ -1077,15 +1103,37 @@ async function refresh(){
  if(result.error)throw result.error;cityRequestRows=result.data||[];
  const {data:cash,error:cashError}=await db.from('pont_city_cash_requests').select('id,event_id,service_type,position,requested_start_date,requested_end_date,amount,status,created_at,withdrawn_by_ar_at').eq('restaurant_id',restaurant.id).order('created_at',{ascending:false}).limit(500);
  if(cashError)throw cashError;cityCashRequestRows=cash||[];
+ renderMyEvents(rows);
+ renderCityNotifications();
+ renderCityRequests();
+}
+let renderedDay='';
+function renderMyEvents(rows){
+ renderedDay=today();
  const container=$('events');container.replaceChildren();
  if(!rows.length){const p=document.createElement('p');p.textContent='Nu ai publicat încă evenimente.';container.append(p)}
+ const sections=new Map();
+ const section=(key,title)=>{
+  if(!sections.has(key)){
+   const group=document.createElement('section'),heading=document.createElement('h3');
+   group.className='city-event-group';heading.textContent=title;group.append(heading);sections.set(key,group);
+  }
+  return sections.get(key);
+ };
  for(const e of rows){
+  const expired=e.event_date<renderedDay;
+  const group=expired?section('expired','Evenimente expirate'):e.status==='approved'?section('active','Evenimente active'):section('other','În așteptare, respinse sau retrase');
   const card=document.createElement('article');card.className='event';
   const title=document.createElement('strong');title.textContent=pontAREventLabel(e);
   const details=document.createElement('small');details.textContent=e.venue+' · '+e.event_date+' · '+String(e.start_time).slice(0,5);
   const badge=document.createElement('span');badge.className='state';badge.textContent=stateNames[e.status]||e.status;
   card.append(title,details,badge);
-  if(e.status!=='removed'){
+  if(expired){
+   badge.textContent='Expirat · '+badge.textContent;
+   const action=document.createElement('div');action.className='pont-city-event-actions';
+   action.append(arButton('Reactivează anunț',()=>beginRenewal(e),!citySubscriptionActive));
+   card.append(action);
+  }else if(e.status!=='removed'){
    const action=document.createElement('div');action.className='pont-city-event-actions';
    const pending=cityRequestRows.filter(r=>r.event_id===e.id&&r.status==='pending').map(r=>r.request_type);
    action.append(arButton('Solicită modificare',()=>beginEventEdit(e),pending.includes('edit')));
@@ -1102,10 +1150,9 @@ async function refresh(){
    }
    card.append(action);
   }
-  container.append(card);
+  group.append(card);
  }
- renderCityNotifications();
- renderCityRequests();
+ for(const key of ['active','other','expired'])if(sections.has(key))container.append(sections.get(key));
 }
 
 async function pontWithdrawCityRequest(kind,id){
@@ -1234,18 +1281,56 @@ async function start(){
  await loadCitySubscription();
  await refresh();
 }
+async function submitCityOccurrence(v){
+  const {data:similar,error:similarError}=await db.from('pont_city_events').select('id,title,start_time').eq('restaurant_id',restaurant.id).eq('event_date',v.event_date).limit(100);
+  if(similarError)throw similarError;
+  const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+  if((similar||[]).some(x=>norm(x.title)===norm(v.title)&&String(x.start_time).slice(0,5)===v.start_time))throw Error('Există deja un eveniment cu același titlu și aceeași dată.');
+  const payload={restaurant_id:restaurant.id,title:v.title.trim(),event_date:v.event_date,start_time:v.start_time,locality:v.locality.trim(),venue:v.venue.trim(),contact_phone:v.contact_phone.trim(),description:(v.description||'').trim(),poster_url:(v.poster_url||'').trim()||null};
+  const {error}=await db.from('pont_city_events').insert(payload);if(error)throw error;
+}
+
+let renewingEvent=null;
+function beginRenewal(event){
+ const form=$('renewForm');
+ renewingEvent=event;
+ form.reset();
+ for(const field of ['locality','venue','contact_phone']){
+  const input=form.elements[field],missing=!event[field]?.trim();
+  input.closest('label').hidden=!missing;input.disabled=!missing;input.required=missing;
+ }
+ form.elements.event_date.min=today();
+ form.elements.start_time.value=String(event.start_time||'').slice(0,5);
+ $('renewSummary').textContent=[event.title,event.venue,event.locality].filter(Boolean).join(' · ');
+ $('renewStatus').textContent='';
+ $('renewDialog').showModal();
+}
+$('renewCancel').onclick=()=>$('renewDialog').close();
+$('renewDialog').addEventListener('cancel',e=>{if($('renewSubmit').disabled)e.preventDefault()});
+$('renewForm').onsubmit=async e=>{
+ e.preventDefault();
+ const btn=$('renewSubmit'),msg=$('renewStatus'),form=e.currentTarget;
+ if(btn.disabled||!renewingEvent)return;
+ const date=form.elements.event_date.value,time=form.elements.start_time.value;
+ const now=new Date(),clock=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Bucharest',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(now);
+ if(date<today() || (date===today() && time<=clock)){msg.textContent='Alege o dată și o oră viitoare.';return}
+ if(!citySubscriptionActive){msg.textContent='Reactivarea necesită un abonament activ.';return}
+ btn.disabled=true;$('renewCancel').disabled=true;
+ try{
+  await submitCityOccurrence({...renewingEvent,...Object.fromEntries(new FormData(form))});
+ }catch(err){msg.textContent=err.message;return}
+ finally{btn.disabled=false;$('renewCancel').disabled=false}
+ $('renewDialog').close();
+ $('eventListNotice').textContent='Noua ediție a fost trimisă spre aprobare.';
+ try{await refresh()}catch(err){$('eventListNotice').textContent+=' Reîncarcă lista pentru actualizare.'}
+};
 $('eventForm').onsubmit=async e=>{
  e.preventDefault();if(!db||!restaurant)return;if(!citySubscriptionActive){$('formStatus').textContent='Publicarea necesită abonament confirmat.';return}const form=e.currentTarget;const button=$('submitEvent');const msg=$('formStatus');const v=Object.fromEntries(new FormData(form).entries());
  if(v.event_date<today()){msg.textContent='Alege o dată viitoare.';return}
  if(v.poster_url&&!/^https:\/\//i.test(v.poster_url)){msg.textContent='Afișul trebuie să aibă un link HTTPS.';return}
  button.disabled=true;msg.textContent='Se verifică anunțul…';
  try{
-  const {data:similar,error:similarError}=await db.from('pont_city_events').select('id,title,start_time').eq('restaurant_id',restaurant.id).eq('event_date',v.event_date).limit(100);
-  if(similarError)throw similarError;
-  const norm=x=>String(x||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
-  if((similar||[]).some(x=>norm(x.title)===norm(v.title)&&String(x.start_time).slice(0,5)===v.start_time))throw Error('Există deja un eveniment cu același titlu și aceeași dată.');
-  const payload={restaurant_id:restaurant.id,title:v.title.trim(),event_date:v.event_date,start_time:v.start_time,locality:v.locality.trim(),venue:v.venue.trim(),contact_phone:v.contact_phone.trim(),description:v.description.trim(),poster_url:v.poster_url.trim()||null};
-  const {error}=await db.from('pont_city_events').insert(payload);if(error)throw error;
+  await submitCityOccurrence(v);
   form.reset();cityUploadedPoster='';$('cityPosterStatus').textContent='';
   msg.textContent='';await refresh();
   $('eventForm').hidden=true;
