@@ -4101,9 +4101,8 @@ function cityRow(e,pending=false,compact=false,number=null){
    });actions.append(button);
   }
   const preview=document.createElement('button');preview.type='button';preview.className='pont-city-preview-button';preview.textContent='Previzualizare';preview.onclick=()=>pontASPreviewEvent(e);
-  actions.append(preview);const download=pontASPosterDownload(e);if(download)actions.append(download);article.append(actions);
-  // Cererile în așteptare au exclusiv acțiuni de moderare.
-  // Editarea, promovarea și retragerea sunt disponibile după aprobare.
+  actions.append(preview);const toolsRow=document.createElement('div');toolsRow.style.cssText='grid-column:1 / -1;flex:0 0 100%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;width:100%';const download=pontASPosterDownload(e);if(download)toolsRow.append(download);const edit=document.createElement('button');edit.type='button';edit.textContent='Editează';edit.onclick=()=>pontCityAsEdit(e);if(!download)edit.style.gridColumn='1 / -1';toolsRow.append(edit);actions.append(toolsRow);article.append(actions);
+  // Editarea înainte de aprobare păstrează statusul pending; promovarea și retragerea sunt disponibile după aprobare.
   return article;
  }
  if(e.status==='approved'){
