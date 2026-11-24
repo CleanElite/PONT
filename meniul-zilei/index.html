@@ -677,7 +677,8 @@ const ornaments=[
 const isMenuPreview = new URLSearchParams(location.search).get('preview') === '1';
 let liveMenus=[];const menus=()=>isMenuPreview?samples:liveMenus;
 function orderOpen(menu){return Boolean(menu&&menu.available!==false)}
-const hasMinimumMenu=()=>selection().filter(item=>item.short==='meniuri complete').reduce((sum,item)=>sum+item.qty,0)>=(current?.min_full_menus||1);
+const hasMinimumMenu=()=>{const items=selection();const count=kind=>items.filter(item=>item.short===kind).reduce((sum,item)=>sum+item.qty,0);return count('meniuri complete')>=(current?.min_full_menus||1)||count('felul 2')>=2;};
+const minimumOrderText=()=> 'Comanda minimă: '+(current?.min_full_menus||1)+' '+((current?.min_full_menus||1)===1?'meniu complet':'meniuri complete')+' sau 2 porții de felul 2.';
 // Cardurile sunt afisate direct, fara filtre.
 let current, draft;
 function render(){
@@ -791,7 +792,7 @@ function update(){
   const launchBlocked=!orderOpen(current)?'Meniul zilei este indisponibil.':
     !current?.phone?'Restaurantul nu are un număr WhatsApp configurat.':
     items.length===0?'Selectează preparatele și cantitățile dorite.':
-    !hasMinimumMenu()?'Comanda minimă este de '+(current?.min_full_menus||1)+' meniu complet.':'';
+    !hasMinimumMenu()?minimumOrderText():'';
   $('#openCheckout').disabled=Boolean(launchBlocked);
   const launchHint=$('#pontCheckoutLaunchHint');
   launchHint.hidden=!launchBlocked;launchHint.textContent=launchBlocked;
@@ -896,7 +897,7 @@ function openOrder(m,trigger){
    form.elements.method.value=m.delivery===false?'Ridicare':'Livrare, dacă restaurantul confirmă';
    form.elements.payment.innerHTML='<option value="Cash">Cash</option>'+(m.card?'<option value="Card">Card</option>':'');form.elements.payment.disabled=!m.card;$('#cardPaymentNote').hidden=!!m.card;
   const minimum = m.min_full_menus || 1;
-  $('#pontOrderMinimum').textContent = 'Minim ' + minimum + (minimum === 1 ? ' meniu' : ' meniuri');
+  $('#pontOrderMinimum').textContent = 'Minim ' + minimum + (minimum === 1 ? ' meniu' : ' meniuri') + ' sau 2 × felul 2';
   $('#send').querySelector('.pont-whatsapp-label').textContent=m.phone?'Trimite comanda pe WhatsApp':isMenuPreview?'Comenzile sunt dezactivate în previzualizare':'WhatsApp indisponibil — lipsește numărul';$('#send').disabled=!m.phone;const callPhone=normalizeCallPhone(m.phone);$('#callNow').hidden=!callPhone;if(callPhone){$('#callNow').href='tel:'+callPhone;}else{$('#callNow').removeAttribute('href');}
   $('#orderMsg').textContent='';
   $('#order').showModal();update();
@@ -981,7 +982,7 @@ const cleanWhatsAppPhone=raw=>{let digits=String(raw||'').replace(/[^0-9]/g,'');
 let submittingOrder=false,orderNoticeAccepted=false;
 $('#orderNoticeCancel').onclick=()=>$('#orderConfirmationNotice').close();
 $('#orderNoticeContinue').onclick=()=>{orderNoticeAccepted=true;$('#orderConfirmationNotice').close();form.requestSubmit()};
-form.onsubmit=async e=>{e.preventDefault();if(submittingOrder)return;if(!checkoutLayer.open){openCheckoutPanel();return;}if(!form.reportValidity()){const target=[...form.elements].find(field=>field.willValidate&&!field.validity.valid);target?.focus({preventScroll:true});return}if(!current?.phone){$('#orderMsg').textContent='Acest restaurant nu a activat comenzile online.';return}if(!orderOpen(current)){$('#orderMsg').textContent='Meniul zilei este indisponibil.';return}if(!hasMinimumMenu()){$('#orderMsg').textContent='Comanda minimă este de '+(current?.min_full_menus||1)+' meniu complet.';return}const details=Object.fromEntries(new FormData(form));details.payment=current?.card?(details.payment||'Cash'):'Cash';details.full_name=String(details.full_name||'').trim();details.phone=String(details.phone||'').trim();details.address=String(details.address||'').trim();if(current.delivery===false)details.method='Ridicare';if(details.full_name.length<3||!validCustomerPhone(details.phone)||(details.method!=='Ridicare'&&!details.address)){$('#orderMsg').textContent='Completează numele, telefonul și adresa pentru livrare.';return}if(details.method==='Ridicare')details.address='';
+form.onsubmit=async e=>{e.preventDefault();if(submittingOrder)return;if(!checkoutLayer.open){openCheckoutPanel();return;}if(!form.reportValidity()){const target=[...form.elements].find(field=>field.willValidate&&!field.validity.valid);target?.focus({preventScroll:true});return}if(!current?.phone){$('#orderMsg').textContent='Acest restaurant nu a activat comenzile online.';return}if(!orderOpen(current)){$('#orderMsg').textContent='Meniul zilei este indisponibil.';return}if(!hasMinimumMenu()){$('#orderMsg').textContent=minimumOrderText();return}const details=Object.fromEntries(new FormData(form));details.payment=current?.card?(details.payment||'Cash'):'Cash';details.full_name=String(details.full_name||'').trim();details.phone=String(details.phone||'').trim();details.address=String(details.address||'').trim();if(current.delivery===false)details.method='Ridicare';if(details.full_name.length<3||!validCustomerPhone(details.phone)||(details.method!=='Ridicare'&&!details.address)){$('#orderMsg').textContent='Completează numele, telefonul și adresa pentru livrare.';return}if(details.method==='Ridicare')details.address='';
 // The button itself initiates the WhatsApp order; no extra confirmation dialog.
 orderNoticeAccepted=true;
 submittingOrder=true;$('#send').disabled=true;
