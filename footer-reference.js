@@ -76,7 +76,12 @@ faq:['Întrebări frecvente','<p><strong>Cum comand?</strong> Alegi restaurantul
   const brand = document.createElement('section');
   brand.className = 'pf-photo-brand';
   art.prepend(brand);
-  detail(brand,[42,311,361,155],'Meniul zilei · Ieșire în oraș · Evenimente. Descoperă locurile, gusturile și evenimentele care aduc orașul mai aproape de tine.');
-  detail(brand,[63,261,330,39],'Slobozia');
   detail(brand,[112,137,241,110],'PONT');
+  const source = art.parentElement.querySelector('.pfm-brand');
+  for (const [selector, name] of [['.pfm-location','city'], ['.pfm-services','services'], ['p','description']]) {
+    const line = document.createElement('span');
+    line.className = 'pf-photo-' + name;
+    line.textContent = source.querySelector(selector).textContent;
+    brand.append(line);
+  }
 })();
