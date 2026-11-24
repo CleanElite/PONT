@@ -1687,7 +1687,7 @@ body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{
     <label>Localitate<input name="locality" maxlength="80" required></label>
     <label>Restaurant / locație<input name="venue" maxlength="120" required></label>
     <label>Telefon rezervări<input name="contact_phone" maxlength="32" required></label>
-    <label class="wide">Schimbă fotografia afișului<input id="pontCityAsPosterFile" type="file" accept="image/*"></label>
+    <label class="wide">Schimbă fotografia afișului<input id="pontCityAsPosterFile" type="file" accept="image/*,.heic,.heif,.avif,.tif,.tiff,.bmp,.gif,.jpg,.jpeg,.png,.webp,.svg,.ico,.jfif,.dng,.raw"></label>
     <img id="pontCityAsPosterPreview" class="wide" alt="Previzualizare afiș" hidden style="max-width:100%;max-height:240px;object-fit:contain;border-radius:12px"><p id="pontCityAsPosterUploadStatus" class="wide" role="status"></p>
     <label class="wide">Link afiș (completat automat după încărcare)<input name="poster_url" type="url" maxlength="700" placeholder="https://..."></label>
     <label class="wide">Descriere<textarea name="description" maxlength="1200"></textarea></label>
@@ -3764,12 +3764,12 @@ $('pontCityAsPosterFile').addEventListener('change',async event=>{
  const msg=$('pontCityAsPosterUploadStatus'),save=$('pontCityAsEditSave');
  const editing=pontCityAsEditingEvent;
  if(!editing?.restaurant_id){msg.textContent='Restaurantul evenimentului nu a fost identificat.';event.target.value='';return}
- if(file.type&&!file.type.startsWith('image/')){msg.textContent='Selectează o fotografie.';event.target.value='';return}
+
  const token=++pontCityAsPosterUploadSequence,editingId=editing.id;
  pontCityAsPosterUploading=true;save.disabled=true;msg.textContent='Se încarcă fotografia afișului…';
  try{
   const url=URL.createObjectURL(file);let blob;
-  try{const img=new Image();img.src=url;await img.decode();const scale=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.82));if(!blob||blob.size>2097152)throw Error('Fotografia nu a putut fi comprimată.');}finally{URL.revokeObjectURL(url)}
+  try{const img=new Image();img.src=url;try{await img.decode()}catch(decodeError){if(!/\.(heic|heif)$/i.test(file.name)&&!/heic|heif/i.test(file.type))throw Error('Formatul nu poate fi decodat de acest browser.');const {default:heic2any}=await import('https://esm.sh/heic2any@0.0.4');const converted=await heic2any({blob:file,toType:'image/jpeg',quality:0.85});const convertedUrl=URL.createObjectURL(Array.isArray(converted)?converted[0]:converted);try{img.src=convertedUrl;await img.decode()}finally{URL.revokeObjectURL(convertedUrl)}}const scale=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.82));if(!blob||blob.size>2097152)throw Error('Fotografia nu a putut fi comprimată.');}finally{URL.revokeObjectURL(url)}
   if(token!==pontCityAsPosterUploadSequence)return;
   const key=editing.restaurant_id+'/events/'+crypto.randomUUID()+'.jpg';
   const {error}=await db.storage.from('pont-dish-images').upload(key,blob,{contentType:'image/jpeg',upsert:false,cacheControl:'31536000'});
