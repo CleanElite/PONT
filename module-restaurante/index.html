@@ -9,4 +9,28 @@ document.querySelectorAll('[data-module]').forEach(button=>button.onclick=async(
 document.getElementById('logout').onclick=async()=>{if(db)await db.auth.signOut();location.replace('../login/')};
 try{if(!cfg.url||!cfg.anonKey)throw Error('Conexiunea PONT nu este configurată.');const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');db=createClient(cfg.url,cfg.anonKey);await check()}catch(e){panel.hidden=false;errorEl.textContent=e.message}
 </script><script src="../pont-date-display.js?v=dmy-20261116" defer></script><link rel="stylesheet" href="../admin-neon.css?v=20261116-neon9">
-<link rel="stylesheet" media="screen and (min-width:1200px)" href="../pont-desktop-2026.css?v=20261118-desktop1"><link rel="stylesheet" media="screen and (min-width:1200px)" href="./desktop-selection.css?v=wider-framing-1"></body></html>
+<link rel="stylesheet" media="screen and (min-width:1200px)" href="../pont-desktop-2026.css?v=20261118-desktop1"><link rel="stylesheet" media="screen and (min-width:1200px)" href="./desktop-selection.css?v=wider-framing-1"><style id="pont-mobile-selector-premium">
+@media(max-width:699px){
+body.restaurant-selector{padding:20px 16px!important;min-height:100dvh;background:radial-gradient(ellipse at 10% 0%,#0c363b 0%,#04191c 35%,#020e12 78%)!important;display:grid!important;place-items:center!important}
+body.restaurant-selector #panel{position:relative;isolation:isolate;overflow:hidden;width:100%!important;max-width:480px!important;margin:0!important;padding:clamp(22px,6vw,32px) 12px 30px!important;border:1px solid transparent!important;border-radius:29px!important;background:linear-gradient(145deg,#03191c,#06282b 44%,#031316 85%) padding-box,linear-gradient(145deg,#ffe2a0,#b47b2e 22%,#70f4ee 50%,#e7b35d 78%,#fff0b4) border-box!important;box-shadow:0 0 18px #e9bd5733,0 0 25px #00d5cc18!important}
+body.restaurant-selector #panel:before,body.restaurant-selector #panel:after{content:"";position:absolute;pointer-events:none;left:10%;right:10%;height:2px;background:linear-gradient(90deg,transparent,#e8b04c,#fff5c4,#e8b04c,transparent);box-shadow:0 0 13px #ffc45a;z-index:2}
+body.restaurant-selector #panel:before{top:0}body.restaurant-selector #panel:after{bottom:0}
+body.restaurant-selector #panel header{display:block!important;text-align:center!important;margin:0 0 16px!important;padding:0!important;border:0!important;background:none!important}
+body.restaurant-selector #panel header strong{display:block!important;width: min(62%,240px);height:clamp(70px,22vw,100px);margin:auto;font-size:0!important;background:url('../meniul-zilei/showcase/pont-wordmark.webp') center/contain no-repeat!important;filter:drop-shadow(0 0 8px #3be3ee44)}
+body.restaurant-selector #restaurant{font:600 clamp(17px,5vw,22px)/1.3 Georgia,serif!important;color:#f9f3e5!important;margin:10px 0 0!important;overflow-wrap:anywhere}
+body.restaurant-selector #restaurant:before,body.restaurant-selector #restaurant:after{content:"✦";color:#dcb66d;font-size:12px;margin:0 10px}
+body.restaurant-selector #panel h1{font:600 clamp(20px,5.8vw,28px)/1.2 Georgia,serif!important;color:#f9f3e5!important;margin:20px 0 23px!important;text-align:center!important}
+body.restaurant-selector #panel h1:after{content:"";display:block;width:72%;height:1px;margin:15px auto 0;background:linear-gradient(90deg,transparent,#dcb66d,#fff1bb,#dcb66d,transparent)}
+body.restaurant-selector #panel .choices{display:grid!important;gap:12px!important}
+body.restaurant-selector #panel .choice{position:relative;isolation:isolate;overflow:hidden;display:grid!important;grid-template-columns:42% minmax(0,1fr) 16px;align-items:center;gap:7px!important;min-height:clamp(88px,25vw,120px);padding:0 10px 0 0!important;border:1px solid transparent!important;border-radius:19px!important;background:linear-gradient(110deg,#041719,#092b2e) padding-box,linear-gradient(110deg,#d5a351,#6ce7e3,#ffe0a0,#a76a28) border-box!important;box-shadow:0 0 12px #e9bd5720!important;text-align:center!important}
+body.restaurant-selector #panel .choice:before{content:"";height:100%;align-self:stretch;grid-column:1;grid-row:1;background-position:center;background-size:cover;mask-image:linear-gradient(90deg,#000 75%,transparent);-webkit-mask-image:linear-gradient(90deg,#000 75%,transparent)}
+body.restaurant-selector #panel .choice[data-module="menu"]:before{background-image:url('../assets/choice-lunch.webp')}
+body.restaurant-selector #panel .choice[data-module="city"]:before{background-image:url('../assets/choice-evening.webp')}
+body.restaurant-selector #panel .choice strong{grid-column:2;grid-row:1;font:600 clamp(16px,5vw,23px)/1.15 Georgia,serif!important;color:#fff7e9!important;white-space:normal}
+body.restaurant-selector #panel .choice span{grid-column:3;grid-row:1;color:#e7bd72!important;font-size:28px!important;line-height:1}
+body.restaurant-selector #panel .footer{margin:24px 0 0!important;text-align:center!important}
+body.restaurant-selector #logout{display:inline-flex!important;align-items:center;gap:9px;padding:10px 22px!important;border:1px solid #d6ad62!important;border-radius:999px!important;background:linear-gradient(145deg,#102a2a,#041215)!important;color:#fff4df!important;font:600 17px Georgia,serif!important;box-shadow:0 0 12px #e9bd5729!important}
+body.restaurant-selector #logout:before{content:"↪";font:700 23px system-ui;color:#e7bd72}
+body.restaurant-selector #error:empty{display:none!important}
+}
+</style></body></html>
