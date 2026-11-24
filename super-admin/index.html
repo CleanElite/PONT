@@ -1687,8 +1687,8 @@ body.pont-admin .pont-as-confirm-dialog .pont-as-confirm-actions button.primary{
     <label>Localitate<input name="locality" maxlength="80" required></label>
     <label>Restaurant / locație<input name="venue" maxlength="120" required></label>
     <label>Telefon rezervări<input name="contact_phone" maxlength="32" required></label>
-    <label class="wide">Adaugă fotografie afiș (JPG, PNG, WebP — max. 2 MB)<input id="pontCityAsPosterFile" type="file" accept="image/jpeg,image/png,image/webp"></label>
-    <p id="pontCityAsPosterUploadStatus" class="wide" role="status"></p>
+    <label class="wide">Schimbă fotografia afișului<input id="pontCityAsPosterFile" type="file" accept="image/*"></label>
+    <img id="pontCityAsPosterPreview" class="wide" alt="Previzualizare afiș" hidden style="max-width:100%;max-height:240px;object-fit:contain;border-radius:12px"><p id="pontCityAsPosterUploadStatus" class="wide" role="status"></p>
     <label class="wide">Link afiș (completat automat după încărcare)<input name="poster_url" type="url" maxlength="700" placeholder="https://..."></label>
     <label class="wide">Descriere<textarea name="description" maxlength="1200"></textarea></label>
     <label class="wide">Motivul editării AS<textarea name="as_reason" required maxlength="1000"></textarea></label><div class="wide pont-city-as-edit-buttons"><button id="pontCityAsEditCancel" type="button">Anulează</button><button id="pontCityAsEditSave" class="primary" type="submit">Salvează modificările</button></div>
@@ -3751,7 +3751,7 @@ function pontCityAsEdit(e){
  for(const k of ['title','event_date','start_time','locality','venue','contact_phone','poster_url','description']){
   form.elements[k].value=k==='start_time'?String(e[k]||'').slice(0,5):String(e[k]||'');
  }
- $('pontCityAsPosterFile').value='';
+ $('pontCityAsPosterFile').value='';const preview=$('pontCityAsPosterPreview');preview.hidden=!e.poster_url;preview.src=e.poster_url||'';
  $('pontCityAsPosterUploadStatus').textContent='';
  $('pontCityAsEditSave').disabled=false;
  $('pontCityAsEditStatus').textContent='';
@@ -3764,17 +3764,20 @@ $('pontCityAsPosterFile').addEventListener('change',async event=>{
  const msg=$('pontCityAsPosterUploadStatus'),save=$('pontCityAsEditSave');
  const editing=pontCityAsEditingEvent;
  if(!editing?.restaurant_id){msg.textContent='Restaurantul evenimentului nu a fost identificat.';event.target.value='';return}
- if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>2097152){msg.textContent='Selectează JPG, PNG sau WebP de maximum 2 MB.';event.target.value='';return}
+ if(file.type&&!file.type.startsWith('image/')){msg.textContent='Selectează o fotografie.';event.target.value='';return}
  const token=++pontCityAsPosterUploadSequence,editingId=editing.id;
  pontCityAsPosterUploading=true;save.disabled=true;msg.textContent='Se încarcă fotografia afișului…';
  try{
-  const ext=file.type==='image/png'?'png':file.type==='image/webp'?'webp':'jpg';
-  const key=editing.restaurant_id+'/events/'+crypto.randomUUID()+'.'+ext;
-  const {error}=await db.storage.from('pont-dish-images').upload(key,file,{contentType:file.type,upsert:false,cacheControl:'31536000'});
+  const url=URL.createObjectURL(file);let blob;
+  try{const img=new Image();img.src=url;await img.decode();const scale=Math.min(1,1600/Math.max(img.naturalWidth,img.naturalHeight));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(img.naturalWidth*scale));canvas.height=Math.max(1,Math.round(img.naturalHeight*scale));const ctx=canvas.getContext('2d');ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(img,0,0,canvas.width,canvas.height);blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',0.82));if(!blob||blob.size>2097152)throw Error('Fotografia nu a putut fi comprimată.');}finally{URL.revokeObjectURL(url)}
+  if(token!==pontCityAsPosterUploadSequence)return;
+  const key=editing.restaurant_id+'/events/'+crypto.randomUUID()+'.jpg';
+  const {error}=await db.storage.from('pont-dish-images').upload(key,blob,{contentType:'image/jpeg',upsert:false,cacheControl:'31536000'});
   if(error)throw error;
   if(token!==pontCityAsPosterUploadSequence||pontCityAsEditingEvent?.id!==editingId||!$('pontCityAsEditDialog').open)return;
   $('pontCityAsEditForm').elements.poster_url.value=db.storage.from('pont-dish-images').getPublicUrl(key).data.publicUrl;
-  msg.textContent='Fotografia a fost încărcată. Linkul s-a completat automat; apasă Salvează modificările.';
+  const preview=$('pontCityAsPosterPreview');preview.src=$('pontCityAsEditForm').elements.poster_url.value;preview.hidden=false;
+  msg.textContent='Fotografia a fost încărcată. Apasă Salvează modificările.';
  }catch(error){if(token===pontCityAsPosterUploadSequence)msg.textContent='Încărcarea a eșuat: '+error.message}
  finally{if(token===pontCityAsPosterUploadSequence){pontCityAsPosterUploading=false;save.disabled=false}event.target.value=''}
 });
