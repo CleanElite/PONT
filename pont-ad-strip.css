@@ -1,0 +1,50 @@
+/* Sponsor artwork and movement are shared. Each page owns its strip placement. */
+[data-pont-ad] {
+  --ad-height: 38px;
+  height: var(--ad-height) !important;
+  min-height: var(--ad-height) !important;
+  max-height: var(--ad-height) !important;
+  box-sizing: border-box;
+  padding-block: 0 !important;
+}
+[data-pont-ad] .ad-window {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, black 2%, black 98%, transparent);
+}
+.ad-rail, .ad-message, .ad-brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+}
+.ad-rail { width: max-content; }
+.ad-message {
+  justify-content: center;
+  gap: 7px;
+  padding-inline: 14px;
+  color: #f2f3ef;
+  font: 550 12px/1 system-ui, sans-serif;
+  white-space: nowrap;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.ad-message::after {
+  content: "";
+  width: 18px;
+  height: 1px;
+  margin-inline-start: 12px;
+  background: linear-gradient(90deg, transparent, #caae74, transparent);
+}
+.ad-brand { gap: 2px; font-weight: 700; color: #73dcaa; }
+.ad-brand img { display: block; width: 30px; height: auto; }
+.ad-middle { width: 1px; height: 1em; background: #b6a27988; }
+@media (min-width: 1200px) {
+  [data-pont-ad] { --ad-height: 52px; }
+  .ad-message { gap: 10px; font-size: 15px; padding-inline: 22px; }
+  .ad-message::after { width: 32px; margin-inline-start: 20px; }
+  .ad-brand img { width: 37px; }
+}
