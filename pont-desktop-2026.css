@@ -644,3 +644,13 @@
   margin:5px auto 0!important;text-align:center!important;
  }
 }
+
+@media screen and (min-width:1200px){
+ /* A long page uses the document scrollbar. A modal owns scrolling while open. */
+ body.lunch.menu-showcase:not(.pont-restaurant-page):not(:has(dialog:modal)){overflow-x:clip}
+ html:has(dialog:modal){overflow:hidden!important}
+ body.pont-admin #auctions .pont-auction-bid-history>div,
+ body.pont-admin #pontDailyDishes .pont-daily-scroll-list{
+  max-height:none!important;overflow:visible!important;
+ }
+}

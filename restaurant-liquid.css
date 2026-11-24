@@ -112,9 +112,6 @@
  #pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=promotion] #deskPromoFrame{display:block}
  #pontLiquid#pontLiquid#pontLiquid .pont-auction-notify:not([hidden]){display:flex;align-items:center}
 }
-@media screen and (min-width:1200px) and (min-height:630px){
- #pontLiquid#pontLiquid#pontLiquid #app>:is(#savedView,#dishLibrary,#contactView),#pontLiquid#pontLiquid#pontLiquid #app[data-desk-mode=editor] #addView,#pontLiquid#pontLiquid#pontLiquid .pont-ar-city-content{max-height:calc(100svh - clamp(72px,11svh,112px) - 66px);overflow:auto;scrollbar-width:thin;scrollbar-color:#376567 #062024}
-}
 #pontLiquid#pontLiquid#pontLiquid .admin-nav :is(button,a){flex-direction:row!important;flex:0 0 auto!important}
 
 @media screen and (min-width:1200px){
