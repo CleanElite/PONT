@@ -4,7 +4,6 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
-  actions: read
   contents: write
   pages: write
   id-token: write
@@ -44,6 +43,7 @@ jobs:
             git push origin HEAD:main
           fi
       - name: Upload site
+        id: bundle
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
@@ -63,18 +63,29 @@ jobs:
             cat /tmp/pont-pages-cancel.json
             exit 1
           fi
-      - name: Wait for Pages artifact metadata
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          for attempt in {1..30}; do
-            count=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?name=github-pages-$GITHUB_RUN_ATTEMPT" --jq '.artifacts | length')
-            if [ "$count" = 1 ]; then exit 0; fi
-            sleep 2
-          done
-          exit 1
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/github-script@v8
+        env:
+          ARTIFACT_ID: ${{ steps.bundle.outputs.artifact_id }}
         with:
-          artifact_name: github-pages-${{ github.run_attempt }}
+          script: |
+            const repo = context.repo;
+            const token = await core.getIDToken();
+            core.setSecret(token);
+            const {data} = await github.request('POST /repos/{owner}/{repo}/pages/deployments', {
+              ...repo, artifact_id: Number(process.env.ARTIFACT_ID),
+              pages_build_version: context.sha, oidc_token: token
+            });
+            core.setOutput('page_url', data.page_url);
+            for (let poll = 0; poll < 120; poll++) {
+              const result = await github.request('GET /repos/{owner}/{repo}/pages/deployments/{deployment_id}', {
+                ...repo, deployment_id: data.id
+              });
+              if (result.data.status === 'succeed') return;
+              if (['errored', 'deployment_failed', 'deployment_content_failed', 'cancelled'].includes(result.data.status)) {
+                throw new Error('Pages deployment: ' + result.data.status);
+              }
+              await new Promise(resolve => setTimeout(resolve, 5000));
+            }
+            throw new Error('Timed out waiting for Pages deployment ' + data.id);
