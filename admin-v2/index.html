@@ -433,14 +433,14 @@ setPanelOpening(true);
 #contactView .pont-price-min-combined #pontOpStatus{grid-column:1/-1!important;grid-row:4!important}
 #contactView .pont-price-min-combined #pontOpMin{min-height:37px!important;margin:0!important}
 @media(max-width:370px){#contactView .pont-price-min-combined{column-gap:7px!important}#contactView .pont-price-min-combined>.pont-settings-price h3,#contactView .pont-price-min-combined>h3{font-size:12px!important}}
-</style><section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section><section id="contactView" class="card" hidden><h2>Setări restaurant</h2><form id="contactForm"><label id="contactRestaurantField">Restaurant<select id="contactRestaurant" required></select></label><p id="contactRestaurantName" hidden></p><div class="contact-phone-view" id="contactPhoneView"><span>Telefon comenzi · Apel și WhatsApp</span><div class="contact-phone-line"><strong id="contactPhoneDisplay">Neconfigurat</strong><button type="button" id="editContactPhone">Modifică</button></div></div><div id="contactPhoneEditor" hidden><label>Telefon comenzi (WhatsApp și apel)<input id="contactPhone" type="tel" placeholder="+407..." required></label><div class="contact-edit-actions"><button class="primary" type="submit" id="saveContactPhone">Salvează modificările</button><button type="button" id="cancelContactPhone">Anulează</button></div></div></form><div class="contact-card-settings pont-settings-price"><h3>Preț meniu complet</h3><div class="pont-settings-price-row"><label for="restaurantMenuPrice"><input id="restaurantMenuPrice" type="number" min="0.01" max="10000" step="0.01" inputmode="decimal" placeholder="30" aria-label="Preț meniu complet în lei"><span>lei</span></label><button type="button" class="primary" id="saveRestaurantMenuPrice">Salvează</button></div></div><div class="contact-card-settings pont-settings-switches"><h3>Servicii și plată</h3><div class="pont-settings-switch-controls"><div class="pont-settings-switch-row"><label for="offersDelivery">Livrare comenzi</label><input type="checkbox" id="offersDelivery" aria-label="Livrare comenzi"><button type="button" id="saveDeliverySettings" class="primary" hidden>Salvează livrarea</button></div><div class="pont-settings-switch-row"><label for="acceptsCard">Plată cu cardul</label><input type="checkbox" id="acceptsCard" aria-label="Plată cu cardul"><button type="button" id="saveCardSettings" class="primary" hidden>Salvează metodele de plată</button></div></div><small class="pont-settings-autosave-note">Verifică modificările și folosește butonul de salvare al fiecărei secțiuni, dacă este afișat.</small></div>
+</style><section id="dishLibrary" aria-label="Biblioteca de preparate" hidden></section><section id="contactView" class="card" hidden><h2>Setări restaurant</h2><form id="contactForm"><label id="contactRestaurantField">Restaurant<select id="contactRestaurant" required></select></label><p id="contactRestaurantName" hidden></p><div class="contact-phone-view" id="contactPhoneView"><span>Telefon comenzi<span class="phone-divider"> · </span><span class="phone-subtitle">Apel și WhatsApp</span></span><div class="contact-phone-line"><strong id="contactPhoneDisplay">Neconfigurat</strong><button type="button" id="editContactPhone">Modifică</button></div></div><div id="contactPhoneEditor" hidden><label>Telefon comenzi (WhatsApp și apel)<input id="contactPhone" type="tel" placeholder="+407..." required></label><div class="contact-edit-actions"><button class="primary" type="submit" id="saveContactPhone">Salvează modificările</button><button type="button" id="cancelContactPhone">Anulează</button></div></div></form><div class="contact-card-settings pont-settings-price"><h3>Preț meniu complet</h3><div class="pont-settings-price-row"><label for="restaurantMenuPrice"><input id="restaurantMenuPrice" type="number" min="0.01" max="10000" step="0.01" inputmode="decimal" placeholder="30" aria-label="Preț meniu complet în lei"><span>lei</span></label><button type="button" class="primary" id="saveRestaurantMenuPrice">Salvează</button></div></div><div class="contact-card-settings pont-settings-switches"><h3>Servicii și plată</h3><div class="pont-settings-switch-controls"><div class="pont-settings-switch-row"><label for="offersDelivery">Livrare comenzi</label><input type="checkbox" id="offersDelivery" aria-label="Livrare comenzi"><button type="button" id="saveDeliverySettings" class="primary" hidden>Salvează livrarea</button></div><div class="pont-settings-switch-row"><label for="acceptsCard">Plată cu cardul</label><input type="checkbox" id="acceptsCard" aria-label="Plată cu cardul"><button type="button" id="saveCardSettings" class="primary" hidden>Salvează metodele de plată</button></div></div><small class="pont-settings-autosave-note">Verifică modificările și folosește butonul de salvare al fiecărei secțiuni, dacă este afișat.</small></div>
 <details class="contact-card-settings pont-password-settings pont-password-collapsible"><summary>Schimbă parola contului</summary><div class="pont-password-collapsible-content">
 <h3>Schimbă parola contului</h3>
 <p>Parola este personală. O poți schimba din contul tău autentificat.</p>
 <form id="restaurantSelfPasswordForm" autocomplete="on">
 <label for="selfNewPassword">Parola nouă<input id="selfNewPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128" aria-describedby="selfPasswordHint"></label>
 <label for="selfConfirmPassword">Confirmă parola nouă<input id="selfConfirmPassword" type="password" autocomplete="new-password" required minlength="12" maxlength="128"></label>
-<small id="selfPasswordHint">Minimum 12 caractere. Folosește o parolă unică, greu de ghicit.</small>
+<small id="selfPasswordHint"><span>Minimum 12 caractere.</span> <span>Folosește o parolă unică,</span> <span>greu de ghicit.</span></small>
 <p id="selfPasswordFeedback" role="status" aria-live="polite"></p>
 <button type="submit" class="primary" id="selfPasswordSubmit">Schimbă parola</button>
 </form>
@@ -1361,7 +1361,49 @@ body.pont-admin.pont-admin--restaurant #app #pontTodayMenu button.pont-today-exh
  #pontLiquid #app #pontDailySummaryList .pont-editor-dish-name{min-width:0;overflow-wrap:anywhere}
 
 }
-</style><script defer src="../restaurant-liquid.js?v=3"></script><style id="pont-mobile-builder-row-fix-20261123">
+</style><script defer src="../restaurant-liquid.js?v=3"></script><link rel="stylesheet" media="screen and (min-width:1200px)" href="desktop-settings.css?v=1">
+<script>
+(() => {
+ const desktop = matchMedia('screen and (min-width:1200px)');
+ const panel = document.querySelector('#contactView .pont-password-collapsible');
+ const fields = [...panel.querySelectorAll('input[type=password]')];
+ let previousOpen = panel.open;
+ const controls = fields.map(input => {
+   const button = document.createElement('button');
+   button.type = 'button';
+   button.className = 'password-visibility';
+   button.setAttribute('aria-controls',input.id);
+   button.setAttribute('aria-label',input.id === 'selfNewPassword' ? 'Arată parola nouă' : 'Arată confirmarea parolei');
+   button.setAttribute('aria-pressed','false');
+   button.onclick = () => {
+     const reveal = input.type === 'password';
+     input.type = reveal ? 'text' : 'password';
+     button.setAttribute('aria-pressed',String(reveal));
+   };
+   return button;
+ });
+ function syncLayout(){
+   if(desktop.matches) {
+     previousOpen = panel.open;
+     panel.open = true;
+     fields.forEach((input,i) => {
+       input.placeholder = i ? 'Reintrodu parola nouă' : 'Introdu parola nouă';
+       input.after(controls[i]);
+     });
+   } else {
+     panel.open = previousOpen;
+     fields.forEach((input,i) => {
+       input.type = 'password';
+       input.removeAttribute('placeholder');
+       controls[i].setAttribute('aria-pressed','false');
+       controls[i].remove();
+     });
+   }
+ }
+ desktop.addEventListener('change',syncLayout);
+ syncLayout();
+})();
+</script><style id="pont-mobile-builder-row-fix-20261123">
 @media screen and (max-width:699px){
  body.pont-admin.pont-admin-neon #app #pontDailyBuilder .pont-dish-actions{
  display:grid!important;grid-template-columns:minmax(0,.8fr) minmax(0,1.3fr) minmax(0,1.3fr)!important;gap:6px!important;align-items:stretch!important;width:100%!important;
