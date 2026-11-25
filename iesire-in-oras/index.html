@@ -739,7 +739,23 @@ body.lunch .pont-sal-pictogram{display:flex!important;width:68px!important;heigh
  </div><div class="pfm-bottom">© 2026 PONT. Toate drepturile rezervate.</div>
  <dialog class="pfm-dialog" aria-label="Asistență PONT"><button type="button" class="pfm-close" aria-label="Închide">×</button><h2 class="pfm-dialog-title"></h2><div class="pfm-dialog-content"></div></dialog>
 </footer>
-<dialog class="event-dialog" id="eventDetails" aria-labelledby="eventDetailsTitle"><button type="button" class="event-dialog-close" aria-label="Închide">×</button><img id="eventDetailsPoster" alt="Afișul evenimentului" hidden><h2 id="eventDetailsTitle"></h2><p class="event-dialog-meta" id="eventDetailsMeta"></p><p id="eventDetailsDescription"></p><a id="eventDetailsPhone" class="event-primary-action" hidden>Sună pentru rezervări</a></dialog>
+<dialog class="event-dialog" id="eventDetails" aria-labelledby="eventDetailsTitle">
+ <button type="button" class="event-dialog-close" aria-label="Închide">×</button>
+ <img id="eventDetailsPoster" alt="Afișul evenimentului" hidden>
+ <div class="event-details-copy">
+  <div class="event-details-kind"><span>Eveniment local</span></div>
+  <h2 id="eventDetailsTitle"></h2>
+  <p class="event-dialog-meta" id="eventDetailsMeta"></p>
+  <dl class="event-details-facts">
+   <div class="event-date-fact"><dt>Data</dt><dd></dd></div>
+   <div class="event-time-fact"><dt>Ora</dt><dd></dd></div>
+   <div class="event-location-fact"><dt>Locație</dt><dd></dd></div>
+   <div class="event-venue-fact"><dt>Locul desfășurării</dt><dd></dd></div>
+  </dl>
+  <p id="eventDetailsDescription"></p>
+  <a id="eventDetailsPhone" class="event-primary-action" hidden>Sună pentru rezervări</a>
+ </div>
+</dialog>
 <script src="../super-admin/config.js"></script><script src="../compact-date-picker.js?v=global-dmy-20261116" defer></script>
 <script type="module">
 const $=id=>document.getElementById(id);
@@ -824,17 +840,29 @@ function renderEvents(events){
    eyebrow.append(premium,badge);copy.append(eyebrow,name,meta);
   }else{const eyebrow=document.createElement('span');eyebrow.className='pont-event-standard-eyebrow';if(event.id?.startsWith('pont-test-')){const t=document.createElement('span');t.className='pont-city-sponsored-label';t.textContent='TEST';eyebrow.append(t)}eyebrow.append(badge);copy.append(eyebrow,name,meta)}if(img)button.append(backdrop,img);button.append(copy);
   const action=document.createElement('span');action.className='city-details';action.textContent='Vezi detalii　›';copy.append(action);
-  button.addEventListener('click',()=>showDetails(event));outer.append(button);list.append(outer);
+  button.addEventListener('click',()=>showDetails(event,posterSource));outer.append(button);list.append(outer);
  }
 }
-function showDetails(event){
- const poster=$('eventDetailsPoster');poster.hidden=true;poster.removeAttribute('src');poster.onerror=()=>{poster.hidden=true};if(event.poster_url&&/^https:\/\//i.test(event.poster_url)){poster.src=event.poster_url;poster.hidden=false;}
+function showDetails(event, cardPoster){
+ const poster=$('eventDetailsPoster');
+ const source=event.poster_url && /^https:\/\//i.test(event.poster_url) ? event.poster_url :
+  typeof cardPoster==='string' && /^(https:\/\/|\.\.\/assets\/)/i.test(cardPoster) ? cardPoster : '';
+ poster.hidden=!source;
+ poster.onerror=()=>{poster.hidden=true;poster.removeAttribute('src')};
+ if(source)poster.src=source;else poster.removeAttribute('src');
+ const restaurant=eventRestaurantName(event);
+ const facts=[escDate(event.event_date),String(event.start_time||'').slice(0,5),
+  [restaurant,event.locality].filter(Boolean).join(', '),event.venue!==restaurant?event.venue:''];
+ eventDialog.querySelectorAll('.event-details-facts dd').forEach((field,index)=>{
+  field.textContent=facts[index]||'';
+  field.parentElement.hidden=!facts[index];
+ });
  $('eventDetailsTitle').textContent=event.title;
  $('eventDetailsMeta').textContent=escDate(event.event_date)+' · '+String(event.start_time).slice(0,5)+' · '+eventRestaurantName(event)+', '+event.locality+(event.venue&&event.venue!==eventRestaurantName(event)?' · '+event.venue:'');
  $('eventDetailsDescription').textContent=(event.description||'Pentru detalii și rezervări, contactează direct organizatorul.');
  const phone=String(event.contact_phone||'').trim();const link=$('eventDetailsPhone');
  const dial=phone.replace(/[^+\d]/g,'');
- link.hidden=String(event.description||'').includes('[EVENIMENT TEST]')||!/^\+?\d{7,15}$/.test(dial);if(!link.hidden)link.href='tel:'+dial;
+ link.hidden=String(event.description||'').includes('[EVENIMENT TEST]')||!/^\+?\d{7,15}$/.test(dial);if(!link.hidden)link.href='tel:'+dial;else link.removeAttribute('href');
  eventDialog.showModal();
 }
 async function loadEvents(){
@@ -1275,6 +1303,7 @@ body #eventList .event-tile > .event-card .pont-event-poster-fill{opacity:0!impo
 body #eventList .event-tile > .event-card::after{background:linear-gradient(90deg,#04171c 0%,#04171cf5 25%,#04171cb0 43%,#04171c30 62%,transparent 78%)!important}
 body #eventList .event-tile > .event-card .menu-card-copy{position:relative;z-index:3;text-shadow:0 1px 4px #001014}
 </style><style id="pont-event-full-details">
+.event-details-kind,.event-details-facts{display:none}
 body dialog#eventDetails{box-sizing:border-box;width:min(92vw,620px)!important;max-width:620px!important;max-height:88dvh!important;overflow-y:auto!important;padding:18px!important;border:1px solid #a88b50;border-radius:20px;background:#08252a;color:#fff}
 body #eventDetailsPoster{display:block;width:100%;height:auto;max-height:55dvh;object-fit:contain;background:#031417;border-radius:12px;margin:16px 0}
 body #eventDetailsPoster[hidden]{display:none!important}
@@ -1282,4 +1311,4 @@ body #eventDetails .event-dialog-close{position:sticky;top:0;float:right;z-index
 body #eventDetailsTitle{clear:both;overflow-wrap:anywhere}
 body #eventDetailsDescription{white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.55}
 body #eventDetailsPhone:not([hidden]){display:flex;justify-content:center;margin-top:16px}
-</style></body><link rel="stylesheet" href="../footer-reference.css?v=9"><script defer src="../footer-reference.js?v=5"></script></html>
+</style><link rel="stylesheet" media="screen and (min-width:1200px)" href="event-dialog.css?v=1"></body><link rel="stylesheet" href="../footer-reference.css?v=9"><script defer src="../footer-reference.js?v=5"></script></html>
