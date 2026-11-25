@@ -6,6 +6,18 @@
 <meta name="theme-color" content="#02191c">
 
 <title>PONT te scoate în oraș · Evenimente</title>
+<style>
+/* Paint the canvas and safe areas even when the showcase stylesheet or gradient is unavailable. */
+html {min-height:100%;background-color:#02191c;color-scheme:dark}
+body.lunch.menu-showcase.pont-events-page {min-height:100vh;min-height:100dvh;background-color:#02191c!important;color:#f8fcfb}
+@media (max-width:1199px) {
+ body.lunch.menu-showcase.pont-events-page {
+  background-size:100% 100vh!important;
+  background-position:top center,bottom center!important;
+  background-repeat:no-repeat!important;
+ }
+}
+</style>
 <style id="pont-city-events-cls-reserve-20261117">
 #eventList.pont-events-loading{min-height:clamp(680px,90svh,1050px);align-content:start}
 #eventList .pont-event-loading{display:flex;align-items:center;justify-content:center;min-height:120px;border:1px solid rgba(153,211,194,.34);border-radius:14px;background:linear-gradient(115deg,#0b3035,#123e3e 50%,#0b3035);color:#c9e0d8;font:600 12px/1.5 system-ui;letter-spacing:.025em}
