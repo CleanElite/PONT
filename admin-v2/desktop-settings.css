@@ -3,79 +3,105 @@
   --edge: #387b7d;
   --surface: linear-gradient(115deg,#093437,#021b1e 57%,#042629);
   --accent: #ffcf72;
-  --pad: clamp(16px,1.75vw,32px);
+  --pad: clamp(12px,1.35vw,22px);
+  --section-gap: clamp(5px,1svh,10px);
   container-type: inline-size;
-  padding: 12px var(--pad) 22px!important;
+  padding: 8px var(--pad) 10px!important;
   background: var(--header-flare) top right / min(53%,740px) auto no-repeat,#031a1d!important;
   color:#faf9f4;
   font-family:system-ui,sans-serif;
 
-  & > h2, & #contactRestaurantName {padding-left:clamp(64px,5.3vw,86px)!important;text-align:left}
-  & > h2 {position:relative;font:750 clamp(24px,2vw,38px)/1.15 system-ui!important;margin:0!important}
+  & > h2, & #contactRestaurantName {padding-left:clamp(48px,4vw,64px)!important;text-align:left}
+  & > h2 {position:relative;font:750 clamp(21px,2.9svh,27px)/1.15 system-ui!important;margin:0!important}
   & > h2::before, & #contactPhoneView>span::before, & .pont-price-min-combined h3::before,
   & .pont-password-collapsible-content>h3::before {
-    content:"";display:block;flex:none;width:clamp(42px,3.8vw,62px);aspect-ratio:1;border:1px solid #327170;
+    content:"";display:block;flex:none;width:clamp(33px,5.3svh,46px);aspect-ratio:1;border:1px solid #327170;
     border-radius:15px;background:var(--icon) center/55% no-repeat,#082b2d;box-shadow:inset 0 0 12px #69dfda25;
   }
   & > h2::before {--icon:var(--settings);position:absolute;left:0;top:0;border-radius:35%}
-  & #contactRestaurantName {font-size:clamp(15px,1.15vw,21px)!important;color:var(--accent);margin:4px 0 18px!important}
+  & #contactRestaurantName {font-size:clamp(14px,1.9svh,17px)!important;color:var(--accent);margin:2px 0 var(--section-gap)!important}
   & #contactForm {margin:0!important}
   & :is(#contactPhoneView,#contactPhoneEditor,.pont-settings-switches,.pont-password-collapsible) {
     border:1px solid var(--edge)!important;border-radius:18px!important;background:var(--surface)!important;
-    padding:clamp(13px,1.25vw,24px) var(--pad)!important;box-shadow:inset 0 2px 6px #74e4ce17!important;
+    padding:clamp(5px,1svh,10px) var(--pad)!important;box-shadow:inset 0 2px 6px #74e4ce17!important;
   }
   & #contactPhoneView:not([hidden]) {display:flex!important;align-items:center;gap:var(--pad)}
   & #contactPhoneView>span {position:relative;padding:4px var(--pad) 4px clamp(57px,5.5vw,90px);border-right:1px solid #316364;font-size:17px!important;font-weight:700;color:#faf9f4}
   & #contactPhoneView>span::before {--icon:var(--phone);position:absolute;left:0;top:50%;transform:translateY(-50%);box-shadow:inset 0 0 15px #e8ac473b}
   & .phone-divider {display:none}
   & .phone-subtitle {display:block;font-size:14px;font-weight:400;color:#c2d8d6}
-  & #contactPhoneView {padding-block:9px!important;min-height:75px!important}
+  & #contactPhoneView {padding-block:4px!important;min-height:clamp(45px,7svh,60px)!important}
   & .contact-phone-line {flex:1;display:flex;justify-content:space-between;align-items:center}
-  & .contact-phone-line strong {font-size:clamp(20px,1.65vw,31px)!important}
+  & .contact-phone-line strong {font-size:clamp(18px,2.8svh,24px)!important}
   & #editContactPhone, & #pontOpSave, & #selfPasswordSubmit {display:inline-flex;align-items:center;justify-content:center;gap:9px}
-  & #editContactPhone {min-height:40px!important;padding:7px 14px!important;font-size:15px!important}
+  & #editContactPhone {min-height:32px!important;padding:4px 12px!important;font-size:15px!important}
   & :is(#editContactPhone,#pontOpSave,#selfPasswordSubmit,.pont-settings-switches>h3,.pont-settings-switch-row label,.pont-settings-autosave-note)::before,
   & #selfPasswordHint span::before {content:"";display:inline-block;flex:none;width:1.45em;height:1.45em;background:var(--icon) center/contain no-repeat}
   & #editContactPhone {--icon:var(--pencil)}
-  & .pont-price-min-combined {isolation:isolate;position:relative;display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;align-items:center;gap:0 1vw!important;padding:0!important;margin:16px 0 0!important;border:0!important;background:none!important;box-shadow:none!important}
+  & .pont-price-min-combined {isolation:isolate;position:relative;display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto;align-items:center;gap:0 1vw!important;padding:0!important;margin:var(--section-gap) 0 0!important;border:0!important;background:none!important;box-shadow:none!important}
   & .pont-price-min-combined::before {content:"";z-index:-1;grid-area:1/1/2/-1;align-self:stretch;border:1px solid var(--edge);border-radius:18px;background:var(--surface);box-shadow:inset 0 3px 7px #74e4ce20}
   & .pont-price-min-combined>.pont-settings-price {display:contents!important}
-  & .pont-price-min-combined h3 {display:flex;align-items:center;gap:clamp(9px,1.4vw,25px);font-size:16px!important;margin:0!important;padding:16px 0 16px var(--pad)}
+  & .pont-price-min-combined h3 {display:flex;align-items:center;gap:clamp(9px,1.4vw,25px);font-size:16px!important;margin:0!important;padding:var(--section-gap) 0 var(--section-gap) var(--pad)}
   & .pont-settings-price h3 {grid-area:1/1;--icon:var(--coins)}
   & .pont-price-min-combined>h3 {grid-area:1/3;--icon:var(--concierge-bell);border-left:1px solid #31585a}
   & .pont-settings-price-row {grid-area:1/2}
   & .pont-price-min-combined>label {grid-area:1/4}
   & .pont-settings-price-row label, & .pont-op-min-row {width:auto!important;display:flex!important;align-items:center;gap:10px;padding:0 var(--pad) 0 0!important;background:none!important;border:0!important;color:#f7f8ef}
-  & .pont-price-min-combined :is(#restaurantMenuPrice,#pontOpMin) {width:clamp(65px,7vw,135px)!important;max-width:none!important;min-height:43px!important;border:1px solid #4e9291!important;border-radius:11px!important;background:#041b1d!important;color:white!important;text-align:center;font-size:22px!important;padding:4px!important}
+  & .pont-price-min-combined :is(#restaurantMenuPrice,#pontOpMin) {width:clamp(65px,7vw,135px)!important;max-width:none!important;min-height:34px!important;border:1px solid #4e9291!important;border-radius:11px!important;background:#041b1d!important;color:white!important;text-align:center;font-size:19px!important;padding:4px!important}
   & #pontOpSave, & #selfPasswordSubmit {border:1px solid #d8aa54!important;border-radius:13px!important;background:linear-gradient(180deg,#755629,#443018 83%,#634a25)!important;color:#fff8e9!important;box-shadow:inset 0 0 10px #ffc35e40!important;font:700 16px/1.3 system-ui!important}
-  & #pontOpSave {--icon:var(--save);grid-area:2/1/3/-1!important;margin:16px 0 0!important;min-height:47px!important;gap:6px}
+  & #pontOpSave {--icon:var(--save);grid-area:2/1/3/-1!important;margin:var(--section-gap) 0 0!important;min-height:34px!important;gap:6px}
   & #pontOpSave::after {content:"setările"}
   & #pontOpStatus {grid-area:3/1/4/-1!important}
-  & .pont-settings-switches {display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:12px var(--pad);align-items:center;margin:18px 0 0!important}
-  & .pont-settings-switches>h3 {--icon:var(--credit-card);grid-column:1/-1;display:flex;align-items:center;gap:14px;font-size:21px!important;margin:0!important}
+  & .pont-settings-switches {display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:5px var(--pad);align-items:center;margin:var(--section-gap) 0 0!important}
+  & .pont-settings-switches>h3 {--icon:var(--credit-card);grid-column:1/-1;display:flex;align-items:center;gap:14px;font-size:18px!important;margin:0!important}
   & .pont-settings-switch-controls {display:grid;grid-template-columns:1fr 1fr;gap:var(--pad)!important}
-  & .pont-settings-switch-controls .pont-settings-switch-row {padding:10px 14px!important;flex-wrap:wrap;min-height:54px!important;background:#042529!important}
+  & .pont-settings-switch-controls .pont-settings-switch-row {padding:4px 10px!important;flex-wrap:wrap;min-height:38px!important;background:#042529!important}
   & .pont-settings-switch-row label {--icon:var(--truck);display:flex!important;align-items:center;gap:10px;font-size:15px!important}
   & .pont-settings-switch-row label[for=acceptsCard] {--icon:var(--credit-card)}
   & .pont-settings-switch-row input[type=checkbox] {appearance:auto!important;accent-color:#88ca12;background:revert!important;width:25px!important;min-width:25px!important;height:25px!important}
   & .pont-settings-switch-row input::before,& .pont-settings-switch-row input::after {display:none!important}
   & .pont-settings-autosave-note {--icon:var(--info);display:flex;align-items:center;gap:13px;padding-left:var(--pad);border-left:1px solid #31585a;margin:0!important;color:#ccdddb;font:400 14px/1.45 system-ui}
-  & .pont-password-collapsible {display:block!important;margin:18px 0 0!important}
+  & .pont-password-collapsible {display:block!important;margin:var(--section-gap) 0 0!important}
   & .pont-password-collapsible>summary,& .pont-password-collapsible-content>p {display:none!important}
   & .pont-password-collapsible-content {display:grid;grid-template-columns:minmax(125px,.54fr) minmax(0,1.6fr);gap:var(--pad);align-items:center;padding:0}
   & .pont-password-collapsible-content>h3 {--icon:var(--lock-keyhole);display:flex;align-items:center;gap:14px;margin:0!important;font-size:18px!important;line-height:1.4!important}
-  & #restaurantSelfPasswordForm {display:grid;grid-template-columns:minmax(0,1.45fr) minmax(165px,1fr);gap:12px var(--pad);width:100%!important;max-width:none!important;border-left:1px solid #345a59;padding-left:var(--pad)}
+  & #restaurantSelfPasswordForm {display:grid;grid-template-columns:minmax(0,1.45fr) minmax(165px,1fr);gap:5px var(--pad);width:100%!important;max-width:none!important;border-left:1px solid #345a59;padding-left:var(--pad)}
   & #restaurantSelfPasswordForm label {position:relative;grid-column:1;font-size:14px}
-  & #restaurantSelfPasswordForm input {background:var(--lock-keyhole) 12px center/17px no-repeat,#031b1e!important;padding:8px 44px 8px 38px!important}
-  & .password-visibility {position:absolute;right:2px;bottom:1px;width:38px!important;height:38px!important;min-height:0!important;border:0!important;box-shadow:none!important;background:var(--eye-off) center/19px no-repeat!important}
+  & #restaurantSelfPasswordForm input {background:var(--lock-keyhole) 12px center/17px no-repeat,#031b1e!important;min-height:32px!important;padding:4px 36px 4px 32px!important}
+  & .password-visibility {position:absolute;right:2px;bottom:1px;width:32px!important;height:31px!important;min-height:0!important;border:0!important;box-shadow:none!important;background:var(--eye-off) center/19px no-repeat!important}
   & .password-visibility[aria-pressed=true] {background-image:var(--eye)!important}
-  & #selfPasswordHint {grid-area:1/2;display:grid;gap:3px;border-left:1px solid #31585a;padding-left:var(--pad);font:400 13px/1.45 system-ui}
+  & #selfPasswordHint {grid-area:1/2;display:grid;gap:1px;border-left:1px solid #31585a;padding-left:var(--pad);font:400 13px/1.45 system-ui}
   & #selfPasswordHint span {display:flex;align-items:center;gap:8px;text-transform:none}
   & #selfPasswordHint span::before {--icon:var(--circle-check);width:15px;height:15px}
-  & #selfPasswordSubmit {--icon:var(--key-round);grid-area:2/2;align-self:end;justify-self:start;margin:0 0 0 var(--pad)!important;padding:9px 15px!important}
+  & #selfPasswordSubmit {--icon:var(--key-round);grid-area:2/2;align-self:end;justify-self:start;margin:0 0 0 var(--pad)!important;padding:5px 12px!important}
   & #selfPasswordFeedback:not(:empty) {grid-column:1/-1;grid-row:3}
   & #selfPasswordFeedback:empty {display:none}
   & :focus-visible {outline:2px solid #ffe19a!important;outline-offset:3px}
+}
+
+/* Use the same vertical space for reading and editing the order phone. */
+#pontLiquid #app #contactView #contactPhoneEditor:not([hidden]) {
+  display:flex;align-items:end;gap:16px;
+  & label {flex:1;margin:0}
+  & .contact-edit-actions {margin:0}
+}
+#pontLiquid#pontLiquid#pontLiquid:has(#app:not([hidden]) > #contactView:not([hidden])) {
+  & main > .admin-topbar {min-height:52px!important;padding-block:4px 7px!important;margin-bottom:7px!important}
+  & .admin-nav.pont-restaurant-grouped-nav {min-height:min(65svh,580px)}
+  & #app > #status:empty {display:none}
+}
+@media (max-height:650px) {
+  #pontLiquid#pontLiquid#pontLiquid:has(#app:not([hidden]) > #contactView:not([hidden])) {
+    & .pont-restaurant-topbar-brand img {max-height:38px!important;width:auto!important}
+    & .admin-topbar .admin-brand {min-height:0!important;height:auto!important;padding-block:0!important}
+    & #app > .pont-admin-legal-footer {padding-block:3px!important}
+  }
+}
+@media (max-height:620px) {
+  #pontLiquid #app > #contactView:not([hidden]) {zoom:.9}
+}
+@media (max-height:550px) {
+  #pontLiquid #app > #contactView:not([hidden]) {zoom:.82}
 }
 
 /* Outline icons from Lucide (ISC). */
