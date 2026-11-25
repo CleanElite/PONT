@@ -4,6 +4,7 @@ on:
     branches: [main]
   workflow_dispatch:
 permissions:
+  actions: read
   contents: write
   pages: write
   id-token: write
@@ -46,6 +47,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
+          name: github-pages-${{ github.run_attempt }}
       - name: Clear failed orphaned Pages deployment
         env:
           GH_TOKEN: ${{ github.token }}
@@ -61,6 +63,18 @@ jobs:
             cat /tmp/pont-pages-cancel.json
             exit 1
           fi
+      - name: Wait for Pages artifact metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in {1..30}; do
+            count=$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID/artifacts?name=github-pages-$GITHUB_RUN_ATTEMPT" --jq '.artifacts | length')
+            if [ "$count" = 1 ]; then exit 0; fi
+            sleep 2
+          done
+          exit 1
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages-${{ github.run_attempt }}
